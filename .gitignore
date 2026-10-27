@@ -1,0 +1,31 @@
+# Environnements virtuels
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Construction
+dist/
+build/
+dist-nuitka/
+*.spec
+!packaging/*.spec
+
+# Binaires volumineux (on ne garde que bin/README.md)
+bin/*/
+!bin/README.md
+
+# Éditeurs et système
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

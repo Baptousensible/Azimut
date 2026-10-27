@@ -1,0 +1,7 @@
+"""Lancement autonome : python -m azimut.modules.press"""
+from __future__ import annotations
+
+from azimut.modules.press import MODULE
+from azimut.ui.app import run_module
+
+raise SystemExit(run_module(MODULE))
