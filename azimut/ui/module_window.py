@@ -171,6 +171,13 @@ class ModuleWindow(QMainWindow):
         btn.clicked.connect(lambda _checked=False: callback())
         return btn
 
+    @staticmethod
+    def _set_text_keep_shortcut(btn: QPushButton, text: str) -> None:
+        """setText() remplace le raccourci par le mnémonique du texte (vide ici) : on le conserve."""
+        seq = btn.shortcut()
+        btn.setText(text)
+        btn.setShortcut(seq)
+
     def _build_toolbar(self) -> None:
         tb = QToolBar("Principale", self)
         tb.setObjectName("MainToolbar")
@@ -264,7 +271,7 @@ class ModuleWindow(QMainWindow):
         return btn
 
     def set_run_label(self, text: str) -> None:
-        self.run_button.setText(text)
+        self._set_text_keep_shortcut(self.run_button, text)
 
     def set_run_enabled(self, enabled: bool) -> None:
         self._run_enabled = bool(enabled)
@@ -460,7 +467,7 @@ class ModuleWindow(QMainWindow):
 
     def _on_theme_changed(self, _theme: str) -> None:
         dark = ThemeManager.instance().theme() == "dark"
-        self.theme_button.setText("☀️ Clair" if dark else "🌙 Sombre")
+        self._set_text_keep_shortcut(self.theme_button, "☀️ Clair" if dark else "🌙 Sombre")
 
     def _open_preferences(self) -> None:
         PreferencesDialog(self).exec()

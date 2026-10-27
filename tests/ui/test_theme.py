@@ -193,8 +193,15 @@ def test_run_module_passes_existing_paths(tmp_path, monkeypatch):
         def open_paths(self, paths):
             self.paths = paths
 
+        def close(self):
+            pass
+
+        def deleteLater(self):
+            pass
+
     spec = ModuleSpec(id="fake", name="Azimut Fake", tagline="test", icon="🧪", entry="x:Y")
-    monkeypatch.setattr(app_module, "create_app", lambda argv=None: SimpleNamespace(exec=lambda: 7))
+    monkeypatch.setattr(app_module, "create_app",
+                        lambda argv=None: SimpleNamespace(exec=lambda: 7, processEvents=lambda: None))
     monkeypatch.setattr(app_module, "load_window_class", lambda s: FakeWindow)
     code = app_module.run_module(spec, ["prog", str(tmp_path), "/chemin/inexistant/xyz"])
     assert code == 7
@@ -214,6 +221,12 @@ def test_run_module_without_paths_does_not_call_open_paths(monkeypatch):
         def open_paths(self, paths):
             self.called = True
 
+        def close(self):
+            pass
+
+        def deleteLater(self):
+            pass
+
     created: list[FakeWindow] = []
 
     def factory(spec):
@@ -222,7 +235,8 @@ def test_run_module_without_paths_does_not_call_open_paths(monkeypatch):
         return w
 
     spec = ModuleSpec(id="fake", name="Azimut Fake", tagline="test", icon="🧪", entry="x:Y")
-    monkeypatch.setattr(app_module, "create_app", lambda argv=None: SimpleNamespace(exec=lambda: 0))
+    monkeypatch.setattr(app_module, "create_app",
+                        lambda argv=None: SimpleNamespace(exec=lambda: 0, processEvents=lambda: None))
     monkeypatch.setattr(app_module, "load_window_class", lambda s: factory)
     assert app_module.run_module(spec, ["prog"]) == 0
     assert created and created[0].called is False
