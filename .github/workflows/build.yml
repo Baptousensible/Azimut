@@ -1,7 +1,17 @@
-# À placer dans .github/workflows/build.yml
-# Squelette : tests sur 3 OS, paquet PyInstaller par plateforme, auto-test du paquet, artefacts.
-# Les binaires (ffmpeg, ffprobe, exiftool) ne sont pas dans le dépôt : l'étape « Binaires » est à
-# adapter (cache, release privée, ou téléchargement depuis les sites officiels, avec empreinte).
+# .github/workflows/build.yml
+#
+# Tests sur 3 systèmes, puis fabrication de 3 distributions « clé en main » :
+#   Linux   → Azimut-<version>-linux-x86_64.AppImage
+#   Windows → Azimut-<version>-windows-x64-setup.exe  (+ Azimut-<version>-windows-x64-portable.zip)
+#   macOS   → Azimut-<version>-macos-arm64.dmg        (+ Azimut-<version>-macos-x64.dmg, Intel)
+# Publication automatique sur la page « Releases » quand un tag « v* » est poussé
+# (ou quand une release est créée depuis GitHub avec un nouveau tag « v* »).
+#
+# Déclencheurs :
+#   - pull request          → tests uniquement ;
+#   - push sur main         → tests + paquets (artefacts téléchargeables 14 jours dans l'onglet Actions) ;
+#   - tag v*                → tests + paquets + release publiée ;
+#   - lancement manuel      → comme un push sur main (utile pour essayer sans publier).
 name: build
 
 on:
@@ -9,69 +19,227 @@ on:
     branches: [main]
     tags: ["v*"]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  QT_QPA_PLATFORM: offscreen
+  # Bibliothèques système de Qt sous Linux (build, tests et AppImage).
+  LINUX_QT_LIBS: >-
+    libegl1 libgl1 libglib2.0-0 libfontconfig1 libdbus-1-3 libxkbcommon-x11-0
+    libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0
+    libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xfixes0 libxcb-xkb1
+    libxcb-util1 libfuse2
 
 jobs:
+  # --------------------------------------------------------------------------------------------
   test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-22.04, windows-latest, macos-14]
-        python: ["3.10", "3.12"]
-    runs-on: ${{ matrix.os }}
-    env:
-      QT_QPA_PLATFORM: offscreen
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "${{ matrix.python }}" }
-      - name: Bibliothèques système (Qt sous Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libegl1 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0
-      - run: python -m pip install -U pip
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-      - run: pytest -q
-
-  package:
-    needs: test
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-22.04,   tag: linux-x64,    name: Azimut-linux-x64 }
-          - { os: windows-latest, tag: windows-x64,  name: Azimut-windows-x64 }
-          - { os: macos-14,       tag: macos-arm64,  name: Azimut-macos-arm64 }
-          - { os: macos-13,       tag: macos-x64,    name: Azimut-macos-x64 }
+          - { os: ubuntu-22.04,   python: "3.10" }
+          - { os: ubuntu-22.04,   python: "3.12" }
+          - { os: windows-latest, python: "3.12" }
+          - { os: macos-15,       python: "3.12" }
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: requirements*.txt
       - name: Bibliothèques système (Qt sous Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libegl1 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0
+        run: sudo apt-get update && sudo apt-get install -y ${{ env.LINUX_QT_LIBS }}
       - run: python -m pip install -U pip
-      # Extras facultatifs INDISPENSABLES au paquet : HEIC, corbeille, écriture AVIF (Pillow >= 11.3)
-      - run: pip install -r requirements.txt pillow-heif send2trash "Pillow>=11.3" pyinstaller
-      - name: Binaires (à adapter)
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: pytest -q
+
+  # --------------------------------------------------------------------------------------------
+  package:
+    name: Paquet ${{ matrix.tag }}
+    needs: test
+    if: github.event_name != 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-22.04,   tag: linux-x64 }      # glibc 2.35 : Ubuntu 22.04+, Debian 12+, Fedora 36+…
+          - { os: windows-latest, tag: windows-x64 }
+          - { os: macos-15,       tag: macos-arm64 }    # Apple Silicon
+          - { os: macos-15-intel, tag: macos-x64, optional: true }   # Intel : n'empêche pas la release s'il échoue
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.optional || false }}
+    timeout-minutes: 90
+    env:
+      AZIMUT_REQUIRE_BINARIES: "1"      # jamais de paquet sans FFmpeg / ExifTool embarqués
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - name: Version (et cohérence avec le tag)
+        id: ver
         shell: bash
         run: |
-          mkdir -p "bin/${{ matrix.tag }}"
-          echo "TODO : déposer ffmpeg, ffprobe, exiftool (+ exiftool_files / lib) dans bin/${{ matrix.tag }}"
-      - name: Construire
+          VERSION="$(python packaging/print_version.py)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Version d'Azimut : $VERSION"
+          if [[ "$GITHUB_REF" == refs/tags/v* && "${GITHUB_REF_NAME#v}" != "$VERSION" ]]; then
+            echo "::error::Le tag « $GITHUB_REF_NAME » ne correspond pas à __version__ = « $VERSION » (azimut/__init__.py). Corrigez la version, puis recréez le tag."
+            exit 1
+          fi
+
+      - name: Bibliothèques système (Qt sous Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ${{ env.LINUX_QT_LIBS }}
+
+      - name: Dépendances Python (application + extras HEIC/AVIF/corbeille + PyInstaller)
+        run: |
+          python -m pip install -U pip
+          pip install -r requirements-build.txt
+
+      - name: Télécharger FFmpeg, FFprobe et ExifTool (+ Perl portable)
+        run: python packaging/fetch_binaries.py
+
+      - name: Icônes
+        run: python packaging/make_icons.py
+
+      - name: Construire (PyInstaller)
         run: python packaging/build.py
+
       - name: Auto-test du paquet (sans interface)
         shell: bash
-        env:
-          QT_QPA_PLATFORM: offscreen
         run: |
-          if [ "$RUNNER_OS" = "macOS" ]; then EXE="dist/Azimut.app/Contents/MacOS/Azimut";
-          elif [ "$RUNNER_OS" = "Windows" ]; then EXE="dist/Azimut/Azimut.exe";
-          else EXE="dist/Azimut/Azimut"; fi
-          "$EXE" --selftest selftest.json || { cat selftest.json; exit 1; }
-          cat selftest.json
-      - uses: actions/upload-artifact@v4
+          case "$RUNNER_OS" in
+            macOS)   EXE="dist/Azimut.app/Contents/MacOS/Azimut" ;;
+            Windows) EXE="dist/Azimut/Azimut.exe" ;;
+            *)       EXE="dist/Azimut/Azimut" ;;
+          esac
+          "$EXE" --selftest selftest.json || { cat selftest.json || true; exit 1; }
+          python packaging/check_selftest.py selftest.json
+
+      # ----- Linux : AppImage ------------------------------------------------------------------
+      - name: AppImage
+        if: runner.os == 'Linux'
+        run: bash packaging/make_appimage.sh
+
+      - name: Test de l'AppImage
+        if: runner.os == 'Linux'
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: "1"
+        run: |
+          ./release/Azimut-*-linux-x86_64.AppImage --selftest selftest-appimage.json || { cat selftest-appimage.json || true; exit 1; }
+          python packaging/check_selftest.py selftest-appimage.json
+
+      # ----- Windows : installeur + archive portable ---------------------------------------------
+      - name: Installeur Windows (Inno Setup) et archive portable
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          $iscc = (Get-Command ISCC.exe -ErrorAction SilentlyContinue).Source
+          if (-not $iscc) { $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe' }
+          & $iscc "/DAppVersion=${{ steps.ver.outputs.version }}" packaging\azimut.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC a échoué (code $LASTEXITCODE)" }
+          Compress-Archive -Path dist\Azimut -DestinationPath "release\Azimut-${{ steps.ver.outputs.version }}-windows-x64-portable.zip"
+          Get-ChildItem release | Format-Table Name, Length
+
+      - name: Test de l'installeur (installation silencieuse puis auto-test)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem release\*-setup.exe | Select-Object -First 1).FullName
+          $dir = Join-Path $env:RUNNER_TEMP 'azimut-installed'
+          $p = Start-Process -FilePath $setup -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-',"/DIR=$dir" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Installation : code de sortie $($p.ExitCode)" }
+          $t = Start-Process -FilePath "$dir\Azimut.exe" -ArgumentList '--selftest','selftest-installed.json' -Wait -PassThru
+          if ($t.ExitCode -ne 0) {
+            if (Test-Path selftest-installed.json) { Get-Content selftest-installed.json }
+            throw "Auto-test de l'application installée : code de sortie $($t.ExitCode)"
+          }
+          python packaging\check_selftest.py selftest-installed.json
+          if ($LASTEXITCODE -ne 0) { throw "Contrôle du paquet installé en échec" }
+
+      # ----- macOS : signature ad hoc + DMG ------------------------------------------------------
+      - name: DMG (signature ad hoc, création, test du DMG monté)
+        if: runner.os == 'macOS'
+        run: bash packaging/make_dmg.sh
+
+      - name: Contrôle du paquet (DMG)
+        if: runner.os == 'macOS'
+        run: python packaging/check_selftest.py selftest-dmg.json
+
+      # ----- Résultats -----------------------------------------------------------------------------
+      - uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.name }}
-          path: |
-            dist/
-            selftest.json
+          name: Azimut-${{ matrix.tag }}
+          path: release/*
+          if-no-files-found: error
+          compression-level: 0            # les installeurs sont déjà compressés
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapports-${{ matrix.tag }}
+          path: selftest*.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # --------------------------------------------------------------------------------------------
+  release:
+    name: Publier la release
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write                   # nécessaire pour créer la release et y joindre les fichiers
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: Azimut-*
+          path: release
+          merge-multiple: true
+
+      - name: Sommes de contrôle
+        run: |
+          cd release
+          sha256sum -- * | tee SHA256SUMS.txt
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          files: release/*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          body: |
+            ## Téléchargements
+
+            | Système | Fichier |
+            |---|---|
+            | Windows | `Azimut-…-windows-x64-setup.exe` (installeur) ou `…-portable.zip` |
+            | macOS (Apple Silicon) | `Azimut-…-macos-arm64.dmg` |
+            | macOS (Intel) | `Azimut-…-macos-x64.dmg` (si présent) |
+            | Linux | `Azimut-…-linux-x86_64.AppImage` |
+
+            FFmpeg, FFprobe et ExifTool sont **inclus** : rien d'autre à installer.
+            Les applications ne sont pas signées par un certificat payant : à la première ouverture,
+            Windows (SmartScreen) et macOS (Gatekeeper) demandent une confirmation.
+            Linux : `chmod +x Azimut-*.AppImage` puis double-clic ou `./Azimut-*.AppImage`.
+            Vérification d'intégrité : `SHA256SUMS.txt`.
