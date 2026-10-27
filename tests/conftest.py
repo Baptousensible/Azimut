@@ -38,3 +38,20 @@ def tmp_prefs(qapp, tmp_path_factory):
     """Preferences sur un fichier temporaire."""
     from azimut.core.prefs import Preferences
     return Preferences(tmp_path_factory.mktemp("prefs") / "preferences.json")
+
+import sys
+
+_exit_status = 0
+
+
+def pytest_sessionfinish(session, exitstatus):
+    global _exit_status
+    _exit_status = int(exitstatus)
+
+
+def pytest_unconfigure(config):
+    """Qt peut planter à la destruction de l'interpréteur (après le résumé) : on sort proprement avant."""
+    if "PySide6.QtWidgets" in sys.modules:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os._exit(_exit_status)
