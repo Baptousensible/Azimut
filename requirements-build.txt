@@ -1,0 +1,6 @@
+# Dépendances du paquet distribué (utilisé par la CI et par `python packaging/build.py`).
+-r requirements.txt
+Pillow>=11.3          # écriture AVIF
+pillow-heif>=0.16     # HEIC / HEIF
+send2trash>=1.8       # corbeille système
+pyinstaller>=6.6

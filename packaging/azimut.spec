@@ -4,17 +4,20 @@
 Utilisation : python -m PyInstaller packaging/azimut.spec --noconfirm --clean
 (ou simplement `python packaging/build.py`).
 Variante fichier unique : variable d'environnement AZIMUT_ONEFILE=1.
+Garde-fou de distribution : AZIMUT_REQUIRE_BINARIES=1 fait échouer le build si bin/<plateforme>/ est
+absent ou vide (utilisé par la CI : on ne publie jamais un paquet sans FFmpeg / ExifTool embarqués).
 Aucun chemin absolu : tout est calculé à partir de l'emplacement de ce fichier.
 """
 from __future__ import annotations
 
+import importlib.util
 import os
 import platform
 import re
 import sys
 from pathlib import Path
 
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 # SPECPATH est fourni par PyInstaller (dossier du .spec) ; repli sur __file__.
 ROOT = Path(globals().get("SPECPATH") or Path(__file__).resolve().parent).resolve().parent
@@ -22,12 +25,13 @@ sys.path.insert(0, str(ROOT))
 
 APP_NAME = "Azimut"
 ONEFILE = os.environ.get("AZIMUT_ONEFILE", "").strip() == "1"
+REQUIRE_BINARIES = os.environ.get("AZIMUT_REQUIRE_BINARIES", "").strip() == "1"
 
 
 def _version() -> str:
-    """Lit __version__ sans importer le paquet."""
+    """Lit __version__ sans importer le paquet (accepte `__version__ = "x"` et `__version__: str = "x"`)."""
     text = (ROOT / "azimut" / "__init__.py").read_text(encoding="utf-8")
-    found = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', text)
+    found = re.search(r"""__version__\s*(?::[^=\n]+)?=\s*["']([^"']+)["']""", text)
     return found.group(1) if found else "0.0.0"
 
 
@@ -57,18 +61,34 @@ def _icon() -> str | None:
 
 
 def _bundled_binaries() -> list[tuple[str, str]]:
-    """bin/<tag>/ → bin/<tag>/ dans le paquet (rien si absent ou vide)."""
+    """bin/<tag>/ → bin/<tag>/ dans le paquet (rien si absent ou vide, sauf AZIMUT_REQUIRE_BINARIES=1)."""
     src = ROOT / "bin" / TAG
-    if not src.is_dir():
-        print(f"[azimut.spec] bin/{TAG}/ absent : aucun binaire embarqué "
-              "(Azimut utilisera les préférences ou le PATH).")
-        return []
-    files = [p for p in src.rglob("*") if p.is_file() and p.name not in (".gitkeep", "README.md")]
+    files = [p for p in src.rglob("*") if p.is_file() and p.name not in (".gitkeep", "README.md")] if src.is_dir() else []
     if not files:
-        print(f"[azimut.spec] bin/{TAG}/ est vide : aucun binaire embarqué.")
+        reason = "absent" if not src.is_dir() else "vide"
+        if REQUIRE_BINARIES:
+            raise SystemExit(f"[azimut.spec] ERREUR : bin/{TAG}/ est {reason} alors que AZIMUT_REQUIRE_BINARIES=1. "
+                             "Lancez d'abord : python packaging/fetch_binaries.py")
+        print(f"[azimut.spec] bin/{TAG}/ {reason} : aucun binaire embarqué "
+              "(Azimut utilisera les préférences ou le PATH).")
         return []
     print(f"[azimut.spec] {len(files)} fichier(s) de bin/{TAG}/ embarqué(s).")
     return [(str(src), f"bin/{TAG}")]
+
+
+def _optional(package: str) -> tuple[list, list, list]:
+    """(datas, binaries, hiddenimports) d'un paquet facultatif (HEIC, corbeille…) ; vide s'il est absent.
+
+    Garantit que ses bibliothèques natives (libheif, etc.) sont bien embarquées.
+    """
+    if importlib.util.find_spec(package) is None:
+        print(f"[azimut.spec] paquet facultatif « {package} » non installé : ignoré.")
+        return [], [], []
+    try:
+        return collect_all(package)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[azimut.spec] collecte de « {package} » impossible ({exc}) : ignoré.")
+        return [], [], []
 
 
 # Modules Qt inutilisés (PySide6.<nom>) : gain de taille important.
@@ -89,13 +109,21 @@ EXCLUDES += ["PyQt5", "PyQt6", "PySide2"]
 # Les fenêtres des modules sont importées par chaîne (load_window_class).
 HIDDEN_IMPORTS = collect_submodules("azimut")
 
-DATAS = [(str(ROOT / "azimut" / "resources"), "azimut/resources")] + _bundled_binaries()
+EXTRA_DATAS: list = []
+EXTRA_BINARIES: list = []
+for _pkg in ("pillow_heif", "send2trash"):
+    _d, _b, _h = _optional(_pkg)
+    EXTRA_DATAS += _d
+    EXTRA_BINARIES += _b
+    HIDDEN_IMPORTS += _h
+
+DATAS = [(str(ROOT / "azimut" / "resources"), "azimut/resources")] + _bundled_binaries() + EXTRA_DATAS
 ICON = _icon()
 
 a = Analysis(
     [str(ROOT / "main.py")],
     pathex=[str(ROOT)],
-    binaries=[],
+    binaries=EXTRA_BINARIES,
     datas=DATAS,
     hiddenimports=HIDDEN_IMPORTS,
     hookspath=[],
@@ -145,7 +173,11 @@ if sys.platform == "darwin":
         version=VERSION,
         info_plist={
             "CFBundleName": APP_NAME,
+            "CFBundleDisplayName": APP_NAME,
             "CFBundleShortVersionString": VERSION,
+            "CFBundleVersion": VERSION,
+            "LSApplicationCategoryType": "public.app-category.utilities",
+            "LSMinimumSystemVersion": "12.0",
             "NSHighResolutionCapable": True,
         },
     )

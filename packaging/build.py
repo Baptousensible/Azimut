@@ -101,7 +101,10 @@ def main() -> int:
     tag = platform_tag()
     onefile = os.environ.get("AZIMUT_ONEFILE", "").strip() == "1"
     print(f"Plateforme : {tag} — mode {'fichier unique' if onefile else 'dossier'}")
-    check_binaries(tag)
+    found = check_binaries(tag)
+    if not found and os.environ.get("AZIMUT_REQUIRE_BINARIES", "").strip() == "1":
+        print("ERREUR : binaires manquants alors que AZIMUT_REQUIRE_BINARIES=1 (lancez python packaging/fetch_binaries.py).")
+        return 1
 
     if importlib.util.find_spec("PyInstaller") is None:
         print("ERREUR : PyInstaller n'est pas installé (pip install pyinstaller).")
