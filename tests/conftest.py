@@ -49,9 +49,20 @@ def pytest_sessionfinish(session, exitstatus):
     _exit_status = int(exitstatus)
 
 
+def _hard_exit(code: int) -> None:
+    """Termine le processus sans laisser Qt détruire ses DLL (plantage à la sortie sous Windows)."""
+    sys.stdout.flush()
+    sys.stderr.flush()
+    if sys.platform == "win32":
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        kernel32.GetCurrentProcess.restype = ctypes.c_void_p
+        kernel32.TerminateProcess.argtypes = (ctypes.c_void_p, ctypes.c_uint)
+        kernel32.TerminateProcess(kernel32.GetCurrentProcess(), code)
+    os._exit(code)
+
+
 def pytest_unconfigure(config):
-    """Qt peut planter à la destruction de l'interpréteur (après le résumé) : on sort proprement avant."""
+    """S'exécute après le résumé de pytest : Qt peut planter à la destruction de l'interpréteur."""
     if "PySide6.QtWidgets" in sys.modules:
-        sys.stdout.flush()
-        sys.stderr.flush()
-        os._exit(_exit_status)
+        _hard_exit(_exit_status)
