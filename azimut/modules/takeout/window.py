@@ -80,10 +80,12 @@ class TakeoutWindow(ModuleWindow):
             card.body_layout.addWidget(chk)
         card.body_layout.addWidget(QLabel("Fuseau des dates des images"))
         self.cmb_tz = QComboBox()
+        self.cmb_tz.addItem("UTC (recommandé, identique à Google)", eng.TZ_UTC)
         self.cmb_tz.addItem("Heure locale de cet ordinateur", eng.TZ_LOCAL)
-        self.cmb_tz.addItem("UTC", eng.TZ_UTC)
-        self.cmb_tz.setToolTip("Google enregistre l'heure en UTC. Les vidéos QuickTime sont toujours écrites en UTC.")
-        idx = self.cmb_tz.findData(p.get("tz", eng.TZ_LOCAL))
+        self.cmb_tz.setToolTip("Google enregistre l'heure en UTC. Le fuseau est aussi écrit dans le fichier "
+                               "(OffsetTime), donc la date reste exacte pour les logiciels qui le lisent. "
+                               "Les vidéos QuickTime sont toujours écrites en UTC.")
+        idx = self.cmb_tz.findData(p.get("tz", eng.TZ_UTC))
         self.cmb_tz.setCurrentIndex(max(0, idx))
         self.cmb_tz.currentIndexChanged.connect(lambda _i: self._on_option_changed("tz", self.cmb_tz.currentData()))
         card.body_layout.addWidget(self.cmb_tz)

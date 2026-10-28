@@ -118,11 +118,29 @@ def test_plan_image_writes_dates_and_gps():
     assert by_tag["DateTimeOriginal"] == "2020:09:13 12:26:40" and by_tag["CreateDate"] == by_tag["ModifyDate"]
     assert by_tag["GPSCoordinates"].startswith("48.8584, 2.2945")
     assert plan.mtime == sc.taken
+    assert {by_tag[t] for t in ("OffsetTime", "OffsetTimeOriginal", "OffsetTimeDigitized")} == {"+00:00"}
+
+
+def test_default_is_utc_and_local_offset_is_explicit(monkeypatch):
+    assert eng.Options().tz == eng.TZ_UTC
+    monkeypatch.setenv("TZ", "Europe/Paris")
+    time.tzset()
+    try:
+        sc = eng.parse_sidecar(sidecar_json(taken=1_600_000_000), Path("a.json"))        # 13 sept. : CEST
+        plan = eng.build_plan(Path("a.jpg"), sc, [], eng.Options(tz=eng.TZ_LOCAL))
+        by_tag = {c.tag: c.value for c in plan.changes}
+        assert by_tag["DateTimeOriginal"] == "2020:09:13 14:26:40" and by_tag["OffsetTimeOriginal"] == "+02:00"
+        winter = eng.parse_sidecar(sidecar_json(taken=1_610_000_000), Path("a.json"))    # 7 janv. : CET
+        assert eng.utc_offset_text(winter.taken, eng.TZ_LOCAL) == "+01:00"
+    finally:
+        monkeypatch.undo()
+        time.tzset()
 
 
 def test_plan_video_uses_utc_quicktime_tags():
     sc = eng.parse_sidecar(sidecar_json(), Path("a.json"))
     plan = eng.build_plan(Path("a.mp4"), sc, [], eng.Options(tz=eng.TZ_LOCAL))
+    assert not any(c.tag.startswith("OffsetTime") for c in plan.changes)
     tagset = {c.tag for c in plan.changes}
     assert {"CreateDate", "TrackCreateDate", "MediaModifyDate", "GPSCoordinates"} <= tagset
     assert all(c.value == "2020:09:13 12:26:40" for c in plan.changes if "Date" in c.tag)
@@ -198,6 +216,7 @@ def test_apply_and_undo_end_to_end(tmp_path, qapp):
 
     jpg = exif(tmp_path / "p.jpg")
     assert jpg["ExifIFD:DateTimeOriginal"] == "2020:09:13 12:26:40"
+    assert jpg["ExifIFD:OffsetTimeOriginal"] == "+00:00"
     assert round(jpg["GPS:GPSLatitude"], 4) == 48.8584 and round(jpg["GPS:GPSLongitude"], 4) == 2.2945
     mp4 = exif(tmp_path / "v.mp4")
     assert mp4["QuickTime:CreateDate"] == "2020:09:13 12:26:40"
@@ -218,5 +237,5 @@ def test_apply_and_undo_end_to_end(tmp_path, qapp):
 def test_window_smoke(qapp):
     from azimut.modules.takeout.window import TakeoutWindow
     w = TakeoutWindow()
-    assert w._options().write_dates and w._options().tz == eng.TZ_LOCAL
+    assert w._options().write_dates and w._options().tz == eng.TZ_UTC
     w.close()

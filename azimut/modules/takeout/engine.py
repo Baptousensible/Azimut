@@ -42,6 +42,7 @@ STATE_TAGS = {STATE_READY: "info", STATE_NO_JSON: "warn", STATE_NO_DATA: "warn",
               STATE_UNCHANGED: "neutre", STATE_MTIME_ONLY: "ok", STATE_ERROR: "err"}
 
 TZ_LOCAL, TZ_UTC = "local", "utc"
+_OFFSET_TAGS = ("OffsetTime", "OffsetTimeOriginal", "OffsetTimeDigitized")
 
 _EDITED_RE = re.compile(r"-(?:edited|modifié|modifie|bearbeitet|editado|modificato|bewerkt)$", re.I)
 _DUP_RE = re.compile(r"^(?P<base>.*?)(?P<dup>\(\d+\))$")
@@ -307,7 +308,7 @@ class Options:
     write_gps: bool = True
     overwrite: bool = False             # écraser les valeurs déjà présentes dans le fichier
     align_mtime: bool = True            # date de modification du fichier = date de prise de vue
-    tz: str = TZ_LOCAL                  # fuseau utilisé pour les dates EXIF des images
+    tz: str = TZ_UTC                    # fuseau des dates EXIF des images : UTC (reproductible) ou heure locale
 
 
 @dataclass
@@ -340,6 +341,16 @@ def local_naive(dt: datetime) -> datetime:
     return dt.astimezone().replace(tzinfo=None)
 
 
+def utc_offset_text(dt: datetime, tz: str) -> str:
+    """Décalage « +HH:MM » écrit dans OffsetTime* : « +00:00 » en UTC, décalage du système en heure locale."""
+    if tz == TZ_UTC:
+        return "+00:00"
+    off = dt.astimezone().utcoffset()
+    minutes = int(off.total_seconds() // 60) if off is not None else 0
+    sign = "+" if minutes >= 0 else "-"
+    return f"{sign}{abs(minutes) // 60:02d}:{abs(minutes) % 60:02d}"
+
+
 def build_plan(path: Path, sidecar: Sidecar, entries: Sequence[tags.TagEntry], options: Options) -> Plan:
     """Ce qu'il faut écrire dans `path` d'après son JSON, ses tags actuels (`entries`) et les options."""
     plan = Plan()
@@ -362,11 +373,14 @@ def build_plan(path: Path, sidecar: Sidecar, entries: Sequence[tags.TagEntry], o
             moment = (sidecar.taken.astimezone(timezone.utc).replace(tzinfo=None) if options.tz == TZ_UTC
                       else local_naive(sidecar.taken))
             names = _IMAGE_DATE_TAGS
+        offset = None if is_qt else utc_offset_text(sidecar.taken, options.tz)
         if present and not options.overwrite:
             plan.notes.append("Date déjà présente : conservée.")
         else:
             value = moment.strftime(tags.EXIF_DATE_FORMAT)
             plan.changes += [tags.TagChange("set", n, value) for n in names]
+            if offset:      # le fuseau est écrit explicitement : la date reste exacte quel que soit l'ordinateur
+                plan.changes += [tags.TagChange("set", n, offset) for n in _OFFSET_TAGS]
     if options.write_gps and sidecar.has_gps:
         present = _has(entries, ("GPSLatitude", "GPSCoordinates", "GPSPosition"))
         if present and not options.overwrite:
