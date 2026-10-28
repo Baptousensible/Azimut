@@ -16,6 +16,7 @@ AIDE = """Usage :
   python main.py <module> [chemins…]   lance directement un module
   python main.py --list                liste les modules disponibles
   python main.py --version             affiche la version
+  python main.py --selftest [rapport]  vérifie l'installation (code 0 si tout est en ordre)
   python main.py --help                affiche cette aide
 """
 
@@ -100,6 +101,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if first == "--list":
         return _cmd_list()
+    if first == "--selftest":
+        from azimut.launcher import selftest
+
+        return int(selftest.run(args[1:]))
     if first.startswith("-"):
         _write(sys.stderr, f"Erreur : option inconnue « {first} ».\n{AIDE}")
         return 2

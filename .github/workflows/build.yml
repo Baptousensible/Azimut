@@ -30,6 +30,7 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.12"
+  PYTHONUTF8: "1"                # sorties Python en UTF-8 (la console Windows est en cp1252)
   QT_QPA_PLATFORM: offscreen
   # Bibliothèques système de Qt sous Linux (build, tests et AppImage).
   LINUX_QT_LIBS: >-

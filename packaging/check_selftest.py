@@ -28,6 +28,11 @@ def annotate(level: str, message: str) -> None:
 
 
 def main(argv: list[str]) -> int:
+    for stream in (sys.stdout, sys.stderr):      # console Windows en cp1252 : on force l'UTF-8
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     if len(argv) != 2:
         print(__doc__)
         return 2

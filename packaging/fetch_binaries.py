@@ -372,6 +372,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-verify", action="store_true", help="ne lance pas les binaires après installation")
     args = parser.parse_args(argv)
 
+    for stream in (sys.stdout, sys.stderr):      # console Windows en cp1252 : on force l'UTF-8
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     tag = platform_tag()
     dest = ROOT / "bin" / tag
     log(f"Plateforme : {tag} → {dest}")
