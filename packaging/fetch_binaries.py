@@ -13,7 +13,7 @@ Sources (toutes gratuites, téléchargées depuis des URL publiques) :
     FFmpeg Windows / Linux : https://github.com/BtbN/FFmpeg-Builds   (variante GPL statique, avec libx264,
                               libsvtav1, libaom, libopus, libmp3lame, libwebp… ; somme de contrôle vérifiée)
     FFmpeg macOS           : https://ffmpeg.martin-riedl.de            (builds statiques arm64 / amd64)
-    ExifTool               : https://exiftool.org                      (dernière version publiée)
+    ExifTool               : SourceForge / GitHub (exiftool.org n'héberge plus les archives)
     Perl portable          : https://github.com/skaji/relocatable-perl
 
 Variables d'environnement facultatives :
@@ -46,8 +46,10 @@ ROOT = Path(__file__).resolve().parent.parent
 
 BTBN_BASE = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
 MARTIN_RIEDL = "https://ffmpeg.martin-riedl.de/redirect/latest/macos/{arch}/{build}/{name}"
-EXIFTOOL_HOME = "https://exiftool.org"
+EXIFTOOL_HOME = "https://exiftool.org"                 # n'héberge plus les archives : liens vers SourceForge
+EXIFTOOL_SF = "https://sourceforge.net/projects/exiftool/files/{name}/download"
 EXIFTOOL_GITHUB = "https://github.com/exiftool/exiftool/archive/refs/tags/{version}.tar.gz"
+MAGIC = {"zip": b"PK\x03\x04", "gz": b"\x1f\x8b", "xz": b"\xfd7zXZ\x00"}   # signatures des archives
 PERL_BASE = "https://github.com/skaji/relocatable-perl/releases/latest/download"
 
 FFMPEG_BRANCH = os.environ.get("AZIMUT_FFMPEG_BRANCH", "n9.0").strip() or "n9.0"
@@ -72,7 +74,9 @@ def platform_tag() -> str:
 
 
 def _request(url: str) -> urllib.request.Request:
-    return urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    # SourceForge redirige directement vers un miroir pour les clients de type curl (pas de page HTML).
+    agent = "curl/8.5.0" if "sourceforge" in url else USER_AGENT
+    return urllib.request.Request(url, headers={"User-Agent": agent})
 
 
 def download(url: str, target: Path, attempts: int = 4) -> str:
@@ -141,6 +145,45 @@ def find_file(base: Path, name: str, parent_name: str | None = None) -> Path:
         if candidate.is_file() and (parent_name is None or candidate.parent.name == parent_name):
             return candidate
     raise FileNotFoundError(f"« {name} » introuvable dans l'archive extraite ({base}).")
+
+
+def download_first(candidates: list[tuple[str, str]], tmp: Path, kind: str) -> tuple[Path, str, str]:
+    """Essaie chaque (url, nom de fichier) et renvoie (archive, sha256, url) du premier fichier valide.
+
+    « Valide » = la signature de l'archive correspond à `kind` (zip, gz, xz) : une page HTML d'erreur
+    ou d'attente renvoyée à la place du fichier est donc écartée.
+    """
+    problems: list[str] = []
+    for url, name in candidates:
+        target = tmp / name
+        try:
+            digest = download(url, target)
+            with target.open("rb") as handle:
+                head = handle.read(len(MAGIC[kind]))
+            if head != MAGIC[kind]:
+                raise ValueError("le fichier reçu n'est pas une archive %s (page HTML ?)" % kind)
+            return target, digest, url
+        except (urllib.error.URLError, RuntimeError, ValueError, OSError) as exc:
+            log(f"  échec : {url} ({exc}) ; source suivante")
+            problems.append(f"{url} -> {exc}")
+    raise RuntimeError("Aucune source n'a fourni l'archive attendue :\n  " + "\n  ".join(problems))
+
+
+def _verify_exiftool(filename: str, digest: str, version: str) -> None:
+    """Compare avec checksums-<version>.txt publié par ExifTool (avertit si indisponible ou illisible)."""
+    try:
+        listing = fetch_text(f"{EXIFTOOL_HOME}/checksums-{version}.txt")
+    except Exception as exc:  # noqa: BLE001
+        log(f"  AVERTISSEMENT : checksums-{version}.txt indisponible ({exc}) ; empreinte non vérifiée.")
+        return
+    for line in listing.splitlines():
+        found = re.search(r"\b([0-9a-fA-F]{64})\b", line)
+        if filename in line and found:
+            if found.group(1).lower() != digest.lower():
+                raise RuntimeError(f"Somme de contrôle incorrecte pour {filename} (attendu {found.group(1)}, obtenu {digest}).")
+            log("  somme de contrôle conforme à checksums-%s.txt" % version)
+            return
+    log(f"  AVERTISSEMENT : {filename} absent de checksums-{version}.txt ; empreinte non vérifiée.")
 
 
 # --------------------------------------------------------------------------- FFmpeg / FFprobe
@@ -235,9 +278,12 @@ def exiftool_version() -> str:
 
 
 def install_exiftool_windows(dest: Path, tmp: Path, version: str) -> None:
-    url = f"{EXIFTOOL_HOME}/exiftool-{version}_64.zip"
-    archive = tmp / f"exiftool-{version}_64.zip"
-    digest = download(url, archive)
+    name = f"exiftool-{version}_64.zip"
+    archive, digest, url = download_first([
+        (EXIFTOOL_SF.format(name=name), name),                 # source officielle actuelle (SourceForge)
+        (f"{EXIFTOOL_HOME}/{name}", "home-" + name),           # ancien emplacement, au cas où il revienne
+    ], tmp, "zip")
+    _verify_exiftool(name, digest, version)
     extracted = tmp / "exiftool-extract"
     extract(archive, extracted)
     exe = find_file(extracted, "exiftool(-k).exe")
@@ -266,21 +312,14 @@ exec "$DIR/perl/bin/perl" "$DIR/exiftool-perl/exiftool" "$@"
 
 
 def install_exiftool_unix(dest: Path, tmp: Path, version: str) -> None:
-    candidates = [
-        (f"{EXIFTOOL_HOME}/Image-ExifTool-{version}.tar.gz", f"Image-ExifTool-{version}.tar.gz"),
-        (EXIFTOOL_GITHUB.format(version=version), f"exiftool-{version}-github.tar.gz"),   # archive pérenne
-    ]
-    archive = digest = url = None
-    for candidate_url, filename in candidates:
-        try:
-            archive = tmp / filename
-            digest = download(candidate_url, archive)
-            url = candidate_url
-            break
-        except urllib.error.HTTPError as exc:
-            log(f"  {candidate_url} : HTTP {exc.code} ; essai suivant")
-    if archive is None or digest is None or url is None:
-        raise RuntimeError(f"Archive ExifTool {version} introuvable.")
+    name = f"Image-ExifTool-{version}.tar.gz"
+    archive, digest, url = download_first([
+        (EXIFTOOL_GITHUB.format(version=version), f"exiftool-{version}-github.tar.gz"),   # dépôt officiel, pérenne
+        (EXIFTOOL_SF.format(name=name), name),
+        (f"{EXIFTOOL_HOME}/{name}", "home-" + name),
+    ], tmp, "gz")
+    if "github.com" not in url:
+        _verify_exiftool(name, digest, version)
     extracted = tmp / "exiftool-extract"
     extract(archive, extracted)
     script = find_file(extracted, "exiftool")
