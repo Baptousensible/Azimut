@@ -20,6 +20,7 @@ propose l'historique des traitements, le journal de l'application et l'état des
 |---|---|
 | **Azimut Convert** (`convert`) | Conversion audio, vidéo et images via FFmpeg, par lots, avec des profils prédéfinis. |
 | **Azimut Tags** (`tags`) | Lecture, modification et suppression des métadonnées (EXIF, IPTC, XMP) via ExifTool. |
+| **Azimut Takeout** (`takeout`) | Réinjecte dates et positions GPS d'un export Google Photos (JSON compagnons) dans les photos et vidéos, avec annulation. |
 | **Azimut Dedup** (`dedup`) | Détection et suppression des doublons : hachage du contenu, similarité visuelle, comparaison par prévisualisation. |
 | **Azimut Press** (`press`) | Compression et optimisation d'images et de fichiers JSON. |
 
@@ -67,7 +68,7 @@ azimut/
   core/                    socle : chemins, préférences, journaux, binaires, historique, workers
   ui/                      thème, widgets, fenêtre de module, préférences
   launcher/                Atlas : registry, cli, atlas_window, dashboard
-  modules/                 convert, tags, dedup, press
+  modules/                 convert, tags, takeout, dedup, press
   resources/               ressources embarquées
 bin/                       binaires par plateforme (README.md seulement dans le dépôt)
 packaging/                 spec PyInstaller, script de build, notes Nuitka

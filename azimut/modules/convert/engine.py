@@ -259,14 +259,18 @@ def build_probe_command(ffprobe: str | Path, source: str | Path) -> list[str]:
 
 
 def _video_quality_args(profile: Profile, venc: str, *, still: bool) -> list[str]:
+    n = profile.threads if profile.threads > 0 else 0
     if venc == "libsvtav1":
         args = ["-crf", str(profile.crf), "-preset", profile.preset]
-        return args + ["-b:v", "0"] if still else args
+        if still:
+            args += ["-b:v", "0"]
+        return args + (["-svtav1-params", f"lp={n}"] if n else [])      # lp = niveau de parallélisme
     if venc == "libaom-av1":
         cpu = str(min(int(profile.preset or 4), 8))
-        return ["-crf", str(profile.crf), "-b:v", "0", "-cpu-used", cpu] + ([] if still else ["-row-mt", "1"])
+        return (["-crf", str(profile.crf), "-b:v", "0", "-cpu-used", cpu] + ([] if still else ["-row-mt", "1"])
+                + (["-threads", str(n)] if n else []))
     if venc == "libx264":
-        return ["-crf", str(profile.crf), "-preset", profile.preset]
+        return ["-crf", str(profile.crf), "-preset", profile.preset] + (["-threads", str(n)] if n else [])
     if venc == "mjpeg":
         return ["-q:v", str(profile.quality)]
     if venc == "libwebp":

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import threading
 import time
 from dataclasses import replace
 from pathlib import Path
@@ -11,7 +12,7 @@ from PySide6.QtCore import QObject, Signal
 
 from azimut.core.fsutil import format_duration, format_size, unique_path
 from azimut.core.workers import BaseWorker, CancelledError
-from azimut.modules.convert import engine
+from azimut.modules.convert import advanced, engine
 from azimut.modules.convert.engine import (
     STATE_CANCELLED, STATE_DONE, STATE_ERROR, STATE_KEPT, STATE_NO_ENCODER, STATE_PENDING,
     STATE_RUNNING, STATE_SKIPPED, STATE_UNSUPPORTED, Job, SourceItem,
@@ -72,10 +73,12 @@ class ConvertWorker(BaseWorker):
 
     def __init__(self, items: list[SourceItem], profiles: dict[str, Profile], out_dir: Path | None,
                  ffmpeg: Path, ffprobe: Path, encoders: frozenset[str] | None = None,
-                 parent: QObject | None = None) -> None:
+                 parent: QObject | None = None, *, parallel: int = 1) -> None:
         super().__init__(parent)
         self._items = list(items)
-        self._profiles = dict(profiles)
+        self._parallel = advanced.clamp_parallel(parallel)
+        self._profiles = self._share_cores(dict(profiles), self._parallel)
+        self._lock = threading.Lock()
         self._out_dir = out_dir
         self._ffmpeg = ffmpeg
         self._ffprobe = ffprobe
@@ -87,6 +90,15 @@ class ConvertWorker(BaseWorker):
         self.summary = ""
 
     # ── Utilitaires ──
+    @staticmethod
+    def _share_cores(profiles: dict[str, Profile], parallel: int) -> dict[str, Profile]:
+        """En parallèle, un profil sans nombre de threads se partage les cœurs entre les encodages."""
+        if parallel <= 1:
+            return profiles
+        share = advanced.auto_threads(parallel)
+        return {k: (replace(p, threads=share) if p.kind in ("image", "video") and p.threads == 0 else p)
+                for k, p in profiles.items()}
+
     def _set_state(self, job: Job, state: str, progress: int | None = None) -> None:
         job.state = state
         self.job_updated.emit(job.index, {"state": state, "progress": progress})
@@ -97,6 +109,11 @@ class ConvertWorker(BaseWorker):
             path.unlink(missing_ok=True)
         except OSError:
             pass
+
+    def _add_bytes(self, size_in: int, size_out: int) -> None:
+        with self._lock:
+            self._bytes_in += size_in
+            self._bytes_out += size_out
 
     def _probe_duration(self, source: Path) -> float | None:
         res = self.run_process(engine.build_probe_command(self._ffprobe, source), timeout=30)
@@ -129,11 +146,15 @@ class ConvertWorker(BaseWorker):
         total = len(todo)
         self.emit_log("INFO", f"{total} fichier(s) à convertir, {stats['skipped']} déjà converti(s).")
         self.emit_progress(0, total, "")
-        for n, job in enumerate(todo, 1):
+        stats_lock = threading.Lock()
+        counter = {"done": 0}
+
+        def process(job: Job) -> None:
             self.check_cancelled()
             name = job.item.path.name
-            self.emit_progress(n - 1, total, name)
-            self.emit_status(f"{n} / {total} — {name}")
+            if self._parallel <= 1:
+                self.emit_progress(counter["done"], total, name)
+                self.emit_status(f"{counter['done'] + 1} / {total} — {name}")
             self._set_state(job, STATE_RUNNING, 0)
             try:
                 outcome = self._convert_one(job)
@@ -143,16 +164,28 @@ class ConvertWorker(BaseWorker):
                 self.emit_log("ERR", f"{name} : {exc}")
                 self._set_state(job, STATE_ERROR)
                 outcome = "error"
-            if outcome == "ok":
-                self.ok_count += 1
-            elif outcome == "kept":
-                self.ok_count += 1
-                stats["kept"] += 1
-            elif outcome == "unsupported":
-                stats["unsupported"] += 1
-            else:
-                self.error_count += 1
-            self.emit_progress(n, total, name)
+            with stats_lock:
+                if outcome == "ok":
+                    self.ok_count += 1
+                elif outcome == "kept":
+                    self.ok_count += 1
+                    stats["kept"] += 1
+                elif outcome == "unsupported":
+                    stats["unsupported"] += 1
+                else:
+                    self.error_count += 1
+                counter["done"] += 1
+                done = counter["done"]
+            self.emit_progress(done, total, name)
+            if self._parallel > 1:
+                self.emit_status(f"{done} / {total} terminé(s)")
+
+        if self._parallel <= 1:
+            for job in todo:
+                process(job)
+        else:
+            self.emit_log("INFO", f"Conversion en parallèle : {self._parallel} fichier(s) à la fois.")
+            self.map_parallel(process, todo, workers=self._parallel)
         gain = self._bytes_in - self._bytes_out
         self.summary = (f"{self.ok_count} converti(s), {stats['kept']} source(s) conservée(s), "
                         f"{stats['skipped']} déjà converti(s), {stats['unsupported']} non pris en charge, "
@@ -219,15 +252,13 @@ class ConvertWorker(BaseWorker):
                 return "error"
             if profile.guard_growth and engine.grew(size_in, size_out):
                 self._discard(tmp)
-                self._bytes_in += size_in
-                self._bytes_out += size_in
+                self._add_bytes(size_in, size_in)
                 self.emit_log("WARN", f"{src.name} : le résultat ({format_size(size_out)}) est plus gros que la "
                                       f"source ({format_size(size_in)}) → source conservée.")
                 return self._keep_source(job)
             final = unique_path(dest) if dest.exists() else dest      # apparu entre-temps : jamais d'écrasement
             os.replace(tmp, final)
-            self._bytes_in += size_in
-            self._bytes_out += size_out
+            self._add_bytes(size_in, size_out)
             self._set_state(job, STATE_DONE, 100)
             self.emit_log("OK", f"{src.name} → {final.name}  ({format_size(size_in)} → {format_size(size_out)}, "
                                 f"{format_duration(time.monotonic() - t0)})")

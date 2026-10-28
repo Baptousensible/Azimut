@@ -4,7 +4,7 @@ from __future__ import annotations
 import importlib
 from dataclasses import dataclass
 
-MODULE_IDS: tuple[str, ...] = ("convert", "tags", "dedup", "press")
+MODULE_IDS: tuple[str, ...] = ("convert", "tags", "takeout", "dedup", "press")
 
 
 @dataclass(frozen=True)

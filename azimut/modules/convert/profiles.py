@@ -47,6 +47,7 @@ class Profile:
     even_dims: bool = False                     # dimensions paires (AV1 / H.264)
     extra_out: tuple[str, ...] = ()
     guard_growth: bool = False                  # anti-grossissement (image et vidéo)
+    threads: int = 0                            # threads de l'encodeur (0 = laisser l'encodeur décider)
 
 
 PROFILES: tuple[Profile, ...] = (
