@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from azimut.core import binaries
 from azimut.core.fsutil import format_size
 from azimut.core.module_spec import ModuleSpec
 from azimut.core.prefs import Preferences
@@ -36,10 +37,14 @@ from azimut.modules.dedup.actions import (
     trash_available,
 )
 from azimut.modules.dedup.engine import ScanOptions, ScanResult
+from azimut.modules.dedup.livephoto import DEFAULT_MAX_SECONDS
 from azimut.modules.dedup.model import (
     ACTION_DELETE,
     ACTION_KEEP,
     KIND_EXACT,
+    KIND_LABELS,
+    KIND_LIVE,
+    KIND_MODIFIED,
     KIND_SIMILAR,
     STRATEGY_LABELS,
     FileItem,
@@ -59,7 +64,10 @@ from azimut.ui.widgets import Card, ImagePreview, PathField
 ROLE = Qt.ItemDataRole.UserRole
 COLUMNS = ("Chemin", "Côté", "Taille", "Date", "Dimensions", "Action")
 TOLERANCES = (("Strict (1)", 1), ("Équilibré (3)", 3), ("Large (5)", 5), ("Très large (7)", 7))
-FILTERS = ("Tous", "Doublons exacts", "Images similaires", "Proposés à la suppression")
+FILTERS = ("Tous", "Doublons exacts", "Images similaires", "Live Photos", "Même chemin, contenu différent",
+           "Proposés à la suppression")
+FILTER_KINDS = {1: KIND_EXACT, 2: KIND_SIMILAR, 3: KIND_LIVE, 4: KIND_MODIFIED}
+LIVE_DURATIONS = (("3 s (strict)", 3.0), ("5 s (équilibré)", DEFAULT_MAX_SECONDS), ("10 s (large)", 10.0))
 MODE_LABELS = {
     MODE_QUARANTINE: "Quarantaine (réversible, par défaut)",
     MODE_TRASH: "Corbeille système",
@@ -130,7 +138,7 @@ class DedupWindow(ModuleWindow):
         self.btn_export = self.add_toolbar_button(
             "Exporter le rapport…", self._on_export, kind="secondary",
             tooltip="Enregistre le rapport complet des groupes en CSV")
-        self.show_binary_status(("ffmpeg",))
+        self.show_binary_status(("ffmpeg", "ffprobe"))
         ThemeManager.instance().changed.connect(lambda _name: self._refresh_colors())
         self.resize(1250, 800)
 
@@ -195,6 +203,32 @@ class DedupWindow(ModuleWindow):
         row2.addWidget(self.cmb_strategy)
         row2.addStretch(1)
         options.body_layout.addLayout(row2)
+
+        row_detect = QHBoxLayout()
+        self.chk_exact = QCheckBox("Doublons exacts")
+        self.chk_exact.setChecked(True)
+        self.chk_exact.setToolTip("Contenu identique, quel que soit le nom (empreinte BLAKE2b).")
+        self.chk_live = QCheckBox("Live Photos (photo + courte vidéo de même nom) — durée max :")
+        self.chk_live.setToolTip("Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis "
+                                 "IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, "
+                                 "sauf si vous demandez d'écarter la vidéo.")
+        self.cmb_live_max = QComboBox()
+        for label, value in LIVE_DURATIONS:
+            self.cmb_live_max.addItem(label, value)
+        self.cmb_live_max.setCurrentIndex(1)
+        self.cmb_live_max.setEnabled(False)
+        self.chk_live_drop = QCheckBox("Proposer d'écarter la vidéo")
+        self.chk_live_drop.setEnabled(False)
+        self.chk_live.toggled.connect(self.cmb_live_max.setEnabled)
+        self.chk_live.toggled.connect(self.chk_live_drop.setEnabled)
+        self.chk_modified = QCheckBox("Signaler les fichiers modifiés (A et B)")
+        self.chk_modified.setChecked(True)
+        self.chk_modified.setToolTip("Même chemin relatif dans A et B, mais contenu différent. "
+                                     "Jamais proposés à la suppression.")
+        for w in (self.chk_exact, self.chk_live, self.cmb_live_max, self.chk_live_drop, self.chk_modified):
+            row_detect.addWidget(w)
+        row_detect.addStretch(1)
+        options.body_layout.addLayout(row_detect)
 
         row3 = QHBoxLayout()
         row3.addWidget(QLabel("Mode de suppression :"))
@@ -300,6 +334,13 @@ class DedupWindow(ModuleWindow):
         self.chk_media.setChecked(bool(p.get("media_only", False)))
         self.chk_hidden.setChecked(bool(p.get("skip_hidden", True)))
         self.chk_similar.setChecked(bool(p.get("similar", False)))
+        self.chk_exact.setChecked(bool(p.get("exact", True)))
+        self.chk_live.setChecked(bool(p.get("live", False)))
+        self.chk_live_drop.setChecked(bool(p.get("live_drop_video", False)))
+        self.chk_modified.setChecked(bool(p.get("find_modified", True)))
+        idx = self.cmb_live_max.findData(p.get("live_max_seconds", DEFAULT_MAX_SECONDS))
+        if idx >= 0:
+            self.cmb_live_max.setCurrentIndex(idx)
         self.chk_empty_dirs.setChecked(bool(p.get("remove_empty", False)))
         idx = self.cmb_tolerance.findData(p.get("tolerance", 3))
         if idx >= 0:
@@ -317,6 +358,11 @@ class DedupWindow(ModuleWindow):
         p.set("media_only", self.chk_media.isChecked())
         p.set("skip_hidden", self.chk_hidden.isChecked())
         p.set("similar", self.chk_similar.isChecked())
+        p.set("exact", self.chk_exact.isChecked())
+        p.set("live", self.chk_live.isChecked())
+        p.set("live_drop_video", self.chk_live_drop.isChecked())
+        p.set("live_max_seconds", self.cmb_live_max.currentData())
+        p.set("find_modified", self.chk_modified.isChecked())
         p.set("tolerance", self.cmb_tolerance.currentData())
         p.set("strategy", self.cmb_strategy.currentData())
         p.set("mode", self.cmb_mode.currentData())
@@ -372,6 +418,7 @@ class DedupWindow(ModuleWindow):
     def _lockable(self) -> list[QWidget]:
         return [self.field_a, self.field_b, self.chk_protect_a, self.chk_protect_b, self.chk_recursive,
                 self.chk_media, self.chk_hidden, self.chk_similar, self.cmb_tolerance, self.cmb_strategy,
+                self.chk_exact, self.chk_live, self.cmb_live_max, self.chk_live_drop, self.chk_modified,
                 self.cmb_mode, self.chk_empty_dirs, self.field_quarantine]
 
     def _say(self, level: str, text: str) -> None:
@@ -403,12 +450,24 @@ class DedupWindow(ModuleWindow):
             self._say("WARN", "A est protégé et B est vide : aucun fichier ne sera proposé à la suppression.")
         elif protect_a and protect_b:
             self._say("WARN", "A et B sont protégés : aucun fichier ne sera proposé à la suppression.")
+        if not (self.chk_exact.isChecked() or self.chk_similar.isChecked() or self.chk_live.isChecked()):
+            self._say("ERR", "Cochez au moins une détection : doublons exacts, images similaires ou Live Photos.")
+            return None
+        ffprobe = None
+        if self.chk_live.isChecked():
+            try:
+                ffprobe = binaries.resolve("ffprobe").path
+            except Exception:                                  # noqa: BLE001 - détection défaillante : sans durée
+                ffprobe = None
         return ScanOptions(
             folder_a=folder_a, folder_b=folder_b, protect_a=protect_a, protect_b=protect_b,
             recursive=self.chk_recursive.isChecked(), media_only=self.chk_media.isChecked(),
             skip_hidden=self.chk_hidden.isChecked(), similar=self.chk_similar.isChecked(),
             tolerance=int(self.cmb_tolerance.currentData() or 3),
             strategy=strategy_from_key(self.cmb_strategy.currentData()),
+            exact=self.chk_exact.isChecked(), find_modified=self.chk_modified.isChecked(),
+            live=self.chk_live.isChecked(), live_max_seconds=float(self.cmb_live_max.currentData()),
+            live_drop_video=self.chk_live_drop.isChecked(), ffprobe=ffprobe,
         )
 
     def on_run(self) -> None:
@@ -470,7 +529,7 @@ class DedupWindow(ModuleWindow):
         head = self._group_rows.get(g)
         if head is None:
             return
-        kind = "doublons exacts" if g.kind == KIND_EXACT else "images similaires"
+        kind = KIND_LABELS.get(g.kind, g.kind)
         head.setText(f"Groupe {g.id} · {kind} · {len(g.items)} fichiers · gain : {format_size(g.reclaimable)}")
         ok_brush = QBrush(QColor(token("ok_bg")))
         err_brush = QBrush(QColor(token("err_bg")))
@@ -498,12 +557,11 @@ class DedupWindow(ModuleWindow):
 
     def _apply_filter(self) -> None:
         mode = self.cmb_filter.currentIndex()
+        wanted = FILTER_KINDS.get(mode)
         for row, g in enumerate(self._groups):
-            if mode == 1:
-                hidden = g.kind != KIND_EXACT
-            elif mode == 2:
-                hidden = g.kind != KIND_SIMILAR
-            elif mode == 3:
+            if wanted is not None:
+                hidden = g.kind != wanted
+            elif mode == len(FILTERS) - 1:
                 hidden = not g.to_delete()
             else:
                 hidden = False
@@ -539,11 +597,13 @@ class DedupWindow(ModuleWindow):
                  f"Modifié : {datetime.fromtimestamp(it.mtime).strftime('%Y-%m-%d %H:%M:%S')}"]
         if it.dimensions_text:
             lines.append(f"Dimensions : {it.dimensions_text}")
+        if it.duration is not None:
+            lines.append(f"Durée : {it.duration:.1f} s")
         if it.digest:
             lines.append(f"Empreinte : {it.digest[:16]}…")
         lines.append(f"Action : {it.action}")
         if g is not None:
-            lines.append(f"Groupe {g.id} ({g.kind})")
+            lines.append(f"Groupe {g.id} ({KIND_LABELS.get(g.kind, g.kind)})")
         return "\n".join(lines)
 
     def _on_selection_changed(self) -> None:
@@ -563,7 +623,7 @@ class DedupWindow(ModuleWindow):
         elif len(groups) == 1 and not files:
             g = groups[0]
             self.preview_a.show_text(f"Groupe {g.id}")
-            self.caption_a.setText(f"{len(g.items)} fichiers · {g.kind}\n"
+            self.caption_a.setText(f"{len(g.items)} fichiers · {KIND_LABELS.get(g.kind, g.kind)}\n"
                                    f"Taille totale : {format_size(g.total_size)}\n"
                                    f"Gain libérable : {format_size(g.reclaimable)}")
         elif objs:
@@ -633,7 +693,7 @@ class DedupWindow(ModuleWindow):
         strategy = strategy_from_key(self.cmb_strategy.currentData())
         changed = []
         for g, items in self._by_group(self._selected_items()).items():
-            resolve_selection(g, items, strategy)
+            resolve_selection(g, items, strategy, self.chk_live_drop.isChecked() and self.chk_live.isChecked())
             changed.append(g)
         self._after_change(changed)
 
