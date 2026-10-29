@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from dataclasses import replace
+
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QFileDialog, QFormLayout, QLabel, QMessageBox, QPushButton, QSpinBox, QToolButton,
@@ -21,7 +23,7 @@ from azimut.modules.convert.engine import (
 from azimut.modules.convert.profiles import (
     ALL_EXTS, KIND_LABELS, KINDS, Profile, default_profile, get_profile, profiles_for,
 )
-from azimut.modules.convert.workers import ConvertWorker, ProbeWorker, ScanWorker
+from azimut.modules.convert.workers import ConvertOptions, ConvertWorker, ProbeWorker, ScanWorker
 from azimut.ui.module_window import ModuleWindow
 from azimut.ui.widgets import Card, Column, DataTable, DropZone, PathField
 
@@ -99,7 +101,19 @@ class ConvertWindow(ModuleWindow):
         hint = QLabel("Laisser vide : « <source>_Converted » à côté de chaque dossier ajouté. "
                       "Obligatoire pour les fichiers ajoutés isolément.")
         hint.setWordWrap(True)
+        self.chk_name_ext = QCheckBox("Garder l'extension d'origine dans le nom")
+        self.chk_name_ext.setToolTip("« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions "
+                                     "photo.jpg / photo.png et permet de retrouver le JSON Takeout.")
+        self.chk_name_ext.setChecked(bool(self.prefs.get("name_ext", True)))
+        self.chk_name_ext.toggled.connect(lambda v: self.prefs.set("name_ext", bool(v)))
+        self.chk_takeout = QCheckBox("Réinjecter date et GPS des JSON Google Takeout")
+        self.chk_takeout.setToolTip("Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et "
+                                    "sa position sont écrites dans le fichier converti (ExifTool).")
+        self.chk_takeout.setChecked(bool(self.prefs.get("takeout", True)))
+        self.chk_takeout.toggled.connect(lambda v: self.prefs.set("takeout", bool(v)))
         card_o.body_layout.addWidget(self.chk_recursive)
+        card_o.body_layout.addWidget(self.chk_name_ext)
+        card_o.body_layout.addWidget(self.chk_takeout)
         card_o.body_layout.addWidget(self.out_field)
         card_o.body_layout.addWidget(hint)
         sl.addWidget(card_o)
@@ -115,7 +129,8 @@ class ConvertWindow(ModuleWindow):
         sl.addStretch(1)
         self.set_side_panel(side, "Réglages")
         self._lockables: list[QWidget] = [*self._combos.values(), self.chk_recursive, self.out_field,
-                                          self.btn_remove, self.btn_clear, self._adv_body]
+                                          self.btn_remove, self.btn_clear, self._adv_body, self.chk_name_ext,
+                                          self.chk_takeout]
         self._annotate_profiles()
         self._load_advanced()
 
@@ -130,7 +145,10 @@ class ConvertWindow(ModuleWindow):
         store = self._overrides_store()
         ov = advanced.Overrides.from_dict(store.get(base.id))
         threads = advanced.clamp_threads(self.prefs.get("threads", 0)) if hasattr(self, "spin_threads") else 0
-        return advanced.apply_overrides(base, ov, threads, self._encoders)
+        eff = advanced.apply_overrides(base, ov, threads, self._encoders)
+        if eff.kind == "video" and not eff.video_copy:
+            eff = replace(eff, hdr_mode=str(self.prefs.get("hdr_mode", "T")))
+        return eff
 
     def _profiles(self) -> dict[str, Profile]:
         return {k: self._profile(k) for k in KINDS}
@@ -199,14 +217,32 @@ class ConvertWindow(ModuleWindow):
         self.spin_threads = QSpinBox()
         self.spin_threads.setRange(0, advanced.MAX_THREADS)
         self.spin_threads.setSpecialValueText("Auto")
-        self.spin_threads.setToolTip("Threads par encodage (images et vidéos). « Auto » : laisse l'encodeur décider "
-                                     "(ou partage les cœurs si plusieurs fichiers sont traités en parallèle).")
+        self.spin_threads.setToolTip("Threads par encodage (images et vidéos). « Auto » : bornés pour limiter la "
+                                     "mémoire (vidéo), ou cœurs partagés si plusieurs fichiers sont traités en "
+                                     "parallèle.")
         self.spin_parallel = QSpinBox()
         self.spin_parallel.setRange(1, advanced.MAX_PARALLEL)
         self.spin_parallel.setToolTip("Nombre de fichiers convertis en même temps. Réduisez-le si la mémoire manque.")
         form2.addRow("Threads", self.spin_threads)
         form2.addRow("Fichiers en parallèle", self.spin_parallel)
+        self.cmb_hdr = QComboBox()
+        self.cmb_hdr.addItem("Tone-mapping vers SDR", "T")
+        self.cmb_hdr.addItem("HDR natif (AV1 10 bits)", "H")
+        self.cmb_hdr.setToolTip("Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR "
+                                "(profils AV1 uniquement ; H.264 passe toujours en SDR).")
+        idx_hdr = self.cmb_hdr.findData(self.prefs.get("hdr_mode", "T"))
+        self.cmb_hdr.setCurrentIndex(max(0, idx_hdr))
+        self.cmb_hdr.currentIndexChanged.connect(self._on_hdr_changed)
+        form2.addRow("Vidéos HDR", self.cmb_hdr)
         body.addLayout(form2)
+        self.chk_low_priority = QCheckBox("Priorité basse (garde l'ordinateur réactif)")
+        self.chk_low_priority.setChecked(bool(self.prefs.get("low_priority", True)))
+        self.chk_low_priority.toggled.connect(lambda v: self.prefs.set("low_priority", bool(v)))
+        self.chk_memory = QCheckBox("Attendre si la mémoire est saturée")
+        self.chk_memory.setChecked(bool(self.prefs.get("memory_guard", True)))
+        self.chk_memory.toggled.connect(lambda v: self.prefs.set("memory_guard", bool(v)))
+        body.addWidget(self.chk_low_priority)
+        body.addWidget(self.chk_memory)
         self.spin_threads.setValue(advanced.clamp_threads(self.prefs.get("threads", 0)))
         self.spin_parallel.setValue(advanced.clamp_parallel(self.prefs.get("parallel", 1)))
         self.spin_threads.valueChanged.connect(self._on_perf_changed)
@@ -295,6 +331,10 @@ class ConvertWindow(ModuleWindow):
         self.prefs.set("advanced", store)
         self._load_advanced()
         self._update_desc(kind)
+        self._refresh_states()
+
+    def _on_hdr_changed(self, _i: int) -> None:
+        self.prefs.set("hdr_mode", str(self.cmb_hdr.currentData()))
         self._refresh_states()
 
     def _on_perf_changed(self, _value: int) -> None:
@@ -470,8 +510,15 @@ class ConvertWindow(ModuleWindow):
             self.log_panel.append_log("ERR", f"Le dossier de sortie est un fichier : {out_dir}")
             return
         encoders = self._encoders if self._encoders_for == self._ffmpeg else None
+        try:
+            exiftool = binaries.require("exiftool")
+        except BinaryNotFoundError:
+            exiftool = None
+        options = ConvertOptions(name_ext=self.chk_name_ext.isChecked(), takeout=self.chk_takeout.isChecked(),
+                                 low_priority=self.chk_low_priority.isChecked(),
+                                 memory_guard=self.chk_memory.isChecked())
         worker = ConvertWorker(self._items, self._profiles(), out_dir, self._ffmpeg, self._ffprobe, encoders,
-                               parallel=int(self.spin_parallel.value()))
+                               parallel=int(self.spin_parallel.value()), options=options, exiftool=exiftool)
         worker.job_updated.connect(self._on_job_updated)
         self.run_worker(worker, on_completed=lambda _r: self._after_worker(),
                         on_failed=lambda _m: self._after_worker(), on_cancelled=self._on_cancelled,

@@ -112,6 +112,12 @@ def auto_threads(parallel: int, cpu_count: int | None = None) -> int:
     return max(1, cpus // max(1, parallel))
 
 
+def default_video_threads(cpu_count: int | None = None) -> int:
+    """Threads d'un encodage vidéo en « Auto » : bornés (2 à 6), car la RAM d'un encodeur AV1 croît avec eux."""
+    cpus = cpu_count if cpu_count is not None else (os.cpu_count() or 4)
+    return max(2, min(6, cpus // 2))
+
+
 def apply_overrides(profile: Profile, overrides: Overrides | None = None, threads: int = 0,
                     encoders: Collection[str] | None = None) -> Profile:
     """Profil effectif : valeurs du profil, surchargées et bornées. Un profil sans CRF/preset/qualité

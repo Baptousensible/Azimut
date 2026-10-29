@@ -133,4 +133,13 @@ def test_worker_shares_cores_when_parallel():
     w = ConvertWorker([], profs, None, Path("ffmpeg"), Path("ffprobe"), ALL_ENC, parallel=2)
     assert w._profiles["video"].threads >= 1 and w._profiles["audio"].threads == 0
     w1 = ConvertWorker([], profs, None, Path("ffmpeg"), Path("ffprobe"), ALL_ENC)
-    assert w1._profiles["video"].threads == 0
+    # un seul fichier à la fois : « Auto » = threads vidéo bornés (la RAM d'un encodeur AV1 croît avec eux)
+    assert w1._profiles["video"].threads == advanced.default_video_threads()
+    assert w1._profiles["image"].threads == 0 and w1._profiles["audio"].threads == 0
+    fixed = {k: advanced.apply_overrides(p, None, threads=5) for k, p in profs.items()}
+    assert ConvertWorker([], fixed, None, Path("ffmpeg"), Path("ffprobe"), ALL_ENC)._profiles["video"].threads == 5
+
+
+def test_default_video_threads_bounds():
+    assert advanced.default_video_threads(1) == 2 and advanced.default_video_threads(8) == 4
+    assert advanced.default_video_threads(64) == 6

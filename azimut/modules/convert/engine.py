@@ -8,6 +8,9 @@ from pathlib import Path
 from typing import Callable, Collection, NamedTuple
 
 from azimut.core.fsutil import iter_files, safe_relative
+from azimut.modules.convert import imaging
+from azimut.modules.convert.advanced import family
+from azimut.modules.convert.probe import MediaProbe, build_media_probe_command as probe_cmd, input_flags
 from azimut.modules.convert.profiles import (
     ALL_EXTS, AUDIO_EXTS, IMAGE_EXTS, RAW_EXTS, VIDEO_EXTS, Profile,
 )
@@ -22,11 +25,12 @@ STATE_UNSUPPORTED = "Non pris en charge"
 STATE_ERROR = "Erreur"
 STATE_CANCELLED = "Annulé"
 STATE_KEPT = "Source conservée"
+STATE_COPIED = "Copié"
 
 STATE_TAGS = {
     STATE_PENDING: "neutre", STATE_RUNNING: "info", STATE_DONE: "ok", STATE_SKIPPED: "neutre",
     STATE_NO_ENCODER: "err", STATE_UNSUPPORTED: "warn", STATE_ERROR: "err",
-    STATE_CANCELLED: "warn", STATE_KEPT: "warn",
+    STATE_CANCELLED: "warn", STATE_KEPT: "warn", STATE_COPIED: "ok",
 }
 
 EVEN_VF = "scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p"
@@ -167,6 +171,14 @@ class Job:
     copy_dest: Path | None = None   # emplacement de la copie de la source (anti-grossissement)
     state: str = STATE_PENDING
     message: str = ""
+    passthrough: bool = False       # déjà au format final (AVIF / WebM) : copié sans recompression
+    final: Path | None = None       # fichier réellement produit (dest, ou copie de la source)
+
+
+def is_passthrough(item: SourceItem, profile: Profile) -> bool:
+    """Un AVIF vers un profil AVIF (ou un WebM vers un profil WebM AV1) est copié, pas ré-encodé."""
+    return (profile.kind in ("image", "video") and not profile.video_copy and family(profile) == "av1"
+            and item.path.suffix.lower() == profile.out_ext)
 
 
 def default_output_dir(root: Path) -> Path:
@@ -181,7 +193,7 @@ def part_path(dest: Path) -> Path:
 
 def initial_state(item: SourceItem, profile: Profile, encoders: Collection[str] | None) -> str:
     """État prévisible sans toucher au disque."""
-    if item.path.suffix.lower() in RAW_EXTS:
+    if item.path.suffix.lower() in RAW_EXTS and not imaging.raw_available():
         return STATE_UNSUPPORTED
     if missing_encoder_message(profile, encoders):
         return STATE_NO_ENCODER
@@ -219,8 +231,21 @@ def _already_done(job: Job) -> bool:
     return False
 
 
+def output_name(item: SourceItem, profile: Profile, *, name_ext: bool, passthrough: bool) -> Path:
+    """Chemin relatif de sortie. `name_ext` : « photo_jpg.avif » (l'extension d'origine reste lisible, ce qui
+    évite les collisions photo.jpg / photo.png et permet de retrouver le JSON Takeout) ; sinon « photo.avif ».
+    Un fichier copié (passthrough) garde son nom."""
+    rel = item.rel
+    if passthrough:
+        return rel
+    if name_ext and item.path.suffix:
+        return rel.with_name(f"{rel.stem}_{item.path.suffix.lstrip('.').lower()}{profile.out_ext}")
+    return rel.with_suffix(profile.out_ext)
+
+
 def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Path | None,
-              encoders: Collection[str] | None = None, *, check_disk: bool = True) -> list[Job]:
+              encoders: Collection[str] | None = None, *, check_disk: bool = True,
+              name_ext: bool = False) -> list[Job]:
     """Une liste de Job alignée sur `items` : chemins de sortie, collisions, états initiaux.
 
     Les collisions de noms dans un lot sont résolues de façon déterministe (ordre alphabétique des sources),
@@ -235,12 +260,14 @@ def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Pa
         if state != STATE_PENDING:
             job.state = state
             job.message = (missing_encoder_message(job.profile, encoders) or "") if state == STATE_NO_ENCODER \
-                else "Format non pris en charge par FFmpeg (RAW)."
+                else "RAW : installez rawpy (pip install rawpy) pour le prendre en charge."
             continue
         base = _output_base(job.item, out_dir, multi)
         if base is None:
             continue
-        dest = _claim(base / job.item.rel.with_suffix(job.profile.out_ext), taken)
+        job.passthrough = is_passthrough(job.item, job.profile)
+        dest = _claim(base / output_name(job.item, job.profile, name_ext=name_ext, passthrough=job.passthrough),
+                      taken)
         job.dest = dest
         job.copy_dest = dest.with_name(job.item.path.name)
         if check_disk and _already_done(job):
@@ -258,13 +285,13 @@ def build_probe_command(ffprobe: str | Path, source: str | Path) -> list[str]:
             "-of", "default=noprint_wrappers=1:nokey=1", str(source)]
 
 
-def _video_quality_args(profile: Profile, venc: str, *, still: bool) -> list[str]:
+def _video_quality_args(profile: Profile, venc: str, *, still: bool, lp_ok: bool = True) -> list[str]:
     n = profile.threads if profile.threads > 0 else 0
     if venc == "libsvtav1":
         args = ["-crf", str(profile.crf), "-preset", profile.preset]
         if still:
             args += ["-b:v", "0"]
-        return args + (["-svtav1-params", f"lp={n}"] if n else [])      # lp = niveau de parallélisme
+        return args + (["-svtav1-params", f"lp={n}"] if n and lp_ok else [])    # lp = niveau de parallélisme
     if venc == "libaom-av1":
         cpu = str(min(int(profile.preset or 4), 8))
         return (["-crf", str(profile.crf), "-b:v", "0", "-cpu-used", cpu] + ([] if still else ["-row-mt", "1"])
@@ -287,25 +314,106 @@ def _audio_args(profile: Profile, aenc: str) -> list[str]:
     return args
 
 
+EVEN_SCALE = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+MONO_TO_STEREO = "pan=stereo|c0=c0|c1=c0"                    # duplique la voie mono sur gauche et droite
+MULTICHANNEL_FILTER = "aformat=channel_layouts=7.1|5.1|quad|stereo"
+
+
+def _probed_audio_args(profile: Profile, aenc: str, audio: list[dict]) -> list[str]:
+    """Pistes décodables mappées explicitement ; Opus copié tel quel ; mono Opus → stéréo."""
+    if not audio:
+        return []
+    args: list[str] = []
+    for s in audio:
+        args += ["-map", f"0:{s['index']}"]
+    if profile.video_copy:                                  # réparation : seules les pistes mono sont ré-encodées
+        for i, s in enumerate(audio):
+            if int(s.get("channels") or 0) == 1:
+                args += [f"-c:a:{i}", aenc, f"-b:a:{i}", profile.audio_bitrate or "128k",
+                         f"-filter:a:{i}", MONO_TO_STEREO]
+            else:
+                args += [f"-c:a:{i}", "copy"]
+        return args
+    if aenc == "libopus" and all(str(s.get("codec_name")) == "opus" for s in audio):
+        return args + ["-c:a", "copy"]
+    args += ["-c:a", aenc]
+    if profile.audio_bitrate:
+        args += ["-b:a", profile.audio_bitrate]
+    channels = max((int(s.get("channels") or 0) for s in audio), default=0)
+    if aenc == "libopus" and channels == 1:
+        args += ["-af", MONO_TO_STEREO]
+    elif aenc == "libopus" and channels >= 2:
+        args += ["-af", MULTICHANNEL_FILTER]
+    elif profile.audio_filter:
+        args += ["-af", profile.audio_filter]
+    return args
+
+
+def _probed_video_filter_args(profile: Profile, probe: MediaProbe, hdr_filter: str | None) -> list[str]:
+    """Filtre et étiquettes de couleur ; HDR : tone-mapping vers SDR (« T ») ou HDR natif 10 bits (« H », AV1)."""
+    even = EVEN_SCALE if profile.even_dims else None
+    if probe.hdr_trc and profile.kind == "video":
+        if profile.hdr_mode == "H" and family(profile) == "av1":
+            vf = even or "null"
+            return ["-vf", vf, "-pix_fmt", "yuv420p10le", "-color_primaries", "bt2020",
+                    "-color_trc", probe.hdr_trc, "-colorspace", "bt2020nc"]
+        from azimut.modules.convert.probe import hdr_to_sdr_filter
+        chain = hdr_filter or hdr_to_sdr_filter(probe.hdr_trc, None)
+        return ["-vf", f"{even},{chain}" if even else chain,
+                "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
+    return ["-vf", EVEN_VF if profile.even_dims else "format=yuv420p"]
+
+
 def build_command(profile: Profile, source: Path, output: Path, *, ffmpeg: str | Path = "ffmpeg",
-                  encoders: Collection[str] | None = None) -> list[str]:
-    """Commande ffmpeg complète (progression sur stdout). `output` est normalement part_path(dest)."""
+                  encoders: Collection[str] | None = None, probe: MediaProbe | None = None,
+                  attempt: int = 0, hdr_filter: str | None = None, creation_time: str | None = None,
+                  lp_ok: bool = True, first_audio_only: bool = False) -> list[str]:
+    """Commande ffmpeg complète (progression sur stdout). `output` est normalement part_path(dest).
+
+    Sans `probe` : comportement historique (`-map 0:a?`, `-sn`). Avec `probe` (sonde ffprobe) : pistes audio
+    décodables mappées une à une, sous-titres texte conservés, HDR géré. `attempt` choisit les options de
+    lecture pour les sources abîmées (0 = normale) ; `first_audio_only` : repli sur la première piste audio.
+    """
     venc = pick_encoder(profile.video_encoders, encoders)
     aenc = pick_encoder(profile.audio_encoders, encoders)
-    cmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-nostdin", "-i", str(source)]
+    cmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-nostdin",
+           *input_flags(attempt, source), "-i", str(source)]
     if profile.kind == "image":
         cmd += ["-map", "0:v:0", "-frames:v", "1"]
         if profile.even_dims:
             cmd += ["-vf", EVEN_VF]
-        cmd += ["-c:v", venc, *_video_quality_args(profile, venc, still=True)]
-    elif profile.kind == "video":
+        cmd += ["-c:v", venc, *_video_quality_args(profile, venc, still=True, lp_ok=lp_ok)]
+    elif profile.kind == "video" and probe is None:
         cmd += ["-map", "0:V:0", "-map", "0:a?", "-vf", EVEN_VF if profile.even_dims else "format=yuv420p",
-                "-c:v", venc, *_video_quality_args(profile, venc, still=False),
+                "-c:v", venc, *_video_quality_args(profile, venc, still=False, lp_ok=lp_ok),
                 *_audio_args(profile, aenc), "-sn", "-dn"]
+    elif profile.kind == "video":
+        audio = probe.audio[:1] if first_audio_only else probe.audio
+        cmd += ["-map", "0:V:0"]
+        if profile.video_copy:
+            cmd += ["-c:v", "copy"]
+        else:
+            cmd += [*_probed_video_filter_args(profile, probe, hdr_filter), "-c:v", venc,
+                    *_video_quality_args(profile, venc, still=False, lp_ok=lp_ok)]
+        cmd += _probed_audio_args(profile, aenc, audio)
+        if probe.subs and profile.sub_codec:
+            for s in probe.subs:
+                cmd += ["-map", f"0:{s['index']}"]
+            cmd += ["-c:s", profile.sub_codec]
+        else:
+            cmd += ["-sn"]
+        cmd += ["-dn"]
     else:
         cmd += ["-vn", "-sn", "-dn", "-map", "0:a:0", *_audio_args(profile, aenc)]
-    cmd += ["-map_metadata", "0", *profile.extra_out, "-progress", "pipe:1", "-nostats", str(output)]
+    cmd += ["-map_metadata", "0"]
+    if creation_time:
+        cmd += ["-metadata", f"creation_time={creation_time}"]
+    cmd += [*profile.extra_out, "-progress", "pipe:1", "-nostats", str(output)]
     return cmd
+
+
+def build_media_probe_command(ffprobe: str | Path, source: str | Path) -> list[str]:
+    return probe_cmd(ffprobe, source)
 
 
 # ── Lecture des sorties ──────────────────────────────────────────────────────

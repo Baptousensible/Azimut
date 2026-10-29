@@ -2,3 +2,8 @@ PySide6-Essentials>=6.6
 Pillow>=10.0          # >= 11.3 recommandé pour AVIF
 # pillow-heif>=0.16   # optionnel : HEIC/HEIF
 # send2trash>=1.8     # optionnel : corbeille système
+
+# Facultatifs (Azimut Convert) : fonctionnalités supplémentaires si installés
+# pillow-heif    # lecture des HEIC/HEIF
+# rawpy          # lecture des RAW (NEF, CR2, DNG…)
+# psutil         # garde-fou mémoire plus précis
