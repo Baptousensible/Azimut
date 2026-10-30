@@ -253,7 +253,15 @@ def has_av1_encoder() -> bool:
     return "libsvtav1" in out or "libaom-av1" in out
 
 
+def has_avif_muxer() -> bool:
+    if not shutil.which("ffmpeg"):
+        return False
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-muxers"], capture_output=True, text=True).stdout
+    return " avif" in out
+
+
 needs_av1 = pytest.mark.skipif(not has_av1_encoder(), reason="aucun encodeur AV1 dans ce FFmpeg")
+needs_avif = pytest.mark.skipif(not has_avif_muxer(), reason="ce FFmpeg ne sait pas écrire l'AVIF")
 
 
 def run_worker(worker):
@@ -330,6 +338,7 @@ def test_e2e_hdr_tonemapped_to_sdr(tmp_path, qapp):
 
 @needs_ffmpeg
 @needs_av1
+@needs_avif
 def test_e2e_orientation_gif_and_passthrough(tmp_path, qapp):
     from PIL import Image
     src = tmp_path / "in"

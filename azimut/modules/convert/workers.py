@@ -511,6 +511,10 @@ class ConvertWorker(BaseWorker):
             self.emit_log("ERR", f"{src.name} : encodeur manquant dans ce FFmpeg. {engine.stderr_tail(stderr)}")
         else:
             self.emit_log("ERR", f"{src.name} : échec de FFmpeg ({profile.label}). {engine.stderr_tail(stderr)}")
+            if "Unable to find a suitable output format" in (stderr or ""):
+                self.emit_log("WARN", f"Ce FFmpeg ne sait pas écrire le format « {profile.out_ext} » (version trop "
+                                      "ancienne ?). Installez un FFmpeg récent (6 ou plus) ou indiquez-le dans les "
+                                      "Préférences.")
         return "error"
 
     def _finish(self, job: Job, tmp: Path, t0: float, attempt: int | None = None) -> str:
