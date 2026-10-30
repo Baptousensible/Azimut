@@ -452,5 +452,16 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def _run() -> int:
+    """Exécute main() ; sous GitHub Actions, expose l'erreur en annotation (visible sans le journal complet)."""
+    try:
+        return main()
+    except Exception as exc:  # noqa: BLE001
+        if os.environ.get("GITHUB_ACTIONS"):
+            message = f"{type(exc).__name__}: {exc}".replace("\r", " ").replace("\n", " ")
+            print(f"::error title=fetch_binaries::{message[:900]}", flush=True)
+        raise
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(_run())

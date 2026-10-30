@@ -245,13 +245,14 @@ class UndoWorker(_ExifToolWorker):
     Résultat : {"restored": list[Path], "failed": int}.
     """
 
-    def __init__(self, exiftool: Path, key: str, parent=None) -> None:
+    def __init__(self, exiftool: Path, key: str, parent=None, *, collection: str = eng.UNDO_COLLECTION) -> None:
         super().__init__(exiftool, parent)
         self._key = key
+        self._collection = collection
 
     def do_work(self) -> dict:
         storage = get_storage()
-        rec = storage.load(eng.UNDO_COLLECTION, self._key)
+        rec = storage.load(self._collection, self._key)
         if not rec or not rec.get("files"):
             self.emit_log("ERR", "Sauvegarde d'annulation introuvable ou vide.")
             self.summary = "Aucune sauvegarde d'annulation exploitable"
@@ -290,9 +291,9 @@ class UndoWorker(_ExifToolWorker):
             self.summary = f"{self.ok_count} fichier(s) restauré(s), {self.error_count} erreur(s)"
             try:
                 if failed:                                       # on ne garde que ce qui reste à restaurer
-                    storage.save(eng.UNDO_COLLECTION, self._key, {**rec, "files": failed})
+                    storage.save(self._collection, self._key, {**rec, "files": failed})
                 elif len(restored) == total:
-                    storage.delete(eng.UNDO_COLLECTION, self._key)
+                    storage.delete(self._collection, self._key)
             except Exception as exc:
                 self.emit_log("WARN", f"Mise à jour de la sauvegarde d'annulation impossible : {exc}")
         self.emit_log("OK" if not failed else "WARN", self.summary)

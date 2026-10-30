@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import queue
 import subprocess
 import sys
@@ -41,6 +42,7 @@ class ProcessResult:
     stderr: str                 # 64 Ko finaux au plus
     timed_out: bool = False
     cancelled: bool = False
+    stalled: bool = False       # arrêté faute de signe de vie (voir ``stall_timeout``) ; ``timed_out`` est aussi vrai
 
 
 def _pump_stdout(stream, lines: "queue.Queue[str | None]") -> None:
@@ -194,17 +196,25 @@ class BaseWorker(QThread):
     # ── Processus externes ───────────────────────────────────────────────
     def run_process(self, cmd: list[str], *, on_stdout_line: Callable[[str], None] | None = None,
                     timeout: float | None = None, cwd: Path | None = None,
-                    env: dict[str, str] | None = None) -> ProcessResult:
+                    env: dict[str, str] | None = None, nice: int | None = None,
+                    stall_timeout: float | None = None,
+                    activity: Callable[[], object] | None = None) -> ProcessResult:
         """Lance un processus (jamais via un shell) et attend sa fin.
 
         ``on_stdout_line`` est appelée dans le thread qui exécute ``run_process`` (donc celui du worker).
         Une exception levée par ce rappel (ex. ``CancelledError``) arrête le processus puis se propage.
+
+        ``nice`` : priorité abaissée du processus (valeur Unix, ex. 10 ; « sous la normale » sous Windows).
+        ``stall_timeout`` + ``activity`` : si la valeur renvoyée par ``activity()`` (sondée toutes les 0,1 s)
+        ne change plus pendant ``stall_timeout`` secondes, le processus est arrêté (``stalled``).
         """
         if self.is_cancelled():
             return ProcessResult(-1, "", "", cancelled=True)
         kwargs: dict = {}
         if sys.platform == "win32":
             kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+            if nice:
+                kwargs["creationflags"] |= subprocess.BELOW_NORMAL_PRIORITY_CLASS
         args = [str(c) for c in cmd]
         try:
             proc = subprocess.Popen(
@@ -217,6 +227,12 @@ class BaseWorker(QThread):
 
         with self._procs_lock:
             self._procs.add(proc)
+        if nice and sys.platform != "win32":
+            try:                                         # relatif à notre propre priorité, borné à 19
+                target = min(19, os.getpriority(os.PRIO_PROCESS, 0) + int(nice))
+                os.setpriority(os.PRIO_PROCESS, proc.pid, target)
+            except (OSError, AttributeError):
+                pass
         threads: list[threading.Thread] = []
         try:
             if self.is_cancelled():                      # cancel() passé entre le contrôle et l'enregistrement
@@ -238,7 +254,10 @@ class BaseWorker(QThread):
 
             deadline = None if timeout is None else time.monotonic() + timeout
             timed_out = False
+            stalled = False
             stdout_done = False
+            last_key: object = _NOTHING
+            last_change = time.monotonic()
             while True:
                 try:
                     item = lines.get(timeout=_POLL)
@@ -263,6 +282,17 @@ class BaseWorker(QThread):
                 if deadline is not None and time.monotonic() >= deadline:
                     timed_out = True
                     break
+                if stall_timeout is not None and activity is not None:
+                    now = time.monotonic()
+                    try:
+                        key = activity()
+                    except Exception:  # noqa: BLE001 - une sonde défaillante ne doit pas tuer le traitement
+                        key = last_key
+                    if key != last_key:
+                        last_key, last_change = key, now
+                    elif now - last_change >= stall_timeout:
+                        timed_out = stalled = True
+                        break
             if timed_out:
                 _stop_and_reap(proc)
             t_err.join(2.0)
@@ -276,7 +306,8 @@ class BaseWorker(QThread):
                 stdout="".join(line + "\n" for line in out_lines),
                 stderr=stderr,
                 timed_out=timed_out,
-                cancelled=self.is_cancelled() and not timed_out and returncode != 0)
+                cancelled=self.is_cancelled() and not timed_out and returncode != 0,
+                stalled=stalled)
         finally:
             if proc.poll() is None:                      # sortie anormale (exception du rappel…)
                 _stop_and_reap(proc)
@@ -288,6 +319,25 @@ class BaseWorker(QThread):
                     pass
             with self._procs_lock:
                 self._procs.discard(proc)
+
+    # ── Mémoire ──────────────────────────────────────────────────────────
+    def wait_for_memory(self, threshold_pct: float = 75.0, reserve_pct: float = 20.0) -> None:
+        """Attend que la pression mémoire redevienne raisonnable (annulable). Sans mesure possible : ne bloque pas."""
+        from azimut.core.sysinfo import memory_ok, memory_status
+        warned = False
+        while True:
+            self.check_cancelled()
+            status = memory_status()
+            if memory_ok(status, threshold_pct, reserve_pct):
+                return
+            if not warned and status is not None:
+                warned = True
+                self.emit_log("WARN", f"Pression mémoire : RAM utilisée {status.used_pct:.0f} %, disponible "
+                                      f"{status.available_pct:.0f} % — attente avant le prochain fichier…")
+            self.emit_status("En attente de mémoire disponible…")
+            for _ in range(20):                           # ~2 s, interrompu dès l'annulation
+                self.check_cancelled()
+                time.sleep(_POLL)
 
     # ── Parallélisme ─────────────────────────────────────────────────────
     def map_parallel(self, fn: Callable[[T], R], items: Sequence[T], *, workers: int = 4,

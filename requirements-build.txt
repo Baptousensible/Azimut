@@ -3,4 +3,6 @@
 Pillow>=11.3          # écriture AVIF
 pillow-heif>=0.16     # HEIC / HEIF
 send2trash>=1.8       # corbeille système
+rawpy>=0.19           # lecture des RAW (NEF, CR2, DNG…) par Azimut Convert ; embarque libraw
+psutil>=5.9           # garde-fou mémoire d'Azimut Convert (repli sans lui : /proc ou API Windows)
 pyinstaller>=6.6
