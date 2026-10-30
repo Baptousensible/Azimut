@@ -60,4 +60,21 @@ jobs:
           exiftool -ver
         shell: bash
         continue-on-error: true
-      - run: pytest -q -rs
+      - name: Tests
+        shell: bash
+        run: |
+          set -o pipefail
+          pytest -q -rfEs --tb=short -p no:cacheprovider 2>&1 | tee pytest-out.txt
+      - name: Résumé des échecs (annotations)
+        if: failure()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          text = open("pytest-out.txt", encoding="utf-8", errors="replace").read()
+          text = text[-30000:]
+          chunks = [text[i:i + 3000] for i in range(0, len(text), 3000)][-9:]
+          for n, c in enumerate(chunks, 1):
+              c = c.replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+              print(f"::error title=pytest {n}/{len(chunks)}::{c}")
+          PY
