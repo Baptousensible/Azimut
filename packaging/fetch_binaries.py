@@ -235,9 +235,24 @@ def exiftool_version() -> str:
 
 
 def install_exiftool_windows(dest: Path, tmp: Path, version: str) -> None:
-    url = f"{EXIFTOOL_HOME}/exiftool-{version}_64.zip"
+    candidates = [
+        f"{EXIFTOOL_HOME}/exiftool-{version}_64.zip",
+        f"https://downloads.sourceforge.net/project/exiftool/exiftool-{version}_64.zip",
+        f"https://sourceforge.net/projects/exiftool/files/exiftool-{version}_64.zip/download",
+    ]
     archive = tmp / f"exiftool-{version}_64.zip"
-    digest = download(url, archive)
+    digest = url = None
+    errors: list[str] = []
+    for candidate in candidates:
+        try:
+            digest = download(candidate, archive)
+            url = candidate
+            break
+        except (urllib.error.HTTPError, RuntimeError) as exc:
+            log(f"  {candidate} : {exc} ; essai suivant")
+            errors.append(f"{candidate} -> {exc}")
+    if digest is None or url is None:
+        raise RuntimeError(f"Archive ExifTool {version} (Windows) introuvable : " + " | ".join(errors))
     extracted = tmp / "exiftool-extract"
     extract(archive, extracted)
     exe = find_file(extracted, "exiftool(-k).exe")
