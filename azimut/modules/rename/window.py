@@ -7,8 +7,9 @@ from pathlib import Path
 
 from PySide6.QtCore import QTimer, QUrl
 from PySide6.QtGui import QDesktopServices
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QHBoxLayout, QLabel,
-                               QLineEdit, QMessageBox, QPlainTextEdit, QPushButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFrame, QHBoxLayout,
+                               QLabel, QLineEdit, QMessageBox, QPlainTextEdit, QPushButton, QScrollArea, QVBoxLayout,
+                               QWidget)
 
 from azimut.core import binaries
 from azimut.core.binaries import BinaryNotFoundError
@@ -140,7 +141,7 @@ class RenameWindow(ModuleWindow):
         self.btn_open_file.clicked.connect(self._open_file)
         for w in (self.btn_check, self.btn_uncheck, self.btn_open_file):
             card_s.body_layout.addWidget(w)
-        self.preview = ImagePreview(size=230)
+        self.preview = ImagePreview(size=190)
         card_s.body_layout.addWidget(self.preview)
         self.lbl_info = QLabel()
         self.lbl_info.setWordWrap(True)
@@ -151,7 +152,11 @@ class RenameWindow(ModuleWindow):
         card_s.body_layout.addWidget(hint)
         sl.addWidget(card_s)
         sl.addStretch(1)
-        self.set_side_panel(side, "Réglages")
+        scroll = QScrollArea()                                  # le panneau défile si la fenêtre est basse
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setWidget(side)
+        self.set_side_panel(scroll, "Réglages")
         self._lockables = [self.drop, self.cmb_format, self.chk_prefix, self.chk_type, self.chk_mtime,
                            self.chk_recursive, self.cmb_filter, self.btn_all, self.btn_none, self.edit_prefix,
                            self.btn_set_prefix, self.btn_auto_prefix, self.btn_check, self.btn_uncheck]

@@ -216,7 +216,7 @@ def test_iter_files_missing_root(tmp_path):
 
 # ── module_spec ──────────────────────────────────────────────────────────
 def test_module_spec_and_loader():
-    assert MODULE_IDS == ("convert", "tags", "takeout", "dedup", "press", "rename")
+    assert MODULE_IDS == ("convert", "tags", "takeout", "dedup", "press", "rename", "scope")
     spec = ModuleSpec(id="x", name="Azimut X", tagline="Test.", icon="🧪", entry="collections:OrderedDict")
     assert spec.requires == () and spec.optional == () and spec.order == 100
     assert load_window_class(spec) is collections.OrderedDict

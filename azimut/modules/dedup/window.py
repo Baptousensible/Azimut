@@ -12,10 +12,12 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QFileDialog,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QTreeView,
     QVBoxLayout,
     QWidget,
@@ -225,10 +227,15 @@ class DedupWindow(ModuleWindow):
         self.chk_modified.setChecked(True)
         self.chk_modified.setToolTip("Même chemin relatif dans A et B, mais contenu différent. "
                                      "Jamais proposés à la suppression.")
-        for w in (self.chk_exact, self.chk_live, self.cmb_live_max, self.chk_live_drop, self.chk_modified):
-            row_detect.addWidget(w)
+        row_detect.addWidget(self.chk_exact)
+        row_detect.addWidget(self.chk_modified)
         row_detect.addStretch(1)
         options.body_layout.addLayout(row_detect)
+        row_live = QHBoxLayout()
+        for w in (self.chk_live, self.cmb_live_max, self.chk_live_drop):
+            row_live.addWidget(w)
+        row_live.addStretch(1)
+        options.body_layout.addLayout(row_live)
 
         row3 = QHBoxLayout()
         row3.addWidget(QLabel("Mode de suppression :"))
@@ -277,8 +284,13 @@ class DedupWindow(ModuleWindow):
         self.tree.doubleClicked.connect(self._on_double_click)
         self.tree.toggleRequested.connect(self._toggle_selection)
         self.tree.deleteRequested.connect(lambda: self._set_action(ACTION_DELETE))
+        self.tree.setMinimumHeight(240)
         layout.addWidget(self.tree, 1)
-        self.set_content(root)
+        scroll = QScrollArea()                                  # la page défile quand la fenêtre est basse
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setWidget(root)
+        self.set_content(scroll)
 
         self._build_side_panel()
         self._update_mode_widgets()

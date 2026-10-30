@@ -23,6 +23,7 @@ propose l'historique des traitements, le journal de l'application et l'état des
 | **Azimut Takeout** (`takeout`) | Réinjecte dates et positions GPS d'un export Google Photos (JSON compagnons) dans les photos et vidéos, avec annulation. |
 | **Azimut Dedup** (`dedup`) | Détection et suppression des doublons : hachage du contenu, similarité visuelle, Live Photos (photo + courte vidéo), fichiers modifiés entre deux dossiers, comparaison par prévisualisation. |
 | **Azimut Press** (`press`) | Compression et optimisation d'images et de fichiers JSON. |
+| **Azimut Scope** (`scope`) | Compare deux dossiers (arborescence et nombre de fichiers par dossier), en lecture seule : vérifie qu'une copie ou une conversion est complète. |
 | **Azimut Rename** (`rename`) | Inscrit la date de prise de vue (lue dans les métadonnées) dans le nom des photos, vidéos et fichiers audio, avec confirmation détaillée et annulation. |
 
 Chaque module fonctionne seul (`python -m azimut.modules.<id>`) ou depuis Atlas.
@@ -69,7 +70,7 @@ azimut/
   core/                    socle : chemins, préférences, journaux, binaires, historique, workers
   ui/                      thème, widgets, fenêtre de module, préférences
   launcher/                Atlas : registry, cli, atlas_window, dashboard
-  modules/                 convert, tags, takeout, dedup, press, rename
+  modules/                 convert, tags, takeout, dedup, press, rename, scope
   resources/               ressources embarquées
 bin/                       binaires par plateforme (README.md seulement dans le dépôt)
 packaging/                 spec PyInstaller, script de build, notes Nuitka
