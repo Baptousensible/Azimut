@@ -111,7 +111,7 @@ HIDDEN_IMPORTS = collect_submodules("azimut")
 
 EXTRA_DATAS: list = []
 EXTRA_BINARIES: list = []
-for _pkg in ("pillow_heif", "send2trash"):
+for _pkg in ("pillow_heif", "send2trash", "rawpy", "psutil"):
     _d, _b, _h = _optional(_pkg)
     EXTRA_DATAS += _d
     EXTRA_BINARIES += _b

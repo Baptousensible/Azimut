@@ -55,7 +55,9 @@ Ordres de grandeur **à vérifier sur les builds retenus** (ils varient selon la
 
 - builds FFmpeg statiques complets : typiquement de plusieurs dizaines à plus d'une centaine de Mo par plateforme ;
 - PySide6 : environ une centaine de Mo après exclusion des modules inutiles ;
-- ExifTool : quelques dizaines de Mo selon la plateforme (Perl embarqué sous Windows).
+- ExifTool : quelques dizaines de Mo selon la plateforme (Perl embarqué sous Windows) ;
+- `rawpy` (libraw) et `pillow-heif` (libheif) : quelques dizaines de Mo à eux deux. Ils sont facultatifs :
+  les retirer de `requirements-build.txt` supprime la lecture des RAW et des HEIC, le reste fonctionne.
 
 Pistes de réduction :
 
