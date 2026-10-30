@@ -121,6 +121,7 @@ def test_plan_image_writes_dates_and_gps():
     assert {by_tag[t] for t in ("OffsetTime", "OffsetTimeOriginal", "OffsetTimeDigitized")} == {"+00:00"}
 
 
+@pytest.mark.skipif(not hasattr(time, "tzset"), reason="le fuseau ne se change pas par TZ sous Windows")
 def test_default_is_utc_and_local_offset_is_explicit(monkeypatch):
     assert eng.Options().tz == eng.TZ_UTC
     monkeypatch.setenv("TZ", "Europe/Paris")

@@ -246,6 +246,16 @@ needs_ffmpeg = pytest.mark.skipif(not (shutil.which("ffmpeg") and shutil.which("
                                   reason="ffmpeg et ffprobe requis")
 
 
+def has_av1_encoder() -> bool:
+    if not shutil.which("ffmpeg"):
+        return False
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-encoders"], capture_output=True, text=True).stdout
+    return "libsvtav1" in out or "libaom-av1" in out
+
+
+needs_av1 = pytest.mark.skipif(not has_av1_encoder(), reason="aucun encodeur AV1 dans ce FFmpeg")
+
+
 def run_worker(worker):
     from PySide6.QtCore import QCoreApplication
     app = QCoreApplication.instance() or QCoreApplication([])
@@ -286,13 +296,14 @@ def convert(tmp_path, files, profile_ids, qapp, **opts):
 
 
 @needs_ffmpeg
+@needs_av1
 def test_e2e_video_mono_audio_and_subtitles(tmp_path, qapp):
     src = tmp_path / "in"
     src.mkdir()
     (src / "s.srt").write_text("1\n00:00:00,000 --> 00:00:00,800\nBonjour\n", encoding="utf-8")
     ff("-f", "lavfi", "-i", "testsrc=size=320x240:rate=10:duration=3", "-f", "lavfi",
        "-i", "sine=frequency=440:duration=3", "-ac", "1", "-i", str(src / "s.srt"),
-       "-c:v", "libx264", "-crf", "6", "-c:a", "aac", "-c:s", "srt", str(src / "clip.mkv"))
+       "-c:v", "libx264", "-crf", "0", "-c:a", "aac", "-c:s", "srt", str(src / "clip.mkv"))
     (src / "s.srt").unlink()
     out, worker = convert(tmp_path, ["clip.mkv"], ["video_webm_av1"], qapp, name_ext=True, memory_guard=False)
     dest = out / "clip_mkv.webm"
@@ -318,6 +329,7 @@ def test_e2e_hdr_tonemapped_to_sdr(tmp_path, qapp):
 
 
 @needs_ffmpeg
+@needs_av1
 def test_e2e_orientation_gif_and_passthrough(tmp_path, qapp):
     from PIL import Image
     src = tmp_path / "in"
@@ -325,7 +337,10 @@ def test_e2e_orientation_gif_and_passthrough(tmp_path, qapp):
     make_jpeg(src / "rot.jpg", 6, (160, 80))
     frames = [Image.new("RGB", (8, 8), c) for c in ((255, 0, 0), (0, 0, 255))]
     frames[0].save(src / "anim.gif", save_all=True, append_images=frames[1:], duration=50)
-    ff("-f", "lavfi", "-i", "testsrc=size=160x96", "-frames:v", "1", "-c:v", "libsvtav1", str(src / "done.avif"))
+    try:                                              # AVIF « déjà final » : Pillow (ffmpeg n'écrit pas toujours l'AVIF)
+        Image.new("RGB", (160, 96), (30, 90, 160)).save(src / "done.avif", format="AVIF")
+    except Exception as exc:                          # noqa: BLE001 - Pillow sans AVIF
+        pytest.skip(f"Pillow ne sait pas écrire l'AVIF : {exc}")
     out, worker = convert(tmp_path, [], ["image_avif_small"], qapp, name_ext=True, memory_guard=False)
     rot = out / "rot_jpg.avif"
     assert rot.exists(), worker.summary

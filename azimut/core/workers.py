@@ -228,8 +228,9 @@ class BaseWorker(QThread):
         with self._procs_lock:
             self._procs.add(proc)
         if nice and sys.platform != "win32":
-            try:
-                os.setpriority(os.PRIO_PROCESS, proc.pid, int(nice))
+            try:                                         # relatif à notre propre priorité, borné à 19
+                target = min(19, os.getpriority(os.PRIO_PROCESS, 0) + int(nice))
+                os.setpriority(os.PRIO_PROCESS, proc.pid, target)
             except (OSError, AttributeError):
                 pass
         threads: list[threading.Thread] = []
