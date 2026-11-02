@@ -278,3 +278,44 @@ def test_emit_log_and_status(qapp, caplog):
     assert rec.logs == [("WARN", "attention"), ("INFO", "inconnu")]
     assert rec.statuses == ["En cours…"]
     assert "attention" in caplog.text and "inconnu" in caplog.text
+
+
+# ── Blocage, priorité, garde mémoire ──────────────────────────────────────────
+def test_run_process_stall_detection_kills_frozen_process(qapp):
+    w = BaseWorker()
+    t0 = time.monotonic()
+    res = w.run_process([PY, "-c", "import time; time.sleep(30)"], stall_timeout=0.6, activity=lambda: 0)
+    assert time.monotonic() - t0 < 8
+    assert res.stalled and res.timed_out and not res.cancelled and res.returncode != 0
+
+
+def test_run_process_progress_prevents_stall(qapp):
+    counter = {"n": 0}
+
+    def activity():
+        counter["n"] += 1                       # la valeur change à chaque sondage : le processus « avance »
+        return counter["n"]
+
+    w = BaseWorker()
+    res = w.run_process([PY, "-c", "import time; time.sleep(1.2)"], stall_timeout=0.5, activity=activity)
+    assert not res.stalled and res.returncode == 0
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="nice Unix")
+def test_run_process_nice_lowers_priority(qapp):
+    w = BaseWorker()
+    code = "import os; print(os.nice(0))"
+    base = int(w.run_process([PY, "-c", code]).stdout)
+    low = int(w.run_process([PY, "-c", code], nice=10).stdout)
+    assert low >= base + 10 or low == 19
+
+
+def test_memory_guard_helpers():
+    from azimut.core import sysinfo
+    ms = sysinfo.MemoryStatus
+    assert sysinfo.memory_ok(None)
+    assert sysinfo.memory_ok(ms(50.0, 50.0))
+    assert not sysinfo.memory_ok(ms(80.0, 20.0))                      # trop utilisée
+    assert not sysinfo.memory_ok(ms(60.0, 10.0))                      # réserve insuffisante
+    status = sysinfo.memory_status()
+    assert status is None or (0 <= status.used_pct <= 100 and 0 <= status.available_pct <= 100)

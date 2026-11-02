@@ -47,6 +47,10 @@ class Profile:
     even_dims: bool = False                     # dimensions paires (AV1 / H.264)
     extra_out: tuple[str, ...] = ()
     guard_growth: bool = False                  # anti-grossissement (image et vidéo)
+    threads: int = 0                            # threads de l'encodeur (0 = laisser l'encodeur décider)
+    sub_codec: str = ""                         # sous-titres texte conservés : webvtt (WebM), mov_text (MP4), copy
+    hdr_mode: str = "T"                         # vidéos HDR : « T » tone-mapping vers SDR, « H » HDR natif (AV1)
+    video_copy: bool = False                    # flux vidéo copié tel quel (profil de réparation audio)
 
 
 PROFILES: tuple[Profile, ...] = (
@@ -57,6 +61,9 @@ PROFILES: tuple[Profile, ...] = (
     Profile("image_avif_hq", "AVIF — haute qualité", "image", ".avif",
             "AVIF de haute qualité (CRF 25) : fichiers plus gros, détails préservés.",
             IMAGE_EXTS, video_encoders=AV1_ENCODERS, crf=25, preset="4", even_dims=True, guard_growth=True),
+    Profile("image_avif_max", "AVIF — gain max (lent)", "image", ".avif",
+            "AVIF très compact (CRF 39, preset 2) : même compression, encodage plus lent mais plus efficace.",
+            IMAGE_EXTS, video_encoders=AV1_ENCODERS, crf=39, preset="2", even_dims=True, guard_growth=True),
     Profile("image_jpeg", "JPEG — compatible", "image", ".jpg",
             "JPEG lisible partout (qualité -q:v 3).",
             IMAGE_EXTS, video_encoders=("mjpeg",), quality=3, guard_growth=True),
@@ -67,11 +74,28 @@ PROFILES: tuple[Profile, ...] = (
     Profile("video_webm_av1", "WebM AV1 + Opus — gain de place", "video", ".webm",
             "Vidéo AV1 (CRF 40, preset 4) et audio Opus 128 kbit/s : très compact, encodage lent.",
             VIDEO_EXTS, video_encoders=AV1_ENCODERS, audio_encoders=("libopus",), crf=40, preset="4",
-            audio_bitrate="128k", audio_filter=OPUS_FILTER, even_dims=True, guard_growth=True),
+            audio_bitrate="128k", audio_filter=OPUS_FILTER, even_dims=True, guard_growth=True,
+            sub_codec="webvtt"),
+    Profile("video_webm_hq", "WebM AV1 + Opus — haute qualité", "video", ".webm",
+            "Vidéo AV1 (CRF 30, preset 4) et audio Opus 128 kbit/s : fichiers plus gros, qualité visuelle élevée.",
+            VIDEO_EXTS, video_encoders=AV1_ENCODERS, audio_encoders=("libopus",), crf=30, preset="4",
+            audio_bitrate="128k", audio_filter=OPUS_FILTER, even_dims=True, guard_growth=True,
+            sub_codec="webvtt"),
+    Profile("video_webm_max", "WebM AV1 + Opus — gain max (lent)", "video", ".webm",
+            "Vidéo AV1 (CRF 40, preset 2) et audio Opus 128 kbit/s : même compression, encodage plus lent.",
+            VIDEO_EXTS, video_encoders=AV1_ENCODERS, audio_encoders=("libopus",), crf=40, preset="2",
+            audio_bitrate="128k", audio_filter=OPUS_FILTER, even_dims=True, guard_growth=True,
+            sub_codec="webvtt"),
     Profile("video_mp4_h264", "MP4 H.264 + AAC — compatible", "video", ".mp4",
             "H.264 (CRF 23, preset medium) et AAC 160 kbit/s : lisible partout.",
             VIDEO_EXTS, video_encoders=("libx264",), audio_encoders=("aac",), crf=23, preset="medium",
-            audio_bitrate="160k", even_dims=True, extra_out=("-movflags", "+faststart"), guard_growth=True),
+            audio_bitrate="160k", even_dims=True, extra_out=("-movflags", "+faststart"), guard_growth=True,
+            sub_codec="mov_text"),
+    Profile("video_fix_mono", "Corriger l'audio mono des WebM (vidéo copiée)", "video", ".webm",
+            "Répare les WebM dont l'audio est mono : la vidéo est copiée sans recompression, l'audio mono est "
+            "dupliqué sur les deux voies stéréo (Opus 128 kbit/s).",
+            frozenset({".webm"}), audio_encoders=("libopus",), audio_bitrate="128k", sub_codec="copy",
+            video_copy=True),                                  # réparation : le résultat remplace toujours la source
     # ── Audio ──
     Profile("audio_mp3", "MP3 192 kbit/s", "audio", ".mp3",
             "MP3 compatible (192 kbit/s).", AUDIO_EXTS, audio_encoders=("libmp3lame",), audio_bitrate="192k"),

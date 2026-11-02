@@ -12,8 +12,11 @@ from typing import Any
 
 from azimut.core.fsutil import format_size, iter_files
 from azimut.core.logs import get_logger
+from azimut.modules.dedup import livephoto
 from azimut.modules.dedup.model import (
     KIND_EXACT,
+    KIND_LIVE,
+    KIND_MODIFIED,
     KIND_SIMILAR,
     SIDE_A,
     SIDE_B,
@@ -131,6 +134,12 @@ class ScanOptions:
     similar: bool = False
     tolerance: int = 3
     strategy: Strategy | str = Strategy.A_FIRST
+    exact: bool = True                         # doublons exacts (contenu identique, quel que soit le nom)
+    find_modified: bool = True                 # A et B : même chemin relatif, contenu différent
+    live: bool = False                         # Live Photos : photo + courte vidéo de même nom
+    live_max_seconds: float = livephoto.DEFAULT_MAX_SECONDS
+    live_drop_video: bool = False              # proposer d'écarter la vidéo des Live Photos
+    ffprobe: Path | None = None                # durée des vidéos (sans lui : jumelage par le nom seul)
 
 
 @dataclass
@@ -144,13 +153,26 @@ class ScanStats:
     skipped_buckets: int = 0
     exact_groups: int = 0
     similar_groups: int = 0
+    live_groups: int = 0
+    modified_groups: int = 0
+    live_ambiguous: int = 0
+    live_too_long: int = 0
+    live_unknown_duration: int = 0
     grouped_files: int = 0
     reclaimable: int = 0
 
+    @property
+    def group_count(self) -> int:
+        return self.exact_groups + self.similar_groups + self.live_groups + self.modified_groups
+
     def summary(self) -> str:
-        return (f"{self.scanned} fichier(s) analysé(s), {self.exact_groups + self.similar_groups} groupe(s) "
-                f"({self.exact_groups} identique(s), {self.similar_groups} similaire(s)), "
-                f"gain libérable : {format_size(self.reclaimable)}")
+        parts = [f"{self.exact_groups} identique(s)", f"{self.similar_groups} similaire(s)"]
+        if self.live_groups:
+            parts.append(f"{self.live_groups} Live Photo(s)")
+        if self.modified_groups:
+            parts.append(f"{self.modified_groups} modifié(s)")
+        return (f"{self.scanned} fichier(s) analysé(s), {self.group_count} groupe(s) "
+                f"({', '.join(parts)}), gain libérable : {format_size(self.reclaimable)}")
 
 
 @dataclass
@@ -415,6 +437,76 @@ def find_similar_groups(exact: list[list[FileItem]], items: list[FileItem], opti
     return remaining, similar
 
 
+# ── 3b. Live Photos et fichiers « modifiés » ──────────────────────────
+
+def find_live_groups(items: list[FileItem], options: ScanOptions, hooks: Hooks,
+                     stats: ScanStats) -> tuple[list[list[FileItem]], list[FileItem]]:
+    """Jumelle photo + courte vidéo de même nom (même côté, même dossier).
+
+    Retourne (groupes [photos…, vidéo], fichiers restants). Les fichiers jumelés sortent de la suite de
+    l'analyse : un groupe de doublons ne peut pas les « avaler » et les faire disparaître de la liste.
+    """
+    entries = [(f"{it.side}|{it.relative_path.parent.as_posix()}", it.name) for it in items]
+    pairs, stats.live_ambiguous = livephoto.pair_up(entries)
+    n_photos = sum(1 for _, n in entries if livephoto.is_photo_name(n))
+    n_videos = sum(1 for _, n in entries if livephoto.is_video_name(n))
+    hooks.log("INFO", f"Live Photos : {n_photos} photo(s) et {n_videos} vidéo(s) candidates → "
+                      f"{len(pairs)} nom(s) en commun (photo + vidéo dans le même dossier).")
+    if stats.live_ambiguous:
+        hooks.log("WARN", f"{stats.live_ambiguous} nom(s) avec plusieurs vidéos (ex. .MOV et .MP4) : ignorés.")
+    if not pairs:
+        if n_photos and n_videos:
+            ex_p = [n for _, n in entries if livephoto.is_photo_name(n)][:3]
+            ex_v = [n for _, n in entries if livephoto.is_video_name(n)][:3]
+            hooks.log("WARN", "Aucune photo n'a le même nom (hors extension) qu'une vidéo dans son dossier. "
+                              f"Ex. photos : {', '.join(ex_p)} | ex. vidéos : {', '.join(ex_v)}")
+        return [], items
+
+    videos = [items[v] for _, v in pairs]
+    ffprobe = options.ffprobe
+    if ffprobe is not None:
+        hooks.status("Durée des vidéos…")
+        durations = hooks.pmap(_guarded(hooks, lambda it: livephoto.video_duration(ffprobe, it.path)),
+                               videos, "Durée des vidéos")
+        hooks.check()
+    else:
+        hooks.log("WARN", "ffprobe absent : durée des vidéos non vérifiée (jumelage par le nom seul).")
+        durations = [None] * len(videos)
+
+    groups: list[list[FileItem]] = []
+    taken: set[int] = set()
+    too_long: list[str] = []
+    for (photo_idx, video_idx), duration in zip(pairs, durations):
+        video = items[video_idx]
+        video.duration = duration
+        if duration is None:
+            stats.live_unknown_duration += 1
+        elif duration > options.live_max_seconds:
+            stats.live_too_long += 1
+            too_long.append(f"{video.name} ({duration:.1f} s)")
+            continue
+        members = [items[i] for i in photo_idx] + [video]
+        groups.append(members)
+        taken.update(id(m) for m in members)
+    if too_long:
+        hooks.log("INFO", f"{len(too_long)} paire(s) écartée(s) : vidéo plus longue que "
+                          f"{options.live_max_seconds:g} s (pas une Live Photo). Ex. : {', '.join(too_long[:3])}"
+                          " — relevez la durée max si ce sont bien des Live Photos.")
+    if stats.live_unknown_duration:
+        hooks.log("WARN", f"{stats.live_unknown_duration} vidéo(s) de durée illisible : retenues d'après le nom seul.")
+    hooks.log("OK" if groups else "WARN", f"Live Photos repérées : {len(groups)}")
+    return groups, [it for it in items if id(it) not in taken]
+
+
+def find_modified_groups(items: list[FileItem]) -> list[list[FileItem]]:
+    """Fichiers de A et de B au même chemin relatif (hors groupes déjà constitués) : le contenu diffère,
+    puisque les doublons exacts ont déjà été retirés."""
+    by_rel: dict[str, dict[str, FileItem]] = {}
+    for it in items:
+        by_rel.setdefault(os.path.normcase(str(it.relative_path)), {}).setdefault(it.side, it)
+    return [[sides[SIDE_A], sides[SIDE_B]] for sides in by_rel.values() if SIDE_A in sides and SIDE_B in sides]
+
+
 # ── 4. Assemblage ─────────────────────────────────────────────────────
 
 def _sorted_items(items: list[FileItem]) -> list[FileItem]:
@@ -448,25 +540,40 @@ def scan(options: ScanOptions, hooks: Hooks | None = None) -> ScanResult:
     hooks.log("INFO", f"Inventaire : {stats.scanned} fichier(s) retenu(s), {stats.empty} vide(s), "
                       f"{stats.symlinks} lien(s) et {stats.repeated} chemin(s) répété(s) ignoré(s).")
 
-    exact = find_exact_groups(items, hooks, stats)
+    live: list[list[FileItem]] = []
+    if options.live:
+        live, items = find_live_groups(items, options, hooks, stats)
+    if not (options.exact or options.similar or options.live):
+        hooks.log("WARN", "Aucune détection activée : rien à analyser.")
+
+    exact = find_exact_groups(items, hooks, stats) if options.exact else []
     similar: list[list[FileItem]] = []
     if options.similar:
         exact, similar = find_similar_groups(exact, items, options, hooks, stats)
         hooks.log("INFO", f"{stats.uniform_skipped} image(s) quasi unie(s) ignorée(s) pour la similarité.")
 
-    groups = [Group(0, KIND_EXACT, _sorted_items(g)) for g in exact]
+    modified: list[list[FileItem]] = []
+    if options.find_modified and options.folder_b is not None:
+        grouped = {id(i) for g in (*exact, *similar) for i in g}
+        modified = find_modified_groups([i for i in items if id(i) not in grouped])
+
+    groups = [Group(0, KIND_LIVE, _sorted_items(g)) for g in live]
+    groups += [Group(0, KIND_EXACT, _sorted_items(g)) for g in exact]
     groups += [Group(0, KIND_SIMILAR, _sorted_items(g)) for g in similar]
+    groups += [Group(0, KIND_MODIFIED, _sorted_items(g)) for g in modified]
     _fill_dimensions(groups, hooks)
     strategy = strategy_from_key(options.strategy)
     for g in groups:
-        resolve_group(g, strategy)
+        resolve_group(g, strategy, options.live_drop_video)
     groups.sort(key=lambda g: (-g.reclaimable, -g.potential_gain, str(g.items[0].path).lower()))
     for number, g in enumerate(groups, start=1):
         g.id = number
 
     files, _, gain = totals(groups)
     stats.exact_groups = sum(1 for g in groups if g.kind == KIND_EXACT)
-    stats.similar_groups = len(groups) - stats.exact_groups
+    stats.similar_groups = sum(1 for g in groups if g.kind == KIND_SIMILAR)
+    stats.live_groups = sum(1 for g in groups if g.kind == KIND_LIVE)
+    stats.modified_groups = sum(1 for g in groups if g.kind == KIND_MODIFIED)
     stats.grouped_files, stats.reclaimable = files, gain
     if stats.unreadable:
         hooks.log("WARN", f"{stats.unreadable} fichier(s) illisible(s) ignoré(s).")

@@ -187,7 +187,9 @@ def test_missing_encoder_state():
         engine.build_command(BY_KIND["image"], Path("a.jpg"), Path("o.avif"), encoders=enc)
 
 
-def test_unsupported_raw_and_failure_classification():
+def test_unsupported_raw_and_failure_classification(monkeypatch):
+    from azimut.modules.convert import imaging
+    monkeypatch.setattr(imaging, "raw_available", lambda: False)
     it = SourceItem(Path("/x/DSC.NEF"), None, "image", 10)
     assert engine.plan_jobs([it], BY_KIND, Path("/o"), ALL_ENC)[0].state == engine.STATE_UNSUPPORTED
     assert engine.classify_failure("Invalid data found when processing input", ".jpg") == engine.STATE_UNSUPPORTED
@@ -232,7 +234,7 @@ def test_duration_and_probe_command():
 def test_growth_guard():
     assert engine.grew(100, 101) and not engine.grew(100, 100) and not engine.grew(100, 40)
     assert not engine.grew(0, 10)
-    assert all(p.guard_growth for p in profiles.PROFILES if p.kind in ("image", "video"))
+    assert all(p.guard_growth for p in profiles.PROFILES if p.kind in ("image", "video") and not p.video_copy)
     assert not any(p.guard_growth for p in profiles.PROFILES if p.kind == "audio")
 
 

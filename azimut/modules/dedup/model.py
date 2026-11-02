@@ -7,11 +7,24 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
+from azimut.modules.dedup.livephoto import is_video_name
+
 SIDE_A = "A"
 SIDE_B = "B"
 
 KIND_EXACT = "identique"
 KIND_SIMILAR = "similaire"
+KIND_MODIFIED = "modifie"          # même chemin relatif dans A et B, contenu différent
+KIND_LIVE = "live"                 # Live Photo : photo + courte vidéo de même nom
+
+KIND_LABELS: dict[str, str] = {
+    KIND_EXACT: "doublons exacts",
+    KIND_SIMILAR: "images similaires",
+    KIND_MODIFIED: "même chemin, contenu différent",
+    KIND_LIVE: "Live Photo (photo + vidéo)",
+}
+# Groupes d'identification : le contenu diffère, donc rien n'est jamais proposé à la suppression d'office
+IDENTIFY_KINDS = frozenset({KIND_MODIFIED, KIND_LIVE})
 
 ACTION_KEEP = "Garder"
 ACTION_DELETE = "Supprimer"
@@ -62,6 +75,7 @@ class FileItem:
     height: int | None = None
     digest: str = ""
     action: str = ACTION_KEEP
+    duration: float | None = None      # secondes (vidéos des Live Photos)
 
     @property
     def name(self) -> str:
@@ -163,31 +177,40 @@ def rank_key(item: FileItem, strategy: Strategy, kind: str) -> tuple:
 
 # ── Proposition automatique ───────────────────────────────────────────
 
-def proposal(group: Group, strategy: Strategy | str) -> dict[FileItem, str]:
+def proposal(group: Group, strategy: Strategy | str, live_drop_video: bool = False) -> dict[FileItem, str]:
     """Action proposée pour chaque fichier, sans rien modifier.
 
-    Un fichier protégé est toujours gardé ; s'il y en a, le reste est proposé à la suppression.
-    Sinon, un seul exemplaire (le mieux classé) est gardé.
+    Doublons exacts / similaires : un fichier protégé est toujours gardé ; s'il y en a, le reste est proposé à la
+    suppression ; sinon un seul exemplaire (le mieux classé) est gardé.
+    « Même chemin, contenu différent » : tout est gardé (aucune suppression automatique).
+    Live Photos : tout est gardé, sauf si ``live_drop_video`` : on propose alors d'écarter la vidéo (jamais la
+    photo, jamais un fichier protégé).
     """
-    strat = strategy_from_key(strategy)
     items = group.items
     if not items:
         return {}
+    if group.kind == KIND_MODIFIED:
+        return {i: ACTION_KEEP for i in items}
+    if group.kind == KIND_LIVE:
+        return {i: (ACTION_DELETE if live_drop_video and not i.protected and is_video_name(i.name)
+                    else ACTION_KEEP) for i in items}
+    strat = strategy_from_key(strategy)
     if any(i.protected for i in items):
         return {i: (ACTION_KEEP if i.protected else ACTION_DELETE) for i in items}
     keeper = min(items, key=lambda i: rank_key(i, strat, group.kind))
     return {i: (ACTION_KEEP if i is keeper else ACTION_DELETE) for i in items}
 
 
-def resolve_group(group: Group, strategy: Strategy | str) -> None:
+def resolve_group(group: Group, strategy: Strategy | str, live_drop_video: bool = False) -> None:
     """Applique la proposition automatique à tout le groupe (au moins un exemplaire gardé)."""
-    for item, action in proposal(group, strategy).items():
+    for item, action in proposal(group, strategy, live_drop_video).items():
         item.action = action
 
 
-def resolve_selection(group: Group, selected: Iterable[FileItem], strategy: Strategy | str) -> None:
+def resolve_selection(group: Group, selected: Iterable[FileItem], strategy: Strategy | str,
+                      live_drop_video: bool = False) -> None:
     """Applique la proposition automatique aux seuls fichiers sélectionnés."""
-    wanted = proposal(group, strategy)
+    wanted = proposal(group, strategy, live_drop_video)
     for item in selected:
         if item in wanted:
             item.action = wanted[item]
