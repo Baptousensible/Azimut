@@ -90,6 +90,8 @@ QToolTip { background-color: $surface; color: $text; border: 1px solid $border; 
 /* ── Composants Azimut ── */
 QFrame#Card { background-color: $surface; border: 1px solid $border; border-radius: 14px; }
 QFrame#Card QLabel#CardTitle { font-weight: 700; }
+QFrame#Sidebar { background-color: $surface; border: none; border-right: 1px solid $border; }
+QFrame#Card[planned="true"] { background-color: transparent; border: 1px dashed $border; }
 QFrame#DropZone { background-color: $surface_alt; border: 2px dashed $border; border-radius: 14px; }
 QFrame#DropZone[dragOver="true"] { border-color: $primary; background-color: $info_bg; }
 QFrame#DropZone QLabel { color: $muted; }
@@ -106,14 +108,22 @@ QPushButton:hover { background-color: $secondary_hover; }
 QPushButton:focus { border-color: $primary; }
 __KINDS__
 QPushButton:disabled, QPushButton[kind]:disabled { background-color: $surface_alt; color: $muted; }
-QPushButton[kind="ghost"]:disabled { background-color: transparent; }
+QPushButton[kind="ghost"]:disabled, QPushButton[kind="nav"]:disabled { background-color: transparent; }
 
 /* ── Champs ── */
 QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox { background-color: $surface_alt; color: $text; border: 1px solid $border; border-radius: 9px; padding: $p6 $p10; }
 QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus { border-color: $primary; }
 QLineEdit:disabled, QSpinBox:disabled, QDoubleSpinBox:disabled, QComboBox:disabled { color: $muted; }
+QSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::up-button, QDoubleSpinBox::down-button { width: 0px; border: none; }
 QComboBox::drop-down { border: none; width: 22px; }
 QComboBox QAbstractItemView { background-color: $surface; border: 1px solid $border; selection-background-color: $primary; selection-color: #ffffff; outline: 0; }
+
+QSlider::groove:horizontal { height: 6px; border-radius: 3px; background: $border; }
+QSlider::sub-page:horizontal { height: 6px; border-radius: 3px; background: $primary; }
+QSlider::handle:horizontal { width: 16px; height: 16px; margin: -5px 0; border-radius: 8px; background: #ffffff; border: 2px solid $primary; }
+QSlider::handle:horizontal:hover { background: $info_bg; }
+QSlider::handle:horizontal:disabled { border-color: $muted; background: $surface_alt; }
+QSlider::sub-page:horizontal:disabled { background: $muted; }
 
 QCheckBox { spacing: $p8; background: transparent; }
 QCheckBox::indicator { width: 16px; height: 16px; border: 2px solid $muted; border-radius: 5px; background: transparent; }
@@ -184,6 +194,12 @@ def _kind_rules(p: dict[str, str]) -> str:
     out.append(f'QPushButton[kind="secondary"]:hover {{ background-color: {p["secondary_hover"]}; }}')
     out.append(f'QPushButton[kind="ghost"] {{ background-color: transparent; color: {p["muted"]}; }}')
     out.append(f'QPushButton[kind="ghost"]:hover {{ background-color: {p["secondary"]}; color: {p["text"]}; }}')
+    out.append('QPushButton[kind="nav"] { background-color: transparent; text-align: left; padding: 8px 12px; border-radius: 9px; }')
+    out.append(f'QPushButton[kind="nav"]:hover {{ background-color: {p["secondary"]}; }}')
+    out.append(f'QPushButton[kind="nav"]:checked {{ background-color: {p["secondary_hover"]}; font-weight: 700; }}')
+    out.append(f'QPushButton[kind="nav"]:disabled {{ background-color: transparent; color: {p["muted"]}; }}')
+    out.append(f'QPushButton[kind="tile"] {{ background-color: {p["surface_alt"]}; border: 1px solid {p["border"]}; border-radius: 12px; text-align: left; padding: 10px 14px; }}')
+    out.append(f'QPushButton[kind="tile"]:hover {{ border-color: {p["primary"]}; background-color: {p["secondary"]}; }}')
     return "\n".join(out)
 
 

@@ -217,7 +217,7 @@ def test_window_collects_live_options_and_persists_them(qapp, tmp_path):
     w = DedupWindow(MODULE)
     w.field_a.set_path(str(a))
     w.chk_live.setChecked(True)
-    w.cmb_live_max.setCurrentIndex(w.cmb_live_max.findData(10.0))
+    w.cmb_live_max.setValue(10)
     w.chk_live_drop.setChecked(True)
     w.chk_exact.setChecked(False)
     w.chk_modified.setChecked(False)
@@ -229,7 +229,7 @@ def test_window_collects_live_options_and_persists_them(qapp, tmp_path):
     w.close()
     w2 = DedupWindow(MODULE)
     assert w2.chk_live.isChecked() and w2.chk_live_drop.isChecked() and not w2.chk_exact.isChecked()
-    assert w2.cmb_live_max.currentData() == 10.0
+    assert w2.cmb_live_max.value() == 10
     # aucune détection cochée : refus explicite
     w2.field_a.set_path(str(a))
     w2.chk_live.setChecked(False)

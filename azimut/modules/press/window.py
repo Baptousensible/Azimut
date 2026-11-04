@@ -17,7 +17,7 @@ from azimut.modules.press.workers import (KIND_JSON, STATE_LABELS, STATE_PENDING
                                           PressItem, PressOptions, PressSummary, PressWorker, ScanWorker,
                                           all_extensions, format_gain)
 from azimut.ui.module_window import ModuleWindow
-from azimut.ui.widgets import Card, Column, DataTable, DropZone, PathField
+from azimut.ui.widgets import Card, Column, DataTable, DropZone, PathField, SliderField
 
 COLUMNS = [
     Column("file", "Fichier", 320, stretch=True),
@@ -117,17 +117,10 @@ class PressWindow(ModuleWindow):
             note.setWordWrap(True)
             body.addWidget(note)
 
-        row = QHBoxLayout()
-        row.addWidget(QLabel("Qualité"))
-        self.slider_quality = QSlider(Qt.Horizontal)
-        self.slider_quality.setRange(1, 100)
-        self.spin_quality = QSpinBox()
-        self.spin_quality.setRange(1, 100)
-        self.slider_quality.valueChanged.connect(self.spin_quality.setValue)
-        self.spin_quality.valueChanged.connect(self.slider_quality.setValue)
-        row.addWidget(self.slider_quality, 1)
-        row.addWidget(self.spin_quality)
-        body.addLayout(row)
+        body.addWidget(QLabel("Qualité"))
+        self.spin_quality = SliderField(1, 100, low_hint="Fichier plus petit", high_hint="Meilleure qualité")
+        self.slider_quality = self.spin_quality.slider
+        body.addWidget(self.spin_quality)
 
         row = QHBoxLayout()
         self.chk_dim = QCheckBox("Limiter la plus grande dimension à")

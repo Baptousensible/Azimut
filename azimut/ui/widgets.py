@@ -18,6 +18,7 @@ from PySide6.QtCore import (
     QObject,
     QRunnable,
     QSortFilterProxyModel,
+    QSize,
     Qt,
     QThreadPool,
     Signal,
@@ -40,6 +41,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QComboBox,
     QFileDialog,
     QFrame,
     QHBoxLayout,
@@ -51,6 +53,8 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QPushButton,
     QSizePolicy,
+    QSlider,
+    QSpinBox,
     QTableView,
     QVBoxLayout,
     QWidget,
@@ -65,6 +69,7 @@ from azimut.ui.theme import ThemeManager, repolish, token
 
 log = get_logger(__name__)
 
+LONG_LABEL = 40                         # au-delà, le libellé d'un PathField passe au-dessus du champ
 CHIP_LEVELS: tuple[str, ...] = ("ok", "warn", "err", "info", "neutre")
 
 
@@ -105,6 +110,15 @@ def _normalize_extensions(extensions: Iterable[str] | None) -> frozenset[str] | 
 # ─────────────────────────────────────────────────────────────────────────────
 # Pastille, carte
 # ─────────────────────────────────────────────────────────────────────────────
+def tame_combos(root: QWidget, min_chars: int = 12) -> None:
+    """Empêche les listes déroulantes d'imposer la largeur de leur plus long libellé (panneaux rognés)."""
+    for combo in root.findChildren(QComboBox):
+        combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+        combo.setMinimumContentsLength(min_chars)
+        combo.setMinimumWidth(max(combo.minimumWidth(), min_chars * 10))      # minimumSizeHint() resterait au libellé le plus long
+        combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
+
 class StatusChip(QLabel):
     """Pastille d'état colorée (le style vient du QSS, selon la propriété « level »)."""
 
@@ -132,8 +146,8 @@ class Card(QFrame):
         super().__init__(parent)
         self.setObjectName("Card")
         outer = QVBoxLayout(self)
-        outer.setContentsMargins(18, 16, 18, 18)
-        outer.setSpacing(12)
+        outer.setContentsMargins(14, 12, 14, 14)
+        outer.setSpacing(8)
         self.title_label: QLabel | None = None
         if title:
             self.title_label = QLabel(title)
@@ -141,8 +155,189 @@ class Card(QFrame):
             outer.addWidget(self.title_label)
         self.body_layout = QVBoxLayout()
         self.body_layout.setContentsMargins(0, 0, 0, 0)
-        self.body_layout.setSpacing(12)
+        self.body_layout.setSpacing(8)
         outer.addLayout(self.body_layout)
+
+
+class CollapsibleCard(Card):
+    """Carte dont le corps se replie ; un résumé d'une ligne reste visible une fois repliée."""
+
+    toggled = Signal(bool)                 # True : déplié
+
+    def __init__(self, title: str, *, expanded: bool = True, parent: QWidget | None = None) -> None:
+        super().__init__("", parent)
+        outer = self.layout()
+        self._button = QPushButton()
+        self._button.setProperty("kind", "ghost")
+        self._button.setCheckable(True)
+        self._button.setStyleSheet("QPushButton { text-align: left; font-weight: 700; padding: 2px 4px; }")
+        self._button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._title = title
+        self.summary_label = QLabel("")
+        self.summary_label.setProperty("role", "muted")
+        self.summary_label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        head = QHBoxLayout()
+        head.setContentsMargins(0, 0, 0, 0)
+        head.addWidget(self._button)
+        head.addWidget(self.summary_label, 1)
+        outer.insertLayout(0, head)                        # au-dessus du corps
+        outer.removeItem(self.body_layout)                 # le corps devient un widget masquable
+        self.body_layout.deleteLater()
+        self._body = QWidget()
+        self.body_layout = QVBoxLayout(self._body)
+        self.body_layout.setContentsMargins(0, 0, 0, 0)
+        self.body_layout.setSpacing(8)
+        outer.addWidget(self._body)
+        self._button.toggled.connect(self._on_toggled)
+        self._button.setChecked(expanded)
+        self._on_toggled(expanded)
+
+    def is_expanded(self) -> bool:
+        return self._button.isChecked()
+
+    def set_expanded(self, expanded: bool) -> None:
+        self._button.setChecked(bool(expanded))
+
+    def set_summary(self, text: str) -> None:
+        self.summary_label.setText(text)
+        self.summary_label.setToolTip(text)
+
+    def _on_toggled(self, on: bool) -> None:
+        self._body.setVisible(on)
+        self.summary_label.setVisible(not on)
+        self._button.setText(("▾  " if on else "▸  ") + self._title)
+        self.toggled.emit(bool(on))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Curseur avec valeur
+# ─────────────────────────────────────────────────────────────────────────────
+class SliderField(QWidget):
+    """Curseur + valeur modifiable au clavier, avec repères aux extrémités (« meilleure qualité » … « plus petit »).
+
+    API volontairement proche de QSpinBox (``value``, ``setValue``, ``setRange``, ``setSuffix``,
+    ``setSpecialValueText``, ``valueChanged``) pour remplacer un QSpinBox sans toucher au reste du code.
+
+    * ``valueChanged(int)`` n'est émis qu'une fois la valeur validée : au relâchement du curseur, à la
+      touche Entrée dans la case, ou à chaque cran au clavier / à la molette. Pendant le glissement,
+      la case suit en direct et ``dragging(int)`` est émis (pas d'écriture de préférences à chaque pixel).
+    """
+
+    valueChanged = Signal(int)
+    dragging = Signal(int)
+
+    def __init__(self, minimum: int = 0, maximum: int = 100, value: int | None = None, *, suffix: str = "",
+                 special_text: str = "", low_hint: str = "", high_hint: str = "", step: int = 1,
+                 parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.slider = QSlider(Qt.Orientation.Horizontal)
+        self.slider.setTracking(False)                 # valueChanged seulement au relâchement
+        self.slider.setSingleStep(step)
+        self.slider.setPageStep(max(step, (maximum - minimum) // 10 or 1))
+        self.slider.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.spin = QSpinBox()
+        self.spin.setKeyboardTracking(False)           # validé à Entrée / perte du focus
+        self.spin.setSingleStep(step)
+        self.spin.setMinimumWidth(78)
+        self.spin.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.spin.setStyleSheet("QSpinBox::up-button, QSpinBox::down-button { width: 0px; border: none; }")   # flèches clavier / curseur suffisent
+        self._value = minimum
+        self.setRange(minimum, maximum)
+        if suffix:
+            self.spin.setSuffix(suffix)
+        if special_text:
+            self.spin.setSpecialValueText(special_text)
+
+        top = QHBoxLayout()
+        top.setContentsMargins(0, 0, 0, 0)
+        top.setSpacing(10)
+        top.addWidget(self.slider, 1)
+        top.addWidget(self.spin)
+        self._low = QLabel(low_hint)
+        self._high = QLabel(high_hint)
+        for lab in (self._low, self._high):
+            lab.setProperty("role", "muted")
+            lab.setStyleSheet("font-size: 11px;")
+        self._high.setAlignment(Qt.AlignmentFlag.AlignRight)
+        hints = QHBoxLayout()
+        hints.setContentsMargins(0, 0, 0, 0)
+        hints.addWidget(self._low)
+        hints.addStretch(1)
+        hints.addWidget(self._high)
+        self._hints_box = QWidget()
+        self._hints_box.setLayout(hints)
+        self._hints_box.setVisible(bool(low_hint or high_hint))
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(0)
+        lay.addLayout(top)
+        lay.addWidget(self._hints_box)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.setFocusProxy(self.slider)
+
+        self.slider.sliderMoved.connect(self._on_dragged)
+        self.slider.valueChanged.connect(lambda v: self._apply(int(v)))
+        self.spin.valueChanged.connect(lambda v: self._apply(int(v)))
+        if value is not None:
+            self.setValue(value)
+
+    # ── API façon QSpinBox ──
+    def value(self) -> int:
+        return self._value
+
+    def minimum(self) -> int:
+        return self.spin.minimum()
+
+    def maximum(self) -> int:
+        return self.spin.maximum()
+
+    def setRange(self, minimum: int, maximum: int) -> None:
+        for w in (self.slider, self.spin):
+            w.blockSignals(True)
+            w.setRange(int(minimum), int(maximum))
+            w.blockSignals(False)
+        self._set_silent(max(int(minimum), min(int(maximum), self._value)))
+
+    def setValue(self, value: int) -> None:
+        self._apply(int(value))
+
+    def setSuffix(self, text: str) -> None:
+        self.spin.setSuffix(text)
+
+    def setSpecialValueText(self, text: str) -> None:
+        self.spin.setSpecialValueText(text)
+
+    def setHints(self, low: str = "", high: str = "") -> None:
+        self._low.setText(low)
+        self._high.setText(high)
+        self._hints_box.setVisible(bool(low or high))
+
+    def setToolTip(self, text: str) -> None:  # noqa: N802 - convention Qt
+        super().setToolTip(text)
+        self.slider.setToolTip(text)
+        self.spin.setToolTip(text)
+
+    # ── interne ──
+    def _set_silent(self, value: int) -> None:
+        value = max(self.spin.minimum(), min(self.spin.maximum(), int(value)))
+        for w in (self.slider, self.spin):
+            w.blockSignals(True)
+            w.setValue(value)
+            w.blockSignals(False)
+        self._value = value
+
+    def _apply(self, value: int) -> None:
+        value = max(self.spin.minimum(), min(self.spin.maximum(), value))
+        changed = value != self._value
+        self._set_silent(value)
+        if changed:
+            self.valueChanged.emit(value)
+
+    def _on_dragged(self, value: int) -> None:
+        self.spin.blockSignals(True)
+        self.spin.setValue(int(value))                  # la case suit le curseur en direct
+        self.spin.blockSignals(False)
+        self.dragging.emit(int(value))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -164,10 +359,15 @@ class PathField(QWidget):
         self._value = ""
 
         self.setAcceptDrops(True)
-        lay = QHBoxLayout(self)
+        stacked = len(label) > LONG_LABEL            # libellé long : au-dessus du champ, à la ligne
+        lay = QVBoxLayout(self) if stacked else QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        lay.setSpacing(8)
+        lay.setSpacing(4 if stacked else 8)
+        row = QHBoxLayout()
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(8)
         self.label_widget = QLabel(label)
+        self.label_widget.setWordWrap(stacked)
         self.edit = QLineEdit()
         self.edit.setAcceptDrops(False)               # le dépôt est géré par le widget parent
         self.edit.setPlaceholderText("Glissez un dossier ici ou cliquez sur « Parcourir… »"
@@ -175,9 +375,15 @@ class PathField(QWidget):
                                      "Glissez un fichier ici ou cliquez sur « Parcourir… »")
         self.button = QPushButton("Parcourir…")
         self.button.setProperty("kind", "secondary")
-        lay.addWidget(self.label_widget)
-        lay.addWidget(self.edit, 1)
-        lay.addWidget(self.button)
+        if stacked:
+            lay.addWidget(self.label_widget)
+            row.addWidget(self.edit, 1)
+            row.addWidget(self.button)
+            lay.addLayout(row)
+        else:
+            lay.addWidget(self.label_widget)
+            lay.addWidget(self.edit, 1)
+            lay.addWidget(self.button)
         self.edit.editingFinished.connect(lambda: self._commit(self.edit.text().strip()))
         self.button.clicked.connect(self._browse)
 
@@ -800,58 +1006,134 @@ class _PreviewTask(QRunnable):
 
 
 class ImagePreview(QWidget):
-    """Aperçu fluide : chargement asynchrone, le précédent est invalidé, l'interface ne se fige jamais."""
+    """Aperçu fluide et adaptatif : chargement asynchrone, redimensionné à la place disponible.
 
-    def __init__(self, size: int = 260, parent: QWidget | None = None) -> None:
+    * `size` : taille de confort (côté, en px) ; l'aperçu s'agrandit si la place le permet et ne passe
+      jamais sous `min_size`.
+    * L'image est décodée à `load_size` (≥ taille affichée) puis remise à l'échelle à chaque
+      redimensionnement : rien n'est tronqué, les proportions sont conservées.
+    * Un clic ouvre la visionneuse plein format (désactivable avec `zoomable=False`).
+    """
+
+    clicked = Signal()
+
+    def __init__(self, size: int = 260, parent: QWidget | None = None, *, min_size: int = 140,
+                 load_size: int = 720, zoomable: bool = True) -> None:
         super().__init__(parent)
         self._size = size
+        self._min = min(min_size, size)
+        self._load = max(load_size, size)
+        self._zoomable = zoomable
         self._token = 0
+        self._image: QImage | None = None
+        self._path: Path | None = None
         self._signals = _PreviewSignals(self)
         self._signals.done.connect(self._on_loaded)
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         self.label = QLabel()
-        self.label.setFixedSize(size, size)
+        self.label.setMinimumSize(self._min, self._min)
+        self.label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setWordWrap(True)
-        lay.addWidget(self.label, 0, Qt.AlignmentFlag.AlignCenter)
+        self.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        lay.addWidget(self.label, 1)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setMinimumHeight(self._min)                   # jamais écrasé par une colonne trop pleine
         self._apply_style()
         ThemeManager.instance().changed.connect(lambda _t: self._apply_style())
+
+    def sizeHint(self) -> QSize:
+        return QSize(self._size, self._size)
+
+    def minimumSizeHint(self) -> QSize:
+        return QSize(self._min, self._min)
 
     def _apply_style(self) -> None:
         self.label.setStyleSheet(
             f"QLabel {{ background-color: {token('surface_alt')}; color: {token('muted')}; "
-            f"border: 1px solid {token('border')}; border-radius: 10px; padding: 8px; }}")
+            f"border: 1px solid {token('border')}; border-radius: 10px; padding: 6px; }}")
 
     # ── API ──────────────────────────────────────────────────────────────────
+    def current_path(self) -> Path | None:
+        return self._path
+
     def show_image(self, path: str | Path) -> None:
         self._token += 1
         tok = self._token
         p = Path(path)
+        self._path, self._image = p, None
         self.label.setPixmap(QPixmap())
+        self.label.setToolTip(str(p))
+        self._set_cursor()
         if not p.is_file():
             self.label.setText(_UNAVAILABLE)
             return
         self.label.setText("Chargement…")
-        task = _PreviewTask(tok, p, self._size, self._signals, lambda t=tok: self._token == t)
+        task = _PreviewTask(tok, p, self._load, self._signals, lambda t=tok: self._token == t)
         _pool().start(task)
 
     def show_text(self, text: str) -> None:
         self._token += 1                               # invalide tout chargement en cours
+        self._image, self._path = None, None
         self.label.setPixmap(QPixmap())
         self.label.setText(text)
+        self.label.setToolTip(text)
+        self._set_cursor()
 
     def clear(self) -> None:
         self.show_text("")
 
     # ── Interne ──────────────────────────────────────────────────────────────
+    def _set_cursor(self) -> None:
+        zoom = self._zoomable and self._image is not None
+        self.label.setCursor(Qt.CursorShape.PointingHandCursor if zoom else Qt.CursorShape.ArrowCursor)
+
     def _on_loaded(self, token_: int, image: object, text: str) -> None:
         if token_ != self._token:
             return                                     # résultat périmé
         if isinstance(image, QImage) and not image.isNull():
+            self._image = image
             self.label.setText("")
-            self.label.setPixmap(QPixmap.fromImage(image))
+            self._rescale()
         else:
+            self._image = None
             self.label.setPixmap(QPixmap())
             self.label.setText(text or _UNAVAILABLE)
+        self._set_cursor()
+
+    def _rescale(self) -> None:
+        if self._image is None or self._image.isNull():
+            return
+        box = self.label.contentsRect().size() - QSize(12, 12)        # marge intérieure du style
+        box = box.expandedTo(QSize(32, 32))
+        scaled = self._image.scaled(box, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        self.label.setPixmap(QPixmap.fromImage(scaled))
+
+    def resizeEvent(self, event) -> None:  # noqa: N802
+        super().resizeEvent(event)
+        self._rescale()
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # noqa: N802
+        super().mouseReleaseEvent(event)
+        if event.button() == Qt.MouseButton.LeftButton and self._image is not None:
+            self.clicked.emit()
+            if self._zoomable and self._path is not None:
+                open_image_viewer(self._path, self)
+
+
+def open_image_viewer(path: Path, parent: QWidget | None = None) -> None:
+    """Visionneuse plein format (redimensionnable) pour un fichier image ou une image de vidéo."""
+    from PySide6.QtWidgets import QDialog
+
+    dlg = QDialog(parent)
+    dlg.setWindowTitle(Path(path).name)
+    dlg.resize(960, 720)
+    lay = QVBoxLayout(dlg)
+    lay.setContentsMargins(8, 8, 8, 8)
+    view = ImagePreview(size=900, min_size=300, load_size=2400, zoomable=False)
+    lay.addWidget(view, 1)
+    view.show_image(path)
+    dlg.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+    dlg.show()

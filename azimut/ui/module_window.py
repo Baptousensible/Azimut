@@ -5,9 +5,10 @@ import html
 import os
 from typing import Callable, Iterable
 
-from PySide6.QtCore import QCoreApplication, QMimeData, Qt
+from PySide6.QtCore import QCoreApplication, QMimeData, Qt, QTimer
 from PySide6.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
+    QApplication,
     QDialog,
     QDialogButtonBox,
     QDockWidget,
@@ -16,6 +17,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QScrollArea,
     QSizePolicy,
     QTabWidget,
     QToolBar,
@@ -33,11 +35,11 @@ from azimut.core.prefs import ModulePrefs, Preferences
 from azimut.core.workers import BaseWorker
 from azimut.ui.preferences_dialog import SOURCE_LABELS, PreferencesDialog
 from azimut.ui.theme import ThemeManager
-from azimut.ui.widgets import Column, DataTable, LogPanel, ProgressPanel, StatusChip
+from azimut.ui.widgets import Column, DataTable, LogPanel, ProgressPanel, StatusChip, tame_combos
 
 log = get_logger(__name__)
 
-BUTTON_KINDS: tuple[str, ...] = ("primary", "success", "danger", "accent", "secondary", "ghost")
+BUTTON_KINDS: tuple[str, ...] = ("primary", "success", "danger", "accent", "secondary", "ghost", "nav", "tile")
 SHORTCUTS: tuple[tuple[str, str], ...] = (
     ("Ctrl+O", "Ouvrir…"),
     ("Ctrl+Entrée", "Lancer le traitement"),
@@ -46,6 +48,7 @@ SHORTCUTS: tuple[tuple[str, str], ...] = (
     ("Ctrl+T", "Basculer entre thème sombre et clair"),
     ("Ctrl+,", "Préférences…"),
     ("F1", "Aide"),
+    ("Ctrl+K", "Rechercher un outil (dans Atlas)"),
 )
 HISTORY_COLUMNS = [
     Column("time", "Date", width=150),
@@ -54,6 +57,11 @@ HISTORY_COLUMNS = [
     Column("ok", "Réussis", width=70, align="right"),
     Column("errors", "Erreurs", width=70, align="right"),
 ]
+MIN_WINDOW_SIZE = (800, 520)           # reste utilisable sur un portable 1366×768
+DEFAULT_WINDOW_SIZE = (1180, 780)
+LOG_HEIGHT_IDLE = 110                  # journal discret au repos ; agrandi à l'exécution
+LOG_HEIGHT_RUNNING = 170
+SIDE_PANEL_WIDTH = 360
 _STATUS_TEXT = {"completed": "Terminé", "cancelled": "Annulé", "failed": "Échec"}
 
 
@@ -100,8 +108,8 @@ class ModuleWindow(QMainWindow):
         self._content_widget: QWidget | None = None
 
         self.setWindowTitle(spec.name)
-        self.setMinimumSize(960, 640)
-        self.resize(1180, 780)
+        self.setMinimumSize(*MIN_WINDOW_SIZE)
+        self.resize(*self._default_size())
         self.setAcceptDrops(True)
 
         self._build_central()
@@ -120,30 +128,29 @@ class ModuleWindow(QMainWindow):
     def _build_central(self) -> None:
         central = QWidget()
         outer = QVBoxLayout(central)
-        outer.setContentsMargins(18, 12, 18, 12)
-        outer.setSpacing(12)
+        outer.setContentsMargins(14, 10, 14, 8)
+        outer.setSpacing(8)
 
         self.header = QFrame()
         self.header.setObjectName("Card")
-        hl = QVBoxLayout(self.header)
-        hl.setContentsMargins(18, 14, 18, 14)
-        hl.setSpacing(4)
-        top = QHBoxLayout()
-        top.setSpacing(10)
+        self.header.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
+        hl = QHBoxLayout(self.header)
+        hl.setContentsMargins(14, 8, 14, 8)
+        hl.setSpacing(12)
         self.title_label = QLabel(
-            f'<span style="font-size:x-large; font-weight:700">'
+            f'<span style="font-size:large; font-weight:700">'
             f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
         self.title_label.setTextFormat(Qt.TextFormat.RichText)
-        top.addWidget(self.title_label)
-        top.addStretch(1)
-        self.chips_layout = QHBoxLayout()
-        self.chips_layout.setSpacing(6)
-        top.addLayout(self.chips_layout)
-        hl.addLayout(top)
+        self.title_label.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
+        hl.addWidget(self.title_label)
         self.tagline_label = QLabel(self.spec.tagline)
         self.tagline_label.setProperty("role", "muted")
-        self.tagline_label.setWordWrap(True)
-        hl.addWidget(self.tagline_label)
+        self.tagline_label.setToolTip(self.spec.tagline)
+        self.tagline_label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)   # s'écourte au besoin
+        hl.addWidget(self.tagline_label, 1)
+        self.chips_layout = QHBoxLayout()
+        self.chips_layout.setSpacing(6)
+        hl.addLayout(self.chips_layout)
         outer.addWidget(self.header)
 
         self._content_layout = QVBoxLayout()
@@ -216,7 +223,7 @@ class ModuleWindow(QMainWindow):
         self.bottom_tabs = QTabWidget()
         self.bottom_tabs.addTab(self.log_panel, "Journal")
         self.bottom_tabs.addTab(self.history_table, "Historique")
-        self.bottom_tabs.setMinimumHeight(150)
+        self.bottom_tabs.setMinimumHeight(72)
         clear_btn = self._make_button("Effacer le journal", self.log_panel.clear_log, "ghost")
         self.bottom_tabs.setCornerWidget(clear_btn, Qt.Corner.TopRightCorner)
         self.bottom_tabs.currentChanged.connect(self._on_tab_changed)
@@ -229,6 +236,24 @@ class ModuleWindow(QMainWindow):
         dock.setWidget(self.bottom_tabs)
         self.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, dock)
         self.log_dock = dock
+        QTimer.singleShot(0, lambda: self.set_log_height(LOG_HEIGHT_IDLE))
+
+    def set_log_height(self, height: int) -> None:
+        """Fixe la hauteur du journal (le tiroir reste redimensionnable à la souris)."""
+        try:
+            if self.log_dock.isVisible():
+                self.resizeDocks([self.log_dock], [int(height)], Qt.Orientation.Vertical)
+        except RuntimeError:
+            pass
+
+    def _default_size(self) -> tuple[int, int]:
+        """Taille initiale bornée à l'écran disponible (portables 1366×768 compris)."""
+        w, h = DEFAULT_WINDOW_SIZE
+        screen = QApplication.primaryScreen()
+        if screen is not None:
+            area = screen.availableGeometry()
+            w, h = min(w, max(MIN_WINDOW_SIZE[0], area.width() - 40)), min(h, max(MIN_WINDOW_SIZE[1], area.height() - 60))
+        return w, h
 
     # ═══════════════════════════════════════════════════════════════════════
     # Mise en page
@@ -242,6 +267,7 @@ class ModuleWindow(QMainWindow):
             old.hide()
             old.setParent(None)
         self._content_widget = widget
+        tame_combos(widget)
         self._content_layout.addWidget(widget, 1)
         widget.show()
 
@@ -260,9 +286,36 @@ class ModuleWindow(QMainWindow):
         dock = self.side_dock
         dock.setWindowTitle(title)
         dock.setTitleBarWidget(None if title else QWidget())
-        dock.setWidget(widget)
+        tame_combos(widget)
+        dock.setWidget(self._scrollable(widget))
         dock.show()
         widget.show()
+        QTimer.singleShot(0, lambda: self._fit_side_dock(dock, dock.widget()))
+
+    def _fit_side_dock(self, dock: QDockWidget, widget: QWidget) -> None:
+        """Largeur du panneau : celle que demande son contenu (sans défilement horizontal), bornée à 45 % de la fenêtre."""
+        try:
+            inner = widget.widget() if isinstance(widget, QScrollArea) and widget.widget() is not None else widget
+            want = max(SIDE_PANEL_WIDTH, inner.minimumSizeHint().width() + 34)
+            self.resizeDocks([dock], [min(want, max(SIDE_PANEL_WIDTH - 40, int(self.width() * 0.45)))],
+                             Qt.Orientation.Horizontal)
+        except RuntimeError:
+            pass
+
+    @staticmethod
+    def _scrollable(widget: QWidget) -> QScrollArea:
+        """Panneau latéral dans une zone défilante : jamais rogné, quelle que soit la hauteur de la fenêtre."""
+        if isinstance(widget, QScrollArea):
+            widget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+            widget.setMinimumWidth(max(widget.minimumWidth(), 300))
+            return widget
+        area = QScrollArea()
+        area.setWidgetResizable(True)
+        area.setFrameShape(QFrame.Shape.NoFrame)
+        area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)   # filet de sécurité seulement
+        area.setMinimumWidth(300)
+        area.setWidget(widget)
+        return area
 
     def add_toolbar_button(self, text: str, callback: Callable[[], None], *, kind: str = "secondary",
                            shortcut: str | None = None, tooltip: str = "") -> QPushButton:
@@ -282,6 +335,8 @@ class ModuleWindow(QMainWindow):
         self._binary_names = tuple(names)
         for chip in self.binary_chips:
             self.chips_layout.removeWidget(chip)
+            chip.hide()
+            chip.setParent(None)          # sinon l'ancienne pastille reste affichée (deleteLater est différé)
             chip.deleteLater()
         self.binary_chips = []
         for name in self._binary_names:
@@ -341,6 +396,8 @@ class ModuleWindow(QMainWindow):
 
         self.progress_panel.reset()
         self.progress_panel.set_status("En cours…")
+        if history_action:                       # vrai traitement (pas une sonde silencieuse)
+            self.set_log_height(LOG_HEIGHT_RUNNING)
         for signal, slot in (
             (worker.progress, self.progress_panel.set_progress),
             (worker.status, self.progress_panel.set_status),
