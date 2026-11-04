@@ -87,4 +87,6 @@ Voir [BUILD.md](BUILD.md) (PyInstaller, tailles, licences).
 ## Crédits
 
 Les icônes de l'interface viennent de [Papicons](https://github.com/PapillonApp/Papicons)
-(Association Papillon, licence MIT) ; voir `azimut/resources/icons/`.
+(Association Papillon, licence MIT), complétées par une sélection de
+[Phosphor Icons](https://github.com/phosphor-icons/core) en variante *Fill* (licence MIT) pour les
+pictogrammes absents de Papicons ; voir `azimut/resources/icons/`.

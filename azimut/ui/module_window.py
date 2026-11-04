@@ -34,7 +34,7 @@ from azimut.core.workers import BaseWorker
 from azimut.ui import icons
 from azimut.ui.preferences_dialog import SOURCE_LABELS, PreferencesDialog
 from azimut.ui.theme import ThemeManager
-from azimut.ui.widgets import Column, DataTable, LogPanel, ProgressPanel, StatusChip
+from azimut.ui.widgets import Column, DataTable, IconLabel, LogPanel, ProgressPanel, StatusChip
 
 log = get_logger(__name__)
 
@@ -120,6 +120,24 @@ class ModuleWindow(QMainWindow):
     # ═══════════════════════════════════════════════════════════════════════
     # Construction
     # ═══════════════════════════════════════════════════════════════════════
+    def _make_title_label(self) -> IconLabel:
+        """Titre du module : pictogramme SVG puis nom (jamais le nom du fichier d'icône).
+
+        Si `spec.icon` n'est pas une icône connue, c'est un texte court ou un emoji de repli : on le
+        préfixe au nom comme avant.
+        """
+        has_icon = icons.available(self.spec.icon)
+        text = self.spec.name if has_icon else f"{self.spec.icon}  {self.spec.name}".strip()
+        label = IconLabel(text, self.spec.icon if has_icon else "", "primary")
+        font = label.font()
+        font.setBold(True)
+        if font.pointSizeF() > 0:
+            font.setPointSizeF(font.pointSizeF() * 1.45)
+        elif font.pixelSize() > 0:
+            font.setPixelSize(round(font.pixelSize() * 1.45))
+        label.setFont(font)
+        return label
+
     def _build_central(self) -> None:
         central = QWidget()
         outer = QVBoxLayout(central)
@@ -133,10 +151,7 @@ class ModuleWindow(QMainWindow):
         hl.setSpacing(4)
         top = QHBoxLayout()
         top.setSpacing(10)
-        self.title_label = QLabel(
-            f'<span style="font-size:x-large; font-weight:700">'
-            f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
-        self.title_label.setTextFormat(Qt.TextFormat.RichText)
+        self.title_label = self._make_title_label()
         top.addWidget(self.title_label)
         top.addStretch(1)
         self.chips_layout = QHBoxLayout()
@@ -302,6 +317,7 @@ class ModuleWindow(QMainWindow):
         self._binary_names = tuple(names)
         for chip in self.binary_chips:
             self.chips_layout.removeWidget(chip)
+            chip.hide()                       # retirée de la mise en page : ne plus la laisser visible avant suppression
             chip.deleteLater()
         self.binary_chips = []
         for name in self._binary_names:

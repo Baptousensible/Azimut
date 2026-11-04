@@ -1,7 +1,9 @@
-"""Icônes SVG (Papicons) : présence, recoloration, repli et intégration aux composants."""
+"""Icônes SVG (Papicons + complément Phosphor) : présence, recoloration, repli et intégration."""
 from __future__ import annotations
 
 import os
+import re
+from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -94,3 +96,46 @@ def test_icon_label_and_drop_zone_render():
     assert zone._icon_label.isHidden()
     zone.set_icon("check")
     assert not zone._icon_label.pixmap().isNull()
+
+
+# ── Complément Phosphor Fill ─────────────────────────────────────────────────
+_ICON_ROOT = Path(icons.__file__).resolve().parents[1] / "resources" / "icons"
+
+
+def test_phosphor_complement_is_available_and_recolored():
+    for name in ("tag", "swap", "copy", "file-zip", "pencil-simple-line", "folders", "music-notes", "file-video"):
+        assert icons.available(name), name
+    assert _dominant_rgb(icons.pixmap("tag", 32, "#ff0000")) == (255, 0, 0)
+    assert not icons.tile_icon("swap").isNull()
+    assert not icons.icon("copy").isNull()
+
+
+def test_phosphor_files_are_normalized_and_never_shadow_papicons():
+    papicons = {p.stem for p in _ICON_ROOT.glob("*.svg")}
+    extra = sorted((_ICON_ROOT / "phosphor").glob("*.svg"))
+    assert extra and (_ICON_ROOT / "phosphor" / "LICENSE-Phosphor.txt").is_file()
+    for path in extra:
+        assert 'fill="black"' in path.read_text(encoding="utf-8"), path.name   # recolorable comme Papicons
+        assert "currentColor" not in path.read_text(encoding="utf-8"), path.name
+        assert path.stem not in papicons, f"{path.stem} existe déjà dans Papicons (doublon inutile)"
+
+
+def test_papicons_are_searched_first():
+    """La recherche commence par le dossier Papicons (à nom égal, il l'emporte)."""
+    found = icons._find("check")
+    assert found is not None and found.parent == _ICON_ROOT
+
+
+def test_every_icon_name_used_in_the_code_exists():
+    """Tout nom d'icône écrit en dur (icon=…, set_icon, icons.icon/pixmap, tableau des boutons) doit exister."""
+    root = _ICON_ROOT.parents[1]
+    used: set[str] = set()
+    patterns = (r'icon="([a-z][a-z0-9-]*)"', r'set_icon\("([a-z][a-z0-9-]*)"', r'icons\.(?:icon|pixmap)\("([a-z][a-z0-9-]*)"',
+                r'_icon_\w+": "([a-z][a-z0-9-]*)"', r'\("[a-z_]+_button", "([a-z][a-z0-9-]*)"')
+    for py in root.rglob("*.py"):
+        text = py.read_text(encoding="utf-8")
+        for pat in patterns:
+            used.update(re.findall(pat, text))
+    used.update(icons.GLYPH_ICONS.values())
+    missing = sorted(n for n in used if not icons.available(n))
+    assert not missing, f"icônes introuvables : {missing}"

@@ -1,17 +1,23 @@
-"""Icônes d'Azimut : SVG de la bibliothèque Papicons (MIT), recolorés à la volée selon le thème.
+"""Icônes d'Azimut : SVG Papicons + Phosphor Fill (tous deux MIT), recolorés à la volée selon le thème.
+
+Papicons est le jeu principal, mais il ne compte qu'une centaine de pictogrammes (pensés pour une app
+scolaire) : il n'a ni vidéo, ni musique, ni copie, ni étiquette… Ce qui manque est complété par une
+sélection de Phosphor Fill (``resources/icons/phosphor``), au trait et au poids très proches. À nom égal,
+Papicons l'emporte.
 
 Pourquoi pas des emojis ? Ils dépendent d'une police d'emojis installée sur le système : présente sur
 Linux Mint, souvent absente d'une session Fedora/KDE (les cartes s'affichent alors vides ou en
 « tofu »). Les SVG sont embarqués dans ``azimut/resources/icons`` et rendus par Qt : le résultat est
 identique partout.
 
-Les icônes Papicons sont monochromes (fill noir) : on remplace simplement la couleur avant le rendu.
+Les icônes sont monochromes (fill noir) : on remplace simplement la couleur avant le rendu.
 `color` accepte un code hexadécimal (« #aabbcc ») ou le nom d'un token du thème (« muted », « ok_txt »…).
 """
 from __future__ import annotations
 
 import re
 from functools import lru_cache
+from pathlib import Path
 
 from PySide6.QtCore import QByteArray, QRectF, Qt
 from PySide6.QtGui import QColor, QGuiApplication, QIcon, QImage, QPainter, QPixmap
@@ -28,9 +34,24 @@ GLYPH_ICONS: dict[str, str] = {"✔": "check", "✖": "cross", "⚠": "alert-tri
 _FILL = re.compile(r'fill="(?:black|#000(?:000)?)"', re.IGNORECASE)
 
 
+# Dossiers de recherche, par ordre de priorité (Papicons, puis le complément Phosphor).
+_ICON_DIRS: tuple[tuple[str, ...], ...] = (("icons",), ("icons", "phosphor"))
+
+
+def _find(name: str) -> Path | None:
+    """Fichier SVG de l'icône `name`, ou None (un emoji ou un texte quelconque n'en a pas)."""
+    if not name or not name.replace("-", "").isalnum():
+        return None
+    for parts in _ICON_DIRS:
+        path = resource_path(*parts, f"{name}.svg")
+        if path.is_file():
+            return path
+    return None
+
+
 def available(name: str) -> bool:
     """Vrai si une icône SVG porte ce nom (un emoji ou un texte quelconque renvoie False)."""
-    return bool(name) and name.replace("-", "").isalnum() and resource_path("icons", f"{name}.svg").is_file()
+    return _find(name) is not None
 
 
 def _resolve_color(color: str | QColor | None) -> str:
@@ -44,9 +65,10 @@ def _resolve_color(color: str | QColor | None) -> str:
     return pal.get(color, color)
 
 
-@lru_cache(maxsize=64)
+@lru_cache(maxsize=256)
 def _svg_source(name: str) -> str:
-    return resource_path("icons", f"{name}.svg").read_text(encoding="utf-8")
+    path = _find(name)
+    return path.read_text(encoding="utf-8") if path else ""
 
 
 def _device_pixel_ratio() -> float:

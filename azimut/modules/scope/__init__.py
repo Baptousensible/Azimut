@@ -7,7 +7,7 @@ MODULE = ModuleSpec(
     id="scope",
     name="Azimut Scope",
     tagline="Comparer deux dossiers : même arborescence, même nombre de fichiers ?",
-    icon="search",
+    icon="folders",
     entry="azimut.modules.scope.window:ScopeWindow",
     order=60,
 )

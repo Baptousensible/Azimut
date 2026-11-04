@@ -402,3 +402,26 @@ def test_preferences_dialog_detect_button(env, monkeypatch):
     assert dlg.chips["ffmpeg"].text() == "système · 7.0"
     assert dlg.chips["ffprobe"].text() == "introuvable" and dlg.chips["ffprobe"].property("level") == "err"
     assert dlg.chips["exiftool"].text() == "personnalisé · 12.76"
+
+
+# ── Titre : pictogramme SVG, jamais le nom du fichier d'icône ────────────────
+def test_title_shows_svg_icon_not_icon_name(make_window):
+    spec = ModuleSpec(id="fake", name="Azimut Fake", tagline="Module de test.", icon="swap",
+                      entry="x:Y", requires=("ffmpeg",), optional=("exiftool",))
+    w = make_window(spec=spec)
+    assert w.title_label.text() == "Azimut Fake"        # pas « swap  Azimut Fake »
+    assert w.title_label.icon_name() == "swap"
+    w.title_label.grab()                                 # le rendu ne doit pas lever d'exception
+
+
+def test_title_keeps_text_fallback_when_icon_is_not_a_svg(make_window):
+    w = make_window()                                    # SPEC.icon = « 🧪 » : repli texte
+    assert w.title_label.icon_name() == "" and "🧪" in w.title_label.text() and "Azimut Fake" in w.title_label.text()
+
+
+def test_replaced_binary_chips_are_hidden_immediately(make_window):
+    w = make_window()
+    old = list(w.binary_chips)
+    assert old
+    w.show_binary_status(("ffmpeg",))
+    assert all(chip.isHidden() for chip in old)          # plus de pastille orpheline visible avant deleteLater
