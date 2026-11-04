@@ -19,6 +19,23 @@ class ModuleSpec:
     order: int = 100            # tri des cartes dans Atlas
 
 
+@dataclass(frozen=True)
+class PlannedModule:
+    """Module annoncé mais pas encore livré : affiché « bientôt » dans Atlas, jamais ouvrable."""
+
+    id: str
+    name: str
+    tagline: str
+    icon: str
+
+
+# Noms tirés du réservoir prévu (Azimut Sync, Azimut Watch) : aucune entorse à la nomenclature.
+PLANNED_MODULES: tuple[PlannedModule, ...] = (
+    PlannedModule("sync", "Azimut Sync", "Synchroniser vos dossiers avec le Cloud (Supabase / Firebase)", "☁️"),
+    PlannedModule("watch", "Azimut Watch", "Surveiller un dossier et traiter automatiquement les nouveaux fichiers", "👁️"),
+)
+
+
 def load_window_class(spec: ModuleSpec) -> type:
     """Importe et renvoie la classe de fenêtre désignée par ``spec.entry`` (« paquet.module:Classe »)."""
     module_name, sep, class_name = spec.entry.partition(":")

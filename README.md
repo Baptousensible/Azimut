@@ -9,10 +9,29 @@ chaque opération peut être annulée proprement.
 
 ## Atlas, le lanceur
 
-**Atlas** est le recueil des utilitaires : une carte par module, avec son état (binaires requis
-détectés ou non) et un bouton « Ouvrir ». On peut aussi **glisser-déposer** des fichiers ou un
-dossier sur une carte pour ouvrir le module avec ces éléments. Sous les cartes, un tableau de bord
-propose l'historique des traitements, le journal de l'application et l'état des binaires.
+**Atlas** (version 0.2.0) est le recueil des utilitaires. Sa fenêtre s'organise ainsi :
+
+- une **barre latérale** : recherche, Accueil, Activité, un bouton par outil (les modules à venir,
+  Azimut Sync et Azimut Watch, sont marqués « bientôt ») ;
+- un **accueil** : une zone de **dépôt intelligent** (déposez des fichiers ou des dossiers, Atlas
+  propose les outils adaptés : photos et vidéos → Convert, export Google Photos → Takeout, deux
+  dossiers → Scope…), la liste « Reprendre » des derniers éléments ouverts, et toutes les cartes
+  d'outils avec leur état (binaires requis détectés ou non) ; les trois outils les plus utilisés
+  portent la pastille « Recommandé » ;
+- une page **Activité** : historique des traitements, journal de l'application, état des binaires ;
+- une **palette de commandes** (`Ctrl+K`) : tapez « doublons », « thème », « convert »… pour lancer
+  un outil ou une action.
+
+On peut toujours glisser-déposer des fichiers directement sur une carte pour ouvrir le module avec
+ces éléments.
+
+## Interface des outils
+
+Tous les outils partagent la même organisation : en-tête compact, barre d'outils, panneau de
+réglages à droite (qui défile quand la fenêtre est basse), journal discret en bas (il s'agrandit
+pendant un traitement). Les réglages numériques (CRF, qualité, threads, fichiers en parallèle,
+tolérance et durée de Dedup…) se règlent avec des **curseurs** accompagnés d'une valeur modifiable
+au clavier ; les sections longues (options de Dedup) se replient.
 
 ## Les modules
 
@@ -69,7 +88,8 @@ main.py                    point d'entrée (Atlas)
 azimut/
   core/                    socle : chemins, préférences, journaux, binaires, historique, workers
   ui/                      thème, widgets, fenêtre de module, préférences
-  launcher/                Atlas : registry, cli, atlas_window, dashboard
+  launcher/                Atlas : registry, cli, atlas_window, dashboard, routing (dépôt intelligent),
+                           palette (Ctrl+K), recents
   modules/                 convert, tags, takeout, dedup, press, rename, scope
   resources/               ressources embarquées
 bin/                       binaires par plateforme (README.md seulement dans le dépôt)

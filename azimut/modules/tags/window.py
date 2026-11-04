@@ -111,9 +111,9 @@ class TagsWindow(ModuleWindow):
         split = QSplitter(Qt.Orientation.Horizontal)
         files_card = Card("Fichiers")
         self._files_table = DataTable([
-            Column("name", "Nom", 220, stretch=True), Column("type", "Type", 60),
-            Column("size", "Taille", 80, align="right"), Column("tags", "Tags", 55, align="right"),
-            Column("state", "État", 130)])
+            Column("name", "Nom", 150, stretch=True), Column("type", "Type", 50),
+            Column("size", "Taille", 70, align="right"), Column("tags", "Tags", 46, align="right"),
+            Column("state", "État", 96)])
         self._files_table.selectionRowsChanged.connect(self._on_files_selected)
         self._sel_label = QLabel("Aucun fichier.")
         files_card.body_layout.addWidget(self._files_table, 1)
@@ -126,8 +126,8 @@ class TagsWindow(ModuleWindow):
         self._filter.setPlaceholderText("Filtrer les tags (groupe, nom ou valeur)…")
         self._filter.setClearButtonEnabled(True)
         self._meta = DataTable([
-            Column("group", "Groupe", 110), Column("name", "Tag", 190),
-            Column("value", "Valeur", 260, stretch=True), Column("state", "État", 100)])
+            Column("group", "Groupe", 80), Column("name", "Tag", 150),
+            Column("value", "Valeur", 200, stretch=True), Column("state", "État", 80)])
         self._filter.textChanged.connect(self._meta.set_filter_text)
         self._meta.rowActivated.connect(self._edit_tag)
         meta_btns = QHBoxLayout()
@@ -142,15 +142,19 @@ class TagsWindow(ModuleWindow):
             meta_card.body_layout.addWidget(w, 1 if w is self._meta else 0)
         meta_card.body_layout.addLayout(meta_btns)
         split.addWidget(meta_card)
-        split.setStretchFactor(0, 2)
-        split.setStretchFactor(1, 3)
+        split.setStretchFactor(0, 1)
+        split.setStretchFactor(1, 1)
+        split.setChildrenCollapsible(False)
+        split.setSizes([400, 440])
+        files_card.setMinimumWidth(280)
+        meta_card.setMinimumWidth(300)
         outer.addWidget(split, 1)
 
         pend_card = Card("Modifications en attente (rien n'est écrit avant « Appliquer »)")
         self._pending_table = DataTable([
             Column("op", "Opération", 100), Column("tag", "Tag", 260),
             Column("value", "Valeur", 300, stretch=True)])
-        self._pending_table.setMaximumHeight(150)
+        self._pending_table.setMaximumHeight(110)
         pend_btns = QHBoxLayout()
         self._pend_remove = QPushButton("Retirer la sélection")
         self._pend_clear = QPushButton("Tout retirer")

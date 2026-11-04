@@ -201,7 +201,8 @@ def test_set_content_and_side_panel(make_window):
     panel = QWidget()
     assert win.side_dock is None
     win.set_side_panel(panel, "Options")
-    assert win.side_dock.widget() is panel and win.side_dock.windowTitle() == "Options"
+    assert win.side_dock.widget().widget() is panel            # le panneau est dans une zone défilante
+    assert win.side_dock.windowTitle() == "Options"
     assert not win.side_dock.isHidden() and not win.side_dock.isFloating()
     win.set_side_panel(None)
     assert win.side_dock.isHidden()

@@ -7,7 +7,7 @@ from dataclasses import replace
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
-    QCheckBox, QComboBox, QFileDialog, QFormLayout, QLabel, QMessageBox, QPushButton, QSpinBox, QToolButton,
+    QCheckBox, QComboBox, QFileDialog, QFormLayout, QLabel, QMessageBox, QPushButton, QToolButton,
     QVBoxLayout, QWidget,
 )
 
@@ -25,15 +25,15 @@ from azimut.modules.convert.profiles import (
 )
 from azimut.modules.convert.workers import ConvertOptions, ConvertWorker, ProbeWorker, ScanWorker
 from azimut.ui.module_window import ModuleWindow
-from azimut.ui.widgets import Card, Column, DataTable, DropZone, PathField
+from azimut.ui.widgets import Card, Column, DataTable, DropZone, PathField, SliderField
 
 COLUMNS = [
-    Column("file", "Fichier", width=320, stretch=True),
-    Column("kind", "Type", width=80),
-    Column("size", "Taille", width=90, align="right"),
-    Column("profile", "Profil", width=230),
-    Column("state", "État", width=150),
-    Column("progress", "Progression", width=100, align="center"),
+    Column("file", "Fichier", width=220, stretch=True),
+    Column("kind", "Type", width=64),
+    Column("size", "Taille", width=80, align="right"),
+    Column("profile", "Profil", width=170),
+    Column("state", "État", width=120),
+    Column("progress", "Progression", width=96, align="center"),
 ]
 KIND_TITLES = {"image": "Images", "video": "Vidéos", "audio": "Audio"}
 
@@ -186,11 +186,11 @@ class ConvertWindow(ModuleWindow):
             title.setStyleSheet("font-weight: bold;")
             form = QFormLayout()
             form.setContentsMargins(0, 0, 0, 0)
-            crf = QSpinBox()
+            crf = SliderField(low_hint="Meilleure qualité", high_hint="Fichier plus petit")
             crf.setToolTip("Constant Rate Factor : plus bas = meilleure qualité, fichier plus gros.")
             preset = QComboBox()
             preset.setToolTip("Compromis vitesse / compression : les presets lents compressent mieux.")
-            quality = QSpinBox()
+            quality = SliderField()
             quality.setToolTip("Qualité de sortie (JPEG : 2 = meilleure, 31 = pire ; WebP : 100 = meilleure).")
             lab_crf, lab_preset, lab_quality = QLabel("CRF"), QLabel("Preset"), QLabel("Qualité")
             form.addRow(lab_crf, crf)
@@ -214,14 +214,13 @@ class ConvertWindow(ModuleWindow):
 
         form2 = QFormLayout()
         form2.setContentsMargins(0, 0, 0, 0)
-        self.spin_threads = QSpinBox()
-        self.spin_threads.setRange(0, advanced.MAX_THREADS)
-        self.spin_threads.setSpecialValueText("Auto")
+        self.spin_threads = SliderField(0, advanced.MAX_THREADS, special_text="Auto", low_hint="Auto",
+                                        high_hint=f"{advanced.MAX_THREADS} threads")
         self.spin_threads.setToolTip("Threads par encodage (images et vidéos). « Auto » : bornés pour limiter la "
                                      "mémoire (vidéo), ou cœurs partagés si plusieurs fichiers sont traités en "
                                      "parallèle.")
-        self.spin_parallel = QSpinBox()
-        self.spin_parallel.setRange(1, advanced.MAX_PARALLEL)
+        self.spin_parallel = SliderField(1, advanced.MAX_PARALLEL, low_hint="Un à la fois",
+                                         high_hint="Plus rapide, plus de mémoire")
         self.spin_parallel.setToolTip("Nombre de fichiers convertis en même temps. Réduisez-le si la mémoire manque.")
         form2.addRow("Threads", self.spin_threads)
         form2.addRow("Fichiers en parallèle", self.spin_parallel)
@@ -302,6 +301,10 @@ class ConvertWindow(ModuleWindow):
                 if q:
                     quality.setRange(*q)
                     quality.setValue(eff.quality)
+                    if q[1] <= 31:      # échelle JPEG (qscale) : plus petit = meilleur
+                        quality.setHints("Meilleure qualité", "Fichier plus petit")
+                    else:
+                        quality.setHints("Fichier plus petit", "Meilleure qualité")
                 row["box"].setVisible(r is not None or bool(choices) or q is not None)
         finally:
             self._loading_adv = False

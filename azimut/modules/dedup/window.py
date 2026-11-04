@@ -38,7 +38,7 @@ from azimut.modules.dedup.actions import (
     plan_deletions,
     trash_available,
 )
-from azimut.modules.dedup.engine import ScanOptions, ScanResult
+from azimut.modules.dedup.engine import MAX_TOLERANCE, ScanOptions, ScanResult
 from azimut.modules.dedup.livephoto import DEFAULT_MAX_SECONDS
 from azimut.modules.dedup.model import (
     ACTION_DELETE,
@@ -61,15 +61,13 @@ from azimut.modules.dedup.model import (
 from azimut.modules.dedup.workers import ApplyWorker, ScanWorker, UndoWorker
 from azimut.ui.module_window import ModuleWindow
 from azimut.ui.theme import ThemeManager, token
-from azimut.ui.widgets import Card, ImagePreview, PathField
+from azimut.ui.widgets import Card, CollapsibleCard, ImagePreview, PathField, SliderField
 
 ROLE = Qt.ItemDataRole.UserRole
 COLUMNS = ("Chemin", "Côté", "Taille", "Date", "Dimensions", "Action")
-TOLERANCES = (("Strict (1)", 1), ("Équilibré (3)", 3), ("Large (5)", 5), ("Très large (7)", 7))
 FILTERS = ("Tous", "Doublons exacts", "Images similaires", "Live Photos", "Même chemin, contenu différent",
            "Proposés à la suppression")
 FILTER_KINDS = {1: KIND_EXACT, 2: KIND_SIMILAR, 3: KIND_LIVE, 4: KIND_MODIFIED}
-LIVE_DURATIONS = (("3 s (strict)", 3.0), ("5 s (équilibré)", DEFAULT_MAX_SECONDS), ("10 s (large)", 10.0))
 MODE_LABELS = {
     MODE_QUARANTINE: "Quarantaine (réversible, par défaut)",
     MODE_TRASH: "Corbeille système",
@@ -142,7 +140,6 @@ class DedupWindow(ModuleWindow):
             tooltip="Enregistre le rapport complet des groupes en CSV")
         self.show_binary_status(("ffmpeg", "ffprobe"))
         ThemeManager.instance().changed.connect(lambda _name: self._refresh_colors())
-        self.resize(1250, 800)
 
     # ── Construction de l'interface ───────────────────────────────────
 
@@ -174,7 +171,9 @@ class DedupWindow(ModuleWindow):
         layout.addWidget(folders)
 
         # Options
-        options = Card("Options")
+        options = CollapsibleCard("Options", expanded=bool(self.prefs.get("options_open", True)))
+        self.options_card = options
+        options.toggled.connect(lambda on: self.prefs.set("options_open", bool(on)))
         row1 = QHBoxLayout()
         self.chk_recursive = QCheckBox("Inclure les sous-dossiers")
         self.chk_recursive.setChecked(True)
@@ -188,36 +187,34 @@ class DedupWindow(ModuleWindow):
 
         row2 = QHBoxLayout()
         self.chk_similar = QCheckBox("Détecter les images similaires")
-        self.cmb_tolerance = QComboBox()
-        for label, value in TOLERANCES:
-            self.cmb_tolerance.addItem(label, value)
-        self.cmb_tolerance.setCurrentIndex(1)
+        self.cmb_tolerance = SliderField(1, MAX_TOLERANCE, 3, low_hint="Strict", high_hint="Très large")
+        self.cmb_tolerance.setToolTip("Distance maximale entre deux empreintes d'image : 1 = presque identiques, "
+                                      "7 = tolère de grosses différences (plus de faux positifs).")
         self.cmb_tolerance.setEnabled(False)
         self.chk_similar.toggled.connect(self.cmb_tolerance.setEnabled)
         row2.addWidget(self.chk_similar)
         row2.addWidget(QLabel("Tolérance :"))
-        row2.addWidget(self.cmb_tolerance)
-        row2.addSpacing(16)
-        row2.addWidget(QLabel("Proposition automatique :"))
+        row2.addWidget(self.cmb_tolerance, 1)
+        options.body_layout.addLayout(row2)
+        row_strategy = QHBoxLayout()
+        row_strategy.addWidget(QLabel("Proposition automatique :"))
         self.cmb_strategy = QComboBox()
         for strat, label in STRATEGY_LABELS.items():
             self.cmb_strategy.addItem(label, strat.value)
-        row2.addWidget(self.cmb_strategy)
-        row2.addStretch(1)
-        options.body_layout.addLayout(row2)
+        row_strategy.addWidget(self.cmb_strategy)
+        row_strategy.addStretch(1)
+        options.body_layout.addLayout(row_strategy)
 
         row_detect = QHBoxLayout()
         self.chk_exact = QCheckBox("Doublons exacts")
         self.chk_exact.setChecked(True)
         self.chk_exact.setToolTip("Contenu identique, quel que soit le nom (empreinte BLAKE2b).")
-        self.chk_live = QCheckBox("Live Photos (photo + courte vidéo de même nom) — durée max :")
+        self.chk_live = QCheckBox("Live Photos (photo + courte vidéo de même nom)")
         self.chk_live.setToolTip("Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis "
                                  "IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, "
                                  "sauf si vous demandez d'écarter la vidéo.")
-        self.cmb_live_max = QComboBox()
-        for label, value in LIVE_DURATIONS:
-            self.cmb_live_max.addItem(label, value)
-        self.cmb_live_max.setCurrentIndex(1)
+        self.cmb_live_max = SliderField(1, 30, int(DEFAULT_MAX_SECONDS), suffix=" s", low_hint="Strict",
+                                        high_hint="Large")
         self.cmb_live_max.setEnabled(False)
         self.chk_live_drop = QCheckBox("Proposer d'écarter la vidéo")
         self.chk_live_drop.setEnabled(False)
@@ -231,11 +228,13 @@ class DedupWindow(ModuleWindow):
         row_detect.addWidget(self.chk_modified)
         row_detect.addStretch(1)
         options.body_layout.addLayout(row_detect)
+        options.body_layout.addWidget(self.chk_live)
         row_live = QHBoxLayout()
-        for w in (self.chk_live, self.cmb_live_max, self.chk_live_drop):
-            row_live.addWidget(w)
-        row_live.addStretch(1)
+        row_live.addSpacing(24)
+        row_live.addWidget(QLabel("Durée max :"))
+        row_live.addWidget(self.cmb_live_max, 1)
         options.body_layout.addLayout(row_live)
+        options.body_layout.addWidget(self.chk_live_drop)
 
         row3 = QHBoxLayout()
         row3.addWidget(QLabel("Mode de suppression :"))
@@ -300,9 +299,9 @@ class DedupWindow(ModuleWindow):
         col = QVBoxLayout(panel)
         col.setContentsMargins(8, 8, 8, 8)
 
-        previews = QHBoxLayout()
-        self.preview_a = ImagePreview(size=230)
-        self.preview_b = ImagePreview(size=230)
+        previews = QVBoxLayout()
+        self.preview_a = ImagePreview(size=300, min_size=200)
+        self.preview_b = ImagePreview(size=300, min_size=200)
         self.caption_a = QLabel()
         self.caption_b = QLabel()
         self.box_a, self.box_b = QWidget(), QWidget()
@@ -350,13 +349,15 @@ class DedupWindow(ModuleWindow):
         self.chk_live.setChecked(bool(p.get("live", False)))
         self.chk_live_drop.setChecked(bool(p.get("live_drop_video", False)))
         self.chk_modified.setChecked(bool(p.get("find_modified", True)))
-        idx = self.cmb_live_max.findData(p.get("live_max_seconds", DEFAULT_MAX_SECONDS))
-        if idx >= 0:
-            self.cmb_live_max.setCurrentIndex(idx)
+        try:
+            self.cmb_live_max.setValue(int(round(float(p.get("live_max_seconds", DEFAULT_MAX_SECONDS)))))
+        except (TypeError, ValueError):
+            pass
         self.chk_empty_dirs.setChecked(bool(p.get("remove_empty", False)))
-        idx = self.cmb_tolerance.findData(p.get("tolerance", 3))
-        if idx >= 0:
-            self.cmb_tolerance.setCurrentIndex(idx)
+        try:
+            self.cmb_tolerance.setValue(int(p.get("tolerance", 3)))
+        except (TypeError, ValueError):
+            pass
         idx = self.cmb_strategy.findData(p.get("strategy", Strategy.A_FIRST.value))
         if idx >= 0:
             self.cmb_strategy.setCurrentIndex(idx)
@@ -373,9 +374,9 @@ class DedupWindow(ModuleWindow):
         p.set("exact", self.chk_exact.isChecked())
         p.set("live", self.chk_live.isChecked())
         p.set("live_drop_video", self.chk_live_drop.isChecked())
-        p.set("live_max_seconds", self.cmb_live_max.currentData())
+        p.set("live_max_seconds", float(self.cmb_live_max.value()))
         p.set("find_modified", self.chk_modified.isChecked())
-        p.set("tolerance", self.cmb_tolerance.currentData())
+        p.set("tolerance", self.cmb_tolerance.value())
         p.set("strategy", self.cmb_strategy.currentData())
         p.set("mode", self.cmb_mode.currentData())
         p.set("remove_empty", self.chk_empty_dirs.isChecked())
@@ -427,6 +428,19 @@ class DedupWindow(ModuleWindow):
     def _update_mode_widgets(self) -> None:
         self.field_quarantine.setVisible(self.cmb_mode.currentData() == MODE_QUARANTINE)
 
+    def _options_summary(self) -> str:
+        parts = []
+        if self.chk_exact.isChecked():
+            parts.append("doublons exacts")
+        if self.chk_similar.isChecked():
+            parts.append(f"similaires (tolérance {self.cmb_tolerance.value()})")
+        if self.chk_live.isChecked():
+            parts.append(f"Live Photos (≤ {self.cmb_live_max.value()} s)")
+        if self.chk_modified.isChecked():
+            parts.append("fichiers modifiés")
+        parts.append("sous-dossiers inclus" if self.chk_recursive.isChecked() else "dossier seul")
+        return " · ".join(parts)
+
     def _lockable(self) -> list[QWidget]:
         return [self.field_a, self.field_b, self.chk_protect_a, self.chk_protect_b, self.chk_recursive,
                 self.chk_media, self.chk_hidden, self.chk_similar, self.cmb_tolerance, self.cmb_strategy,
@@ -475,10 +489,10 @@ class DedupWindow(ModuleWindow):
             folder_a=folder_a, folder_b=folder_b, protect_a=protect_a, protect_b=protect_b,
             recursive=self.chk_recursive.isChecked(), media_only=self.chk_media.isChecked(),
             skip_hidden=self.chk_hidden.isChecked(), similar=self.chk_similar.isChecked(),
-            tolerance=int(self.cmb_tolerance.currentData() or 3),
+            tolerance=int(self.cmb_tolerance.value()),
             strategy=strategy_from_key(self.cmb_strategy.currentData()),
             exact=self.chk_exact.isChecked(), find_modified=self.chk_modified.isChecked(),
-            live=self.chk_live.isChecked(), live_max_seconds=float(self.cmb_live_max.currentData()),
+            live=self.chk_live.isChecked(), live_max_seconds=float(self.cmb_live_max.value()),
             live_drop_video=self.chk_live_drop.isChecked(), ffprobe=ffprobe,
         )
 
@@ -490,6 +504,8 @@ class DedupWindow(ModuleWindow):
         if options is None:
             return
         self._save_prefs()
+        self.options_card.set_summary(self._options_summary())
+        self.options_card.set_expanded(False)                  # laisse la place aux résultats
         self._say("INFO", "Analyse en cours…")
         worker = ScanWorker(options, self)
         self._dd_worker = worker
