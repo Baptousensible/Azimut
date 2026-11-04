@@ -14,7 +14,7 @@ from azimut.core import binaries
 from azimut.core.module_spec import ModuleSpec
 from azimut.core.prefs import Preferences
 from azimut.ui import app as app_module
-from azimut.ui.theme import TOKEN_NAMES, ThemeManager, build_qss, palette, token
+from azimut.ui.theme import TOKEN_NAMES, UI_FONT_FAMILY, ThemeManager, build_qss, load_ui_font, palette, token
 
 
 @pytest.fixture(scope="module")
@@ -51,10 +51,10 @@ def test_all_tokens_exist_in_both_themes(theme):
 
 def test_palette_values_match_spec():
     attendu = {
-        "bg": ("#f3f5f9", "#12151a"),
-        "primary": ("#2f6fed", "#3b82f6"),
+        "bg": ("#f1f1f3", "#19191c"),
+        "primary": ("#1b63e0", "#4b8bf5"),
         "ok_bg": ("#dff5e8", "#17382a"),
-        "secondary_hover": ("#d5dbe7", "#363d49"),
+        "secondary_hover": ("#e4e4e9", "#3e3e45"),
         "danger": ("#d64545", "#c24141"),
     }
     for name, (clair, sombre) in attendu.items():
@@ -96,9 +96,9 @@ def test_defaults(manager):
 
 
 def test_token_follows_current_theme(manager):
-    assert token("bg") == "#12151a"
+    assert token("bg") == "#19191c"
     manager.set_theme("light")
-    assert token("bg") == "#f3f5f9"
+    assert token("bg") == "#f1f1f3"
     with pytest.raises(KeyError):
         token("inexistant")
 
@@ -142,6 +142,18 @@ def test_apply_installs_stylesheet_and_zoom_changes_font(manager, qt_app):
     assert qt_app.font().pointSizeF() == pytest.approx(15.0)
     manager.set_theme("light")
     assert palette("light")["bg"] in qt_app.styleSheet()
+
+
+def test_interface_font_is_bundled_and_applied(manager, qt_app):
+    family = load_ui_font()
+    assert family == UI_FONT_FAMILY               # les trois fichiers Inter sont embarqués et lisibles
+    manager.apply(qt_app)
+    assert qt_app.font().family() == UI_FONT_FAMILY
+
+
+def test_stylesheet_has_no_bold_weight_the_bundled_font_lacks():
+    for theme in ("dark", "light"):
+        assert "700" not in build_qss(theme) and "bold" not in build_qss(theme)
 
 
 def test_external_preference_change_is_followed(manager, prefs):

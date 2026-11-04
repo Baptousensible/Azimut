@@ -169,7 +169,7 @@ class ConvertWindow(ModuleWindow):
         self._adv_toggle.setCheckable(True)
         self._adv_toggle.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self._adv_toggle.setArrowType(Qt.ArrowType.RightArrow)
-        self._adv_toggle.setStyleSheet("QToolButton { border: none; font-weight: bold; }")
+        self._adv_toggle.setStyleSheet("QToolButton { border: none; font-weight: 600; }")
         card.body_layout.addWidget(self._adv_toggle)
 
         self._adv_body = QWidget()
@@ -183,7 +183,7 @@ class ConvertWindow(ModuleWindow):
         self._adv_rows: dict[str, dict[str, object]] = {}
         for kind in ("image", "video"):
             title = QLabel(KIND_TITLES[kind])
-            title.setStyleSheet("font-weight: bold;")
+            title.setStyleSheet("font-weight: 600;")
             form = QFormLayout()
             form.setContentsMargins(0, 0, 0, 0)
             crf = QSpinBox()

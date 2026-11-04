@@ -44,7 +44,7 @@ class ModuleCard(Card):
         self.icon_label = QLabel(spec.icon)
         self.icon_label.setStyleSheet("font-size: 30px;")
         self.name_label = QLabel(spec.name)
-        self.name_label.setStyleSheet("font-size: 17px; font-weight: 700;")
+        self.name_label.setStyleSheet("font-size: 16px; font-weight: 600;")
         head = QHBoxLayout()
         head.addWidget(self.icon_label)
         head.addWidget(self.name_label, 1)
@@ -185,7 +185,7 @@ class AtlasWindow(QMainWindow):
     # ── construction ──
     def _build_header(self) -> QHBoxLayout:
         title = QLabel("🧭 Azimut")
-        title.setStyleSheet("font-size: 26px; font-weight: 700;")
+        title.setStyleSheet("font-size: 24px; font-weight: 600;")
         self.subtitle_label = QLabel("Atlas — le recueil des utilitaires Azimut")
         self.version_label = QLabel(f"Version {__version__}")
         titles = QVBoxLayout()
@@ -234,7 +234,7 @@ class AtlasWindow(QMainWindow):
         self.version_label.setStyleSheet(muted + " font-size: 11px;")
         self.warning_banner.setStyleSheet(
             f"background: {token('warn_bg')}; color: {token('warn_txt')}; "
-            "border-radius: 8px; padding: 8px 12px;")
+            "border-radius: 6px; padding: 8px 12px;")
 
     # ── binaires ──
     def _update_banner(self) -> None:
