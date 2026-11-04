@@ -131,7 +131,7 @@ class ModuleWindow(QMainWindow):
         top = QHBoxLayout()
         top.setSpacing(10)
         self.title_label = QLabel(
-            f'<span style="font-size:x-large; font-weight:700">'
+            f'<span style="font-size:x-large; font-weight:600">'
             f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
         self.title_label.setTextFormat(Qt.TextFormat.RichText)
         top.addWidget(self.title_label)
@@ -479,7 +479,7 @@ class ModuleWindow(QMainWindow):
         lay = QVBoxLayout(dlg)
         lay.setContentsMargins(18, 18, 18, 18)
         lay.setSpacing(10)
-        title = QLabel(f'<span style="font-size:x-large; font-weight:700">'
+        title = QLabel(f'<span style="font-size:x-large; font-weight:600">'
                        f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
         title.setTextFormat(Qt.TextFormat.RichText)
         tagline = QLabel(self.spec.tagline)

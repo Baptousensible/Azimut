@@ -320,7 +320,7 @@ class DedupWindow(ModuleWindow):
         col.addLayout(previews)
 
         title = QLabel("Corrections manuelles")
-        title.setStyleSheet("font-weight: bold;")
+        title.setStyleSheet("font-weight: 600;")
         col.addWidget(title)
         for text, callback, tip in (
             ("Garder", lambda: self._set_action(ACTION_KEEP), "Garder la sélection"),

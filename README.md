@@ -83,3 +83,10 @@ Les préférences, l'historique et les journaux sont écrits dans les dossiers u
 ## Construire une distribution
 
 Voir [BUILD.md](BUILD.md) (PyInstaller, tailles, licences).
+
+## Crédits
+
+L'apparence de l'interface s'inspire de [PDFcraft](https://github.com/storytold/pdfcraft) (palette neutre,
+accent bleu, coins arrondis). La police d'interface **Inter** (© The Inter Project Authors) est
+embarquée dans `azimut/resources/fonts/` sous licence SIL Open Font License 1.1 ; le texte de la
+licence s'y trouve (`OFL-Inter.txt`).
