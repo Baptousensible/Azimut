@@ -12,7 +12,7 @@ class ModuleSpec:
     id: str                     # « convert »
     name: str                   # « Azimut Convert »
     tagline: str                # une phrase, en français
-    icon: str                   # un emoji
+    icon: str                   # nom d'une icône Papicons (azimut/resources/icons) ; à défaut, un texte court
     entry: str                  # « azimut.modules.convert.window:ConvertWindow » (importé à la demande)
     requires: tuple[str, ...] = ()    # binaires obligatoires, ex. ("ffmpeg", "ffprobe")
     optional: tuple[str, ...] = ()    # binaires facultatifs

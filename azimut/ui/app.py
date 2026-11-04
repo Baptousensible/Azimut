@@ -11,6 +11,7 @@ from azimut import APP_NAME, __version__
 from azimut.core import binaries
 from azimut.core.logs import get_logger, setup_logging
 from azimut.core.module_spec import ModuleSpec, load_window_class
+from azimut.ui import icons
 from azimut.ui.theme import ThemeManager
 
 log = get_logger(__name__)
@@ -29,6 +30,8 @@ def create_app(argv: list[str] | None = None) -> QApplication:
     app.setOrganizationName(APP_NAME)
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(__version__)
+    app.setDesktopFileName("azimut")                 # Wayland/KDE : rattache la fenêtre à azimut.desktop si présent
+    app.setWindowIcon(icons.tile_icon("globe"))      # icône de fenêtre / barre des tâches (SVG embarqué)
     setup_logging()
     ThemeManager.instance().apply(app)               # type: ignore[arg-type]
     binaries.refresh()                               # journalise les versions détectées

@@ -83,3 +83,8 @@ Les préférences, l'historique et les journaux sont écrits dans les dossiers u
 ## Construire une distribution
 
 Voir [BUILD.md](BUILD.md) (PyInstaller, tailles, licences).
+
+## Crédits
+
+Les icônes de l'interface viennent de [Papicons](https://github.com/PapillonApp/Papicons)
+(Association Papillon, licence MIT) ; voir `azimut/resources/icons/`.

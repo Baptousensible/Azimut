@@ -178,7 +178,7 @@ def test_default_hooks_do_nothing(make_window):
 
 def test_header_and_binary_chips(make_window):
     win = make_window()
-    assert [c.text() for c in win.binary_chips] == ["✔ ffmpeg", "✖ exiftool"]
+    assert [c.text() for c in win.binary_chips] == ["ffmpeg", "exiftool"]
     assert [c.property("level") for c in win.binary_chips] == ["ok", "warn"]   # exiftool : facultatif
     assert "7.1" in win.binary_chips[0].toolTip()
     win.show_binary_status(["ffmpeg", "ffprobe"])
@@ -362,8 +362,8 @@ def test_preferences_dialog_initial_state(env):
     assert dlg.theme_combo.currentData() == "dark"
     assert dlg.zoom_combo.currentIndex() == 3 and dlg.zoom_combo.currentText() == "125 %"
     assert set(dlg.fields) == {"ffmpeg", "ffprobe", "exiftool"}
-    assert dlg.chips["ffmpeg"].text() == "✔ embarqué · 7.1"
-    assert dlg.chips["exiftool"].text() == "✖ introuvable"
+    assert dlg.chips["ffmpeg"].text() == "embarqué · 7.1"
+    assert dlg.chips["exiftool"].text() == "introuvable"
 
 
 def test_preferences_dialog_saves_on_accept(env, monkeypatch, tmp_path):
@@ -399,6 +399,6 @@ def test_preferences_dialog_detect_button(env, monkeypatch):
     dlg = PreferencesDialog()
     dlg.detect_buttons["ffmpeg"].click()
     assert calls == [1]
-    assert dlg.chips["ffmpeg"].text() == "✔ système · 7.0"
-    assert dlg.chips["ffprobe"].text() == "✖ introuvable" and dlg.chips["ffprobe"].property("level") == "err"
-    assert dlg.chips["exiftool"].text() == "✔ personnalisé · 12.76"
+    assert dlg.chips["ffmpeg"].text() == "système · 7.0"
+    assert dlg.chips["ffprobe"].text() == "introuvable" and dlg.chips["ffprobe"].property("level") == "err"
+    assert dlg.chips["exiftool"].text() == "personnalisé · 12.76"

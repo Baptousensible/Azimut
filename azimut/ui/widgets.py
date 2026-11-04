@@ -19,6 +19,8 @@ from PySide6.QtCore import (
     QRunnable,
     QSortFilterProxyModel,
     Qt,
+    QEvent,
+    QPointF,
     QThreadPool,
     Signal,
 )
@@ -34,6 +36,7 @@ from PySide6.QtGui import (
     QImage,
     QKeyEvent,
     QMouseEvent,
+    QPainter,
     QPixmap,
     QTextCharFormat,
     QTextCursor,
@@ -61,6 +64,7 @@ from azimut.core.logs import get_logger
 from azimut.core.paths import user_cache_dir
 from azimut.core.prefs import Preferences
 from azimut.core.workers import LEVELS
+from azimut.ui import icons
 from azimut.ui.theme import ThemeManager, repolish, token
 
 log = get_logger(__name__)
@@ -105,20 +109,106 @@ def _normalize_extensions(extensions: Iterable[str] | None) -> frozenset[str] | 
 # ─────────────────────────────────────────────────────────────────────────────
 # Pastille, carte
 # ─────────────────────────────────────────────────────────────────────────────
-class StatusChip(QLabel):
-    """Pastille d'état colorée (le style vient du QSS, selon la propriété « level »)."""
+class IconLabel(QLabel):
+    """QLabel précédé d'une icône SVG (Papicons) : le texte reste du texte, l'icône est dessinée à gauche.
+
+    `color` : token du thème (« muted », « warn_txt »…) ou code hexadécimal ; suit le thème à chaud.
+    """
+
+    GAP = 6
+
+    def __init__(self, text: str = "", icon: str = "", color: str = "text",
+                 parent: QWidget | None = None) -> None:
+        super().__init__(text, parent)
+        self._icon_name = ""
+        self._icon_color = color
+        if icon:
+            self.set_icon(icon, color)
+
+    def icon_name(self) -> str:
+        return self._icon_name
+
+    def set_icon(self, name: str, color: str | None = None) -> None:
+        """Affiche l'icône `name` (chaîne vide ou icône inconnue : aucune icône)."""
+        self._icon_name = name if icons.available(name) else ""
+        if color:
+            self._icon_color = color
+        self._sync_layout()
+        self.update()
+
+    def _icon_color_token(self) -> str:
+        return self._icon_color
+
+    def _icon_size(self) -> int:
+        return max(12, round(self.fontMetrics().height() * 0.95))
+
+    def _sync_layout(self) -> None:
+        if self._icon_name:
+            self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            self.setIndent(self._icon_size() + self.GAP)
+        else:
+            self.setIndent(-1)
+
+    def changeEvent(self, event: QEvent) -> None:  # noqa: N802
+        super().changeEvent(event)
+        if event.type() == QEvent.Type.FontChange and self._icon_name:
+            self._sync_layout()
+
+    def paintEvent(self, event) -> None:  # noqa: N802
+        super().paintEvent(event)
+        if not self._icon_name:
+            return
+        size = self._icon_size()
+        pm = icons.pixmap(self._icon_name, size, _themed(self._icon_color_token()))
+        rect = self.contentsRect()
+        if self.wordWrap():
+            y = rect.top() + (self.fontMetrics().height() - size) / 2
+        else:
+            y = rect.top() + (rect.height() - size) / 2
+        painter = QPainter(self)
+        painter.drawPixmap(QPointF(rect.left(), y), pm)
+        painter.end()
+
+
+def _themed(color: str) -> str:
+    """Token du thème → hexadécimal (un code hexadécimal passe tel quel)."""
+    try:
+        return token(color)
+    except KeyError:
+        return color
+
+
+_CHIP_ICON_TOKEN = {"ok": "ok_txt", "warn": "warn_txt", "err": "err_txt", "info": "primary", "neutre": "muted"}
+
+
+class StatusChip(IconLabel):
+    """Pastille d'état colorée (le style vient du QSS, selon la propriété « level »).
+
+    Un texte commençant par ✔, ✖ ou ⚠ affiche l'icône SVG correspondante (plus de dépendance à une
+    police d'emojis) ; `text()` ne renvoie alors que le texte, sans le glyphe.
+    """
 
     def __init__(self, text: str = "", level: str = "neutre", parent: QWidget | None = None) -> None:
-        super().__init__(parent)
+        super().__init__("", "", "muted", parent)
         self.setObjectName("StatusChip")
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         self.set_state(text, level)
 
+    def _icon_color_token(self) -> str:
+        return _CHIP_ICON_TOKEN.get(str(self.property("level")), "muted")
+
     def set_state(self, text: str, level: str) -> None:
         if level not in CHIP_LEVELS:
             level = "neutre"
-        self.setText(text)
+        name, rest = icons.split_glyph(text)
+        if name and icons.available(name):
+            self.setText(rest)
+            self.set_icon(name)
+        else:
+            self.setText(text)                       # glyphe inconnu ou icône absente : texte tel quel
+            self.set_icon("")
+            self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setProperty("level", level)
         repolish(self)
 
@@ -245,7 +335,8 @@ class DropZone(QFrame):
     pathsDropped = Signal(list)
 
     def __init__(self, text: str, *, accept_dirs: bool = True, accept_files: bool = True,
-                 extensions: Iterable[str] | None = None, parent: QWidget | None = None) -> None:
+                 extensions: Iterable[str] | None = None, icon: str = "folder",
+                 parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setObjectName("DropZone")
         self._accept_dirs = accept_dirs
@@ -258,6 +349,14 @@ class DropZone(QFrame):
         self.setProperty("dragOver", False)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(16, 16, 16, 16)
+        lay.setSpacing(6)
+        self._icon_label = QLabel()
+        self._icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._icon_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        lay.addWidget(self._icon_label)
+        self._icon_name = ""
+        self.set_icon(icon)
+        ThemeManager.instance().changed.connect(self._refresh_icon)
         self._label = QLabel(text)
         self._label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._label.setWordWrap(True)
@@ -266,6 +365,19 @@ class DropZone(QFrame):
 
     def set_text(self, text: str) -> None:
         self._label.setText(text)
+
+    def set_icon(self, name: str) -> None:
+        """Pictogramme affiché au-dessus du texte (« folder », « check »… ; vide = aucun)."""
+        self._icon_name = name if icons.available(name) else ""
+        self._refresh_icon()
+
+    def _refresh_icon(self, _theme: str = "") -> None:
+        if self._icon_name:
+            self._icon_label.setPixmap(icons.pixmap(self._icon_name, 28, "muted"))
+            self._icon_label.show()
+        else:
+            self._icon_label.clear()
+            self._icon_label.hide()
 
     # ── Filtrage ─────────────────────────────────────────────────────────────
     def filter_paths(self, paths: Iterable[str]) -> list[str]:
@@ -579,6 +691,9 @@ class RowTableModel(QAbstractTableModel):
             if isinstance(value, (int, float)) and not isinstance(value, bool):
                 return value
             return str(value)
+        if role == Qt.ItemDataRole.DecorationRole:   # icône de cellule : clé « _icon_<colonne> » = nom d'icône
+            name = row.get(f"_icon_{col.key}")
+            return icons.icon(str(name), "text", 16) if name else None
         if role == Qt.ItemDataRole.TextAlignmentRole:
             return _ALIGN.get(col.align, _ALIGN["left"])
         if role == Qt.ItemDataRole.BackgroundRole:
@@ -728,7 +843,7 @@ def _load_video_frame(path: Path, size: int, is_current: Callable[[], bool]) -> 
     """Une image extraite avec ffmpeg (exception assumée à la règle « pas de subprocess direct »)."""
     info = binaries.resolve("ffmpeg")
     if not info.available:
-        return None, f"🎬 Vidéo\n{path.name}\n(ffmpeg requis pour l'aperçu)"
+        return None, f"Vidéo\n{path.name}\n(ffmpeg requis pour l'aperçu)"
     tmp = user_cache_dir() / f"preview_{uuid.uuid4().hex}.png"
     kwargs: dict[str, Any] = {}
     if sys.platform == "win32":
@@ -754,7 +869,7 @@ def _load_video_frame(path: Path, size: int, is_current: Callable[[], bool]) -> 
         except OSError:
             pass
     if image.isNull():
-        return None, f"🎬 Vidéo\n{path.name}\n({_UNAVAILABLE.lower()})"
+        return None, f"Vidéo\n{path.name}\n({_UNAVAILABLE.lower()})"
     return image, ""
 
 
@@ -768,7 +883,7 @@ def load_preview(path: Path, size: int,
     if ext in VIDEO_EXT:
         return _load_video_frame(path, size, is_current)
     if ext in AUDIO_EXT:
-        return None, f"🎵 Audio\n{path.name}"
+        return None, f"Audio\n{path.name}"
     image = _load_image_file(path, size)
     if image is None or image.isNull():
         return None, f"{_UNAVAILABLE}\n{path.name}"

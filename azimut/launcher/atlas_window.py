@@ -4,6 +4,7 @@ from __future__ import annotations
 from functools import partial
 
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
@@ -21,9 +22,10 @@ from azimut.core.logs import get_logger
 from azimut.core.module_spec import ModuleSpec, load_window_class
 from azimut.launcher.dashboard import Dashboard, safe_resolve
 from azimut.launcher.registry import discover_with_errors
+from azimut.ui import icons
 from azimut.ui.preferences_dialog import PreferencesDialog
 from azimut.ui.theme import ThemeManager, token
-from azimut.ui.widgets import Card, StatusChip
+from azimut.ui.widgets import Card, IconLabel, StatusChip
 
 log = get_logger(__name__)
 
@@ -41,8 +43,10 @@ class ModuleCard(Card):
         self.chips: dict[str, StatusChip] = {}
         self.setAcceptDrops(True)
 
-        self.icon_label = QLabel(spec.icon)
-        self.icon_label.setStyleSheet("font-size: 30px;")
+        self.icon_label = QLabel()
+        self.icon_label.setFixedSize(42, 42)
+        self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._apply_icon()
         self.name_label = QLabel(spec.name)
         self.name_label.setStyleSheet("font-size: 17px; font-weight: 700;")
         head = QHBoxLayout()
@@ -75,6 +79,7 @@ class ModuleCard(Card):
         foot = QHBoxLayout()
         foot.addWidget(self.hint_label, 1)
         foot.addWidget(self.open_button)
+        self.body_layout.addStretch(1)            # contenu aligné en haut quand la carte voisine est plus haute
         self.body_layout.addLayout(foot)
 
         self.refresh_binaries()
@@ -114,7 +119,21 @@ class ModuleCard(Card):
                 chip.set_state(f"✖ {name}", "err")
                 chip.setToolTip("Introuvable : voir « Préférences… » ou le dossier bin/.")
 
+    def _apply_icon(self) -> None:
+        """Pictogramme SVG sur une tuile teintée ; un texte (ou emoji) sans SVG correspondant sert de repli."""
+        if icons.available(self.spec.icon):
+            self.icon_label.setText("")
+            self.icon_label.setPixmap(icons.pixmap(self.spec.icon, 24, token("primary")))
+            self.icon_label.setStyleSheet(f"background-color: {token('info_bg')}; border-radius: 11px;")
+        else:
+            self.icon_label.setPixmap(QPixmap())
+            self.icon_label.setText(self.spec.icon)
+            self.icon_label.setStyleSheet("font-size: 26px; background: transparent;")
+
     def restyle(self, _name: str = "") -> None:
+        self._apply_icon()
+        # Réserve deux lignes : sans cela, une tagline longue est rognée quand la fenêtre est à sa taille minimale.
+        self.tagline_label.setMinimumHeight(self.tagline_label.fontMetrics().lineSpacing() * 2 + 2)
         muted = f"color: {token('muted')};"
         self.tagline_label.setStyleSheet(muted)
         self.hint_label.setStyleSheet(muted + " font-size: 11px;")
@@ -137,7 +156,7 @@ class ModuleCard(Card):
 def _placeholder_spec(module_id: str) -> ModuleSpec:
     """Spec factice pour afficher un module dont l'import a échoué."""
     return ModuleSpec(id=module_id, name=f"Azimut {module_id.capitalize()}",
-                      tagline="Ce module n'a pas pu être chargé.", icon="⚠️", entry="", order=1000)
+                      tagline="Ce module n'a pas pu être chargé.", icon="alert-triangle", entry="", order=1000)
 
 
 class AtlasWindow(QMainWindow):
@@ -167,7 +186,7 @@ class AtlasWindow(QMainWindow):
         root.setSpacing(12)
         root.addLayout(self._build_header())
 
-        self.warning_banner = QLabel("")
+        self.warning_banner = IconLabel("", "alert-triangle", "warn_txt")
         self.warning_banner.setWordWrap(True)
         self.warning_banner.hide()
         root.addWidget(self.warning_banner)
@@ -184,8 +203,17 @@ class AtlasWindow(QMainWindow):
 
     # ── construction ──
     def _build_header(self) -> QHBoxLayout:
-        title = QLabel("🧭 Azimut")
-        title.setStyleSheet("font-size: 26px; font-weight: 700;")
+        self.logo_label = QLabel()
+        self.logo_label.setPixmap(icons.pixmap("globe", 34, "primary"))
+        title_text = QLabel("Azimut")
+        title_text.setStyleSheet("font-size: 26px; font-weight: 700;")
+        title = QWidget()
+        title_row = QHBoxLayout(title)
+        title_row.setContentsMargins(0, 0, 0, 0)
+        title_row.setSpacing(10)
+        title_row.addWidget(self.logo_label)
+        title_row.addWidget(title_text)
+        title_row.addStretch(1)
         self.subtitle_label = QLabel("Atlas — le recueil des utilitaires Azimut")
         self.version_label = QLabel(f"Version {__version__}")
         titles = QVBoxLayout()
@@ -195,9 +223,11 @@ class AtlasWindow(QMainWindow):
         titles.addWidget(self.version_label)
 
         self.theme_button = QPushButton("Thème")
+        self.theme_button.setIcon(icons.icon("color-theme", "text", 18))
         self.theme_button.setShortcut("Ctrl+T")
         self.theme_button.clicked.connect(lambda: ThemeManager.instance().toggle())
         self.prefs_button = QPushButton("Préférences…")
+        self.prefs_button.setIcon(icons.icon("gears", "text", 18))
         self.prefs_button.setShortcut("Ctrl+,")
         self.prefs_button.clicked.connect(lambda: self._on_preferences())
 
@@ -229,6 +259,9 @@ class AtlasWindow(QMainWindow):
 
     # ── style ──
     def _restyle(self, _name: str = "") -> None:
+        self.logo_label.setPixmap(icons.pixmap("globe", 34, "primary"))
+        self.theme_button.setIcon(icons.icon("color-theme", "text", 18))
+        self.prefs_button.setIcon(icons.icon("gears", "text", 18))
         muted = f"color: {token('muted')};"
         self.subtitle_label.setStyleSheet(muted)
         self.version_label.setStyleSheet(muted + " font-size: 11px;")
@@ -250,7 +283,7 @@ class AtlasWindow(QMainWindow):
             return
         parts = [f"{name} ({', '.join(users)})" for name, users in missing.items()]
         self.warning_banner.setText(
-            "⚠ Binaire(s) requis introuvable(s) : " + " · ".join(parts)
+            "Binaire(s) requis introuvable(s) : " + " · ".join(parts)
             + ". Indiquez leur chemin dans « Préférences… » ou déposez-les dans le dossier bin/.")
         self.warning_banner.show()
 

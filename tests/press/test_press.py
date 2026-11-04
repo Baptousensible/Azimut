@@ -591,7 +591,7 @@ def test_cancel_in_place_keeps_every_original_reachable(tmp_path, monkeypatch):
 # --- Module et fenêtre -------------------------------------------------------------------------
 
 def test_module_spec_fields():
-    assert (MODULE.id, MODULE.name, MODULE.icon, MODULE.order) == ("press", "Azimut Press", "📦", 40)
+    assert (MODULE.id, MODULE.name, MODULE.icon, MODULE.order) == ("press", "Azimut Press", "archive", 40)
     assert MODULE.entry == "azimut.modules.press.window:PressWindow" and MODULE.requires == ()
 
 

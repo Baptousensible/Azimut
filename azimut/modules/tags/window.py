@@ -92,7 +92,7 @@ class TagsWindow(ModuleWindow):
         outer.setSpacing(10)
 
         top = QHBoxLayout()
-        self._drop = DropZone("📂  Glissez des fichiers ou des dossiers ici (ou cliquez pour parcourir)")
+        self._drop = DropZone("Glissez des fichiers ou des dossiers ici (ou cliquez pour parcourir)")
         self._drop.setMinimumHeight(64)
         self._drop.setMaximumHeight(90)
         self._drop.pathsDropped.connect(self.open_paths)
@@ -445,7 +445,7 @@ class TagsWindow(ModuleWindow):
             return
         msg = f"{len(self._pending)} modification(s) vont être écrites dans {len(targets)} fichier(s)."
         if any(c.op == "delete" and c.tag.lower() == "all" for c in self._pending):
-            msg += "\n\n⚠ TOUTES les métadonnées modifiables seront supprimées."
+            msg += "\n\nAttention : TOUTES les métadonnées modifiables seront supprimées."
         if refused:
             msg += f"\n\n{len(refused)} fichier(s) de format non modifiable ici seront ignorés."
         msg += "\n\nL'état précédent est enregistré pour permettre l'annulation. Continuer ?"

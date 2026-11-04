@@ -10,7 +10,7 @@ from azimut.core.module_spec import ModuleSpec
 from azimut.modules.scope import MODULE, engine as eng
 from azimut.modules.scope.workers import CompareWorker
 from azimut.ui.module_window import ModuleWindow
-from azimut.ui.widgets import Card, Column, DataTable, PathField
+from azimut.ui.widgets import Card, Column, DataTable, IconLabel, PathField
 
 COLUMNS = [
     Column("folder", "Dossier", width=380, stretch=True),
@@ -54,7 +54,7 @@ class ScopeWindow(ModuleWindow):
         self.chk_diff.toggled.connect(self._on_diff_toggled)
         bar.addWidget(self.chk_diff)
         bar.addStretch(1)
-        self.lbl_gap = QLabel()
+        self.lbl_gap = IconLabel("", "", "ok_txt")
         bar.addWidget(self.lbl_gap)
         lay.addLayout(bar)
 
@@ -124,7 +124,8 @@ class ScopeWindow(ModuleWindow):
         self.table.data_model.set_rows(rows)
         self.lbl_summary.setText(f"MÈRE : {cmp.a.folders} sous-dossiers · {cmp.a.files} fichiers     "
                                  f"FILLE : {cmp.b.folders} sous-dossiers · {cmp.b.files} fichiers")
-        self.lbl_gap.setText("✔ Écart : 0 — identiques" if cmp.identical else
+        self.lbl_gap.set_icon("check" if cmp.identical else "")
+        self.lbl_gap.setText("Écart : 0 — identiques" if cmp.identical else
                              f"Écart : {cmp.folder_delta:+d} dossiers · {cmp.file_delta:+d} fichiers")
 
     # ── Rapport ─────────────────────────────────────────────────────────────

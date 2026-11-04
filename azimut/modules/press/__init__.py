@@ -7,7 +7,7 @@ MODULE = ModuleSpec(
     id="press",
     name="Azimut Press",
     tagline="Compresser et optimiser vos images et fichiers JSON",
-    icon="📦",
+    icon="archive",
     entry="azimut.modules.press.window:PressWindow",
     order=40,
 )

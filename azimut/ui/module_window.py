@@ -31,6 +31,7 @@ from azimut.core.logs import get_logger
 from azimut.core.module_spec import ModuleSpec
 from azimut.core.prefs import ModulePrefs, Preferences
 from azimut.core.workers import BaseWorker
+from azimut.ui import icons
 from azimut.ui.preferences_dialog import SOURCE_LABELS, PreferencesDialog
 from azimut.ui.theme import ThemeManager
 from azimut.ui.widgets import Column, DataTable, LogPanel, ProgressPanel, StatusChip
@@ -100,6 +101,8 @@ class ModuleWindow(QMainWindow):
         self._content_widget: QWidget | None = None
 
         self.setWindowTitle(spec.name)
+        if icons.available(spec.icon):
+            self.setWindowIcon(icons.tile_icon(spec.icon))
         self.setMinimumSize(960, 640)
         self.resize(1180, 780)
         self.setAcceptDrops(True)
@@ -209,6 +212,23 @@ class ModuleWindow(QMainWindow):
         self.help_button = self._make_button("Aide", self._show_help, "ghost", "F1", "Aide et raccourcis")
         for b in (self.log_button, self.theme_button, self.prefs_button, self.help_button):
             tb.addWidget(b)
+        self._refresh_button_icons()
+
+    # (attribut du bouton, icône, couleur) : blanc sur les boutons pleins, couleur du texte sinon
+    _BUTTON_ICONS = (
+        ("open_button", "folder", "text"), ("run_button", "play", "#ffffff"),
+        ("cancel_button", "cross", "#ffffff"), ("log_button", "list", "muted"),
+        ("prefs_button", "gears", "muted"), ("help_button", "info", "muted"),
+    )
+
+    def _refresh_button_icons(self) -> None:
+        """(Re)pose les icônes SVG des boutons de la barre d'outils ; à rappeler quand le thème change."""
+        for attr, name, color in self._BUTTON_ICONS:
+            btn = getattr(self, attr, None)
+            if btn is not None:
+                btn.setIcon(icons.icon(name, color, 18))
+        dark = ThemeManager.instance().theme() == "dark"
+        self.theme_button.setIcon(icons.icon("sun" if dark else "moon", "muted", 18))
 
     def _build_bottom(self) -> None:
         self.log_panel = LogPanel()
@@ -467,7 +487,9 @@ class ModuleWindow(QMainWindow):
 
     def _on_theme_changed(self, _theme: str) -> None:
         dark = ThemeManager.instance().theme() == "dark"
-        self._set_text_keep_shortcut(self.theme_button, "☀️ Clair" if dark else "🌙 Sombre")
+        self._set_text_keep_shortcut(self.theme_button, "Clair" if dark else "Sombre")
+        if hasattr(self, "run_button"):                    # barre d'outils déjà construite
+            self._refresh_button_icons()
 
     def _open_preferences(self) -> None:
         PreferencesDialog(self).exec()
@@ -479,9 +501,21 @@ class ModuleWindow(QMainWindow):
         lay = QVBoxLayout(dlg)
         lay.setContentsMargins(18, 18, 18, 18)
         lay.setSpacing(10)
-        title = QLabel(f'<span style="font-size:x-large; font-weight:700">'
-                       f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
-        title.setTextFormat(Qt.TextFormat.RichText)
+        title = QWidget()
+        title_row = QHBoxLayout(title)
+        title_row.setContentsMargins(0, 0, 0, 0)
+        title_row.setSpacing(10)
+        if icons.available(self.spec.icon):
+            logo = QLabel()
+            logo.setPixmap(icons.pixmap(self.spec.icon, 30, "primary"))
+            title_row.addWidget(logo)
+            heading = QLabel(f'<span style="font-size:x-large; font-weight:700">{html.escape(self.spec.name)}</span>')
+        else:                                              # texte ou emoji de repli
+            heading = QLabel(f'<span style="font-size:x-large; font-weight:700">'
+                             f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
+        heading.setTextFormat(Qt.TextFormat.RichText)
+        title_row.addWidget(heading)
+        title_row.addStretch(1)
         tagline = QLabel(self.spec.tagline)
         tagline.setWordWrap(True)
         version = QLabel(f"{APP_NAME} · version {__version__}")

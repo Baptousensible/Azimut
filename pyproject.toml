@@ -18,6 +18,9 @@ version = { attr = "azimut.__version__" }
 [tool.setuptools.packages.find]
 include = ["azimut*"]
 
+[tool.setuptools.package-data]
+azimut = ["resources/icons/*.svg", "resources/icons/*.txt"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]

@@ -23,7 +23,7 @@ from azimut.ui.module_window import ModuleWindow
 from azimut.ui.widgets import Card, Column, DataTable, DropZone, ImagePreview
 
 COLUMNS = [
-    Column("check", "☑", width=40, align="center"),
+    Column("check", "Sél.", width=56, align="center"),
     Column("before", "Avant", width=340, stretch=True),
     Column("after", "Après", width=340, stretch=True),
     Column("date", "Date retenue", width=150),
@@ -204,7 +204,8 @@ class RenameWindow(ModuleWindow):
             self.log_panel.append_log("WARN", "Un traitement est en cours : réessayez dans un instant.")
             return
         self._folder = folder
-        self.drop.set_text(f"✅  {folder.name or folder}")
+        self.drop.set_text(folder.name or str(folder))
+        self.drop.set_icon("check")
         self._ensure_exiftool(quiet=False)
         self._rows, self._entries, self._visible = [], {}, []
         self._render()
@@ -247,11 +248,13 @@ class RenameWindow(ModuleWindow):
         rows = []
         for i in self._visible:
             r = self._rows[i]
-            box = "—" if r.status in (eng.STATUS_NO_DATE, eng.STATUS_OK) else ("☑" if r.checked else "☐")
+            selectable = r.status not in (eng.STATUS_NO_DATE, eng.STATUS_OK)
+            box = "" if selectable else "—"                 # case cochée = icône « check » (voir « _icon_check »)
             after = self._display(r.new_path) if r.status == eng.STATUS_RENAME else "(inchangé)"
             tag = "warn" if r.status == eng.STATUS_RENAME and r.source == eng.SOURCE_MTIME \
                 else eng.TAG_BY_STATUS.get(r.status, "")
-            rows.append({"check": box, "before": self._display(r.path), "after": after,
+            rows.append({"check": box, "_icon_check": "check" if selectable and r.checked else None,
+                         "before": self._display(r.path), "after": after,
                          "date": r.date.strftime("%Y-%m-%d %H:%M:%S") if r.date else "—", "status": r.status,
                          "_tag": tag})
         self.table.data_model.set_rows(rows)
@@ -351,7 +354,7 @@ class RenameWindow(ModuleWindow):
         text = (f"{len(todo)} fichier(s) vont être renommés ({n_pref} avec préfixe conservé).\n"
                 "Aucun contenu ni métadonnée n'est modifié ; l'annulation du dernier renommage reste possible.")
         if n_mtime:
-            text += f"\n⚠️ {n_mtime} nom(s) basé(s) sur la date de modification (pas sur les métadonnées)."
+            text += f"\nAttention : {n_mtime} nom(s) basé(s) sur la date de modification (pas sur les métadonnées)."
         label = QLabel(text)
         label.setWordWrap(True)
         lay.addWidget(label)
