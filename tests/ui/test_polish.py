@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import json
+import shutil
+
+import pytest
 
 from azimut.modules.convert import engine as ceng
 from azimut.modules.convert.profiles import COPY_PROFILE, OTHER_KIND, get_profile
@@ -15,6 +18,19 @@ def test_preview_json_is_text(tmp_path, qapp):
     assert image is None and text.startswith(TEXT_PREVIEW_MARK) and '"a"' in text
 
 
+def _pdf_engine_available() -> bool:
+    """Un moteur PDF est-il installé ? QtPdf (PySide6 complet) ou un outil système (AZ-C06)."""
+    try:
+        from PySide6.QtPdf import QPdfDocument  # noqa: F401  (sonde d'importation seulement)
+    except Exception:                                    # PySide6-Essentials : pas de QtPdf
+        pass
+    else:
+        return True
+    return any(shutil.which(name) for name in ("pdftoppm", "pdftocairo", "gs", "magick", "convert"))
+
+
+@pytest.mark.skipif(not _pdf_engine_available(),
+                    reason="aucun moteur PDF (QtPdf, poppler, Ghostscript ou ImageMagick)")
 def test_preview_pdf_renders_page(tmp_path, qapp):
     from PySide6.QtGui import QPainter, QPdfWriter
     f = tmp_path / "p.pdf"

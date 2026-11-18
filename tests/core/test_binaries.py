@@ -324,7 +324,7 @@ def _no_group(pid: int) -> int:
 
 
 def test_probe_version_failures(monkeypatch):
-    monkeypatch.setattr(binaries.os, "getpgid", _no_group)
+    monkeypatch.setattr(binaries.os, "getpgid", _no_group, raising=False)
     fake = FakePopen(timeout=True)
     monkeypatch.setattr(binaries.subprocess, "Popen", fake)
     assert probe_version("ffmpeg", Path("/x")) == ""

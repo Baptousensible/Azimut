@@ -324,7 +324,7 @@ def test_terminate_tree_uses_taskkill_without_force_on_windows(monkeypatch):
         calls.append((args, kwargs))
         return subprocess.CompletedProcess(args, 0)
 
-    monkeypatch.setattr(workers.os, "getpgid", _no_such_group)
+    monkeypatch.setattr(workers.os, "getpgid", _no_such_group, raising=False)
     monkeypatch.setattr(workers, "_IS_WINDOWS", True)
     monkeypatch.setattr(workers.subprocess, "run", fake_run)
     assert workers._terminate_tree(Proc()) is True
@@ -345,7 +345,7 @@ def test_terminate_tree_falls_back_to_terminate_when_taskkill_fails(monkeypatch)
         def terminate(self):
             terminated.append(True)
 
-    monkeypatch.setattr(workers.os, "getpgid", _no_such_group)
+    monkeypatch.setattr(workers.os, "getpgid", _no_such_group, raising=False)
     monkeypatch.setattr(workers, "_IS_WINDOWS", True)
     monkeypatch.setattr(workers.subprocess, "run",
                         lambda args, **kwargs: subprocess.CompletedProcess(args, 1))
@@ -370,7 +370,7 @@ def test_kill_tree_uses_taskkill_force_on_windows(monkeypatch):
         calls.append(args)
         return subprocess.CompletedProcess(args, 1)
 
-    monkeypatch.setattr(workers.os, "getpgid", _no_such_group)
+    monkeypatch.setattr(workers.os, "getpgid", _no_such_group, raising=False)
     monkeypatch.setattr(workers, "_IS_WINDOWS", True)
     monkeypatch.setattr(workers.subprocess, "run", fake_run)
     workers._kill_tree([Proc()])
@@ -547,12 +547,17 @@ def test_process_tree_failures_are_logged(monkeypatch, caplog):
             raise subprocess.TimeoutExpired("fantome", timeout)
 
     proc = ProcFantome()
-    monkeypatch.setattr(workers.os, "getpgid", lambda pid: 99)
+    # Replis de groupe (POSIX) : sous Windows ils sont remplacés par taskkill et ne
+    # journalisent pas ces messages. Les fonctions os sont simulées, aucun signal n'est envoyé.
+    monkeypatch.setattr(workers, "_IS_WINDOWS", False)
+    if not hasattr(signal, "SIGKILL"):                 # Windows : le signal n'existe pas
+        monkeypatch.setattr(signal, "SIGKILL", 9, raising=False)
+    monkeypatch.setattr(workers.os, "getpgid", lambda pid: 99, raising=False)
 
     def groupe_disparu(*args):
         raise OSError("groupe disparu")
 
-    monkeypatch.setattr(workers.os, "killpg", groupe_disparu)
+    monkeypatch.setattr(workers.os, "killpg", groupe_disparu, raising=False)
 
     with caplog.at_level(logging.DEBUG, logger="azimut"):
         assert workers._terminate_tree(proc) is True

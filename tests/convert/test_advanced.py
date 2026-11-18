@@ -402,7 +402,10 @@ def test_output_dir_button_sets_and_resets_path(window, monkeypatch, tmp_path):
     assert window._out_dir == str(out)
     assert window.prefs.get("output_dir") == str(out)
     assert str(out) in window.btn_out.toolTip()
-    assert window.btn_out.text() == "Sortie : Dossier de Sortie"
+    # Le libellé est volontairement élidé au milieu (180 px, _refresh_out_button) : la coupure
+    # dépend des métriques de police de l'OS. On vérifie donc le préfixe et la fin du nom.
+    assert window.btn_out.text().startswith("Sortie : ")
+    assert window.btn_out.text().endswith("Sortie")
     window._set_output_dir("")
     assert window._out_dir == ""
     assert window.prefs.get("output_dir") == ""

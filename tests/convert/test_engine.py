@@ -263,10 +263,12 @@ def test_every_profile_has_a_build():
 
 
 def test_metadata_copy_args_excludes_geometry_and_orientation():
-    args = engine.metadata_copy_args(Path("/in/photo.heic"), Path("/out/photo.avif"))
-    assert "-TagsFromFile" in args and args[args.index("-TagsFromFile") + 1] == "/in/photo.heic"
+    source, target = Path("/in/photo.heic"), Path("/out/photo.avif")
+    args = engine.metadata_copy_args(source, target)
+    # Les séparateurs suivent la plateforme : on compare au chemin rendu par pathlib.
+    assert "-TagsFromFile" in args and args[args.index("-TagsFromFile") + 1] == str(source)
     assert "--Orientation" in args and "--ImageWidth" in args and "--ThumbnailImage" in args
-    assert args[-1] == "/out/photo.avif"
+    assert args[-1] == str(target)
 
 
 def test_manifest_detects_changed_profile_and_allows_safe_replacement(tmp_path):

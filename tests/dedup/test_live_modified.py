@@ -95,8 +95,18 @@ def test_video_duration_with_missing_ffprobe(tmp_path):
 
 
 def script(path: Path, body: str) -> Path:
-    """Faux binaire exécutable (ffprobe simulé)."""
-    path.write_text("#!/usr/bin/env python3\n" + textwrap.dedent(body), encoding="utf-8")
+    """Faux binaire exécutable (ffprobe simulé), portable Windows/POSIX.
+
+    Windows n'exécute pas directement un script à shebang : le même corps Python est
+    lancé par l'interpréteur courant à travers un lanceur ``.cmd``.
+    """
+    source = path.with_name(path.name + ".py")
+    source.write_text(textwrap.dedent(body), encoding="utf-8")
+    if sys.platform == "win32":
+        launcher = path.with_name(path.name + ".cmd")
+        launcher.write_text(f'@"{sys.executable}" "{source}" %*\r\n', encoding="utf-8")
+        return launcher
+    path.write_text(f"#!{sys.executable}\n" + textwrap.dedent(body), encoding="utf-8")
     path.chmod(0o755)
     return path
 

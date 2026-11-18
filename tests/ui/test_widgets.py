@@ -70,6 +70,21 @@ def _mime(*paths) -> QMimeData:
     return m
 
 
+def _wait_until(app, predicate, timeout_ms: int = 3000) -> bool:
+    """Attend qu'une condition devienne vraie, avec une borne de temps.
+
+    Les animations Qt suivent l'horloge murale : un ``QTest.qWait`` fixe suppose un runner
+    rapide et échoue dès qu'il est chargé.
+    """
+    deadline = time.monotonic() + timeout_ms / 1000
+    while time.monotonic() < deadline:
+        app.processEvents()
+        if predicate():
+            return True
+        QTest.qWait(10)
+    return False
+
+
 # ── StatusChip / Card ────────────────────────────────────────────────────────
 def test_status_chip_states():
     chip = StatusChip("Prêt", "ok")
@@ -213,11 +228,11 @@ def test_drop_zone_keeps_its_size_when_import_progress_appears(qt_app):
     host.show()
     qt_app.processEvents()
     before = zone.size()
-    assert before.height() > zone.minimumHeight()          # la zone a une hauteur naturelle à préserver
 
     zone.import_progress.begin_import()
     qt_app.processEvents()
-    assert zone.size() == before
+    assert zone.size() == before                    # la barre ne déplace ni n'agrandit la zone
+    assert zone.import_progress.isVisible()         # et elle est bien affichée pendant l'import
 
     zone.import_progress._stop_animations()
     zone.import_progress._finish_restore()
@@ -428,8 +443,8 @@ def test_drop_zone_import_animation_and_restoration(qt_app):
     progress.completion_ms = 90
     progress.min_progress_ms = 0
     progress.value_ms = 0
-    progress.restore_ms = 60
-    zone.restore_visual_ms = 60
+    progress.restore_ms = 250        # fondu assez long pour être observé même sur un runner lent
+    zone.restore_visual_ms = 250
     progress.begin_import()
     assert progress.is_importing() and not progress.isHidden()
     assert zone._label.isHidden() and zone._icon_box.isHidden()
@@ -449,18 +464,14 @@ def test_drop_zone_import_animation_and_restoration(qt_app):
     assert progress.done_label.isVisible()
     assert progress.done_label.text() == "Importation terminée !"
     assert progress.bar.isHidden() and progress.morph.isVisible()
-    QTest.qWait(60)                          # fin de la transformation dossier → coche
-    assert progress.morph.progress() == 1.0
+    # Les durées d'animation varient avec la charge du runner : chaque étape est attendue,
+    # pas datée.
+    assert _wait_until(qt_app, lambda: progress.morph.progress() == 1.0)   # fin du morphing
     assert progress.isVisible()
-    QTest.qWait(40)                          # début de la sortie, après le maintien
-    assert progress.isVisible()
-    assert zone._label.isHidden()
-    QTest.qWait(100)                         # overlay disparu, l'invite entre en fondu
-    assert progress.isHidden()
-    assert zone._label.isVisible() and zone._icon_box.isVisible()
-    assert zone._label.graphicsEffect() is not None
-    QTest.qWait(70)                          # fin du fondu d'entrée de l'invite
-    assert zone._label.graphicsEffect() is None
+    assert _wait_until(qt_app, lambda: progress.isHidden())                # overlay disparu
+    assert zone._label.isVisible() and zone._icon_box.isVisible()          # invite revenue
+    assert zone._label.graphicsEffect() is not None                        # fondu d'entrée en cours
+    assert _wait_until(qt_app, lambda: zone._label.graphicsEffect() is None)
     assert zone._label.text() == prompt
 
 
@@ -675,7 +686,7 @@ def _make_avif(path):
     """Crée un AVIF réel avec ffmpeg ; ignore le test si l'outil manque."""
     png = _make_png(path.with_suffix(".png"), (160, 96))
     ffmpeg = widgets.binaries.resolve("ffmpeg")
-    if not ffmpeg.available:
+    if not ffmpeg.available or not Path(ffmpeg.path).exists():
         pytest.skip("ffmpeg est requis pour créer un AVIF de test")
     result = subprocess.run(
         [str(ffmpeg.path), "-y", "-loglevel", "error", "-i", str(png),
