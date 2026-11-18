@@ -20,6 +20,21 @@ def test_preview_json_is_text(tmp_path, qapp):
     assert image is None and text.startswith(TEXT_PREVIEW_MARK) and '"a"' in text
 
 
+def _write_pdf(path: Path) -> None:
+    """Écrit un PDF minimal ; l'écrivain est détruit pour que le fichier soit complet sur disque.
+
+    Sous Windows, le fichier reste incomplet tant que le ``QPdfWriter`` vit : l'aperçu ne
+    pourrait pas l'ouvrir.
+    """
+    from PySide6.QtGui import QPainter, QPdfWriter
+
+    writer = QPdfWriter(str(path))
+    painter = QPainter(writer)
+    painter.drawText(300, 300, "x")
+    painter.end()
+    del painter, writer
+
+
 def _qtpdf_renders() -> bool:
     """QtPdf est-il réellement exploitable ? Il peut être livré sans son moteur de rendu (AZ-C06).
 
@@ -28,7 +43,6 @@ def _qtpdf_renders() -> bool:
     """
     try:
         from PySide6.QtCore import QSize
-        from PySide6.QtGui import QPainter, QPdfWriter
         from PySide6.QtPdf import QPdfDocument
         from PySide6.QtWidgets import QApplication
     except Exception:                                    # PySide6-Essentials : pas de QtPdf
@@ -37,10 +51,7 @@ def _qtpdf_renders() -> bool:
     with tempfile.TemporaryDirectory() as folder:
         probe = Path(folder) / "sonde.pdf"
         try:
-            writer = QPdfWriter(str(probe))
-            painter = QPainter(writer)
-            painter.drawText(200, 200, "x")
-            painter.end()
+            _write_pdf(probe)
             document = QPdfDocument()
         except Exception:
             return False
@@ -56,25 +67,22 @@ def _qtpdf_renders() -> bool:
 
 
 def _pdf_engine_available() -> bool:
-    """Un moteur PDF utilisable est-il installé ? QtPdf, sinon un outil système (AZ-C06).
+    """Un moteur PDF utilisable est-il installé ? QtPdf, sinon un moteur système (AZ-C06).
 
-    Seuls les outils que l'aperçu essaie vraiment comptent : ``convert`` est le convertisseur
-    de système de fichiers sous Windows, pas ImageMagick.
+    Seuls comptent les outils qui lisent le PDF par eux-mêmes : ImageMagick (``magick``,
+    ``convert``) en est incapable sans Ghostscript, et ``convert`` désigne sous Windows le
+    convertisseur de système de fichiers. QtPdf, lui, s'importe sans savoir rendre.
     """
     if _qtpdf_renders():
         return True
-    return any(shutil.which(name) for name in ("pdftoppm", "pdftocairo", "gs", "magick"))
+    return any(shutil.which(name) for name in ("pdftoppm", "pdftocairo", "gs"))
 
 
 @pytest.mark.skipif(not _pdf_engine_available(),
-                    reason="aucun moteur PDF (QtPdf, poppler, Ghostscript ou ImageMagick)")
+                    reason="aucun moteur PDF utilisable (QtPdf, poppler ou Ghostscript)")
 def test_preview_pdf_renders_page(tmp_path, qapp):
-    from PySide6.QtGui import QPainter, QPdfWriter
     f = tmp_path / "p.pdf"
-    w = QPdfWriter(str(f))
-    painter = QPainter(w)
-    painter.drawText(300, 300, "x")
-    painter.end()
+    _write_pdf(f)
     image, _ = load_preview(f, 200)
     assert image is not None and not image.isNull()
 
