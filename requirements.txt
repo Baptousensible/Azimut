@@ -3,7 +3,7 @@
 # police au zoom ou au thème), shiboken abît sur « none_dealloc: deallocating None ».
 # 6.11.3 est la dernière version saine sur 3.11 ; Python 3.12 garde la plus récente.
 PySide6-Essentials>=6.6,<6.13; python_version >= "3.12"
-PySide6-Essentials>=6.6,<6.12; python_version < "3.12"
+PySide6-Essentials>=6.12.0,<6.13; python_version < "3.12"
 PySide6-Addons>=6.6,<6.13; python_version >= "3.12"   # QtMultimedia : lecture des vidéos dans l'aperçu de Tags
 PySide6-Addons>=6.6,<6.12; python_version < "3.12"
 Pillow>=13.0.0        # écriture AVIF ; versions antérieures concernées par des avis de sécurité
