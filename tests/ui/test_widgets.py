@@ -425,10 +425,9 @@ def test_import_progress_smooths_and_keeps_a_minimum_duration(qt_app):
     p.end_import()
     assert not p.is_importing() and not p.is_completed()
     assert p.bar.isVisible()
-    QTest.qWait(300)
-    assert p.bar.value() == 10 and not p.is_completed()
-    QTest.qWait(400)
-    assert p.is_completed() and p.bar.isHidden()
+    assert _wait_until(qt_app, lambda: p.bar.value() == 10)   # la barre rejoint sa cible
+    assert not p.is_completed()                              # le minimum d'affichage court encore
+    assert _wait_until(qt_app, lambda: p.is_completed() and p.bar.isHidden())
     p.close()
 
 

@@ -5,6 +5,7 @@ import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import time
 import types
 from pathlib import Path
 
@@ -952,6 +953,23 @@ def test_header_title_stays_azimut_while_compacting(make_atlas):
         assert win.title_label.graphicsEffect() is None
 
 
+def _wait_until(predicate, timeout_ms: int = 3000) -> bool:
+    """Attend qu'une condition devienne vraie, avec une borne de temps.
+
+    Les animations Qt suivent l'horloge murale : un ``QTest.qWait`` fixe suppose un
+    runner rapide et échoue dès qu'il est chargé.
+    """
+    app = QApplication.instance()
+    deadline = time.monotonic() + timeout_ms / 1000
+    while time.monotonic() < deadline:
+        if app is not None:
+            app.processEvents()
+        if predicate():
+            return True
+        QTest.qWait(10)
+    return False
+
+
 def _drag_tab(bar, start: QPoint, end: QPoint, steps: int = 16, on_step=None) -> None:
     """Simule un vrai glisser de souris sur la barre d'onglets (bouton maintenu)."""
     app = QApplication.instance()
@@ -1022,8 +1040,7 @@ def test_shift_click_selects_a_range_without_switching_tabs(make_atlas, monkeypa
     assert bar.selected_ids() == ["fb", "fc"]
     assert bar.selection_count() == 2
     assert bar._selection_animating or bar._selection_progress == 1.0
-    QTest.qWait(220)
-    assert not bar._selection_animating
+    assert _wait_until(lambda: not bar._selection_animating)   # fin de l'animation de la plage
     assert bar._selection_rect.width() > bar._tab_rect(2).width()
 
 
