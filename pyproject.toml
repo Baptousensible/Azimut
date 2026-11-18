@@ -8,8 +8,11 @@ dynamic = ["version"]
 description = "Azimut : suite d'utilitaires de bureau pour photos, vidéos et audio."
 requires-python = ">=3.11"
 dependencies = [
-    "PySide6-Essentials>=6.6,<6.13",
-    "PySide6-Addons>=6.6,<6.13",
+    # PySide6 6.12.0 casse Python 3.11 (voir requirements.txt).
+    "PySide6-Essentials>=6.6,<6.13; python_version >= '3.12'",
+    "PySide6-Essentials>=6.6,<6.12; python_version < '3.12'",
+    "PySide6-Addons>=6.6,<6.13; python_version >= '3.12'",
+    "PySide6-Addons>=6.6,<6.12; python_version < '3.12'",
     "Pillow>=13.0.0",
 ]
 

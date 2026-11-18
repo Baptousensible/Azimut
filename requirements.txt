@@ -1,6 +1,11 @@
 # Python >= 3.11 requis (Pillow 13 ne prend plus en charge 3.10).
-PySide6-Essentials>=6.6,<6.13
-PySide6-Addons>=6.6,<6.13   # QtMultimedia : lecture des vidéos dans l'aperçu de Tags
+# PySide6 6.12.0 casse Python 3.11 : dès qu'un QLabel redéfinit changeEvent (changement de
+# police au zoom ou au thème), shiboken abît sur « none_dealloc: deallocating None ».
+# 6.11.3 est la dernière version saine sur 3.11 ; Python 3.12 garde la plus récente.
+PySide6-Essentials>=6.6,<6.13; python_version >= "3.12"
+PySide6-Essentials>=6.6,<6.12; python_version < "3.12"
+PySide6-Addons>=6.6,<6.13; python_version >= "3.12"   # QtMultimedia : lecture des vidéos dans l'aperçu de Tags
+PySide6-Addons>=6.6,<6.12; python_version < "3.12"
 Pillow>=13.0.0        # écriture AVIF ; versions antérieures concernées par des avis de sécurité
 # pillow-heif>=1.3.0  # optionnel : HEIC/HEIF
 # send2trash>=1.8     # optionnel : corbeille système

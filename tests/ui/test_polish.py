@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import json
 import shutil
+import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -18,15 +20,50 @@ def test_preview_json_is_text(tmp_path, qapp):
     assert image is None and text.startswith(TEXT_PREVIEW_MARK) and '"a"' in text
 
 
-def _pdf_engine_available() -> bool:
-    """Un moteur PDF est-il installé ? QtPdf (PySide6 complet) ou un outil système (AZ-C06)."""
+def _qtpdf_renders() -> bool:
+    """QtPdf est-il réellement exploitable ? Il peut être livré sans son moteur de rendu (AZ-C06).
+
+    Le module s'importe sans erreur sur certaines plateformes où ``QPdfDocument.render`` ne
+    produit rien : la prémisse du test est donc le rendu, pas l'importation.
+    """
     try:
-        from PySide6.QtPdf import QPdfDocument  # noqa: F401  (sonde d'importation seulement)
+        from PySide6.QtCore import QSize
+        from PySide6.QtGui import QPainter, QPdfWriter
+        from PySide6.QtPdf import QPdfDocument
+        from PySide6.QtWidgets import QApplication
     except Exception:                                    # PySide6-Essentials : pas de QtPdf
-        pass
-    else:
+        return False
+    QApplication.instance() or QApplication([])           # QPdfWriter exige une application
+    with tempfile.TemporaryDirectory() as folder:
+        probe = Path(folder) / "sonde.pdf"
+        try:
+            writer = QPdfWriter(str(probe))
+            painter = QPainter(writer)
+            painter.drawText(200, 200, "x")
+            painter.end()
+            document = QPdfDocument()
+        except Exception:
+            return False
+        try:
+            if document.load(str(probe)) != QPdfDocument.Error.None_ or document.pageCount() < 1:
+                return False
+            image = document.render(0, QSize(64, 64))
+            return image is not None and not image.isNull()
+        except Exception:
+            return False
+        finally:
+            document.close()
+
+
+def _pdf_engine_available() -> bool:
+    """Un moteur PDF utilisable est-il installé ? QtPdf, sinon un outil système (AZ-C06).
+
+    Seuls les outils que l'aperçu essaie vraiment comptent : ``convert`` est le convertisseur
+    de système de fichiers sous Windows, pas ImageMagick.
+    """
+    if _qtpdf_renders():
         return True
-    return any(shutil.which(name) for name in ("pdftoppm", "pdftocairo", "gs", "magick", "convert"))
+    return any(shutil.which(name) for name in ("pdftoppm", "pdftocairo", "gs", "magick"))
 
 
 @pytest.mark.skipif(not _pdf_engine_available(),
