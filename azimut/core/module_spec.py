@@ -1,22 +1,22 @@
-"""Description déclarative des modules (cartes d'Atlas, binaires requis, point d'entrée)."""
+"""Description déclarative des modules (cartes d'Azimut, binaires requis, point d'entrée)."""
 from __future__ import annotations
 
 import importlib
 from dataclasses import dataclass
 
-MODULE_IDS: tuple[str, ...] = ("convert", "tags", "takeout", "dedup", "press", "rename", "scope")
+MODULE_IDS: tuple[str, ...] = ("convert", "tags", "takeout", "dedup", "rename", "scope")
 
 
 @dataclass(frozen=True)
 class ModuleSpec:
     id: str                     # « convert »
-    name: str                   # « Azimut Convert »
+    name: str                   # « Convert »
     tagline: str                # une phrase, en français
     icon: str                   # nom d'une icône Papicons (azimut/resources/icons) ; à défaut, un texte court
     entry: str                  # « azimut.modules.convert.window:ConvertWindow » (importé à la demande)
     requires: tuple[str, ...] = ()    # binaires obligatoires, ex. ("ffmpeg", "ffprobe")
     optional: tuple[str, ...] = ()    # binaires facultatifs
-    order: int = 100            # tri des cartes dans Atlas
+    order: int = 100            # tri des cartes dans Azimut
 
 
 def load_window_class(spec: ModuleSpec) -> type:

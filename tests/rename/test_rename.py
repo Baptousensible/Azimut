@@ -5,7 +5,6 @@ import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-import json
 import shutil
 import subprocess
 from datetime import datetime
@@ -14,9 +13,20 @@ from pathlib import Path
 import pytest
 
 from azimut.modules.rename import engine as eng
-from azimut.modules.rename.engine import Options, RenameRow
+from azimut.modules.rename.engine import Options
 
 D = datetime(2008, 6, 15, 14, 30, 0)
+
+
+def test_csv_safe_neutralises_formulas():
+    """Un nom commençant par =, +, - ou @ ne devient jamais une formule (AZ-007)."""
+    assert eng.csv_safe("=HYPERLINK(\"http://x\")").startswith("'=")
+    assert eng.csv_safe("+1") == "'+1" and eng.csv_safe("-2") == "'-2"
+    assert eng.csv_safe("@SUM(A1)") == "'@SUM(A1)"
+    assert eng.csv_safe("photo.jpg") == "photo.jpg"
+    cells = eng.plan_csv_lines([row(Path("/photos/=1+1.jpg"))])[1]
+    assert cells[1].startswith("'") and cells[2].startswith("'")
+
 
 
 def row(path: Path, date: datetime | None = D, prefix: str | None = None, checked: bool = True, mtime=None):
@@ -290,6 +300,22 @@ def test_scan_apply_undo_end_to_end(tmp_path, qapp):
     assert get_storage().load(eng.UNDO_COLLECTION, out["key"]) is None       # annulé : n'est plus proposé
 
 
+def test_undo_keeps_record_when_new_name_is_missing(tmp_path, qapp):
+    """Une paire introuvable ne doit pas faire perdre l'enregistrement des autres paires."""
+    from azimut.core.storage import get_storage
+    from azimut.modules.rename.workers import UndoWorker
+    key = f"undo-test-{tmp_path.name}"
+    storage = get_storage()
+    storage.save(eng.UNDO_COLLECTION, key,
+                 eng.undo_record([(tmp_path / "old.jpg", tmp_path / "missing.jpg")],
+                                 "2026-01-01T00:00:00"))
+    try:
+        assert run_worker(UndoWorker(key)) == (0, 0)
+        assert storage.load(eng.UNDO_COLLECTION, key) is not None
+    finally:
+        storage.delete(eng.UNDO_COLLECTION, key)
+
+
 @pytest.mark.skipif(not EXIFTOOL, reason="ExifTool requis")
 def test_scan_reads_video_dates_and_batches(tmp_path, qapp):
     from azimut.modules.rename.workers import ScanWorker
@@ -319,10 +345,10 @@ def test_scan_without_exiftool_uses_no_metadata(tmp_path, qapp):
 
 # ── Fenêtre ───────────────────────────────────────────────────────────────────
 def test_window_filters_checkboxes_prefix_and_export(tmp_path, qapp, monkeypatch):
-    from PySide6.QtWidgets import QFileDialog
     from azimut.modules.rename import MODULE
     from azimut.modules.rename.window import RenameWindow
     w = RenameWindow(MODULE)
+    assert w.preview.video.volume_slider is not None
     (tmp_path / "a.jpg").write_bytes(b"x")
     (tmp_path / "b.jpg").write_bytes(b"x")
     (tmp_path / "c.jpg").write_bytes(b"x")
@@ -347,10 +373,127 @@ def test_window_filters_checkboxes_prefix_and_export(tmp_path, qapp, monkeypatch
     w.chk_type.setChecked(False)
     assert rows[0].new_name == "Autre_2008-06-15_14-30-00.jpg" and w.prefs.get("add_type") is False
     target = tmp_path / "plan.csv"
-    monkeypatch.setattr(QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: (str(target), "")))
+    monkeypatch.setattr("azimut.modules.rename.window.choose_save_file", lambda *a, **k: str(target))
     w._export_plan()
     text = target.read_text(encoding="utf-8-sig")
     assert text.splitlines()[0].startswith("chemin,ancien_nom") and "Autre_2008-06-15_14-30-00.jpg" in text
+    w.close()
+
+
+def test_open_paths_keeps_drop_zone_unchanged(tmp_path, qapp, monkeypatch):
+    """L'import ne remplace ni le texte ni le pictogramme de la zone de dépôt."""
+    from azimut.modules.rename import MODULE
+    from azimut.modules.rename.window import RenameWindow
+
+    w = RenameWindow(MODULE)
+    text, icon = w.drop._label.text(), w.drop._icon_name
+    monkeypatch.setattr(w, "_ensure_exiftool", lambda quiet=True: None)
+    monkeypatch.setattr(w, "run_worker", lambda *args, **kwargs: None)
+    w.open_paths([str(tmp_path)])
+    assert w.drop._label.text() == text
+    assert w.drop._icon_name == icon
+    w.close()
+
+
+def test_window_action_bar_below_list_and_clear_button(qapp):
+    """Barre d'actions sous la liste, bouton de vidage dans la barre, libellé de lancement."""
+    from azimut.modules.rename import MODULE
+    from azimut.modules.rename.window import RenameWindow
+
+    w = RenameWindow(MODULE)
+    try:
+        assert w.run_button.text() == "Démarrer le renommage"
+        assert w.btn_clear.text() == "Vider la liste"
+        assert not w.btn_clear.isEnabled() and w.btn_clear.property("kind") == "ghost"
+        assert not w.btn_all.isEnabled() and not w.btn_none.isEnabled()
+        layout = w._content_widget.layout()
+        assert layout.indexOf(w.action_bar) > layout.indexOf(w.lbl_summary)
+        w.btn_clear.click()
+        assert w._rows == [] and w._visible == [] and w._entries == {}
+    finally:
+        w.close()
+
+
+def test_clear_list_asks_for_confirmation(tmp_path, qapp, monkeypatch):
+    """« Vider la liste » attend la confirmation ; Annuler laisse le tableau intact."""
+    from azimut.modules.rename import MODULE
+    from azimut.modules.rename.window import RenameWindow
+
+    (tmp_path / "a.jpg").write_bytes(b"x")
+    w = RenameWindow(MODULE)
+    try:
+        rows = [row(tmp_path / "a.jpg")]
+        w._rows, w._entries, w._base_dir = rows, eng.folder_entries(rows), tmp_path
+        w._recompute()
+        assert w.btn_clear.isEnabled()
+        monkeypatch.setattr(w, "confirm_clear_list", lambda: False)
+        w.btn_clear.click()
+        assert w._rows and w._entries
+        monkeypatch.setattr(w, "confirm_clear_list", lambda: True)
+        w.btn_clear.click()
+        assert w._rows == [] and w._visible == [] and w._entries == {}
+    finally:
+        w.close()
+
+
+def test_run_button_waits_for_a_file_to_rename(tmp_path, qapp):
+    """« Démarrer le renommage » n'est actif que s'il reste une ligne à renommer."""
+    from azimut.modules.rename import MODULE
+    from azimut.modules.rename.window import RenameWindow
+
+    (tmp_path / "a.jpg").write_bytes(b"x")
+    w = RenameWindow(MODULE)
+    try:
+        assert not w.run_button.isEnabled()
+        rows = [row(tmp_path / "a.jpg")]
+        w._rows, w._entries, w._base_dir = rows, eng.folder_entries(rows), tmp_path
+        w._recompute()
+        assert w.run_button.isEnabled()
+        w._rows = []
+        w._recompute()
+        assert not w.run_button.isEnabled()
+    finally:
+        w.close()
+
+
+def test_window_check_buttons_only_act_on_selected_rows(tmp_path, qapp):
+    """Les boutons « Cocher/Décocher la sélection » ignorent les lignes non surlignées."""
+    from PySide6.QtCore import QItemSelectionModel
+    from azimut.modules.rename import MODULE
+    from azimut.modules.rename.window import RenameWindow
+
+    w = RenameWindow(MODULE)
+    for name in ("a.jpg", "b.jpg", "c.jpg"):
+        (tmp_path / name).write_bytes(b"x")
+    rows = [row(tmp_path / name) for name in ("a.jpg", "b.jpg", "c.jpg")]
+    w._rows, w._entries, w._base_dir = rows, eng.folder_entries(rows), tmp_path
+    w.cmb_filter.setCurrentIndex(1)          # « Tout » : les trois lignes restent visibles
+    w._recompute()
+    assert w.table.selected_rows() == []
+    assert w.btn_clear.isEnabled() and w.btn_clear.property("kind") == "secondary"
+    assert not w.btn_all.isEnabled() and not w.btn_none.isEnabled()
+
+    w._set_checked([0, 1, 2], False)
+    assert [r.checked for r in rows] == [False, False, False]
+    w.table.selectRow(0)
+    assert w.table.selected_rows() == [0]
+    assert w.btn_all.isEnabled() and w.btn_none.isEnabled()
+    w.btn_all.click()
+    assert [r.checked for r in rows] == [True, False, False]
+    assert not w.btn_all.isEnabled() and not w.btn_none.isEnabled()
+
+    # Sélection multiple : seules les lignes 0 et 2 doivent être décochées.
+    w._set_checked([0, 1, 2], True)
+    model, selection = w.table.model(), w.table.selectionModel()
+    selection.clearSelection()
+    for index in (0, 2):
+        selection.select(
+            model.index(index, 0),
+            QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows,
+        )
+    assert w.table.selected_rows() == [0, 2]
+    w.btn_none.click()
+    assert [r.checked for r in rows] == [False, True, False]
     w.close()
 
 
@@ -359,4 +502,4 @@ def test_module_is_registered_and_runnable():
     specs, errors = discover_with_errors()
     assert "rename" in [s.id for s in specs] and not errors
     spec = next(s for s in specs if s.id == "rename")
-    assert spec.name == "Azimut Rename" and spec.optional == ("exiftool", "ffmpeg") and spec.requires == ()
+    assert spec.name == "Rename" and spec.optional == ("exiftool", "ffmpeg") and spec.requires == ()

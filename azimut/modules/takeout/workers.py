@@ -25,7 +25,7 @@ class AnalyzeWorker(BaseWorker):                          # pas besoin d'ExifToo
         self._recursive = recursive
 
     def do_work(self) -> eng.Analysis:
-        self.emit_status("Recherche des médias et des JSON…")
+        self.emit_status(self.tr("Recherche des médias et des JSON…"))
         total = eng.Analysis()
         for folder in self._folders:
             self.check_cancelled()
@@ -38,8 +38,11 @@ class AnalyzeWorker(BaseWorker):                          # pas besoin d'ExifToo
             total.orphan_json += part.orphan_json
         ready = total.count(eng.STATE_READY)
         self.ok_count, self.error_count = ready, total.count(eng.STATE_NO_JSON)
-        self.summary = (f"{len(total.items)} média(s) : {ready} prêt(s), {total.count(eng.STATE_NO_JSON)} sans JSON, "
-                        f"{total.count(eng.STATE_NO_DATA)} sans données ; {total.orphan_json} JSON sans média")
+        self.summary = self.tr(
+            "{media} média(s) : {ready} prêt(s), {no_json} sans JSON, {no_data} sans données ; "
+            "{orphans} JSON sans média"
+        ).format(media=len(total.items), ready=ready, no_json=total.count(eng.STATE_NO_JSON),
+                 no_data=total.count(eng.STATE_NO_DATA), orphans=total.orphan_json)
         self.emit_log("INFO", self.summary)
         return total
 
@@ -55,6 +58,7 @@ class ApplyWorker(_ExifToolWorker):
         super().__init__(exiftool, parent)
         self._items = list(items)
         self._options = options
+        self.result: dict | None = None        # renseigné même si le lot est annulé
 
     def do_work(self) -> dict:
         todo = [(i, it) for i, it in enumerate(self._items) if it.state == eng.STATE_READY and it.sidecar]
@@ -68,17 +72,37 @@ class ApplyWorker(_ExifToolWorker):
                 self.emit_progress(n, total, item.path.name)
         finally:
             key = self._save_undo(records)
-            self.summary = f"{self.ok_count} fichier(s) mis à jour, {self.error_count} erreur(s)"
+            self.summary = self.tr("{ok} fichier(s) mis à jour, {errors} erreur(s)").format(
+                ok=self.ok_count, errors=self.error_count)
+            self.result = {"states": dict(states), "key": key}
         self.emit_log("OK" if not self.error_count else "WARN", self.summary)
-        return {"states": states, "key": key}
+        self.check_cancelled()
+        return self.result
 
     def _one(self, item: eng.TakeoutItem, records: list[dict]) -> tuple[str, str]:
         path, sc = item.path, item.sidecar
-        assert sc is not None
+        if sc is None:                              # invariant rompu : erreur explicite, jamais d'AttributeError
+            self.error_count += 1
+            self.emit_log("ERR", f"{path.name} : données Takeout introuvables.")
+            return eng.STATE_ERROR, "Données Takeout introuvables."
         if not path.is_file():
             self.error_count += 1
             self.emit_log("ERR", f"{path.name} : fichier introuvable.")
             return eng.STATE_ERROR, "Fichier introuvable."
+        # Aucun bit d'écriture : le fichier est protégé, mais ExifTool le réécrirait (mode conservé).
+        try:
+            writable = bool(path.stat().st_mode & 0o222)
+        except OSError:
+            writable = False
+        if not writable:
+            self.error_count += 1
+            self.emit_log("ERR", f"{path.name} : fichier en lecture seule, aucune écriture.")
+            return eng.STATE_ERROR, "Fichier en lecture seule : aucune écriture."
+        try:                                    # avant la lecture ExifTool, qui peut mettre à jour l'atime
+            st = path.stat()
+            mtime, atime = st.st_mtime, st.st_atime
+        except OSError:
+            mtime = atime = None
         recs = None if tags.write_refusal(path) else self.read_records([path], numeric=True)
         rec = recs[0] if recs else None
         if tags.write_refusal(path) is None and not rec:
@@ -95,16 +119,12 @@ class ApplyWorker(_ExifToolWorker):
             return eng.STATE_ERROR, str(exc)
         if plan.is_empty:
             return eng.STATE_UNCHANGED, " ".join(plan.notes)
-        try:
-            mtime = path.stat().st_mtime
-        except OSError:
-            mtime = None
         before: dict = {}
         unrestorable: list[str] = []
         if args:
             resolved = tags.resolve_changes(path, plan.changes)
             before, unrestorable = tags.snapshot_before(entries, resolved)
-            ok, msg = self.write_tags(path, args)
+            ok, msg = self.write_tags(path, args, backup=self._options.backup)
             if not ok:
                 self.error_count += 1
                 self.emit_log("ERR", f"{path.name} : {msg}")
@@ -117,7 +137,7 @@ class ApplyWorker(_ExifToolWorker):
                 os.utime(path, (ts, ts))
             except (OSError, OverflowError, ValueError) as exc:
                 self.emit_log("WARN", f"{path.name} : date de modification non alignée ({exc}).")
-        records.append(tags.snapshot_record(path, mtime, before, unrestorable))
+        records.append(tags.snapshot_record(path, mtime, before, unrestorable, atime))
         self.ok_count += 1
         note = " ".join(plan.notes)
         self.emit_log("OK", f"{path.name} : {len(args)} modification(s) écrite(s)" + (f" ({note})" if note else "."))

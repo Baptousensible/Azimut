@@ -8,6 +8,9 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import json
 import shutil
 import subprocess
+import sys
+import time
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -16,7 +19,7 @@ from azimut.modules.convert import advanced, engine, imaging, probe, profiles
 from azimut.modules.convert.engine import SourceItem
 
 ALL_ENC = frozenset({"libsvtav1", "libaom-av1", "libx264", "mjpeg", "libwebp",
-                     "libmp3lame", "aac", "libopus", "flac"})
+                     "libmp3lame", "aac", "libopus", "libvorbis", "flac"})
 
 
 def val(cmd, flag):
@@ -27,6 +30,12 @@ def build(pid, info, **kw):
     p = kw.pop("profile", None) or profiles.get_profile(pid)
     return engine.build_command(p, Path("/in/a.mkv"), Path("/out/.a.part" + p.out_ext), ffmpeg="ffmpeg",
                                 encoders=ALL_ENC, probe=info, **kw)
+
+
+def build_without_probe(pid):
+    p = profiles.get_profile(pid)
+    return engine.build_command(p, Path("/in/a.webm"), Path("/out/.a.part.webm"), ffmpeg="ffmpeg",
+                                encoders=ALL_ENC)
 
 
 def ffprobe_json(**over):
@@ -53,6 +62,17 @@ def test_parse_probe_audio_subs_hdr():
     assert probe.parse_media_probe("nope") is None and probe.parse_media_probe("[]") is None
 
 
+def test_parse_probe_keeps_first_video_dimensions():
+    info = probe.parse_media_probe(ffprobe_json(streams=[
+        {"index": 0, "codec_type": "video", "codec_name": "h264", "width": 48, "height": 32},
+        {"index": 1, "codec_type": "video", "codec_name": "mjpeg", "width": 320, "height": 240},
+    ]))
+    assert (info.width, info.height) == (48, 32)
+    missing = probe.parse_media_probe(ffprobe_json(streams=[
+        {"index": 0, "codec_type": "video", "codec_name": "h264"}]))
+    assert (missing.width, missing.height) == (0, 0)
+
+
 def test_hlg_detected_and_filters():
     info = probe.parse_media_probe(ffprobe_json(streams=[
         {"index": 0, "codec_type": "video", "codec_name": "hevc", "color_transfer": "arib-std-b67"}]))
@@ -65,10 +85,10 @@ def test_hlg_detected_and_filters():
 
 
 def test_input_flags_strategies_and_avchd():
-    assert probe.input_flags(0, "a.mp4") == []
+    assert probe.input_flags(0, "a.mp4") == ["-protocol_whitelist", "file"]   # liste blanche toujours là
     assert "+genpts+igndts" in probe.input_flags(1, "a.mp4")
     assert probe.input_flags(2, "a.mp4")[-2:] == ["-err_detect", "ignore_err"]
-    assert probe.input_flags(0, "a.MTS")[:2] == ["-analyzeduration", "100M"]
+    assert "-analyzeduration" in probe.input_flags(0, "a.MTS") and "100M" in probe.input_flags(0, "a.MTS")
 
 
 # ── Commandes ─────────────────────────────────────────────────────────────────
@@ -141,15 +161,42 @@ def test_creation_time_attempts_and_lp_fallback():
     assert "-svtav1-params" not in build("", info, profile=p, lp_ok=False)
 
 
-def test_fix_mono_profile_copies_video_and_fixes_only_mono():
+def test_webm_mono_opus_is_reencoded_to_stereo():
+    info = probe.parse_media_probe(ffprobe_json(streams=[
+        {"index": 0, "codec_type": "video", "codec_name": "av1"},
+        {"index": 1, "codec_type": "audio", "codec_name": "opus", "channels": 1}]))
+    cmd = build("video_webm_av1", info)
+    assert val(cmd, "-c:a") == "libopus" and "copy" not in cmd
+    assert val(cmd, "-af") == "pan=stereo|c0=c0|c1=c0"
+
+
+def test_webm_mixed_audio_only_duplicates_mono_tracks():
     info = probe.parse_media_probe(ffprobe_json(streams=[
         {"index": 0, "codec_type": "video", "codec_name": "av1"},
         {"index": 1, "codec_type": "audio", "codec_name": "opus", "channels": 1},
         {"index": 2, "codec_type": "audio", "codec_name": "opus", "channels": 2}]))
-    cmd = build("video_fix_mono", info)
-    assert val(cmd, "-c:v") == "copy" and "-vf" not in cmd and "-crf" not in cmd
-    assert val(cmd, "-c:a:0") == "libopus" and val(cmd, "-filter:a:0") == "pan=stereo|c0=c0|c1=c0"
+    cmd = build("video_webm_av1", info)
+    assert val(cmd, "-c:a:0") == "libopus"
+    assert val(cmd, "-filter:a:0") == "pan=stereo|c0=c0|c1=c0"
     assert val(cmd, "-c:a:1") == "copy"
+
+
+def test_webm_mono_vorbis_is_also_made_stereo():
+    info = probe.parse_media_probe(ffprobe_json(streams=[
+        {"index": 0, "codec_type": "video", "codec_name": "av1"},
+        {"index": 1, "codec_type": "audio", "codec_name": "aac", "channels": 1}]))
+    profile = profiles.compose_video(profiles.get_profile("video_webm_av1"),
+                                     profiles.get_profile("audio_vorbis"))
+    cmd = build("", info, profile=profile)
+    assert val(cmd, "-c:a") == "libvorbis"
+    assert val(cmd, "-af") == "pan=stereo|c0=c0|c1=c0"
+
+
+def test_webm_without_probe_encodes_the_video():
+    """Sans sonde exploitable, le WebM reste un encodage normal (pas de copie de vidéo)."""
+    cmd = build_without_probe("video_webm_av1")
+    assert val(cmd, "-c:v") == "libsvtav1"
+    assert "-vf" in cmd
 
 
 # ── Noms et plan ──────────────────────────────────────────────────────────────
@@ -287,7 +334,7 @@ def stream_info(path: Path, entries="stream=codec_type,codec_name,channels,color
     return json.loads(res.stdout)["streams"]
 
 
-def convert(tmp_path, files, profile_ids, qapp, **opts):
+def convert(tmp_path, files, profile_ids, qapp, profile_map=None, **opts):
     from azimut.modules.convert.workers import ConvertOptions, ConvertWorker
     src = tmp_path / "in"
     out = tmp_path / "out"
@@ -296,6 +343,8 @@ def convert(tmp_path, files, profile_ids, qapp, **opts):
     for pid in profile_ids:
         p = profiles.get_profile(pid)
         by_kind[p.kind] = p
+    if profile_map:
+        by_kind.update(profile_map)
     worker = ConvertWorker(items, by_kind, out, Path(shutil.which("ffmpeg")), Path(shutil.which("ffprobe")),
                            None, options=ConvertOptions(**opts), exiftool=(
                                Path(shutil.which("exiftool")) if shutil.which("exiftool") else None))
@@ -350,7 +399,7 @@ def test_e2e_orientation_gif_and_passthrough(tmp_path, qapp):
         Image.new("RGB", (160, 96), (30, 90, 160)).save(src / "done.avif", format="AVIF")
     except Exception as exc:                          # noqa: BLE001 - Pillow sans AVIF
         pytest.skip(f"Pillow ne sait pas écrire l'AVIF : {exc}")
-    out, worker = convert(tmp_path, [], ["image_avif_small"], qapp, name_ext=True, memory_guard=False)
+    out, worker = convert(tmp_path, [], ["image_avif"], qapp, name_ext=True, memory_guard=False)
     rot = out / "rot_jpg.avif"
     assert rot.exists(), worker.summary
     info = stream_info(rot)[0]
@@ -361,16 +410,221 @@ def test_e2e_orientation_gif_and_passthrough(tmp_path, qapp):
 
 
 @needs_ffmpeg
-def test_e2e_fix_mono_profile(tmp_path, qapp):
+@needs_av1
+def test_e2e_av1_mp4(tmp_path, qapp):
+    src = tmp_path / "in"
+    src.mkdir()
+    ff("-f", "lavfi", "-i", "testsrc=size=160x96:rate=5:duration=1", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+       str(src / "clip.mkv"))
+    out, worker = convert(tmp_path, [], ["video_mp4_av1"], qapp, memory_guard=False)
+    dest = out / "clip.mp4"
+    assert dest.exists(), worker.summary
+    assert stream_info(dest)[0]["codec_name"] == "av1"
+
+
+@needs_ffmpeg
+@needs_av1
+@needs_avif
+def test_e2e_small_avif_uses_libaom(tmp_path, qapp, monkeypatch):
+    """LOG-002 : une image AV1 de 48×48 px est confiée à libaom-av1 (SVT-AV1 échoue sur FFmpeg 6.x)."""
+    from PIL import Image
+    src = tmp_path / "in"
+    src.mkdir()
+    Image.effect_noise((48, 48), 40).convert("RGB").save(src / "small.png")
+    seen: list[tuple[str, ...]] = []
+    real_build = engine.build_command
+
+    def spy(profile, *args, **kwargs):
+        seen.append(profile.video_encoders)
+        return real_build(profile, *args, **kwargs)
+
+    monkeypatch.setattr(engine, "build_command", spy)
+    out, worker = convert(tmp_path, [], ["image_avif"], qapp, memory_guard=False)
+    dest = out / "small.avif"
+    assert dest.exists(), worker.summary
+    assert seen and all(encs == ("libaom-av1",) for encs in seen), seen
+    info = stream_info(dest)[0]
+    assert (info["width"], info["height"]) == (48, 48)
+    assert not list(out.glob("*problemes.txt"))
+
+
+@needs_ffmpeg
+@needs_av1
+def test_e2e_small_av1_video_uses_libaom(tmp_path, qapp, monkeypatch):
+    """LOG-002 : une vidéo AV1 de 48×48 px est confiée à libaom-av1 (SVT-AV1 échoue sur FFmpeg 6.x)."""
+    src = tmp_path / "in"
+    src.mkdir()
+    ff("-f", "lavfi", "-i", "testsrc2=size=48x48:rate=10:duration=1", "-f", "lavfi", "-i", "sine=duration=1",
+       "-c:v", "libx264", "-crf", "0", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest",
+       str(src / "small.mkv"))
+    seen: list[tuple[str, ...]] = []
+    real_build = engine.build_command
+
+    def spy(profile, *args, **kwargs):
+        seen.append(profile.video_encoders)
+        return real_build(profile, *args, **kwargs)
+
+    monkeypatch.setattr(engine, "build_command", spy)
+    # L'anti-grossissement garderait la source sur un 48×48 : ce test porte sur le choix de l'encodeur.
+    profile = replace(profiles.get_profile("video_webm_av1"), guard_growth=False)
+    out, worker = convert(tmp_path, [], ["video_webm_av1"], qapp, profile_map={"video": profile},
+                          memory_guard=False)
+    dest = out / "small.webm"
+    assert dest.exists(), worker.summary
+    assert seen and all(encs == ("libaom-av1",) for encs in seen), seen
+    kinds = {s["codec_type"]: s for s in stream_info(dest)}
+    assert kinds["video"]["codec_name"] == "av1"
+    assert (kinds["video"]["width"], kinds["video"]["height"]) == (48, 48)
+    assert kinds["audio"]["codec_name"] == "opus"
+    assert not list(out.glob("*problemes.txt"))
+
+
+@needs_ffmpeg
+@needs_av1
+@needs_avif
+def test_e2e_16px_avif_avoids_svt_hang(tmp_path, qapp, monkeypatch):
+    """LOG-002 : à 16×16 px, SVT-AV1 se bloque (même SIGTERM l'ignore) ; le worker doit prendre libaom-av1."""
+    from PIL import Image
+    src = tmp_path / "in"
+    src.mkdir()
+    Image.effect_noise((16, 16), 40).convert("RGB").save(src / "tiny.png")
+    seen: list[tuple[str, ...]] = []
+    real_build = engine.build_command
+
+    def spy(profile, *args, **kwargs):
+        seen.append(profile.video_encoders)
+        return real_build(profile, *args, **kwargs)
+
+    monkeypatch.setattr(engine, "build_command", spy)
+    # Une AVIF de 16×16 px pèse plus que le PNG de bruit : ce test porte sur le choix de l'encodeur.
+    profile = replace(profiles.get_profile("image_avif"), guard_growth=False)
+    out, worker = convert(tmp_path, [], ["image_avif"], qapp, profile_map={"image": profile},
+                          memory_guard=False)
+    dest = out / "tiny.avif"
+    assert dest.exists(), worker.summary
+    assert seen and all(encs == ("libaom-av1",) for encs in seen), seen
+    info = stream_info(dest)[0]
+    assert info["codec_name"] == "av1" and (info["width"], info["height"]) == (16, 16)
+    assert not list(out.glob("*problemes.txt"))
+
+
+@needs_ffmpeg
+def test_e2e_frozen_image_encoder_is_stopped(tmp_path, qapp, monkeypatch):
+    """Un encodeur d'image figé est arrêté après la fenêtre d'inactivité, pas après les 600 s du délai global."""
+    from azimut.modules.convert import workers as convert_workers
+    from PIL import Image
+    src = tmp_path / "in"
+    src.mkdir()
+    Image.new("RGB", (32, 32), (10, 20, 30)).save(src / "a.png")
+    monkeypatch.setattr(convert_workers, "IMAGE_STALL_FLOOR", 1.0)      # fenêtre courte : le test reste rapide
+    monkeypatch.setattr(engine, "build_command",
+                        lambda *args, **kwargs: [sys.executable, "-c", "import time; time.sleep(600)"])
+    t0 = time.monotonic()
+    out, worker = convert(tmp_path, [], ["image_avif"], qapp, memory_guard=False)
+    ecoule = time.monotonic() - t0
+    assert ecoule < 20, f"l'encodeur figé n'a pas été arrêté ({ecoule:.0f} s)"
+    assert not list(out.glob("*.avif"))
+    assert worker.error_count == 1 and "1 erreur(s)" in worker.summary
+
+
+def _stall_first_calls(monkeypatch, convert_workers, count: int) -> list[str]:
+    """`engine.build_command` : les `count` premiers appels simulent un encodeur figé, les suivants sont réels."""
+    real_build = engine.build_command
+    calls: list[str] = []
+
+    def fake(profile, source, output, **kwargs):
+        calls.append(profile.preset)
+        if len(calls) <= count:
+            return [sys.executable, "-c", "import time; time.sleep(600)"]
+        return real_build(profile, source, output, **kwargs)
+
+    monkeypatch.setattr(engine, "build_command", fake)
+    monkeypatch.setattr(convert_workers, "IMAGE_STALL_FLOOR", 1.0)
+    return calls
+
+
+@needs_ffmpeg
+@needs_av1
+@needs_avif
+def test_e2e_stalled_image_retries_faster_preset(tmp_path, qapp, monkeypatch):
+    """LOG-013 : un blocage au preset courant est réessayé une fois avec le preset suivant, qui aboutit."""
+    from azimut.modules.convert import workers as convert_workers
+    from PIL import Image
+    src = tmp_path / "in"
+    src.mkdir()
+    Image.effect_noise((64, 64), 40).convert("RGB").save(src / "a.png")
+    calls = _stall_first_calls(monkeypatch, convert_workers, 1)
+    profile = replace(profiles.get_profile("image_avif"), guard_growth=False)
+    out, worker = convert(tmp_path, [], ["image_avif"], qapp, profile_map={"image": profile},
+                          memory_guard=False)
+    assert calls[:2] == ["4", "5"], calls                       # preset du profil, puis le suivant plus rapide
+    assert (out / "a.avif").exists(), worker.summary
+    assert worker.error_count == 0
+
+
+@needs_ffmpeg
+@needs_av1
+@needs_avif
+def test_e2e_stalled_image_stops_after_one_retry(tmp_path, qapp, monkeypatch):
+    """LOG-013 : un second blocage n'est pas réessayé — deux presets essayés, puis erreur."""
+    from azimut.modules.convert import workers as convert_workers
+    from PIL import Image
+    src = tmp_path / "in"
+    src.mkdir()
+    Image.effect_noise((64, 64), 40).convert("RGB").save(src / "a.png")
+    calls = _stall_first_calls(monkeypatch, convert_workers, 2)
+    profile = replace(profiles.get_profile("image_avif"), guard_growth=False)
+    out, worker = convert(tmp_path, [], ["image_avif"], qapp, profile_map={"image": profile},
+                          memory_guard=False)
+    assert calls == ["4", "5"], calls
+    assert not list(out.glob("*.avif"))
+    assert worker.error_count == 1
+
+
+@needs_ffmpeg
+def test_e2e_mkv_h264_and_audio(tmp_path, qapp):
     src = tmp_path / "in"
     src.mkdir()
     ff("-f", "lavfi", "-i", "testsrc=size=160x96:rate=5:duration=1", "-f", "lavfi", "-i", "sine=duration=1",
-       "-ac", "1", "-c:v", "libvpx", "-c:a", "libopus", str(src / "m.webm"))
-    out, worker = convert(tmp_path, [], ["video_fix_mono"], qapp, memory_guard=False)
-    dest = out / "m.webm"
+       "-c:v", "libx264", "-c:a", "aac", "-shortest", str(src / "clip.mp4"))
+    profile = replace(profiles.get_profile("video_mkv_h264"), guard_growth=False)
+    out, worker = convert(tmp_path, [], ["video_mkv_h264"], qapp, profile_map={"video": profile},
+                          memory_guard=False)
+    dest = out / "clip.mkv"
     assert dest.exists(), worker.summary
     kinds = {s["codec_type"]: s for s in stream_info(dest)}
-    assert kinds["audio"]["channels"] == 2 and kinds["video"]["codec_name"] == "vp8"     # vidéo non recompressée
+    assert kinds["video"]["codec_name"] == "h264" and kinds["audio"]["codec_name"] == "aac"
+
+
+@needs_ffmpeg
+def test_e2e_heic_output(tmp_path, qapp):
+    pytest.importorskip("pillow_heif")
+    from PIL import Image
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+    src = tmp_path / "in"
+    src.mkdir()
+    Image.new("RGB", (64, 48), (30, 120, 200)).save(src / "a.jpg", quality=95)
+    profile = replace(profiles.get_profile("image_heic"), guard_growth=False)
+    out, worker = convert(tmp_path, [], ["image_heic"], qapp, profile_map={"image": profile}, memory_guard=False)
+    dest = out / "a.heic"
+    assert dest.exists(), worker.summary
+    with Image.open(dest) as im:
+        assert im.format == "HEIF" and im.size == (64, 48)
+    assert not list(out.glob("*problemes.txt"))
+
+
+@needs_ffmpeg
+@pytest.mark.parametrize("pid,codec,ext", [("audio_aiff", "pcm_s16be", ".aiff"),
+                                             ("audio_pcm24", "pcm_s24le", ".wav")])
+def test_e2e_lossless_audio(tmp_path, qapp, pid, codec, ext):
+    src = tmp_path / "in"
+    src.mkdir()
+    ff("-f", "lavfi", "-i", "sine=duration=0.2", "-c:a", "pcm_s16le", str(src / "a.wav"))
+    out, worker = convert(tmp_path, [], [pid], qapp, memory_guard=False)
+    dest = out / ("a" + ext)
+    assert dest.exists(), worker.summary
+    assert stream_info(dest)[0]["codec_name"] == codec
 
 
 @pytest.mark.skipif(not (shutil.which("ffmpeg") and shutil.which("exiftool")), reason="ffmpeg et ExifTool requis")

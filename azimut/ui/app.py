@@ -5,12 +5,14 @@ import os
 import sys
 from pathlib import Path
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QCoreApplication, QEvent, QProcess
+from PySide6.QtWidgets import QApplication, QWidget
 
 from azimut import APP_NAME, __version__
-from azimut.core import binaries
+from azimut.core import binaries, i18n
 from azimut.core.logs import get_logger, setup_logging
 from azimut.core.module_spec import ModuleSpec, load_window_class
+from azimut.core.prefs import Preferences
 from azimut.ui import icons
 from azimut.ui.theme import ThemeManager
 
@@ -24,19 +26,62 @@ def create_app(argv: list[str] | None = None) -> QApplication:
     app = QApplication.instance()
     if app is None:
         app = QApplication(list(sys.argv if argv is None else argv))
-        app.setStyle("Fusion")                       # rendu homogène sous toutes les plateformes
+        if sys.platform != "darwin":
+            app.setStyle("Fusion")                   # rendu homogène hors macOS ; macOS garde son style natif
     if bool(app.property(_READY_PROPERTY)):
         return app                                   # type: ignore[return-value]
     app.setOrganizationName(APP_NAME)
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(__version__)
     app.setDesktopFileName("azimut")                 # Wayland/KDE : rattache la fenêtre à azimut.desktop si présent
-    app.setWindowIcon(icons.tile_icon("globe"))      # icône de fenêtre / barre des tâches (SVG embarqué)
+    app.setWindowIcon(icons.app_icon())              # icône de fenêtre / barre des tâches (logo embarqué)
     setup_logging()
+    state = i18n.install(app, Preferences.instance().get("language", i18n.AUTO))
+    log.info("Langue de l'interface : %s (demandée : %s ; détectée : %s ; repli : %s)",
+             state.active, state.requested, state.detected or "—", state.fallback)
+    app.setProperty("azimut.language", state.active)
     ThemeManager.instance().apply(app)               # type: ignore[arg-type]
-    binaries.refresh()                               # journalise les versions détectées
+    binaries.refresh(background=True)                # détecte sans geler l'interface (versions sondées à part)
     app.setProperty(_READY_PROPERTY, True)
     return app                                       # type: ignore[return-value]
+
+
+def shutdown_ui(app: QApplication, window: QWidget | None = None) -> None:
+    """Détruit la fenêtre et ses enfants avant la fin de l'interpréteur.
+
+    Les connexions à ``ThemeManager.changed`` gardent une référence forte vers les
+    fenêtres : un simple ``del`` ne libère donc pas l'objet Qt. Sans destruction
+    explicite, PySide le détruit pendant la finalisation de Python, après la
+    QApplication, ce qui provoque un SIGBUS à la sortie (PySide 6.12 / Python 3.14).
+    On force la destruction pendant que l'application est encore vivante.
+    """
+    if window is not None:
+        window.close()
+        window.deleteLater()
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    app.processEvents()
+
+
+def restart_command() -> tuple[str, list[str]]:
+    """Programme et arguments pour relancer Azimut avec les mêmes options."""
+    args = list(sys.argv[1:])
+    if getattr(sys, "frozen", False):                 # application empaquetée (PyInstaller…)
+        return sys.executable, args
+    script = sys.argv[0] if sys.argv else ""
+    if script.endswith(os.path.join("azimut", "__main__.py")):
+        return sys.executable, ["-m", "azimut", *args]
+    if script:
+        return sys.executable, [os.path.abspath(script), *args]
+    return sys.executable, ["-m", "azimut", *args]
+
+
+def restart_application() -> bool:
+    """Démarre une nouvelle instance d'Azimut ; False si le lancement échoue."""
+    program, args = restart_command()
+    result = QProcess.startDetached(program, args, os.getcwd())
+    if isinstance(result, tuple):                      # PySide renvoie (succès, pid)
+        result = result[0]
+    return bool(result)
 
 
 def _existing_paths(args: list[str]) -> list[str]:
@@ -63,8 +108,6 @@ def run_module(spec: ModuleSpec, argv: list[str] | None = None) -> int:
         log.info("Chemins reçus en ligne de commande : %d", len(paths))
         window.open_paths(paths)
     code = int(app.exec())
-    window.close()
-    window.deleteLater()
-    app.processEvents()
+    shutdown_ui(app, window)
     del window
     return code

@@ -1,7 +1,7 @@
 # .github/workflows/build.yml
 #
-# Tests sur 3 systèmes, puis fabrication de 3 distributions « clé en main » :
-#   Linux   → Azimut-<version>-linux-x86_64.AppImage
+# Tests sur 3 systèmes, puis fabrication des distributions « clé en main » :
+#   Linux   → Azimut-<version>-linux-x86_64.AppImage, .deb, .rpm et .tar.gz
 #   Windows → Azimut-<version>-windows-x64-setup.exe  (+ Azimut-<version>-windows-x64-portable.zip)
 #   macOS   → Azimut-<version>-macos-arm64.dmg        (+ Azimut-<version>-macos-x64.dmg, Intel)
 # Publication automatique sur la page « Releases » quand un tag « v* » est poussé
@@ -47,15 +47,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-22.04,   python: "3.10" }
           - { os: ubuntu-22.04,   python: "3.12" }
+          - { os: ubuntu-22.04,   python: "3.11" }
           - { os: windows-latest, python: "3.12" }
           - { os: macos-15,       python: "3.12" }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803   # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1   # v6.3.0
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -66,6 +68,22 @@ jobs:
       - run: python -m pip install -U pip
       - run: pip install -r requirements.txt -r requirements-dev.txt
       - run: pytest -q
+
+  # --------------------------------------------------------------------------------------------
+  audit:
+    name: Audit des dépendances
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803   # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1   # v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: python -m pip install -U pip pip-audit
+      # Échoue sur tout avis de sécurité non justifié dans les dépendances distribuées.
+      - run: pip-audit -r requirements-build.txt
 
   # --------------------------------------------------------------------------------------------
   package:
@@ -86,9 +104,11 @@ jobs:
     env:
       AZIMUT_REQUIRE_BINARIES: "1"      # jamais de paquet sans FFmpeg / ExifTool embarqués
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803   # v6.1.0
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1   # v6.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
@@ -106,9 +126,9 @@ jobs:
             exit 1
           fi
 
-      - name: Bibliothèques système (Qt sous Linux)
+      - name: Bibliothèques système et rpmbuild (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y ${{ env.LINUX_QT_LIBS }}
+        run: sudo apt-get update && sudo apt-get install -y ${{ env.LINUX_QT_LIBS }} rpm
 
       - name: Dépendances Python (application + extras HEIC/AVIF/corbeille + PyInstaller)
         run: |
@@ -147,6 +167,38 @@ jobs:
         run: |
           ./release/Azimut-*-linux-x86_64.AppImage --selftest selftest-appimage.json || { cat selftest-appimage.json || true; exit 1; }
           python packaging/check_selftest.py selftest-appimage.json
+
+      # ----- Linux : .deb, .rpm et archive portable ----------------------------------------------
+      - name: Paquets Linux (.deb, .rpm, archive portable)
+        if: runner.os == 'Linux'
+        run: |
+          bash packaging/make_deb.sh
+          bash packaging/make_rpm.sh
+          bash packaging/make_tarball.sh
+
+      - name: Test des paquets Linux (.deb, .rpm, archive portable)
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+
+          DEB="$(ls release/Azimut-*-linux-x86_64.deb)"
+          sudo apt-get install -y "$PWD/$DEB"
+          azimut --selftest selftest-deb.json || { cat selftest-deb.json || true; exit 1; }
+          python packaging/check_selftest.py selftest-deb.json
+          sudo apt-get purge -y azimut
+
+          RPM="$(ls release/Azimut-*-linux-x86_64.rpm)"
+          sudo rpm -i --nodeps "$RPM"
+          /opt/azimut/Azimut --selftest selftest-rpm.json || { cat selftest-rpm.json || true; exit 1; }
+          python packaging/check_selftest.py selftest-rpm.json
+          sudo rpm -e azimut
+
+          TARBALL="$(ls release/Azimut-*-linux-x86_64.tar.gz)"
+          rm -rf build/tarball-test && mkdir -p build/tarball-test
+          tar -xzf "$TARBALL" -C build/tarball-test
+          TARBIN="$(find build/tarball-test -maxdepth 3 -type f -name Azimut -perm -u+x -print -quit)"
+          "$TARBIN" --selftest selftest-tarball.json || { cat selftest-tarball.json || true; exit 1; }
+          python packaging/check_selftest.py selftest-tarball.json
 
       # ----- Windows : installeur + archive portable ---------------------------------------------
       - name: Installeur Windows (Inno Setup) et archive portable
@@ -187,7 +239,7 @@ jobs:
         run: python packaging/check_selftest.py selftest-dmg.json
 
       # ----- Résultats -----------------------------------------------------------------------------
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9   # v7.0.2
         with:
           name: Azimut-${{ matrix.tag }}
           path: release/*
@@ -195,7 +247,7 @@ jobs:
           compression-level: 0            # les installeurs sont déjà compressés
           retention-days: 14
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9   # v7.0.2
         if: always()
         with:
           name: rapports-${{ matrix.tag }}
@@ -210,9 +262,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-22.04
     permissions:
-      contents: write                   # nécessaire pour créer la release et y joindre les fichiers
+      contents: write                   # créer la release et y joindre les fichiers
+      id-token: write                   # attestation de provenance (OIDC)
+      attestations: write
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131   # v7.0.0
         with:
           pattern: Azimut-*
           path: release
@@ -223,24 +277,43 @@ jobs:
           cd release
           sha256sum -- * | tee SHA256SUMS.txt
 
-      - uses: softprops/action-gh-release@v3
+      - name: Attestation de provenance (SLSA)
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be   # v2
         with:
-          files: release/*
-          fail_on_unmatched_files: true
-          generate_release_notes: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          body: |
-            ## Téléchargements
+          subject-path: "release/*"
 
-            | Système | Fichier |
-            |---|---|
-            | Windows | `Azimut-…-windows-x64-setup.exe` (installeur) ou `…-portable.zip` |
-            | macOS (Apple Silicon) | `Azimut-…-macos-arm64.dmg` |
-            | macOS (Intel) | `Azimut-…-macos-x64.dmg` (si présent) |
-            | Linux | `Azimut-…-linux-x86_64.AppImage` |
+      - name: Publier la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cat > notes.md <<'EOF'
+          ## Téléchargements
 
-            FFmpeg, FFprobe et ExifTool sont **inclus** : rien d'autre à installer.
-            Les applications ne sont pas signées par un certificat payant : à la première ouverture,
-            Windows (SmartScreen) et macOS (Gatekeeper) demandent une confirmation.
-            Linux : `chmod +x Azimut-*.AppImage` puis double-clic ou `./Azimut-*.AppImage`.
-            Vérification d'intégrité : `SHA256SUMS.txt`.
+          | Système | Fichier |
+          |---|---|
+          | Windows | `Azimut-…-windows-x64-setup.exe` (installeur) ou `…-portable.zip` |
+          | macOS (Apple Silicon) | `Azimut-…-macos-arm64.dmg` |
+          | macOS (Intel) | `Azimut-…-macos-x64.dmg` (si présent) |
+          | Linux — Debian, Ubuntu, Mint | `Azimut-…-linux-x86_64.deb` |
+          | Linux — Fedora, RHEL 10+, openSUSE | `Azimut-…-linux-x86_64.rpm` |
+          | Linux — portable (Arch, Gentoo…) | `Azimut-…-linux-x86_64.tar.gz` |
+          | Linux — toutes distributions | `Azimut-…-linux-x86_64.AppImage` |
+
+          FFmpeg, FFprobe et ExifTool sont **inclus** : rien d'autre à installer.
+          Les applications ne sont pas signées par un certificat payant : à la première ouverture,
+          Windows (SmartScreen) et macOS (Gatekeeper) demandent une confirmation.
+          Linux : `sudo apt install ./Azimut-*.deb` (Debian/Ubuntu/Mint), `sudo dnf install ./Azimut-*.rpm`
+          (Fedora/RHEL 10+/openSUSE), ou l'archive/AppImage (`chmod +x` puis double-clic).
+
+          Vérification : `SHA256SUMS.txt` (intégrité) et l'attestation de provenance :
+
+          ```bash
+          gh attestation verify Azimut-* --repo "$GITHUB_REPOSITORY"
+          ```
+          EOF
+          PRERELEASE=""
+          case "$GITHUB_REF_NAME" in *-*) PRERELEASE="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" release/* \
+            --title "Azimut ${GITHUB_REF_NAME#v}" \
+            --notes-file notes.md --verify-tag $PRERELEASE

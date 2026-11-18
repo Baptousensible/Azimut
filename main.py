@@ -1,4 +1,4 @@
-"""Point d'entrée d'Azimut : Atlas, le lanceur de la suite."""
+"""Point d'entrée d'Azimut : le lanceur de la suite."""
 from __future__ import annotations
 
 import sys

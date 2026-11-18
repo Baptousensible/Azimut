@@ -2,13 +2,18 @@
 from __future__ import annotations
 
 import os
+import shutil
 from pathlib import Path
 from typing import Callable, Sequence
+from uuid import uuid4
 
 from azimut.core.fsutil import iter_files
+from azimut.core.logs import get_logger
 from azimut.core.storage import get_storage
 from azimut.core.workers import BaseWorker, ProcessResult
 from azimut.modules.tags import engine as eng
+
+_log = get_logger("tags.workers")
 
 
 class _ExifToolWorker(BaseWorker):
@@ -28,8 +33,8 @@ class _ExifToolWorker(BaseWorker):
         finally:
             try:
                 argfile.unlink()
-            except OSError:
-                pass
+            except OSError as exc:
+                _log.debug("Fichier d'arguments non supprimé (%s) : %s", argfile, exc)
         self.check_cancelled()
         return result
 
@@ -46,12 +51,55 @@ class _ExifToolWorker(BaseWorker):
             return None
         return eng.match_records(paths, records)
 
-    def write_tags(self, path: Path, tag_args: list[str], *, numeric: bool = False) -> tuple[bool, str]:
-        res = self._exec(lambda a: eng.write_command(self._exiftool, a, numeric=numeric),
+    def write_tags(self, path: Path, tag_args: list[str], *, numeric: bool = False,
+                   backup: bool = False) -> tuple[bool, str]:
+        ok, msg = self._write_once(path, tag_args, numeric=numeric, backup=backup)
+        if ok or not eng.is_type_mismatch(msg):
+            return ok, msg
+        return self._write_mislabelled(path, tag_args, msg, numeric=numeric, backup=backup)
+
+    def _write_once(self, path: Path, tag_args: list[str], *, numeric: bool, backup: bool) -> tuple[bool, str]:
+        res = self._exec(lambda a: eng.write_command(self._exiftool, a, numeric=numeric, backup=backup),
                          [*tag_args, str(path)], 120.0)
         if res.timed_out:
             return False, "délai dépassé"
         return eng.parse_write_result(res.returncode, res.stdout, res.stderr)
+
+    def _write_mislabelled(self, path: Path, tag_args: list[str], reason: str, *,
+                           numeric: bool, backup: bool) -> tuple[bool, str]:
+        """Écrit dans une copie portant la vraie extension, puis la remplace atomiquement.
+
+        L'original reste intact jusqu'au remplacement : une erreur d'écriture ne l'altère pas.
+        """
+        real = eng.sniff_extension(path)
+        if real is None:
+            return False, f"{reason} — contenu non reconnu, extension à corriger."
+        temp = path.with_name(f".azimut-tmp-{uuid4().hex}{real}")
+        try:
+            shutil.copy2(path, temp)
+        except OSError as exc:
+            return False, f"{reason} — copie temporaire impossible : {exc}"
+        try:
+            ok, msg = self._write_once(temp, tag_args, numeric=numeric, backup=False)
+            if not ok:
+                return ok, msg
+            try:
+                if backup:
+                    original = Path(f"{path}_original")
+                    if not original.exists():
+                        shutil.copy2(path, original)
+                shutil.copystat(path, temp)          # droits, dates et xattrs du fichier d'origine
+                os.replace(temp, path)               # même dossier : remplacement atomique
+            except OSError as exc:
+                return False, f"écriture effectuée mais remplacement du fichier impossible : {exc}"
+            note = (f"extension {path.suffix.lower()} incohérente avec le contenu ({real}) : "
+                    "métadonnées écrites via une copie temporaire")
+            return True, f"{msg}; {note}" if msg else note
+        finally:
+            try:
+                temp.unlink()
+            except OSError as exc:
+                _log.debug("Copie temporaire non supprimée (%s) : %s", temp, exc)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -76,7 +124,7 @@ class ReadWorker(_ExifToolWorker):
                 seen.add(k)
                 files.append(p)
 
-        self.emit_status("Recherche des fichiers…")
+        self.emit_status(self.tr("Recherche des fichiers…"))
         for p in self._paths:
             if p.is_dir():
                 for f in iter_files(p, recursive=self._recursive, extensions=eng.SUPPORTED_EXTENSIONS,
@@ -107,7 +155,7 @@ class ReadWorker(_ExifToolWorker):
                     records.append(one[0] if one else {})
             elif records is None:
                 records = [{}]
-            for p, rec in zip(chunk, records):
+            for p, rec in zip(chunk, records, strict=False):
                 try:
                     size = p.stat().st_size
                 except OSError:
@@ -127,7 +175,8 @@ class ReadWorker(_ExifToolWorker):
                 results.append(ft)
             done += len(chunk)
             self.emit_progress(done, total, chunk[-1].name)
-        self.summary = f"{self.ok_count} fichier(s) lu(s), {self.error_count} erreur(s)"
+        self.summary = self.tr("{ok} fichier(s) lu(s), {errors} erreur(s)").format(
+            ok=self.ok_count, errors=self.error_count)
         self.emit_log("OK" if not self.error_count else "WARN", self.summary)
         return results
 
@@ -145,6 +194,7 @@ class WriteWorker(_ExifToolWorker):
         self._files = [Path(f) for f in files]
         self._changes = list(changes)
         self._align = align_mtime
+        self.result: dict | None = None        # renseigné même si le lot est annulé
 
     def do_work(self) -> dict:
         problems = eng.validate_changes(self._changes)
@@ -152,7 +202,7 @@ class WriteWorker(_ExifToolWorker):
             for p in problems:
                 self.emit_log("ERR", p)
             self.error_count = len(self._files)
-            self.summary = f"Modifications refusées : {problems[0]}"
+            self.summary = self.tr("Modifications refusées : {reason}").format(reason=problems[0])
             return {"written": [], "key": None}
 
         when = eng.date_from_changes(self._changes) if self._align else None
@@ -167,9 +217,13 @@ class WriteWorker(_ExifToolWorker):
                 self.emit_progress(i, total, path.name)
         finally:
             key = self._save_undo(records)
-            self.summary = f"{self.ok_count} fichier(s) modifié(s), {self.error_count} erreur(s)"
+            self.summary = self.tr("{ok} fichier(s) modifié(s), {errors} erreur(s)").format(
+                ok=self.ok_count, errors=self.error_count)
+            self.result = {"written": list(written), "key": key, "total": total,
+                           "cancelled": self.is_cancelled()}
         self.emit_log("OK" if not self.error_count else "WARN", self.summary)
-        return {"written": written, "key": key}
+        self.check_cancelled()
+        return self.result
 
     def _one(self, path: Path, when, records: list[dict], written: list[Path]) -> None:
         refusal = eng.write_refusal(path)
@@ -255,7 +309,7 @@ class UndoWorker(_ExifToolWorker):
         rec = storage.load(self._collection, self._key)
         if not rec or not rec.get("files"):
             self.emit_log("ERR", "Sauvegarde d'annulation introuvable ou vide.")
-            self.summary = "Aucune sauvegarde d'annulation exploitable"
+            self.summary = self.tr("Aucune sauvegarde d'annulation exploitable")
             return {"restored": [], "failed": 0}
         files = rec["files"]
         restored: list[Path] = []
@@ -276,10 +330,11 @@ class UndoWorker(_ExifToolWorker):
                     if ok:
                         mt = item.get("mtime")
                         if mt is not None:
-                            try:
-                                os.utime(path, (mt, mt))
-                            except OSError:
-                                pass
+                            at = item.get("atime")
+                            try:                         # atime absent des anciens enregistrements
+                                os.utime(path, (at if at is not None else mt, mt))
+                            except OSError as exc:
+                                _log.debug("Date du fichier non restaurée (%s) : %s", path, exc)
                         restored.append(path)
                         self.emit_log("OK", f"Restauré : {path.name}")
                     else:
@@ -288,7 +343,8 @@ class UndoWorker(_ExifToolWorker):
                 self.emit_progress(i, total, path.name)
         finally:
             self.ok_count, self.error_count = len(restored), len(failed)
-            self.summary = f"{self.ok_count} fichier(s) restauré(s), {self.error_count} erreur(s)"
+            self.summary = self.tr("{ok} fichier(s) restauré(s), {errors} erreur(s)").format(
+                ok=self.ok_count, errors=self.error_count)
             try:
                 if failed:                                       # on ne garde que ce qui reste à restaurer
                     storage.save(self._collection, self._key, {**rec, "files": failed})

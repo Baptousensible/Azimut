@@ -6,6 +6,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Collection
 
+from azimut.core.ffmpeg_args import SAFE_INPUT_FLAGS, input_spec
+from azimut.core.logs import get_logger
+
+_log = get_logger("convert.probe")
+
 UNUSABLE_AUDIO = frozenset({"", "none", "unknown", "apac"})           # pistes que ffmpeg ne sait pas décoder
 BITMAP_SUBS = frozenset({"hdmv_pgs_subtitle", "pgssub", "dvd_subtitle", "dvdsub", "dvb_subtitle",
                          "dvb_teletext", "xsub", "vobsub", "arib_caption"})
@@ -17,7 +22,13 @@ READ_STRATEGIES: tuple[tuple[str, ...], ...] = (
     (),
     ("-fflags", "+genpts+igndts", "-avoid_negative_ts", "make_zero"),
     ("-fflags", "+genpts+igndts", "-avoid_negative_ts", "make_zero", "-err_detect", "ignore_err"),
+    # Dernier recours (audio) : une liste d'édition MP4/M4A incohérente peut masquer tout le média et
+    # laisser l'encodeur sans aucun échantillon (« Could not open encoder before EOF »).
+    ("-fflags", "+genpts+igndts", "-err_detect", "ignore_err", "-ignore_editlist", "1"),
 )
+VIDEO_ATTEMPTS = 3                                # la vidéo est lourde : lecture normale + 2 reprises
+EDITLIST_FLAG = "-ignore_editlist"                # option du démuxeur MOV/MP4 uniquement : ailleurs, ffmpeg refuse net
+MOV_EXTS = frozenset({".m4a", ".m4b", ".m4p", ".m4r", ".mp4", ".mov", ".m4v", ".3gp", ".3g2", ".qt", ".f4v"})
 AVCHD_PREFIX = ("-analyzeduration", "100M", "-probesize", "100M")
 
 
@@ -29,6 +40,8 @@ class MediaProbe:
     subs: list[dict] = field(default_factory=list)      # sous-titres texte (hors images)
     audio_total: int = 0                                # pistes audio, décodables ou non
     video_streams: int = 0
+    width: int = 0                                      # première piste vidéo (0 si inconnu)
+    height: int = 0
 
     @property
     def max_channels(self) -> int:
@@ -40,9 +53,9 @@ class MediaProbe:
 
 
 def build_media_probe_command(ffprobe: str | Path, source: str | Path) -> list[str]:
-    return [str(ffprobe), "-v", "error", "-show_entries",
-            "stream=index,codec_type,codec_name,codec_tag_string,channels,color_transfer:format=duration",
-            "-of", "json", str(source)]
+    return [str(ffprobe), *SAFE_INPUT_FLAGS, "-v", "error", "-show_entries",
+            "stream=index,codec_type,codec_name,codec_tag_string,channels,color_transfer,width,height:format=duration",
+            "-of", "json", input_spec(source)]
 
 
 def parse_media_probe(text: str) -> MediaProbe | None:
@@ -57,8 +70,8 @@ def parse_media_probe(text: str) -> MediaProbe | None:
     try:
         d = float((data.get("format") or {}).get("duration"))
         probe.duration = d if d > 0 else None
-    except (TypeError, ValueError):
-        pass
+    except (TypeError, ValueError) as exc:
+        _log.debug("Durée illisible dans la sonde : %s", exc)
     first_video = True
     for s in data.get("streams") or []:
         if not isinstance(s, dict):
@@ -71,6 +84,11 @@ def parse_media_probe(text: str) -> MediaProbe | None:
                 first_video = False
                 trc = str(s.get("color_transfer") or "").lower()
                 probe.hdr_trc = HDR_TRANSFERS.get(trc)
+                try:
+                    probe.width = int(s.get("width") or 0)
+                    probe.height = int(s.get("height") or 0)
+                except (TypeError, ValueError):
+                    probe.width = probe.height = 0
         elif kind == "audio":
             probe.audio_total += 1
             tag = str(s.get("codec_tag_string") or "").lower()
@@ -102,9 +120,26 @@ def parse_filters(text: str) -> frozenset[str]:
     return frozenset(names)
 
 
+def audio_attempts(source: Path | str) -> int:
+    """Nombre de tentatives de lecture pour un audio : la dernière (liste d'édition ignorée) n'existe que
+    pour les conteneurs MP4/M4A, les autres démuxeurs rejetant l'option."""
+    mov = Path(str(source)).suffix.lower() in MOV_EXTS
+    return len(READ_STRATEGIES) if mov else len(READ_STRATEGIES) - 1
+
+
 def input_flags(attempt: int, source: Path | str) -> list[str]:
-    """Options d'entrée de la tentative n° `attempt` (0, 1, 2) ; AVCHD : analyse plus longue."""
-    flags = list(READ_STRATEGIES[min(attempt, len(READ_STRATEGIES) - 1)])
-    if Path(str(source)).suffix.lower() in AVCHD_EXTS:
+    """Options d'entrée de la tentative n° `attempt` (0, 1, 2, 3) ; AVCHD : analyse plus longue.
+
+    La liste blanche de protocoles est toujours présente : aucun média non fiable ne doit pouvoir faire
+    sortir FFmpeg sur le réseau ni lire un fichier arbitraire (voir `azimut.core.ffmpeg_args`).
+    `-ignore_editlist` n'est jamais émis hors des conteneurs MP4 : sur un MP3 ou un WAV, ffmpeg répond
+    « Option not found » et abandonne.
+    """
+    suffix = Path(str(source)).suffix.lower()
+    flags = list(READ_STRATEGIES[min(max(attempt, 0), len(READ_STRATEGIES) - 1)])
+    if EDITLIST_FLAG in flags and suffix not in MOV_EXTS:
+        i = flags.index(EDITLIST_FLAG)
+        del flags[i:i + 2]
+    if suffix in AVCHD_EXTS:
         flags = [*AVCHD_PREFIX, *flags]
-    return flags
+    return [*SAFE_INPUT_FLAGS, *flags]

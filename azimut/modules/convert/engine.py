@@ -1,19 +1,28 @@
 """Logique pure d'Azimut Convert (sans Qt) : travaux, commandes ffmpeg, progression."""
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import re
-from dataclasses import dataclass
+import uuid
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Callable, Collection, NamedTuple
 
-from azimut.core.fsutil import iter_files, safe_relative
+from azimut.core.ffmpeg_args import SAFE_INPUT_FLAGS, drop_neutral_input, neutral_input  # noqa: F401 - ré-exportés
+from azimut.core.fsutil import atomic_write_text, iter_files, safe_relative
+from azimut.core.logs import get_logger
 from azimut.modules.convert import imaging
-from azimut.modules.convert.advanced import family
-from azimut.modules.convert.probe import MediaProbe, build_media_probe_command as probe_cmd, input_flags
-from azimut.modules.convert.profiles import (
-    ALL_EXTS, AUDIO_EXTS, IMAGE_EXTS, RAW_EXTS, VIDEO_EXTS, Profile,
+from azimut.modules.convert.advanced import family, hardware_kind
+from azimut.modules.convert.probe import (
+    MediaProbe, build_media_probe_command as probe_cmd, input_flags, input_spec,
 )
+from azimut.modules.convert.profiles import (
+    ALL_EXTS, AUDIO_EXTS, COPY_PROFILE, IMAGE_EXTS, OTHER_KIND, RAW_EXTS, VIDEO_EXTS, Profile,
+)
+
+_log = get_logger("convert.engine")
 
 # ── États affichés dans le tableau ───────────────────────────────────────────
 STATE_PENDING = "En attente"
@@ -26,12 +35,61 @@ STATE_ERROR = "Erreur"
 STATE_CANCELLED = "Annulé"
 STATE_KEPT = "Source conservée"
 STATE_COPIED = "Copié"
+STATE_JSON_OMITTED = "JSON non copié"      # JSON Takeout déjà réinjecté : volontairement absent de la sortie
 
 STATE_TAGS = {
     STATE_PENDING: "neutre", STATE_RUNNING: "info", STATE_DONE: "ok", STATE_SKIPPED: "neutre",
     STATE_NO_ENCODER: "err", STATE_UNSUPPORTED: "warn", STATE_ERROR: "err",
-    STATE_CANCELLED: "warn", STATE_KEPT: "warn", STATE_COPIED: "ok",
+    STATE_CANCELLED: "warn", STATE_KEPT: "warn", STATE_COPIED: "ok", STATE_JSON_OMITTED: "neutre",
 }
+
+MANIFEST_NAME = ".azimut_convert_state.json"   # état de reprise, à côté des sorties
+MANIFEST_MTIME_TOLERANCE = 2.0
+# La géométrie et l'orientation du PNG préparé ne doivent pas écraser celles du fichier produit.
+METADATA_EXCLUDED = (
+    "Orientation", "ImageWidth", "ImageHeight", "ExifImageWidth", "ExifImageHeight",
+    "ThumbnailImage", "PreviewImage", "ExifThumbnail",
+    "FileName", "Directory", "FileSize", "FileType", "MIMEType",
+)
+
+
+def profile_fingerprint(profile: Profile) -> str:
+    """Empreinte stable des réglages qui influencent le fichier produit."""
+    payload = json.dumps(asdict(profile), sort_keys=True, default=str, ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+
+def manifest_key(dest: Path, base: Path | None) -> str:
+    """Clé du manifeste : chemin relatif au dossier de sortie si possible."""
+    if base is None:
+        return str(dest)
+    try:
+        return Path(dest).relative_to(base).as_posix()
+    except ValueError:
+        return str(dest)
+
+
+def load_manifest(base: Path) -> dict:
+    """Contenu du manifeste de reprise d'un dossier de sortie (vide si absent/illisible)."""
+    try:
+        data = json.loads((Path(base) / MANIFEST_NAME).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def save_manifest(base: Path, data: dict) -> None:
+    """Écrit le manifeste atomiquement ; une erreur d'écriture ne doit pas invalider le lot."""
+    atomic_write_text(Path(base) / MANIFEST_NAME, json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+
+
+def metadata_copy_args(source: Path, target: Path) -> list[str]:
+    """Arguments ExifTool pour recopier les métadonnées de la source vers une sortie Pillow.
+
+    L'orientation et les dimensions sont exclues : elles ont déjà été appliquées aux pixels par Pillow.
+    """
+    return ["-overwrite_original", "-m", "-TagsFromFile", str(source), "-all:all",
+            *[f"--{tag}" for tag in METADATA_EXCLUDED], str(target)]
 
 EVEN_VF = "scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p"
 
@@ -75,6 +133,14 @@ class SourceItem:
     def rel(self) -> Path:
         return Path(self.path.name) if self.root is None else safe_relative(self.path, self.root)
 
+    @property
+    def mtime(self) -> float:
+        """Date de modification de la source (0 si elle a disparu)."""
+        try:
+            return self.path.stat().st_mtime
+        except OSError:
+            return 0.0
+
 
 class ScanResult(NamedTuple):
     items: list[SourceItem]
@@ -82,14 +148,20 @@ class ScanResult(NamedTuple):
 
 
 def scan_inputs(paths: Collection[str | Path], recursive: bool = True,
-                cancel: Callable[[], bool] | None = None) -> ScanResult:
-    """Transforme fichiers et dossiers en liste de SourceItem (dédoublonnée, triée)."""
+                cancel: Callable[[], bool] | None = None, *, include_others: bool = False) -> ScanResult:
+    """Transforme fichiers et dossiers en liste de SourceItem (dédoublonnée, triée).
+
+    `include_others` : garde aussi les fichiers qui ne sont ni images, ni vidéos, ni audios (kind « other »),
+    destinés à être copiés tels quels.
+    """
     items: list[SourceItem] = []
     ignored: list[str] = []
     seen: set[str] = set()
 
     def add(path: Path, root: Path | None) -> None:
         kind = classify(path)
+        if kind is None and include_others:
+            kind = OTHER_KIND
         if kind is None:
             ignored.append(f"{path} (extension non gérée)")
             return
@@ -109,7 +181,8 @@ def scan_inputs(paths: Collection[str | Path], recursive: bool = True,
             break
         p = Path(raw)
         if p.is_dir():
-            for f in iter_files(p, recursive=recursive, extensions=ALL_EXTS, cancel=cancel):
+            for f in iter_files(p, recursive=recursive, extensions=None if include_others else ALL_EXTS,
+                                cancel=cancel):
                 add(f, p)
         elif p.is_file():
             add(p, None)
@@ -150,14 +223,71 @@ def pick_encoder(candidates: tuple[str, ...], encoders: Collection[str] | None) 
     raise EncoderMissingError(" ou ".join(candidates))
 
 
+AV1_SMALL_MEDIA_MAX_PX = 64
+
+
+def av1_small_media_encoder(profile: Profile, encoders: Collection[str] | None,
+                            width: int | None, height: int | None) -> str | None:
+    """Encodeur AV1 de repli pour un média plus petit que 64 px, ou None.
+
+    `libsvtav1` refuse ces dimensions sur FFmpeg 6.x et peut se bloquer à 16×16 avec SVT-AV1 3.1.2 ;
+    `libaom-av1` les encode. Le choix est fait avant le premier essai pour ne pas attendre le délai
+    d'expiration d'un blocage. None si le profil n'a pas libaom, si l'encodeur n'est pas disponible
+    ou si les dimensions sont inconnues.
+    """
+    if profile.kind not in ("image", "video"):
+        return None
+    if family(profile) != "av1" or "libaom-av1" not in profile.video_encoders:
+        return None
+    if encoders is not None and "libaom-av1" not in encoders:
+        return None
+    if width is None or height is None or width <= 0 or height <= 0:
+        return None
+    if min(width, height) >= AV1_SMALL_MEDIA_MAX_PX:
+        return None
+    return "libaom-av1"
+
+
+def find_vaapi_device() -> str | None:
+    """Périphérique VA-API à utiliser, ou None si aucun n'est disponible."""
+    override = os.environ.get("AZIMUT_VAAPI_DEVICE")
+    if override:
+        return override
+    try:
+        for path in sorted(Path("/dev/dri").glob("renderD*")):
+            if path.exists():
+                return str(path)
+    except OSError as exc:
+        _log.debug("Périphériques de rendu illisibles : %s", exc)
+    return None
+
+
+def profile_unavailable_reason(profile: Profile, encoders: Collection[str] | None) -> str | None:
+    """Raison courte pour laquelle un profil ne peut pas tourner ici, ou None."""
+    if profile.id == "image_heic" and not imaging.heif_available():
+        return "pillow-heif manquant"
+    if any(e.endswith("_vaapi") for e in profile.video_encoders) and find_vaapi_device() is None:
+        return "périphérique VA-API absent"
+    if encoders is not None:
+        for candidates in (profile.video_encoders, profile.audio_encoders):
+            if candidates and not any(e in encoders for e in candidates):
+                return "encodeur manquant"
+    return None
+
+
 def missing_encoder_message(profile: Profile, encoders: Collection[str] | None) -> str | None:
     """Message explicite si le profil est impossible avec ce ffmpeg, sinon None."""
-    if encoders is None:
+    reason = profile_unavailable_reason(profile, encoders)
+    if reason is None:
         return None
+    if reason == "pillow-heif manquant":
+        return (f"Profil « {profile.label} » impossible : pillow-heif non installé "
+                "(pip install pillow-heif).")
+    if reason == "périphérique VA-API absent":
+        return (f"Profil « {profile.label} » impossible : aucun périphérique VA-API "
+                "(/dev/dri/renderD*) détecté.")
     manque = [" ou ".join(c) for c in (profile.video_encoders, profile.audio_encoders)
               if c and not any(e in encoders for e in c)]
-    if not manque:
-        return None
     return f"Profil « {profile.label} » impossible avec ce FFmpeg : encodeur manquant ({' ; '.join(manque)})."
 
 
@@ -173,12 +303,24 @@ class Job:
     message: str = ""
     passthrough: bool = False       # déjà au format final (AVIF / WebM) : copié sans recompression
     final: Path | None = None       # fichier réellement produit (dest, ou copie de la source)
+    replace_existing: bool = False  # sortie créée par un passage précédent : remplacement atomique permis
+    replace_size: int | None = None # taille attendue de cette sortie avant remplacement
 
 
 def is_passthrough(item: SourceItem, profile: Profile) -> bool:
-    """Un AVIF vers un profil AVIF (ou un WebM vers un profil WebM AV1) est copié, pas ré-encodé."""
-    return (profile.kind in ("image", "video") and not profile.video_copy and family(profile) == "av1"
-            and item.path.suffix.lower() == profile.out_ext)
+    """Un AVIF vers un profil AVIF (ou un WebM vers un profil WebM AV1) est copié, pas ré-encodé.
+
+    Pour la vidéo, la copie n'est proposée qu'avec l'audio Opus : c'est le codec audio habituel des WebM AV1
+    et le seul que ce raccourci peut garantir sans analyser la source.
+    """
+    if item.kind == OTHER_KIND:
+        return True                                         # ni image, ni vidéo, ni audio : copie pure
+    if profile.id == "image_heic" and item.path.suffix.lower() in imaging.HEIF_EXTS:
+        return True                                         # HEIC/HEIF déjà au format demandé
+    if not (profile.kind in ("image", "video") and family(profile) == "av1"
+            and item.path.suffix.lower() == profile.out_ext):
+        return False
+    return profile.kind == "image" or profile.audio_encoders == ("libopus",)
 
 
 def default_output_dir(root: Path) -> Path:
@@ -187,12 +329,28 @@ def default_output_dir(root: Path) -> Path:
 
 
 def part_path(dest: Path) -> Path:
-    """Fichier temporaire `.<nom>.part.<ext>` (l'extension réelle permet à ffmpeg de choisir le format)."""
-    return dest.with_name(f".{dest.stem}.part{dest.suffix}")
+    """Fichier temporaire imprévisible `.<nom>.<aléa>.part.<ext>`.
+
+    L'extension réelle permet à ffmpeg de choisir le format ; le suffixe aléatoire empêche un autre processus
+    de préparer un lien symbolique à cet emplacement (voir AZ-010).
+    """
+    dest = Path(dest)
+    # « % » : l'écriteur d'images de FFmpeg y lit un motif de séquence (« photo%03d.webp » → photo001.webp) et
+    # le fichier temporaire serait introuvable. Le nom publié, lui, garde son « % » (il ne passe pas par FFmpeg).
+    stem = dest.stem.replace("%", "_")
+    # Les systèmes de fichiers limitent un nom à 255 octets : le préfixe « . » et le suffixe « .<aléa>.part » en
+    # ajoutent une vingtaine à un nom déjà proche de la limite (noms Takeout, accents, caractères asiatiques).
+    budget = 235 - len(dest.suffix.encode("utf-8")) - 19
+    raw = stem.encode("utf-8")
+    if len(raw) > budget:
+        stem = raw[:max(budget, 8)].decode("utf-8", errors="ignore")
+    return dest.with_name(f".{stem}.{uuid.uuid4().hex[:12]}.part{dest.suffix}")
 
 
 def initial_state(item: SourceItem, profile: Profile, encoders: Collection[str] | None) -> str:
     """État prévisible sans toucher au disque."""
+    if is_passthrough(item, profile):
+        return STATE_PENDING                              # copie pure : aucun encodeur nécessaire
     if item.path.suffix.lower() in RAW_EXTS and not imaging.raw_available():
         return STATE_UNSUPPORTED
     if missing_encoder_message(profile, encoders):
@@ -218,17 +376,39 @@ def _claim(dest: Path, taken: set[str]) -> Path:
     return cand
 
 
-def _already_done(job: Job) -> bool:
+def _already_done(job: Job, base: Path | None = None, manifest: dict | None = None) -> tuple[bool, bool]:
+    """(déjà fait, remplacer la sortie existante).
+
+    Sans manifeste (sortie créée avant cette version, ou par un autre outil), le comportement historique
+    est conservé. Avec manifeste, un profil ou une source différente demande une reconversion ; le
+    remplacement n'est autorisé que si la sortie est toujours exactement celle que nous avions écrite.
+    """
     try:
         if job.dest is not None and job.dest.exists() and job.dest.stat().st_size > 0:
-            return True
+            size = job.dest.stat().st_size
+            rec = manifest.get(manifest_key(job.dest, base)) if manifest and base is not None else None
+            if not isinstance(rec, dict):
+                return True, False                      # compatibilité avec les sorties sans manifeste
+            same_dest = rec.get("dest_size") == size
+            try:
+                same_source = (rec.get("source_size") == job.item.size
+                               and abs(float(rec.get("source_mtime", 0)) - job.item.mtime)
+                               <= MANIFEST_MTIME_TOLERANCE)
+            except (TypeError, ValueError):
+                same_source = False
+            if rec.get("profile") == profile_fingerprint(job.profile) and same_source and same_dest:
+                return True, False
+            if same_dest:
+                job.replace_size = size
+                return False, True
+            return False, False
         cp = job.copy_dest
         if (job.profile.guard_growth and cp is not None and path_key(cp) != path_key(job.item.path)
                 and cp.exists() and cp.stat().st_size == job.item.size):
-            return True     # source déjà conservée lors d'un passage précédent
-    except OSError:
-        pass
-    return False
+            return True, False     # source déjà conservée lors d'un passage précédent
+    except OSError as exc:
+        _log.debug("Vérification de la copie impossible (%s) : %s", job.item.path, exc)
+    return False, False
 
 
 def output_name(item: SourceItem, profile: Profile, *, name_ext: bool, passthrough: bool) -> Path:
@@ -245,7 +425,7 @@ def output_name(item: SourceItem, profile: Profile, *, name_ext: bool, passthrou
 
 def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Path | None,
               encoders: Collection[str] | None = None, *, check_disk: bool = True,
-              name_ext: bool = False) -> list[Job]:
+              name_ext: bool = False, manifests: dict[Path, dict] | None = None) -> list[Job]:
     """Une liste de Job alignée sur `items` : chemins de sortie, collisions, états initiaux.
 
     Les collisions de noms dans un lot sont résolues de façon déterministe (ordre alphabétique des sources),
@@ -253,7 +433,7 @@ def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Pa
     """
     multi = len({str(i.root) for i in items if i.root is not None}) > 1
     taken: set[str] = {path_key(i.path) for i in items}
-    jobs: list[Job] = [Job(n, it, profiles[it.kind]) for n, it in enumerate(items)]
+    jobs: list[Job] = [Job(n, it, profiles.get(it.kind, COPY_PROFILE)) for n, it in enumerate(items)]
     for n in sorted(range(len(items)), key=lambda k: str(items[k].path).lower()):
         job = jobs[n]
         state = initial_state(job.item, job.profile, encoders)
@@ -270,8 +450,13 @@ def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Pa
                       taken)
         job.dest = dest
         job.copy_dest = dest.with_name(job.item.path.name)
-        if check_disk and _already_done(job):
-            job.state = STATE_SKIPPED
+        if check_disk:
+            manifest = (manifests or {}).get(base)
+            done, replace = _already_done(job, base, manifest)
+            if done:
+                job.state = STATE_SKIPPED
+            elif replace:
+                job.replace_existing = True
     return jobs
 
 
@@ -281,12 +466,42 @@ def build_encoders_command(ffmpeg: str | Path) -> list[str]:
 
 
 def build_probe_command(ffprobe: str | Path, source: str | Path) -> list[str]:
-    return [str(ffprobe), "-v", "error", "-show_entries", "format=duration",
-            "-of", "default=noprint_wrappers=1:nokey=1", str(source)]
+    return [str(ffprobe), *SAFE_INPUT_FLAGS, "-v", "error", "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1", input_spec(source)]
+
+
+def _hardware_setup_args(profile: Profile) -> list[str]:
+    """Options globales d'initialisation du backend matériel."""
+    hw = hardware_kind(profile)
+    if hw == "qsv":
+        return ["-init_hw_device", "qsv=hw", "-filter_hw_device", "hw"]
+    if hw == "vaapi":
+        device = find_vaapi_device()
+        return ["-vaapi_device", device] if device else []
+    return []
+
+
+def _hardware_filter(profile: Profile, chain: str) -> str:
+    """Ajoute l'upload GPU requis par QSV et VA-API à la chaîne de filtres logicielle."""
+    hw = hardware_kind(profile)
+    if hw == "qsv":
+        return f"{chain},format=nv12,hwupload=extra_hw_frames=64"
+    if hw == "vaapi":
+        return f"{chain},format=nv12,hwupload"
+    return chain
 
 
 def _video_quality_args(profile: Profile, venc: str, *, still: bool, lp_ok: bool = True) -> list[str]:
     n = profile.threads if profile.threads > 0 else 0
+    threads = ["-threads", str(n)] if n else []
+    if venc.endswith("_nvenc"):
+        args = ["-rc", "vbr", "-cq", str(profile.crf), "-b:v", "0"]
+        return args + (["-preset", profile.preset] if profile.preset else [])
+    if venc.endswith("_qsv"):
+        args = ["-global_quality", str(profile.crf)]
+        return args + (["-preset", profile.preset] if profile.preset else [])
+    if venc.endswith("_vaapi"):
+        return ["-qp", str(profile.crf)]
     if venc == "libsvtav1":
         args = ["-crf", str(profile.crf), "-preset", profile.preset]
         if still:
@@ -296,22 +511,63 @@ def _video_quality_args(profile: Profile, venc: str, *, still: bool, lp_ok: bool
         cpu = str(min(int(profile.preset or 4), 8))
         return (["-crf", str(profile.crf), "-b:v", "0", "-cpu-used", cpu] + ([] if still else ["-row-mt", "1"])
                 + (["-threads", str(n)] if n else []))
-    if venc == "libx264":
-        return ["-crf", str(profile.crf), "-preset", profile.preset] + (["-threads", str(n)] if n else [])
+    if venc in ("libx264", "libx265"):
+        return ["-crf", str(profile.crf), "-preset", profile.preset] + threads
+    if venc == "libvpx-vp9":
+        return ["-crf", str(profile.crf), "-b:v", "0", "-row-mt", "1",
+                "-cpu-used", profile.preset or "2"] + threads
+    if venc in ("mpeg4", "mpeg2video"):
+        return ["-q:v", str(profile.quality)] + threads
+    if venc == "libtheora":
+        return ["-q:v", str(profile.quality)]
+    if venc == "prores_ks":
+        return ["-profile:v", profile.preset or "hq"] + threads
     if venc == "mjpeg":
         return ["-q:v", str(profile.quality)]
     if venc == "libwebp":
         return ["-quality", str(profile.quality)]
+    if venc == "png":
+        return ["-compression_level", profile.preset or "6"]
+    if venc == "libjxl":
+        return ["-distance", str(profile.quality), "-effort", profile.preset or "7"]
+    if venc == "tiff":
+        return ["-compression_algo", profile.preset or "deflate"]
     return []
 
 
-def _audio_args(profile: Profile, aenc: str) -> list[str]:
+def _audio_args(profile: Profile, aenc: str, *, plain: bool = False) -> list[str]:
     args = ["-c:a", aenc]
     if profile.audio_bitrate:
         args += ["-b:a", profile.audio_bitrate]
-    if profile.audio_filter:
+    if profile.kind == "audio" and aenc == "flac" and profile.preset.isdigit():
+        args += ["-compression_level", profile.preset]           # FLAC : « preset » = niveau de compression
+    if profile.audio_filter and not plain:
         args += ["-af", profile.audio_filter]
     return args
+
+
+# Messages de FFmpeg qui désignent la liste de dispositions de canaux imposée par `aformat` : une piste AAC dont
+# le conteneur ne dit que le nombre de canaux (disposition « unknown ») la fait échouer, alors que le même fichier
+# passe très bien sans cette liste (FFmpeg devine alors la disposition ; ordre des canaux vérifié).
+CHANNEL_LAYOUT_ERRORS = ("channel layout", "error while filtering", "failed to inject frame",
+                         "impossible to convert between the formats")
+ENCODER_OPEN_ERRORS = ("could not open encoder", "error while opening encoder")
+
+
+def needs_plain_audio(stderr: str, *, audio_only: bool = False) -> bool:
+    """Vrai si l'échec ressemble à un refus de la liste de dispositions de canaux (reprise sans filtre).
+
+    « Could not open encoder » ne compte que pour un fichier audio ou une ligne qui vise un flux audio : sur une
+    vidéo, c'est le plus souvent l'encodeur vidéo (résolution refusée) et retirer le filtre audio n'y changerait rien.
+    """
+    low = (stderr or "").lower()
+    if any(marker in low for marker in CHANNEL_LAYOUT_ERRORS):
+        return True
+    for line in low.splitlines():
+        if any(marker in line for marker in ENCODER_OPEN_ERRORS) and (audio_only or "aost" in line
+                                                                       or "audio" in line):
+            return True
+    return False
 
 
 EVEN_SCALE = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
@@ -319,32 +575,54 @@ MONO_TO_STEREO = "pan=stereo|c0=c0|c1=c0"                    # duplique la voie 
 MULTICHANNEL_FILTER = "aformat=channel_layouts=7.1|5.1|quad|stereo"
 
 
-def _probed_audio_args(profile: Profile, aenc: str, audio: list[dict]) -> list[str]:
-    """Pistes décodables mappées explicitement ; Opus copié tel quel ; mono Opus → stéréo."""
+def _probed_audio_args(profile: Profile, aenc: str, audio: list[dict], *, plain: bool = False) -> list[str]:
+    """Pistes décodables mappées explicitement ; Opus copié ; mono des sorties WebM → stéréo.
+
+    Les sorties WebM ne doivent jamais conserver une piste mono : chaque piste mono est
+    dupliquée sur les deux voies, même lorsqu'une copie Opus serait normalement possible.
+    """
     if not audio:
         return []
     args: list[str] = []
     for s in audio:
         args += ["-map", f"0:{s['index']}"]
-    if profile.video_copy:                                  # réparation : seules les pistes mono sont ré-encodées
+    webm = profile.out_ext.lower() == ".webm"
+    mono = [i for i, s in enumerate(audio) if int(s.get("channels") or 0) == 1]
+    if webm and mono and len(mono) < len(audio):
+        # Pistes mixtes : seules les mono sont ré-encodées, les autres gardent leur copie.
         for i, s in enumerate(audio):
-            if int(s.get("channels") or 0) == 1:
-                args += [f"-c:a:{i}", aenc, f"-b:a:{i}", profile.audio_bitrate or "128k",
-                         f"-filter:a:{i}", MONO_TO_STEREO]
-            else:
+            channels = int(s.get("channels") or 0)
+            if channels == 1:
+                args += [f"-c:a:{i}", aenc]
+                if profile.audio_bitrate:
+                    args += [f"-b:a:{i}", profile.audio_bitrate]
+                args += [f"-filter:a:{i}", MONO_TO_STEREO]
+            elif aenc == "libopus" and str(s.get("codec_name")) == "opus":
                 args += [f"-c:a:{i}", "copy"]
+            else:
+                args += [f"-c:a:{i}", aenc]
+                if profile.audio_bitrate:
+                    args += [f"-b:a:{i}", profile.audio_bitrate]
+                chain = MULTICHANNEL_FILTER if aenc == "libopus" and channels >= 2 \
+                    else profile.audio_filter
+                if chain and not plain:
+                    args += [f"-filter:a:{i}", chain]
         return args
-    if aenc == "libopus" and all(str(s.get("codec_name")) == "opus" for s in audio):
+    if (aenc == "libopus" and all(str(s.get("codec_name")) == "opus" for s in audio)
+            and not (webm and mono)):
         return args + ["-c:a", "copy"]
     args += ["-c:a", aenc]
     if profile.audio_bitrate:
         args += ["-b:a", profile.audio_bitrate]
     channels = max((int(s.get("channels") or 0) for s in audio), default=0)
-    if aenc == "libopus" and channels == 1:
+    if webm and mono:
+        args += ["-af", MONO_TO_STEREO]
+    elif aenc == "libopus" and channels == 1:
         args += ["-af", MONO_TO_STEREO]
     elif aenc == "libopus" and channels >= 2:
-        args += ["-af", MULTICHANNEL_FILTER]
-    elif profile.audio_filter:
+        if not plain:
+            args += ["-af", MULTICHANNEL_FILTER]
+    elif profile.audio_filter and not plain:
         args += ["-af", profile.audio_filter]
     return args
 
@@ -359,43 +637,45 @@ def _probed_video_filter_args(profile: Profile, probe: MediaProbe, hdr_filter: s
                     "-color_trc", probe.hdr_trc, "-colorspace", "bt2020nc"]
         from azimut.modules.convert.probe import hdr_to_sdr_filter
         chain = hdr_filter or hdr_to_sdr_filter(probe.hdr_trc, None)
-        return ["-vf", f"{even},{chain}" if even else chain,
+        chain = f"{even},{chain}" if even else chain
+        return ["-vf", _hardware_filter(profile, chain),
                 "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
-    return ["-vf", EVEN_VF if profile.even_dims else "format=yuv420p"]
+    return ["-vf", _hardware_filter(profile, EVEN_VF if profile.even_dims else "format=yuv420p")]
 
 
-def build_command(profile: Profile, source: Path, output: Path, *, ffmpeg: str | Path = "ffmpeg",
+def build_command(profile: Profile, source: Path, output: Path | str, *, ffmpeg: str | Path = "ffmpeg",
                   encoders: Collection[str] | None = None, probe: MediaProbe | None = None,
                   attempt: int = 0, hdr_filter: str | None = None, creation_time: str | None = None,
-                  lp_ok: bool = True, first_audio_only: bool = False) -> list[str]:
+                  lp_ok: bool = True, first_audio_only: bool = False, plain_audio: bool = False) -> list[str]:
     """Commande ffmpeg complète (progression sur stdout). `output` est normalement part_path(dest).
 
     Sans `probe` : comportement historique (`-map 0:a?`, `-sn`). Avec `probe` (sonde ffprobe) : pistes audio
     décodables mappées une à une, sous-titres texte conservés, HDR géré. `attempt` choisit les options de
-    lecture pour les sources abîmées (0 = normale) ; `first_audio_only` : repli sur la première piste audio.
+    lecture pour les sources abîmées (0 = normale) ; `first_audio_only` : repli sur la première piste audio ;
+    `plain_audio` : sans liste de dispositions de canaux (`aformat`), pour les pistes dont la disposition est inconnue.
     """
+    if profile.id == "image_heic":
+        raise ValueError("HEIC est encodé par Pillow, pas par FFmpeg")
     venc = pick_encoder(profile.video_encoders, encoders)
     aenc = pick_encoder(profile.audio_encoders, encoders)
     cmd = [str(ffmpeg), "-y", "-hide_banner", "-loglevel", "error", "-nostdin",
-           *input_flags(attempt, source), "-i", str(source)]
+           *_hardware_setup_args(profile), *input_flags(attempt, source), "-i", input_spec(source)]
     if profile.kind == "image":
         cmd += ["-map", "0:v:0", "-frames:v", "1"]
         if profile.even_dims:
             cmd += ["-vf", EVEN_VF]
         cmd += ["-c:v", venc, *_video_quality_args(profile, venc, still=True, lp_ok=lp_ok)]
     elif profile.kind == "video" and probe is None:
-        cmd += ["-map", "0:V:0", "-map", "0:a?", "-vf", EVEN_VF if profile.even_dims else "format=yuv420p",
-                "-c:v", venc, *_video_quality_args(profile, venc, still=False, lp_ok=lp_ok),
-                *_audio_args(profile, aenc), "-sn", "-dn"]
+        cmd += ["-map", "0:V:0", "-map", "0:a?"]
+        vf = _hardware_filter(profile, EVEN_VF if profile.even_dims else "format=yuv420p")
+        cmd += ["-vf", vf, "-c:v", venc, *_video_quality_args(profile, venc, still=False, lp_ok=lp_ok)]
+        cmd += [*_audio_args(profile, aenc, plain=plain_audio), "-sn", "-dn"]
     elif profile.kind == "video":
         audio = probe.audio[:1] if first_audio_only else probe.audio
         cmd += ["-map", "0:V:0"]
-        if profile.video_copy:
-            cmd += ["-c:v", "copy"]
-        else:
-            cmd += [*_probed_video_filter_args(profile, probe, hdr_filter), "-c:v", venc,
-                    *_video_quality_args(profile, venc, still=False, lp_ok=lp_ok)]
-        cmd += _probed_audio_args(profile, aenc, audio)
+        cmd += [*_probed_video_filter_args(profile, probe, hdr_filter), "-c:v", venc,
+                *_video_quality_args(profile, venc, still=False, lp_ok=lp_ok)]
+        cmd += _probed_audio_args(profile, aenc, audio, plain=plain_audio)
         if probe.subs and profile.sub_codec:
             for s in probe.subs:
                 cmd += ["-map", f"0:{s['index']}"]
@@ -404,7 +684,7 @@ def build_command(profile: Profile, source: Path, output: Path, *, ffmpeg: str |
             cmd += ["-sn"]
         cmd += ["-dn"]
     else:
-        cmd += ["-vn", "-sn", "-dn", "-map", "0:a:0", *_audio_args(profile, aenc)]
+        cmd += ["-vn", "-sn", "-dn", "-map", "0:a:0", *_audio_args(profile, aenc, plain=plain_audio)]
     cmd += ["-map_metadata", "0"]
     if creation_time:
         cmd += ["-metadata", f"creation_time={creation_time}"]
@@ -466,3 +746,70 @@ def classify_failure(stderr: str, ext: str) -> str:
 def stderr_tail(text: str, n: int = 400) -> str:
     s = (text or "").strip()
     return s[-n:]
+
+
+_ADDR_RE = re.compile(r"0x[0-9a-fA-F]+")
+
+
+def stderr_digest(text: str, limit: int = 700) -> str:
+    """Résumé lisible d'une sortie d'erreur FFmpeg : début ET fin, lignes répétées regroupées.
+
+    FFmpeg écrit la cause réelle d'un échec dans les premières lignes (décodeur, démuxeur) et sa conclusion
+    dans les dernières. Ne garder que la queue, comme `stderr_tail`, cachait la cause : on garde donc les deux
+    extrémités. Les adresses mémoire (« 0x55a47b2aa700 ») varient d'un appel à l'autre et rendaient les
+    répétitions invisibles : elles sont neutralisées avant le regroupement.
+    """
+    lines: list[str] = []
+    counts: list[int] = []
+    for raw in (text or "").splitlines():
+        line = _ADDR_RE.sub("0x…", raw.strip())
+        if not line:
+            continue
+        if lines and lines[-1] == line:
+            counts[-1] += 1
+        else:
+            lines.append(line)
+            counts.append(1)
+    merged = [f"{ln} (×{n})" if n > 1 else ln for ln, n in zip(lines, counts, strict=True)]
+    out = " | ".join(merged)
+    if len(out) <= limit:
+        return out
+    head_budget = limit // 2
+    tail_budget = limit - head_budget
+    head: list[str] = []
+    used = 0
+    for ln in merged:
+        if used + len(ln) > head_budget and head:
+            break
+        head.append(ln)
+        used += len(ln) + 3
+    tail: list[str] = []
+    used = 0
+    for ln in reversed(merged[len(head):]):
+        if used + len(ln) > tail_budget and tail:
+            break
+        tail.append(ln)
+        used += len(ln) + 3
+    tail.reverse()
+    omitted = len(merged) - len(head) - len(tail)
+    middle = [f"[… {omitted} ligne(s) omise(s) …]"] if omitted > 0 else []
+    return " | ".join([*head, *middle, *tail])
+
+
+NO_FRAME_MARKERS = ("could not open encoder before eof", "nothing was written into output file",
+                    "received no packets", "output file is empty")
+
+
+def failure_hint(stderr: str) -> str | None:
+    """Explication en clair d'un échec FFmpeg courant, ou None si la cause n'est pas reconnue."""
+    low = (stderr or "").lower()
+    if any(k in low for k in NO_FRAME_MARKERS):
+        return ("FFmpeg n'a reçu aucun échantillon décodé de ce fichier : il est vide, tronqué, ou son codec "
+                "n'est pas décodé par ce FFmpeg. Vérifiez qu'il se lit ailleurs ; sinon conservez l'original.")
+    if "decode error rate" in low or "error while decoding" in low:
+        return "La source est endommagée (erreurs de décodage) : la conversion n'est pas fiable."
+    if "no space left" in low:
+        return "Disque plein : libérez de la place dans le dossier de sortie."
+    if "permission denied" in low:
+        return "Accès refusé : vérifiez les droits du dossier de sortie ou de la source."
+    return None

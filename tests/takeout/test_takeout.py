@@ -56,6 +56,21 @@ def test_parse_sidecar_ignores_placeholder_gps_and_bad_dates():
     assert not sc.has_gps
 
 
+@pytest.mark.parametrize("taken,text", [(-157_766_400, "1965:01:01 00:00:00"),
+                                        (13_046_400, "1970:06:01 00:00:00")])
+def test_pre_1971_dates_are_accepted(taken, text):
+    """Les photos scannées avant 1971 doivent être datées ; 0 reste le marqueur « inconnu » (LOG-007)."""
+    try:
+        expected = datetime.fromtimestamp(taken, tz=timezone.utc)
+    except (OSError, OverflowError, ValueError):
+        pytest.skip("cette plateforme ne représente pas cette date")
+    sc = eng.parse_sidecar(sidecar_json(taken=taken), Path("a.json"))
+    assert sc is not None and sc.taken == expected
+    plan = eng.build_plan(Path("a.jpg"), sc, [], eng.Options())
+    assert {c.tag: c.value for c in plan.changes}["DateTimeOriginal"] == text
+    assert eng.parse_sidecar(sidecar_json(taken=0), Path("a.json")).taken is None
+
+
 # ── Appariement ───────────────────────────────────────────────────────────────
 @pytest.mark.parametrize("media,json_name", [
     ("IMG_1.jpg", "IMG_1.jpg.json"),
@@ -240,3 +255,247 @@ def test_window_smoke(qapp):
     w = TakeoutWindow()
     assert w._options().write_dates and w._options().tz == eng.TZ_UTC
     w.close()
+
+
+def test_window_backup_option_default_off(qapp):
+    from azimut.modules.takeout.window import TakeoutWindow
+    w = TakeoutWindow()
+    try:
+        assert w._options().backup is False
+        assert not w.chk_backup.isChecked()
+        w.chk_backup.setChecked(True)
+        assert w._options().backup is True
+    finally:
+        w.close()
+
+
+def test_run_button_waits_for_ready_media_and_write_option(tmp_path, qapp):
+    """« Démarrer » exige un média prêt et au moins une option d'écriture."""
+    from azimut.modules.takeout.window import TakeoutWindow
+
+    touch(tmp_path, "ready.jpg")
+    write_json(tmp_path, "ready.jpg.json")
+    w = TakeoutWindow()
+    try:
+        assert not w.run_button.isEnabled()
+        w._exiftool = Path("/usr/bin/exiftool")
+        w._items = eng.analyze(tmp_path).items
+        w._render()
+        assert w.run_button.isEnabled()
+        w.chk_dates.setChecked(False)
+        w.chk_gps.setChecked(False)
+        w.chk_mtime.setChecked(False)
+        assert not w.run_button.isEnabled()
+    finally:
+        w.close()
+
+
+def test_window_filter_remove_and_action_bar_position(tmp_path, qapp, monkeypatch):
+    """Le filtre « sans JSON » et le retrait portent sur la liste, jamais sur les fichiers."""
+    from azimut.modules.takeout.window import TakeoutWindow
+
+    from PySide6.QtWidgets import QLabel
+
+    w = TakeoutWindow()
+    try:
+        layout = w._content_widget.layout()
+        assert layout.indexOf(w.action_bar) > layout.indexOf(w.table)
+        assert w.cmb_filter.count() == 3
+        assert [w.cmb_filter.itemText(i) for i in range(3)] == ["Tout", "Fichiers sans JSON", "Fichiers retirés"]
+        assert w.btn_clear.text() == "Vider la liste"
+        assert not w.btn_clear.isEnabled() and w.btn_clear.property("kind") == "ghost"
+        assert "Liste" not in [label.text() for label in w.findChildren(QLabel)]
+
+        touch(tmp_path, "ready.jpg", "orphan.jpg")
+        write_json(tmp_path, "ready.jpg.json")
+        w._items = eng.analyze(tmp_path).items
+        w._render()
+        assert w.table.data_model.rowCount() == 2
+        assert w.btn_clear.isEnabled() and w.btn_clear.property("kind") == "secondary"
+
+        w.cmb_filter.setCurrentIndex(1)          # « Fichiers sans JSON »
+        assert w.table.data_model.rowCount() == 1
+        assert not w.btn_remove.isEnabled()
+
+        w.table.selectRow(0)
+        assert w.btn_remove.isEnabled()
+        w.btn_remove.click()
+        assert len(w._items) == 1 and w._items[0].state == eng.STATE_READY
+        assert len(w._removed) == 1
+        w.cmb_filter.setCurrentIndex(2)          # « Fichiers retirés »
+        assert w.table.data_model.rowCount() == 1
+        assert not w.btn_remove.isEnabled()
+        monkeypatch.setattr(w, "confirm_clear_list", lambda: False)
+        w.btn_clear.click()
+        assert w._items and w._removed
+        monkeypatch.setattr(w, "confirm_clear_list", lambda: True)
+        w.btn_clear.click()
+        assert w._items == [] and w._removed == [] and w._roots == [] and w.table.data_model.rowCount() == 0
+        assert not w.btn_clear.isEnabled() and w.btn_clear.property("kind") == "ghost"
+    finally:
+        w.close()
+
+
+def test_infinite_timestamp_is_ignored_not_fatal(tmp_path):
+    """Un JSON externe avec un horodatage infini (1e400, Infinity) ne doit pas faire échouer l'analyse."""
+    touch(tmp_path, "a.jpg")
+    (tmp_path / "a.jpg.json").write_text(
+        '{"photoTakenTime": {"timestamp": 1e400},'
+        ' "geoData": {"latitude": 48.8584, "longitude": 2.2945}}', encoding="utf-8")
+    res = eng.analyze(tmp_path)
+    item = res.items[0]
+    assert item.state == eng.STATE_READY
+    assert item.sidecar is not None and item.sidecar.taken is None
+    assert item.sidecar.has_gps
+
+
+def test_converted_media_with_two_sidecars_is_not_guessed(tmp_path):
+    """Deux JSON de même radical (photo.jpg / photo.png) : ne pas choisir au hasard pour photo.avif."""
+    touch(tmp_path, "photo.avif")
+    write_json(tmp_path, "photo.jpg.json", taken=TAKEN)
+    write_json(tmp_path, "photo.png.json", taken=TAKEN + 3600)
+    assert eng.DirIndex(tmp_path).find(tmp_path / "photo.avif") is None
+
+
+def test_plan_keeps_partial_existing_dates_without_overwrite():
+    """Sans overwrite, CreateDate/ModifyDate déjà présentes ne doivent pas être écrasées."""
+    sc = eng.parse_sidecar(sidecar_json(), Path("a.json"))
+    entries = [tags.TagEntry("ExifIFD", "CreateDate", "2019:01:01 10:00:00"),
+               tags.TagEntry("ExifIFD", "ModifyDate", "2018:02:02 09:00:00")]
+    plan = eng.build_plan(Path("a.jpg"), sc, entries, eng.Options())
+    by_tag = {c.tag: c.value for c in plan.changes}
+    assert by_tag["DateTimeOriginal"] == "2020:09:13 12:26:40"
+    assert "CreateDate" not in by_tag and "ModifyDate" not in by_tag
+    over = eng.build_plan(Path("a.jpg"), sc, entries, eng.Options(overwrite=True))
+    assert {"DateTimeOriginal", "CreateDate", "ModifyDate"} <= {c.tag for c in over.changes}
+
+
+@needs_tools
+def test_apply_keeps_existing_create_date_without_overwrite(tmp_path):
+    """Preuve réelle : CreateDate 2010 conservée, DateTimeOriginal absente ajoutée."""
+    from azimut.modules.takeout.workers import AnalyzeWorker, ApplyWorker
+
+    jpg = tmp_path / "p.jpg"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc=size=64x48:duration=1",
+                    "-frames:v", "1", str(jpg)], check=True)
+    subprocess.run(["exiftool", "-overwrite_original", "-DateTimeOriginal=",
+                    "-CreateDate=2010:05:05 05:05:05", str(jpg)], check=True, capture_output=True)
+    write_json(tmp_path, "p.jpg.json", title="p.jpg")
+    analysis = run_worker(AnalyzeWorker([tmp_path], True))
+    res = run_worker(ApplyWorker(Path(shutil.which("exiftool")), analysis.items, eng.Options()))
+    assert res["states"][0][0] == eng.STATE_DONE
+    after = exif(jpg)
+    assert after.get("ExifIFD:CreateDate") == "2010:05:05 05:05:05"
+    assert after.get("ExifIFD:DateTimeOriginal") == "2020:09:13 12:26:40"
+
+
+@needs_tools
+def test_apply_refuses_read_only_file(tmp_path):
+    """Un fichier 0444 ne doit être ni réécrit ni réaligné."""
+    from azimut.modules.takeout.workers import AnalyzeWorker, ApplyWorker
+
+    jpg = tmp_path / "p.jpg"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc=size=64x48:duration=1",
+                    "-frames:v", "1", str(jpg)], check=True)
+    write_json(tmp_path, "p.jpg.json", title="p.jpg")
+    os.chmod(jpg, 0o444)
+    before = jpg.stat()
+    try:
+        analysis = run_worker(AnalyzeWorker([tmp_path], True))
+        res = run_worker(ApplyWorker(Path(shutil.which("exiftool")), analysis.items, eng.Options()))
+        state, message = res["states"][0]
+        assert state == eng.STATE_ERROR and "lecture seule" in message
+        after = jpg.stat()
+        assert (after.st_mtime, after.st_mode) == (before.st_mtime, before.st_mode)
+        assert "ExifIFD:DateTimeOriginal" not in exif(jpg)
+    finally:
+        os.chmod(jpg, 0o644)
+
+
+def test_sidecar_json_recursion_error_is_not_fatal(tmp_path, monkeypatch):
+    """Python 3.11/3.12 lève RecursionError sur un JSON très imbriqué : il doit être « illisible », pas fatal."""
+    touch(tmp_path, "a.jpg")
+    (tmp_path / "a.jpg.json").write_text("{}", encoding="utf-8")
+
+    def too_deep(*_args, **_kwargs):
+        raise RecursionError("maximum recursion depth exceeded")
+
+    monkeypatch.setattr(eng.json, "load", too_deep)
+    item = eng.analyze(tmp_path).items[0]
+    assert item.state == eng.STATE_NO_JSON and "illisible" in item.message
+
+
+@needs_tools
+def test_undo_restores_atime(tmp_path):
+    """L'annulation restaure l'atime d'origine, pas seulement la mtime (TAKEOUT-004)."""
+    from azimut.modules.takeout.workers import AnalyzeWorker, ApplyWorker, TakeoutUndoWorker
+
+    jpg = tmp_path / "p.jpg"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc=size=64x48:duration=1",
+                    "-frames:v", "1", str(jpg)], check=True)
+    write_json(tmp_path, "p.jpg.json", title="p.jpg")
+    os.utime(jpg, (1_400_000_000, 1_500_000_000))
+    exiftool = Path(shutil.which("exiftool"))
+    analysis = run_worker(AnalyzeWorker([tmp_path], True))
+    res = run_worker(ApplyWorker(exiftool, analysis.items, eng.Options()))
+    assert res["key"]
+    run_worker(TakeoutUndoWorker(exiftool, res["key"]))
+    st = jpg.stat()
+    assert abs(st.st_atime - 1_400_000_000) < 2
+    assert abs(st.st_mtime - 1_500_000_000) < 2
+    assert not (tmp_path / "p.jpg_original").exists()
+
+
+@needs_tools
+def test_apply_with_optional_binary_backup(tmp_path):
+    """Option backup : ExifTool conserve l'original octet pour octet sous « …_original »."""
+    from azimut.modules.takeout.workers import AnalyzeWorker, ApplyWorker, TakeoutUndoWorker
+
+    jpg = tmp_path / "p.jpg"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc=size=64x48:duration=1",
+                    "-frames:v", "1", str(jpg)], check=True)
+    write_json(tmp_path, "p.jpg.json", title="p.jpg")
+    original = jpg.read_bytes()
+    exiftool = Path(shutil.which("exiftool"))
+    analysis = run_worker(AnalyzeWorker([tmp_path], True))
+    res = run_worker(ApplyWorker(exiftool, analysis.items, eng.Options(backup=True)))
+    assert res["key"] and res["states"][0][0] == eng.STATE_DONE
+    backup = tmp_path / "p.jpg_original"
+    assert backup.is_file() and backup.read_bytes() == original
+    assert exif(jpg).get("ExifIFD:DateTimeOriginal") == "2020:09:13 12:26:40"
+    run_worker(TakeoutUndoWorker(exiftool, res["key"]))
+    assert backup.read_bytes() == original          # l'annulation ne supprime pas la copie
+
+
+def test_backup_write_command_omits_overwrite_original():
+    """Sans « -overwrite_original », ExifTool crée la copie « …_original »."""
+    cmd = tags.write_command("exiftool", "/tmp/w.args", backup=True)
+    assert "-overwrite_original" not in cmd and "-m" in cmd and "-P" in cmd
+    assert "-overwrite_original" in tags.write_command("exiftool", "/tmp/w.args")
+
+
+
+@needs_tools
+def test_apply_handles_jpeg_content_named_heic(tmp_path, qapp):
+    """Un export mal étiqueté (contenu JPEG, extension .HEIC) doit tout de même être écrit."""
+    from azimut.modules.takeout.workers import AnalyzeWorker, ApplyWorker, TakeoutUndoWorker
+
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc=size=64x48:duration=1",
+                    "-frames:v", "1", str(tmp_path / "p.jpg")], check=True)
+    (tmp_path / "p.jpg").rename(tmp_path / "p.HEIC")
+    write_json(tmp_path, "p.HEIC.supplemental-metadata.json", title="p.HEIC")
+    exiftool = Path(shutil.which("exiftool"))
+
+    analysis = run_worker(AnalyzeWorker([tmp_path], True))
+    assert analysis.count(eng.STATE_READY) == 1
+    res = run_worker(ApplyWorker(exiftool, analysis.items, eng.Options()))
+    assert res["states"][0][0] == eng.STATE_DONE, res["states"]
+    rec = exif(tmp_path / "p.HEIC")
+    assert rec["ExifIFD:DateTimeOriginal"] == "2020:09:13 12:26:40"
+    assert round(rec["GPS:GPSLatitude"], 4) == 48.8584
+    assert (tmp_path / "p.HEIC").is_file()                  # nom d'origine conservé
+    assert not list(tmp_path.glob(".azimut-tmp-*"))         # aucune copie temporaire résiduelle
+
+    run_worker(TakeoutUndoWorker(exiftool, res["key"]))
+    rec = exif(tmp_path / "p.HEIC")
+    assert "ExifIFD:DateTimeOriginal" not in rec and "GPS:GPSLatitude" not in rec

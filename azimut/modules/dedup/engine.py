@@ -33,10 +33,14 @@ _LOG = get_logger(__name__)
 IMAGE_EXTS = frozenset({".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp",
                         ".heic", ".heif", ".avif"})
 RAW_EXTS = frozenset({".cr2", ".cr3", ".nef", ".arw", ".dng", ".orf", ".rw2", ".raf", ".pef", ".srw"})
+# Images que Pillow ne lit pas toujours : comparées en exact (hachage), pas en similarité visuelle.
+EXACT_ONLY_IMAGE_EXTS = frozenset({".jxl", ".jp2", ".qoi", ".tga"})
 VIDEO_EXTS = frozenset({".mp4", ".mov", ".avi", ".mkv", ".m4v", ".mpg", ".mpeg", ".wmv", ".webm",
                         ".3gp", ".mts", ".m2ts"})
-MEDIA_EXTS = IMAGE_EXTS | RAW_EXTS | VIDEO_EXTS
-SIMILAR_EXTS = IMAGE_EXTS          # les RAW et les vidéos ne sont comparés qu'en exact
+AUDIO_EXTS = frozenset({".mp3", ".m4a", ".m4b", ".aac", ".wav", ".flac", ".ogg", ".oga", ".opus", ".wma", ".mka",
+                        ".aiff", ".aif", ".amr", ".ape", ".wv"})
+MEDIA_EXTS = IMAGE_EXTS | RAW_EXTS | EXACT_ONLY_IMAGE_EXTS | VIDEO_EXTS | AUDIO_EXTS
+SIMILAR_EXTS = IMAGE_EXTS          # les RAW, les vidéos et les audios ne sont comparés qu'en exact
 
 QUICK_LIMIT = 128 * 1024           # au plus : fichier entier haché d'emblée
 SAMPLE = 64 * 1024                 # taille de chaque échantillon (début, milieu, fin)
@@ -166,13 +170,23 @@ class ScanStats:
         return self.exact_groups + self.similar_groups + self.live_groups + self.modified_groups
 
     def summary(self) -> str:
-        parts = [f"{self.exact_groups} identique(s)", f"{self.similar_groups} similaire(s)"]
+        """Résumé traduit de l'analyse (affiché dans l'historique et la notification de fin)."""
+        from PySide6.QtCore import QCoreApplication
+        parts = [
+            QCoreApplication.translate("DedupStats", "{count} identique(s)").format(count=self.exact_groups),
+            QCoreApplication.translate("DedupStats", "{count} similaire(s)").format(count=self.similar_groups),
+        ]
         if self.live_groups:
-            parts.append(f"{self.live_groups} Live Photo(s)")
+            parts.append(QCoreApplication.translate("DedupStats", "{count} Live Photo(s)")
+                         .format(count=self.live_groups))
         if self.modified_groups:
-            parts.append(f"{self.modified_groups} modifié(s)")
-        return (f"{self.scanned} fichier(s) analysé(s), {self.group_count} groupe(s) "
-                f"({', '.join(parts)}), gain libérable : {format_size(self.reclaimable)}")
+            parts.append(QCoreApplication.translate("DedupStats", "{count} modifié(s)")
+                         .format(count=self.modified_groups))
+        return QCoreApplication.translate(
+            "DedupStats",
+            "{scanned} fichier(s) analysé(s), {groups} groupe(s) ({kinds}), gain libérable : {gain}"
+        ).format(scanned=self.scanned, groups=self.group_count, kinds=", ".join(parts),
+                 gain=format_size(self.reclaimable))
 
 
 @dataclass
@@ -185,17 +199,21 @@ class ScanResult:
 # ── 1. Inventaire ─────────────────────────────────────────────────────
 
 def build_inventory(options: ScanOptions, hooks: Hooks, stats: ScanStats) -> list[FileItem]:
-    """Liste les fichiers de A puis de B (liens ignorés, vides ignorés, doublons de chemin réel ignorés)."""
+    """Liste les fichiers de A puis de B (liens ignorés, vides ignorés, même fichier compté une fois)."""
     roots = [(SIDE_A, Path(options.folder_a), options.protect_a)]
     if options.folder_b is not None:
         roots.append((SIDE_B, Path(options.folder_b), options.protect_b))
     extensions = MEDIA_EXTS if options.media_only else None
     seen: set[str] = set()
+    seen_inodes: set[tuple[int, int]] = set()
     items: list[FileItem] = []
+    def count_link(_link: Path) -> None:
+        stats.symlinks += 1                              # lien écarté par le parcours (jamais suivi)
+
     for side, root, protected in roots:
         for path in iter_files(root, recursive=options.recursive, extensions=extensions,
                                skip_hidden=options.skip_hidden, follow_symlinks=False,
-                               cancel=hooks.cancel):
+                               cancel=hooks.cancel, on_link=count_link):
             try:
                 st = os.lstat(path)
             except OSError:
@@ -214,6 +232,12 @@ def build_inventory(options: ScanOptions, hooks: Hooks, stats: ScanStats) -> lis
                 stats.repeated += 1
                 continue
             seen.add(real)
+            if st.st_ino:                       # deux noms du même fichier (lien physique, alias du FS)
+                inode = (st.st_dev, st.st_ino)
+                if inode in seen_inodes:
+                    stats.repeated += 1
+                    continue
+                seen_inodes.add(inode)
             items.append(FileItem(path=Path(path), side=side, root=root, size=st.st_size,
                                   mtime=st.st_mtime, protected=protected))
             stats.scanned += 1
@@ -277,7 +301,7 @@ def find_exact_groups(items: list[FileItem], hooks: Hooks, stats: ScanStats) -> 
                        candidates, "Empreintes rapides")
     hooks.check()
     quick_groups: dict[tuple[int, str], list[FileItem]] = {}
-    for it, res in zip(candidates, quick):
+    for it, res in zip(candidates, quick, strict=False):
         if res is None:
             stats.unreadable += 1
             continue
@@ -300,7 +324,7 @@ def find_exact_groups(items: list[FileItem], hooks: Hooks, stats: ScanStats) -> 
                           need_full, "Empreintes complètes")
         hooks.check()
         full_groups: dict[tuple[int, str], list[FileItem]] = {}
-        for it, digest in zip(need_full, full):
+        for it, digest in zip(need_full, full, strict=False):
             if digest is None:
                 stats.unreadable += 1
                 continue
@@ -373,7 +397,7 @@ def find_similar_groups(exact: list[list[FileItem]], items: list[FileItem], opti
 
     valid: list[tuple[list[FileItem], int]] = []
     unhashed: list[list[FileItem]] = []
-    for unit, out in zip(units, res):
+    for unit, out in zip(units, res, strict=False):
         if out is None:
             stats.unreadable += 1
             unhashed.append(unit)
@@ -381,6 +405,7 @@ def find_similar_groups(exact: list[list[FileItem]], items: list[FileItem], opti
         bits, width, height = out
         for member in unit:
             member.width, member.height = width, height
+            member.similar_hash = bits
         if bits == 0 or bits == FULL64:
             stats.uniform_skipped += 1
             unhashed.append(unit)
@@ -429,11 +454,20 @@ def find_similar_groups(exact: list[list[FileItem]], items: list[FileItem], opti
     similar: list[list[FileItem]] = []
     remaining = list(passthrough)
     remaining += [u for u in unhashed if len(u) > 1]
+    # Grappes « en étoile » autour du meilleur exemplaire de chaque composante : la transitivité du
+    # union-find ne doit pas faire entrer un fichier visuellement éloigné du gardien dans le groupe.
     for comp in comps.values():
-        if len(comp) >= 2:
-            similar.append([m for idx in comp for m in valid[idx][0]])
-        elif len(valid[comp[0]][0]) > 1:
-            remaining.append(valid[comp[0]][0])
+        pending = set(comp)
+        while pending:
+            anchor = max(pending, key=lambda idx: (valid[idx][0][0].pixels, valid[idx][0][0].size,
+                                                   str(valid[idx][0][0].path).lower()))
+            ah = hashes[anchor]
+            cluster = [idx for idx in pending if (hashes[idx] ^ ah).bit_count() <= tol]
+            if len(cluster) >= 2:
+                similar.append([m for idx in cluster for m in valid[idx][0]])
+            elif valid[cluster[0]][0] and len(valid[cluster[0]][0]) > 1:
+                remaining.append(valid[cluster[0]][0])
+            pending.difference_update(cluster)
     return remaining, similar
 
 
@@ -466,7 +500,8 @@ def find_live_groups(items: list[FileItem], options: ScanOptions, hooks: Hooks,
     ffprobe = options.ffprobe
     if ffprobe is not None:
         hooks.status("Durée des vidéos…")
-        durations = hooks.pmap(_guarded(hooks, lambda it: livephoto.video_duration(ffprobe, it.path)),
+        durations = hooks.pmap(_guarded(hooks, lambda it: livephoto.video_duration(ffprobe, it.path,
+                                                                                    cancel=hooks.cancel)),
                                videos, "Durée des vidéos")
         hooks.check()
     else:
@@ -476,7 +511,7 @@ def find_live_groups(items: list[FileItem], options: ScanOptions, hooks: Hooks,
     groups: list[list[FileItem]] = []
     taken: set[int] = set()
     too_long: list[str] = []
-    for (photo_idx, video_idx), duration in zip(pairs, durations):
+    for (photo_idx, video_idx), duration in zip(pairs, durations, strict=False):
         video = items[video_idx]
         video.duration = duration
         if duration is None:
@@ -493,7 +528,8 @@ def find_live_groups(items: list[FileItem], options: ScanOptions, hooks: Hooks,
                           f"{options.live_max_seconds:g} s (pas une Live Photo). Ex. : {', '.join(too_long[:3])}"
                           " — relevez la durée max si ce sont bien des Live Photos.")
     if stats.live_unknown_duration:
-        hooks.log("WARN", f"{stats.live_unknown_duration} vidéo(s) de durée illisible : retenues d'après le nom seul.")
+        hooks.log("WARN", f"{stats.live_unknown_duration} vidéo(s) de durée illisible : retenues d'après le nom "
+                          "seul ; l'option « écarter la vidéo » ne s'appliquera pas à elles.")
     hooks.log("OK" if groups else "WARN", f"Live Photos repérées : {len(groups)}")
     return groups, [it for it in items if id(it) not in taken]
 
@@ -521,7 +557,7 @@ def _fill_dimensions(groups: list[Group], hooks: Hooks) -> None:
     hooks.status("Lecture des dimensions…")
     dims = hooks.pmap(_guarded(hooks, lambda it: read_dimensions(it.path)), todo, "Dimensions")
     hooks.check()
-    for it, wh in zip(todo, dims):
+    for it, wh in zip(todo, dims, strict=False):
         if wh is not None:
             it.width, it.height = wh
 
@@ -538,7 +574,7 @@ def scan(options: ScanOptions, hooks: Hooks | None = None) -> ScanResult:
     hooks.status("Inventaire des fichiers…")
     items = build_inventory(options, hooks, stats)
     hooks.log("INFO", f"Inventaire : {stats.scanned} fichier(s) retenu(s), {stats.empty} vide(s), "
-                      f"{stats.symlinks} lien(s) et {stats.repeated} chemin(s) répété(s) ignoré(s).")
+                      f"{stats.symlinks} lien(s) et {stats.repeated} fichier(s) déjà vu(s) ignoré(s).")
 
     live: list[list[FileItem]] = []
     if options.live:

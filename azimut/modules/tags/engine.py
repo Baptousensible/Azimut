@@ -11,6 +11,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Sequence
 
+from azimut.core.logs import get_logger
+
+_log = get_logger("tags.engine")
+
 # ── Constantes ───────────────────────────────────────────────────────────────
 READ_CHUNK = 200                                   # fichiers par appel ExifTool (lecture)
 EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
@@ -34,7 +38,7 @@ SUPPORTED_EXTENSIONS = frozenset({
 _SNAPSHOT_SKIP = frozenset({"file", "system", "composite", "exiftool"})
 _EDITABLE_GROUP_RE = re.compile(
     r"^(?:exif|exififd|gps|interopifd|ifd\d+|subifd\d*|iptc\w*|xmp(?:-[\w\-]+)?)$", re.I)
-_TAG_RE = re.compile(r"^(?:[\w\-]+:)?[\w\-\.]+$")
+_TAG_RE = re.compile(r"^(?!-)(?:[\w\-]+:)?[\w\-\.]+$")   # un nom de tag ne commence jamais par « - »
 _DUP_SUFFIX = re.compile(r"\s*\(\d+\)$")
 _DT_RE = re.compile(r"^\s*(\d{4})[-:](\d{2})[-:](\d{2})[ T](\d{2}):(\d{2}):(\d{2})\s*$")
 _WRITE_OK_RE = re.compile(r"\b[1-9]\d*\s+(?:image\s+)?files?\s+(?:updated|unchanged)", re.I)
@@ -130,12 +134,66 @@ def entry_refusal(entry: TagEntry) -> str | None:
     return None
 
 
+def has_gps_data(entries: Iterable[TagEntry]) -> bool:
+    """Vrai si le fichier contient au moins une coordonnée GPS lisible."""
+    return any(e.group.lower().startswith("gps") or e.name.lower().startswith("gps")
+               for e in entries)
+
+
+def has_editable_metadata(entries: Iterable[TagEntry]) -> bool:
+    """Vrai si au moins une métadonnée peut être supprimée par « Tout supprimer »."""
+    return any(entry_refusal(e) is None for e in entries)
+
+
 def write_refusal(path: str | Path) -> str | None:
     if _ext(path) in MATROSKA_EXTENSIONS:
         nom = Path(str(path)).name
         prefixe = f"{nom} : " if nom and not str(path).startswith(".") else ""
         return f"{prefixe}format non modifiable ici (WebM / Matroska)."
     return None
+
+
+# ── Formats mal étiquetés ────────────────────────────────────────────────────
+# ExifTool choisit son écrivain d'après l'extension : un export dont le contenu ne correspond pas au nom
+# (JPEG nommé « .HEIC », cas fréquent des exports Google Photos) est refusé. On reconnaît le vrai format
+# à ses premiers octets pour écrire via une copie portant la bonne extension.
+_IMAGE_MAGIC = (
+    (b"\xff\xd8\xff", ".jpg"),
+    (b"\x89PNG\r\n\x1a\n", ".png"),
+    (b"GIF87a", ".gif"),
+    (b"GIF89a", ".gif"),
+    (b"II*\x00", ".tif"),
+    (b"MM\x00*", ".tif"),
+)
+_HEIF_BRANDS = frozenset({b"heic", b"heix", b"hevc", b"hevx", b"mif1", b"msf1"})
+_AVIF_BRANDS = frozenset({b"avif", b"avis"})
+
+
+def sniff_extension(path: str | Path) -> str | None:
+    """Extension réelle d'après les premiers octets, ou None si le format n'est pas reconnu."""
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(16)
+    except OSError:
+        return None
+    for magic, ext in _IMAGE_MAGIC:
+        if head.startswith(magic):
+            return ext
+    if len(head) >= 12 and head.startswith(b"RIFF") and head[8:12] == b"WEBP":
+        return ".webp"
+    if len(head) >= 12 and head[4:8] == b"ftyp":
+        brand = head[8:12]
+        if brand in _HEIF_BRANDS:
+            return ".heic"
+        if brand in _AVIF_BRANDS:
+            return ".avif"
+    return None
+
+
+def is_type_mismatch(message: str) -> bool:
+    """ExifTool a refusé d'écrire parce que l'extension ne correspond pas au contenu."""
+    text = (message or "").lower()
+    return "not a valid" in text and "looks more like" in text
 
 
 # ── Lecture ──────────────────────────────────────────────────────────────────
@@ -176,17 +234,30 @@ def match_records(paths: Sequence[Path], records: list[dict]) -> list[dict]:
 
 
 def write_argfile(lines: Iterable[str]) -> Path:
-    """Fichier d'arguments `-@` en UTF-8 (l'appelant le supprime)."""
+    """Fichier d'arguments `-@` en UTF-8 (l'appelant le supprime).
+
+    Dans un fichier d'arguments ExifTool, une ligne commençant par « - » est une option et une ligne
+    commençant par « # » un commentaire : les chemins doivent donc être absolus et ne jamais pouvoir être
+    relus comme une option (AZ-012).
+    """
+    prepared = list(lines)
+    for line in prepared:
+        if "\n" in line or "\r" in line:
+            raise ValueError("Fichier d'arguments ExifTool : séparateur de ligne interdit.")
+        if line.startswith("-"):
+            continue                              # option ou affectation de tag (« -Tag=valeur »)
+        if not os.path.isabs(line):
+            raise ValueError(f"Fichier d'arguments ExifTool : chemin non absolu refusé (« {line} »).")
     fd, name = tempfile.mkstemp(suffix=".args", prefix="azimut_tags_")
     try:
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
-            for line in lines:
+            for line in prepared:
                 f.write(line + "\n")
     except BaseException:
         try:
             os.unlink(name)
-        except OSError:
-            pass
+        except OSError as exc:
+            _log.debug("Fichier temporaire non supprimé (%s) : %s", name, exc)
         raise
     return Path(name)
 
@@ -199,8 +270,12 @@ def read_command(exiftool: str | Path, argfile: str | Path, *, numeric: bool = F
     return [*cmd, "-@", str(argfile)]
 
 
-def write_command(exiftool: str | Path, argfile: str | Path, *, numeric: bool = False) -> list[str]:
-    cmd = [str(exiftool), "-charset", "exiftool=utf8", "-charset", "filename=utf8", *WRITE_OPTIONS]
+def write_command(exiftool: str | Path, argfile: str | Path, *, numeric: bool = False,
+                  backup: bool = False) -> list[str]:
+    # Sans -overwrite_original, ExifTool conserve l'original sous « nom.ext_original ».
+    options = WRITE_OPTIONS if not backup else tuple(
+        option for option in WRITE_OPTIONS if option != "-overwrite_original")
+    cmd = [str(exiftool), "-charset", "exiftool=utf8", "-charset", "filename=utf8", *options]
     if numeric:
         cmd.append("-n")
     return [*cmd, "-@", str(argfile)]
@@ -416,8 +491,12 @@ def restoration_changes(before: dict) -> list[TagChange]:
     return out
 
 
-def snapshot_record(path: Path, mtime: float | None, before: dict, unrestorable: list[str]) -> dict:
-    return {"path": str(path), "mtime": mtime, "before": before, "unrestorable": unrestorable}
+def snapshot_record(path: Path, mtime: float | None, before: dict, unrestorable: list[str],
+                    atime: float | None = None) -> dict:
+    record = {"path": str(path), "mtime": mtime, "before": before, "unrestorable": unrestorable}
+    if atime is not None:                       # absent des enregistrements antérieurs à TAKEOUT-004
+        record["atime"] = atime
+    return record
 
 
 def undo_record(files: list[dict], changes: Sequence[TagChange], now: datetime | None = None) -> dict:

@@ -14,6 +14,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from azimut.core.logs import get_logger
+
+_log = get_logger("selftest")
+
 
 def _check_qt() -> dict[str, Any]:
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -74,6 +78,7 @@ def _check_binaries() -> dict[str, Any]:
             "path": str(info.path) if info.path else None,
             "version": info.version,
             "runs": bool(info.version),          # version lue = le binaire s'exécute vraiment
+            "outdated": info.outdated,           # version antérieure au minimum de sécurité (AZ-009)
         }
     return out
 
@@ -113,6 +118,10 @@ def collect() -> tuple[dict[str, Any], list[str]]:
     report["binaries"] = _check_binaries()
     if report["binaries"].get("error"):
         problems.append(f"Détection des binaires : {report['binaries']['error']}")
+    for name, item in report["binaries"].get("items", {}).items():
+        if item.get("outdated"):
+            report.setdefault("warnings", []).append(
+                f"{name} {item.get('version') or '?'} est antérieur au minimum recommandé : mettez-le à jour.")
 
     report["modules"] = mods = _check_modules()
     for module_id, message in mods["errors"].items():
@@ -156,6 +165,6 @@ def run(args: list[str] | None = None) -> int:
         try:
             sys.stdout.write(text + "\n")
             sys.stdout.flush()
-        except (OSError, ValueError, UnicodeEncodeError):
-            pass
+        except (OSError, ValueError, UnicodeEncodeError) as exc:
+            _log.debug("Sortie console ignorée : %s", exc)
     return 0 if report["ok"] else 1

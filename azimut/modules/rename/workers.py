@@ -9,10 +9,13 @@ from typing import Sequence
 
 from PySide6.QtCore import QObject
 
+from azimut.core.logs import get_logger
 from azimut.core.storage import get_storage
 from azimut.core.workers import BaseWorker
 from azimut.modules.rename import engine as eng
 from azimut.modules.tags import engine as tags
+
+_log = get_logger("rename.workers")
 
 
 @dataclass
@@ -34,7 +37,8 @@ class ScanWorker(BaseWorker):
 
     # ── Lecture d'un lot ──
     def _read_batch(self, batch: Sequence[Path]) -> list[datetime | None]:
-        assert self._exiftool is not None
+        if self._exiftool is None:                  # pas d'ExifTool : aucune date connue (pas de crash tardif)
+            return [None for _ in batch]
         records = self._run([str(p) for p in batch], len(batch))
         if records is None or len(records) != len(batch):
             if len(batch) > 1:                                  # sortie incohérente : fichier par fichier
@@ -49,14 +53,14 @@ class ScanWorker(BaseWorker):
         finally:
             try:
                 argfile.unlink()
-            except OSError:
-                pass
+            except OSError as exc:
+                _log.debug("Fichier d'arguments non supprimé (%s) : %s", argfile, exc)
         if res.timed_out or res.cancelled:
             return None
         return eng.parse_json_records(res.stdout)
 
     def do_work(self) -> ScanResult:
-        self.emit_status("Recherche des fichiers…")
+        self.emit_status(self.tr("Recherche des fichiers…"))
         inv = eng.list_files(self._folder, self._recursive, cancel=self.is_cancelled)
         self.check_cancelled()
         total = len(inv.files)
@@ -76,16 +80,17 @@ class ScanWorker(BaseWorker):
             dates: list[datetime | None] = [None] * total
         else:
             batches = [inv.files[i:i + eng.READ_CHUNK] for i in range(0, total, eng.READ_CHUNK)]
-            self.emit_status("Lecture des dates de prise de vue…")
+            self.emit_status(self.tr("Lecture des dates de prise de vue…"))
             out = self.map_parallel(self._read_batch, batches, workers=max(2, min(4, os.cpu_count() or 2)),
                                     label="Lecture des dates")
             dates = []
-            for batch, result in zip(batches, out):
+            for batch, result in zip(batches, out, strict=False):
                 dates.extend(result if result is not None and len(result) == len(batch) else [None] * len(batch))
-        rows = [eng.make_row(p, d) for p, d in zip(inv.files, dates)]
+        rows = [eng.make_row(p, d) for p, d in zip(inv.files, dates, strict=False)]
         without = sum(1 for r in rows if r.date_meta is None)
         self.ok_count, self.error_count = total - without, without
-        self.summary = f"{total - without} avec date de métadonnées, {without} sans"
+        self.summary = self.tr("{dated} avec date de métadonnées, {undated} sans").format(
+            dated=total - without, undated=without)
         self.emit_log("OK", f"Analyse terminée : {self.summary}.")
         return ScanResult(rows=rows, entries=eng.folder_entries(rows), base_dir=self._folder, without_meta=without)
 
@@ -102,9 +107,13 @@ class ApplyWorker(BaseWorker):
         self.ok_count = 0
         self.error_count = 0
         self.summary = ""
+        self.result: dict | None = None        # renseigné même si le lot est annulé
 
     def do_work(self) -> dict:
         key = self._save_undo([(s, d) for _i, s, d in self._pairs])
+        if key is None and self._pairs:
+            # Sans enregistrement d'annulation, un renommage serait irréversible : on refuse le lot.
+            raise RuntimeError("Sauvegarde d'annulation impossible : aucun fichier n'a été renommé.")
         results = eng.execute_renames(self._pairs, cancel=self.is_cancelled, log=self.emit_log,
                                       progress=self.emit_progress)
         self.ok_count = sum(1 for ok, _ in results.values() if ok)
@@ -116,13 +125,15 @@ class ApplyWorker(BaseWorker):
             else:
                 try:
                     get_storage().delete(eng.UNDO_COLLECTION, key)
-                except Exception:                             # noqa: BLE001
-                    pass
+                except Exception as exc:                      # noqa: BLE001
+                    _log.debug("Enregistrement d'annulation non supprimé : %s", exc)
                 key = None
-        self.summary = f"{self.ok_count} fichier(s) renommé(s), {self.error_count} erreur(s)"
+        self.summary = self.tr("{ok} fichier(s) renommé(s), {errors} erreur(s)").format(
+            ok=self.ok_count, errors=self.error_count)
         self.emit_log("OK" if not self.error_count else "WARN", self.summary)
+        self.result = {"results": results, "key": key}
         self.check_cancelled()
-        return {"results": results, "key": key}
+        return self.result
 
     def _save_undo(self, pairs: Sequence[tuple[Path, Path]], key: str | None = None) -> str | None:
         if not pairs:
@@ -161,12 +172,15 @@ class UndoWorker(BaseWorker):
         results = eng.execute_renames(plan, cancel=self.is_cancelled, log=self.emit_log, progress=self.emit_progress)
         self.ok_count = sum(1 for ok, _ in results.values() if ok)
         self.error_count = sum(1 for ok, _ in results.values() if not ok)
-        self.summary = f"{self.ok_count} fichier(s) restauré(s), {self.error_count} erreur(s)"
+        self.summary = self.tr("{ok} fichier(s) restauré(s), {errors} erreur(s)").format(
+            ok=self.ok_count, errors=self.error_count)
         self.emit_log("OK" if not self.error_count else "WARN", self.summary)
         self.check_cancelled()
-        if not self.error_count:
+        # Ne supprimer l'enregistrement que si TOUTES les paires ont été restaurées : une paire
+        # « skipped » (fichier déplacé, renommé à la main…) doit rester annulable plus tard.
+        if not self.error_count and not skipped:
             try:
                 get_storage().delete(eng.UNDO_COLLECTION, self._key)     # annulé : n'est plus proposé
-            except Exception:                                            # noqa: BLE001
-                pass
+            except Exception as exc:                                     # noqa: BLE001
+                _log.debug("Enregistrement d'annulation non supprimé après restauration : %s", exc)
         return self.ok_count, self.error_count

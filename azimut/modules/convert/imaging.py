@@ -15,6 +15,16 @@ from azimut.modules.convert.profiles import RAW_EXTS
 HEIF_EXTS = frozenset({".heic", ".heif"})
 MULTIFRAME_EXTS = frozenset({".gif", ".tif", ".tiff"})
 ORIENTATION_TAG = 0x0112
+# Borne explicite du nombre de pixels décodés (anti « decompression bomb ») : une image piégée ne doit pas
+# épuiser la mémoire du processus principal (AZ-004).
+MAX_IMAGE_PIXELS = 250_000_000
+
+
+def _configure_pillow(Image) -> None:
+    """Applique la borne de décodage si Pillow n'en a pas une plus stricte."""
+    limit = getattr(Image, "MAX_IMAGE_PIXELS", None)
+    if limit is None or limit > MAX_IMAGE_PIXELS:
+        Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
 
 _heif_state: bool | None = None
 
@@ -83,10 +93,39 @@ def needs_pillow(path: Path) -> bool:
         return False
 
 
+def image_size(path: Path) -> tuple[int, int] | None:
+    """Dimensions (largeur, hauteur) de l'image, ou None si Pillow ne peut pas l'ouvrir."""
+    if not pillow_available():
+        return None
+    try:
+        from PIL import Image
+        _configure_pillow(Image)
+        with Image.open(path) as im:
+            return int(im.width), int(im.height)
+    except Exception:  # noqa: BLE001 - fichier illisible : ffmpeg tranchera
+        return None
+
+
+def save_heic(source: Path, target: Path, quality: int = 80) -> None:
+    """Écrit `source` en HEIC avec Pillow (pillow-heif), en appliquant l'orientation EXIF."""
+    from PIL import Image, ImageOps
+
+    _configure_pillow(Image)
+    with Image.open(source) as src:
+        im = ImageOps.exif_transpose(src)
+        im.load()
+        if im.mode not in ("RGB", "L"):
+            im = im.convert("RGB")
+        if im.mode == "L":
+            im = im.convert("RGB")
+        im.save(target, format="HEIF", quality=max(0, min(100, int(quality))))
+
+
 def prepare_png(path: Path, tmp_dir: Path | None = None) -> Path:
     """Développe `path` en PNG temporaire (à supprimer par l'appelant). RuntimeError si impossible."""
     from PIL import Image, ImageOps
 
+    _configure_pillow(Image)
     ext = path.suffix.lower()
     if ext in RAW_EXTS:
         if not raw_available():
@@ -98,9 +137,12 @@ def prepare_png(path: Path, tmp_dir: Path | None = None) -> Path:
     else:
         if ext in HEIF_EXTS and not heif_available():
             raise RuntimeError("pillow-heif non installé (pip install pillow-heif) : HEIC non pris en charge")
-        with Image.open(path) as src:
-            im = ImageOps.exif_transpose(src)
-            im.load()
+        try:
+            with Image.open(path) as src:
+                im = ImageOps.exif_transpose(src)
+                im.load()
+        except Image.DecompressionBombError as exc:
+            raise RuntimeError(f"image trop grande pour être décodée ({exc})") from exc
     if im.mode not in ("RGB", "RGBA", "L"):
         im = im.convert("RGB")
     fd, tmp = tempfile.mkstemp(suffix=".png", dir=str(tmp_dir) if tmp_dir else None)

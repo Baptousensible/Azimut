@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import sys
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -17,6 +18,29 @@ def _isolate_user_dirs(tmp_path_factory, monkeypatch):
         monkeypatch.setenv(var, str(home / sub))
     from azimut.core.prefs import Preferences
     monkeypatch.setattr(Preferences, "_instance", None)
+
+
+@pytest.fixture(autouse=True)
+def _neutral_system_accessibility(monkeypatch):
+    """Les tests ne dépendent pas des réglages d'accessibilité de la machine hôte."""
+    from azimut.core import system_accessibility
+    for name in ("reduce_motion", "reduce_transparency", "high_contrast", "color_scheme"):
+        monkeypatch.setattr(system_accessibility, name, lambda: None)
+
+
+@pytest.fixture(autouse=True)
+def _reset_translators():
+    """Aucun test n'hérite d'un traducteur installé par create_app() (état global de l'application)."""
+    from PySide6.QtCore import QCoreApplication
+
+    from azimut.core import i18n
+    app = QCoreApplication.instance()
+    if app is not None:
+        i18n.uninstall(app)
+    yield
+    app = QCoreApplication.instance()
+    if app is not None:
+        i18n.uninstall(app)
 
 
 @pytest.fixture(scope="session")
@@ -39,7 +63,6 @@ def tmp_prefs(qapp, tmp_path_factory):
     from azimut.core.prefs import Preferences
     return Preferences(tmp_path_factory.mktemp("prefs") / "preferences.json")
 
-import sys
 
 _exit_status = 0
 

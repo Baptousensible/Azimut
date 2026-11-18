@@ -9,17 +9,26 @@ from typing import Any
 from PySide6.QtCore import QObject, Signal
 
 from azimut.core.fsutil import atomic_write_text
+from azimut.core.i18n import AUTO, normalize_language
 from azimut.core.logs import get_logger
 from azimut.core.paths import user_config_dir
 
 _log = get_logger("prefs")
 
-THEMES = ("dark", "light")
 ZOOM_MIN, ZOOM_MAX = 0.8, 1.6
+_BOOL_KEYS = ("reduce_motion", "reduce_transparency", "high_contrast")
 _STR_KEYS = ("binaries.ffmpeg", "binaries.ffprobe", "binaries.exiftool", "last_dir")
 DEFAULTS: dict[str, Any] = {
-    "theme": "dark",
+    # Pas de clé « theme » : le thème suit le système à chaque lancement (voir ThemeManager).
     "zoom": 1.0,
+    "reduce_motion": False,
+    "reduce_transparency": False,
+    "high_contrast": False,
+    "top_layout": "merged",
+    # Papicons reste le thème d'icônes par défaut ; « animated » n'est appliqué que
+    # lorsqu'il a été choisi explicitement dans les Préférences.
+    "icon_theme": "papicons",
+    "language": AUTO,
     "binaries.ffmpeg": "",
     "binaries.ffprobe": "",
     "binaries.exiftool": "",
@@ -29,8 +38,10 @@ DEFAULTS: dict[str, Any] = {
 
 def _normalize(key: str, value: Any) -> Any:
     """Valide les clés standard à la lecture ; les autres clés sont renvoyées telles quelles."""
-    if key == "theme":
-        return value if value in THEMES else DEFAULTS["theme"]
+    if key in _BOOL_KEYS:
+        return bool(value)
+    if key == "language":
+        return normalize_language(value) or DEFAULTS["language"]
     if key == "zoom":
         try:
             z = float(value)
@@ -78,6 +89,11 @@ class Preferences(QObject):
         except (OSError, ValueError):
             return {}
         return dict(raw) if isinstance(raw, dict) else {}
+
+    def contains(self, key: str) -> bool:
+        """Vrai si la clé a été écrite explicitement (par opposition au défaut)."""
+        with self._lock:
+            return key in self._data
 
     def get(self, key: str, default: Any = None) -> Any:
         with self._lock:

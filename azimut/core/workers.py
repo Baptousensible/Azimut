@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 import os
 import queue
+import signal
 import subprocess
 import sys
 import threading
@@ -18,6 +19,8 @@ from PySide6.QtCore import QObject, QThread, Signal
 
 from azimut.core.logs import get_logger
 
+_log = get_logger("workers")
+
 T = TypeVar("T")
 R = TypeVar("R")
 
@@ -29,6 +32,9 @@ _STDERR_MAX = 64 * 1024         # octets conservés de stderr
 _KILL_DELAY = 2.0               # terminate → kill
 _POLL = 0.1
 _NOTHING = object()
+_IS_WINDOWS = sys.platform == "win32"
+_NO_WINDOW = {"creationflags": subprocess.CREATE_NO_WINDOW} if _IS_WINDOWS else {}
+_TASKKILL_TIMEOUT = 5.0         # délai laissé à taskkill pour tuer le sous-arbre Windows
 
 
 class CancelledError(Exception):
@@ -45,15 +51,24 @@ class ProcessResult:
     stalled: bool = False       # arrêté faute de signe de vie (voir ``stall_timeout``) ; ``timed_out`` est aussi vrai
 
 
+def _close_quietly(stream) -> None:
+    try:
+        if stream is not None:
+            stream.close()
+    except (OSError, ValueError) as exc:
+        _log.debug("Fermeture de flux ignorée : %s", exc)
+
+
 def _pump_stdout(stream, lines: "queue.Queue[str | None]") -> None:
     """Lit stdout ligne à ligne ; ``None`` marque la fin du flux."""
     try:
         for raw in iter(stream.readline, b""):
             lines.put(raw.decode("utf-8", errors="replace").rstrip("\r\n"))
-    except (OSError, ValueError):
-        pass
+    except (OSError, ValueError) as exc:
+        _log.debug("Lecture de stdout interrompue : %s", exc)
     finally:
         lines.put(None)
+        _close_quietly(stream)                       # le lecteur ferme son flux, jamais un autre thread
 
 
 def _drain_stderr(stream, buf: bytearray) -> None:
@@ -66,36 +81,81 @@ def _drain_stderr(stream, buf: bytearray) -> None:
             buf += chunk
             if len(buf) > 2 * _STDERR_MAX:
                 del buf[:-_STDERR_MAX]
-    except (OSError, ValueError):
-        pass
+    except (OSError, ValueError) as exc:
+        _log.debug("Lecture de stderr interrompue : %s", exc)
+    finally:
+        _close_quietly(stream)
 
 
-def _kill_alive(procs: list[subprocess.Popen]) -> None:
-    for proc in procs:
-        if proc.poll() is None:
-            try:
-                proc.kill()
-            except OSError:
-                pass
+def _taskkill(proc: subprocess.Popen, *, force: bool) -> bool:
+    """Tue le sous-arbre Windows (``taskkill /T``) ; True si la commande a réussi.
+
+    ``TerminateProcess`` ne voit que l'enfant direct : un script qui lance le vrai outil laisserait
+    son petit-fils vivant (CORE-1, côté Windows).
+    """
+    args = ["taskkill", "/T", "/PID", str(proc.pid)]
+    if force:
+        args.insert(2, "/F")
+    try:
+        result = subprocess.run(args, timeout=_TASKKILL_TIMEOUT, stdin=subprocess.DEVNULL,
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                check=False, **_NO_WINDOW)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return result.returncode == 0
 
 
-def _stop_and_reap(proc: subprocess.Popen) -> None:
-    """terminate, puis kill après ``_KILL_DELAY`` s, puis attend la fin du processus."""
+def _terminate_tree(proc: subprocess.Popen) -> bool:
+    """Arrêt doux du sous-arbre : SIGTERM au groupe (POSIX), ``taskkill /T`` (Windows).
+
+    False si le processus est déjà terminé.
+    """
+    if proc.poll() is not None:
+        return False
+    if _IS_WINDOWS and _taskkill(proc, force=False):
+        return True
+    if not _IS_WINDOWS:
+        try:
+            os.killpg(os.getpgid(proc.pid), signal.SIGTERM)   # petit-fils d'un script compris
+            return True
+        except OSError as exc:                               # groupe déjà disparu : viser le processus
+            _log.debug("SIGTERM au groupe impossible (groupe déjà disparu ?) : %s", exc)
     try:
         proc.terminate()
     except OSError:
-        pass
+        return False
+    return True
+
+
+def _kill_tree(procs: list[subprocess.Popen]) -> None:
+    for proc in procs:
+        if proc.poll() is not None:
+            continue
+        killed = _taskkill(proc, force=True) if _IS_WINDOWS else False
+        if not _IS_WINDOWS:
+            try:
+                os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+                killed = True
+            except OSError as exc:
+                _log.debug("SIGKILL au groupe impossible (groupe déjà disparu ?) : %s", exc)
+        if not killed:
+            try:
+                proc.kill()
+            except OSError as exc:
+                _log.debug("kill() impossible (processus déjà terminé ?) : %s", exc)
+
+
+def _stop_and_reap(proc: subprocess.Popen) -> None:
+    """SIGTERM au groupe, puis SIGKILL après ``_KILL_DELAY`` s, puis attend la fin du processus."""
+    _terminate_tree(proc)
     try:
         proc.wait(timeout=_KILL_DELAY)
     except subprocess.TimeoutExpired:
-        try:
-            proc.kill()
-        except OSError:
-            pass
+        _kill_tree([proc])
         try:
             proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
-            pass
+            _log.warning("Processus %s toujours vivant après SIGKILL", proc.pid)
 
 
 class BaseWorker(QThread):
@@ -160,16 +220,9 @@ class BaseWorker(QThread):
 
     @staticmethod
     def _terminate(procs: list[subprocess.Popen]) -> None:
-        alive: list[subprocess.Popen] = []
-        for proc in procs:
-            if proc.poll() is None:
-                try:
-                    proc.terminate()
-                    alive.append(proc)
-                except OSError:
-                    pass
+        alive = [proc for proc in procs if _terminate_tree(proc)]
         if alive:
-            timer = threading.Timer(_KILL_DELAY, _kill_alive, args=(alive,))
+            timer = threading.Timer(_KILL_DELAY, _kill_tree, args=(alive,))
             timer.daemon = True
             timer.start()
 
@@ -197,7 +250,7 @@ class BaseWorker(QThread):
     def run_process(self, cmd: list[str], *, on_stdout_line: Callable[[str], None] | None = None,
                     timeout: float | None = None, cwd: Path | None = None,
                     env: dict[str, str] | None = None, nice: int | None = None,
-                    stall_timeout: float | None = None,
+                    stall_timeout: float | None = None, capture_stdout: bool = True,
                     activity: Callable[[], object] | None = None) -> ProcessResult:
         """Lance un processus (jamais via un shell) et attend sa fin.
 
@@ -207,6 +260,8 @@ class BaseWorker(QThread):
         ``nice`` : priorité abaissée du processus (valeur Unix, ex. 10 ; « sous la normale » sous Windows).
         ``stall_timeout`` + ``activity`` : si la valeur renvoyée par ``activity()`` (sondée toutes les 0,1 s)
         ne change plus pendant ``stall_timeout`` secondes, le processus est arrêté (``stalled``).
+        ``capture_stdout=False`` : stdout n'est pas conservé (seul ``on_stdout_line`` et le code de retour
+        comptent) ; ``stdout`` vaut alors "" — utile pour un encodage bavard.
         """
         if self.is_cancelled():
             return ProcessResult(-1, "", "", cancelled=True)
@@ -215,6 +270,8 @@ class BaseWorker(QThread):
             kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
             if nice:
                 kwargs["creationflags"] |= subprocess.BELOW_NORMAL_PRIORITY_CLASS
+        else:
+            kwargs["start_new_session"] = True               # groupe propre : l'annulation vise tout le sous-arbre
         args = [str(c) for c in cmd]
         try:
             proc = subprocess.Popen(
@@ -231,9 +288,9 @@ class BaseWorker(QThread):
             try:                                         # relatif à notre propre priorité, borné à 19
                 target = min(19, os.getpriority(os.PRIO_PROCESS, 0) + int(nice))
                 os.setpriority(os.PRIO_PROCESS, proc.pid, target)
-            except (OSError, AttributeError):
-                pass
-        threads: list[threading.Thread] = []
+            except (OSError, AttributeError) as exc:
+                _log.debug("Priorité %s non appliquée au processus %s : %s", nice, proc.pid, exc)
+        readers: list[tuple[threading.Thread, object]] = []
         try:
             if self.is_cancelled():                      # cancel() passé entre le contrôle et l'enregistrement
                 self._terminate([proc])
@@ -241,14 +298,15 @@ class BaseWorker(QThread):
             err_buf = bytearray()
             t_out = threading.Thread(target=_pump_stdout, args=(proc.stdout, lines), daemon=True)
             t_err = threading.Thread(target=_drain_stderr, args=(proc.stderr, err_buf), daemon=True)
-            threads = [t_out, t_err]
+            readers = [(t_out, proc.stdout), (t_err, proc.stderr)]
             t_out.start()
             t_err.start()
 
             out_lines: list[str] = []
 
             def handle(line: str) -> None:
-                out_lines.append(line)
+                if capture_stdout:
+                    out_lines.append(line)
                 if on_stdout_line is not None:
                     on_stdout_line(line)
 
@@ -311,12 +369,10 @@ class BaseWorker(QThread):
         finally:
             if proc.poll() is None:                      # sortie anormale (exception du rappel…)
                 _stop_and_reap(proc)
-            for stream in (proc.stdout, proc.stderr):
-                try:
-                    if stream is not None:
-                        stream.close()
-                except (OSError, ValueError):
-                    pass
+            for thread, stream in readers or [(None, stream) for stream in (proc.stdout, proc.stderr)]:
+                if thread is not None and thread.is_alive():
+                    continue                             # close() attendrait le verrou tenu par readline()
+                _close_quietly(stream)
             with self._procs_lock:
                 self._procs.discard(proc)
 
@@ -334,7 +390,7 @@ class BaseWorker(QThread):
                 warned = True
                 self.emit_log("WARN", f"Pression mémoire : RAM utilisée {status.used_pct:.0f} %, disponible "
                                       f"{status.available_pct:.0f} % — attente avant le prochain fichier…")
-            self.emit_status("En attente de mémoire disponible…")
+            self.emit_status(self.tr("En attente de mémoire disponible…"))
             for _ in range(20):                           # ~2 s, interrompu dès l'annulation
                 self.check_cancelled()
                 time.sleep(_POLL)

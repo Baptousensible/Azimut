@@ -55,6 +55,12 @@ def test_discover_tolerates_failures(fake_modules):
     assert set(errors) == {"broken", "nomodule", "liar"}
 
 
+def test_actual_modules_follow_atlas_order():
+    specs, errors = registry.discover_with_errors()
+    assert not errors
+    assert [s.id for s in specs] == ["takeout", "dedup", "convert", "rename", "scope", "tags"]
+
+
 # ── ligne de commande ──
 @pytest.fixture
 def fake_discovery(monkeypatch):

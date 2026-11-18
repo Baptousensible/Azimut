@@ -15,7 +15,10 @@ from pathlib import Path
 
 import pytest
 
-from azimut.core import paths
+from PySide6.QtCore import QLocale
+
+from azimut.core import i18n, paths
+from azimut.core.i18n import AUTO
 from azimut.core.fsutil import (atomic_write_text, format_duration, format_size, iter_files,
                                 safe_relative, unique_path)
 from azimut.core.logs import get_logger, setup_logging
@@ -59,8 +62,13 @@ def test_frozen_mode(monkeypatch, tmp_path):
 
 # ── prefs ────────────────────────────────────────────────────────────────
 def test_prefs_defaults(tmp_prefs):
-    assert tmp_prefs.get("theme") == "dark"
+    assert tmp_prefs.get("language") == AUTO
+    assert not tmp_prefs.contains("language")
+    tmp_prefs.set("language", "fr")
+    assert tmp_prefs.contains("language")
     assert tmp_prefs.get("zoom") == 1.0
+    assert tmp_prefs.get("icon_theme") == "papicons"
+    assert not tmp_prefs.contains("icon_theme")       # rien n'est écrit avant le choix
     assert tmp_prefs.get("binaries.ffmpeg") == ""
     assert tmp_prefs.get("inconnue") is None
     assert tmp_prefs.get("inconnue", 42) == 42
@@ -69,16 +77,16 @@ def test_prefs_defaults(tmp_prefs):
 def test_prefs_set_get_and_signal(tmp_prefs):
     got: list = []
     tmp_prefs.changed.connect(lambda k, v: got.append((k, v)))
-    tmp_prefs.set("theme", "light")
+    tmp_prefs.set("language", "fr")
     tmp_prefs.set("last_dir", "/tmp/x")
-    assert tmp_prefs.get("theme") == "light"
-    assert got == [("theme", "light"), ("last_dir", "/tmp/x")]
-    assert Preferences(tmp_prefs.path).get("theme") == "light"      # relecture depuis le disque
+    assert tmp_prefs.get("language") == "fr"
+    assert got == [("language", "fr"), ("last_dir", "/tmp/x")]
+    assert Preferences(tmp_prefs.path).get("language") == "fr"      # relecture depuis le disque
 
 
 def test_prefs_validation(tmp_prefs):
-    tmp_prefs.set("theme", "bleu")
-    assert tmp_prefs.get("theme") == "dark"
+    tmp_prefs.set("language", "zz")
+    assert tmp_prefs.get("language") == AUTO
     tmp_prefs.set("zoom", 5)
     assert tmp_prefs.get("zoom") == 1.6
     tmp_prefs.set("zoom", 0.1)
@@ -93,11 +101,11 @@ def test_prefs_corrupt_file_tolerated(qapp, tmp_path):
     f = tmp_path / "p.json"
     f.write_text("{pas du json", encoding="utf-8")
     p = Preferences(f)
-    assert p.get("theme") == "dark" and p.get("zoom") == 1.0
-    p.set("theme", "light")                                          # réécrit un fichier valide
-    assert json.loads(f.read_text(encoding="utf-8"))["theme"] == "light"
+    assert p.get("language") == AUTO and p.get("zoom") == 1.0
+    p.set("language", "fr")                                          # réécrit un fichier valide
+    assert json.loads(f.read_text(encoding="utf-8"))["language"] == "fr"
     f.write_text("[1, 2]", encoding="utf-8")                         # JSON valide mais pas un objet
-    assert Preferences(f).get("theme") == "dark"
+    assert Preferences(f).get("language") == AUTO
 
 
 def test_module_prefs_prefix(tmp_prefs):
@@ -138,13 +146,27 @@ def test_setup_logging_idempotent():
 
 
 # ── fsutil ───────────────────────────────────────────────────────────────
-def test_format_size():
-    assert format_size(0) == "0 o"
-    assert format_size(512) == "512 o"
-    assert format_size(1536) == "1,5 Ko"
-    assert format_size(1024 * 1024) == "1,0 Mo"
-    assert format_size(1024 ** 3 * 2.5) == "2,5 Go"
-    assert format_size(1024 ** 2 - 1) == "1,0 Mo"          # pas de « 1024,0 Ko »
+def test_format_size(qapp):
+    """Unités traduites et séparateur décimal de la langue active."""
+    i18n.install(qapp, "fr")
+    try:
+        QLocale.setDefault(QLocale("fr_FR"))               # « fr » est la langue source, sans catalogue
+        assert format_size(0) == "0 o"
+        assert format_size(512) == "512 o"
+        assert format_size(1536) == "1,5 Ko"
+        assert format_size(1024 * 1024) == "1,0 Mo"
+        assert format_size(1024 ** 3 * 2.5) == "2,5 Go"
+        assert format_size(1024 ** 2 - 1) == "1,0 Mo"      # pas de « 1024,0 Ko »
+    finally:
+        i18n.uninstall(qapp)
+
+    i18n.install(qapp, "en")                               # catalogue : unités et point décimal
+    try:
+        assert format_size(512) == "512 B"
+        assert format_size(1536) == "1.5 KB"
+        assert format_size(1024 * 1024) == "1.0 MB"
+    finally:
+        i18n.uninstall(qapp)
 
 
 def test_format_duration():
@@ -216,7 +238,7 @@ def test_iter_files_missing_root(tmp_path):
 
 # ── module_spec ──────────────────────────────────────────────────────────
 def test_module_spec_and_loader():
-    assert MODULE_IDS == ("convert", "tags", "takeout", "dedup", "press", "rename", "scope")
+    assert MODULE_IDS == ("convert", "tags", "takeout", "dedup", "rename", "scope")
     spec = ModuleSpec(id="x", name="Azimut X", tagline="Test.", icon="🧪", entry="collections:OrderedDict")
     assert spec.requires == () and spec.optional == () and spec.order == 100
     assert load_window_class(spec) is collections.OrderedDict

@@ -6,17 +6,24 @@ Usage : python packaging/build.py
 from __future__ import annotations
 
 import importlib.util
+import logging
 import os
 import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SPEC = Path("packaging") / "azimut.spec"
+
+_log = logging.getLogger("azimut.packaging.build")
 OUTPUT_NAME = "Azimut"
 WARN_LIMIT = 300 * 1024 * 1024  # 300 Mo
 REQUIRED_BINARIES = ("ffmpeg", "ffprobe", "exiftool")
+ANIMATED_SOURCE = ROOT / "azimut" / "resources" / "icons_animated"
+ANIMATED_LICENSE = "LICENSE-lucide-animated.txt"
+THIRD_PARTY_NOTICES = "THIRD_PARTY_NOTICES.md"
 
 
 def platform_tag() -> str:
@@ -55,8 +62,8 @@ def path_size(path: Path) -> int:
                 continue
             try:
                 total += os.path.getsize(full)
-            except OSError:
-                pass
+            except OSError as exc:
+                _log.debug("Taille illisible (%s) : %s", full, exc)
     return total
 
 
@@ -83,6 +90,67 @@ def find_output(dist: Path) -> Path | None:
         if candidate.exists():
             return candidate
     return None
+
+
+def publish_notice(output: Path) -> bool:
+    """Copie les mentions tierces à la racine du produit, pas seulement dans `_internal`.
+
+    PyInstaller range les données dans `_internal` en mode dossier ; les paquets Linux
+    installent aussi le fichier dans `/usr/share/doc`, mais Windows et macOS n'ont pas
+    cette étape. On rend donc la notice visible dans toutes les distributions.
+    """
+    source = ROOT / THIRD_PARTY_NOTICES
+    if not source.is_file():
+        print(f"ERREUR : {THIRD_PARTY_NOTICES} est absent du dépôt.")
+        return False
+    if output.is_file():
+        target = output.parent / THIRD_PARTY_NOTICES
+    elif output.suffix == ".app":
+        target = output / "Contents" / "Resources" / THIRD_PARTY_NOTICES
+    else:
+        target = output / THIRD_PARTY_NOTICES
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+    except OSError as exc:
+        print(f"ERREUR : copie de {THIRD_PARTY_NOTICES} impossible : {exc}")
+        return False
+    return True
+
+
+def check_packaged_assets(output: Path) -> bool:
+    """Vérifie que les icônes animées, leur licence et les mentions tierces sont dans le produit.
+
+    PyInstaller embarque tout `azimut/resources`, mais ce contrôle empêche qu'un build
+    silencieusement incomplet (dossier déplacé, fichier oublié) parte en distribution.
+    En mode fichier unique, le contenu est dans l'archive : on vérifie la source.
+    """
+    expected = {path.name for path in ANIMATED_SOURCE.glob("*.svg")}
+    if not expected or not (ANIMATED_SOURCE / ANIMATED_LICENSE).is_file():
+        print(f"ERREUR : icônes animées ou licence MIT absentes de {ANIMATED_SOURCE}.")
+        return False
+    if output.is_file():
+        print(f"Icônes animées : {len(expected)} SVG et licence dans l'archive fichier unique.")
+        return True
+
+    candidates = [folder for folder in output.rglob("icons_animated") if folder.is_dir()]
+    complete = next(
+        (folder for folder in candidates
+         if expected <= {path.name for path in folder.glob("*.svg")}
+         and (folder / ANIMATED_LICENSE).is_file()),
+        None,
+    )
+    if complete is None:
+        found = ", ".join(str(folder.relative_to(output)) for folder in candidates) or "aucun dossier"
+        print("ERREUR : les SVG animés ou leur licence MIT ne sont pas dans le produit "
+              f"({found}).")
+        return False
+    if not any(path.name == THIRD_PARTY_NOTICES for path in output.rglob(THIRD_PARTY_NOTICES)):
+        print(f"ERREUR : {THIRD_PARTY_NOTICES} n'est pas livré dans le produit.")
+        return False
+    print(f"Icônes animées : {len(expected)} SVG + licence MIT dans "
+          f"{complete.relative_to(output).as_posix()}/.")
+    return True
 
 
 def embedded_binaries_size(output: Path, tag: str) -> tuple[int, str]:
@@ -120,6 +188,8 @@ def main() -> int:
     output = find_output(ROOT / "dist")
     if output is None:
         print("ERREUR : aucun produit trouvé dans dist/.")
+        return 1
+    if not publish_notice(output) or not check_packaged_assets(output):
         return 1
     total = path_size(output)
     bins, where = embedded_binaries_size(output, tag)

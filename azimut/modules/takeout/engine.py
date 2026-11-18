@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -79,15 +80,16 @@ def _timestamp(block: object) -> datetime | None:
         return None
     try:
         ts = int(float(block.get("timestamp")))                # type: ignore[arg-type]
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
-    if ts <= 0:
+    # Google peut fournir un timestamp négatif (photo scannée avant 1970) ; seul 0 est le marqueur « inconnu ».
+    if ts == 0:
         return None
     try:
         dt = datetime.fromtimestamp(ts, tz=timezone.utc)
     except (OverflowError, OSError, ValueError):
         return None
-    return dt if dt.year >= 1971 else None
+    return dt
 
 
 def _gps(block: object) -> tuple[float, float, float | None] | None:
@@ -125,7 +127,7 @@ def load_sidecar(path: Path) -> Sidecar | None:
     try:
         with open(path, "r", encoding="utf-8-sig") as fh:
             return parse_sidecar(json.load(fh), path)
-    except (OSError, ValueError):
+    except (OSError, ValueError, RecursionError):     # JSON trop imbriqué : illisible, jamais fatal
         return None
 
 
@@ -155,56 +157,101 @@ def _json_name(path: Path) -> _JsonName | None:
     return _JsonName(path, stem, dup)
 
 
+def name_key(text: str) -> str:
+    """Clé de comparaison d'un nom : Unicode NFC puis minuscules (AZ-C10).
+
+    Un « é » s'écrit en un caractère (NFC, Google Takeout, Windows) ou en deux, « e » + accent combinant (NFD,
+    HFS+ et certains outils d'extraction sous macOS et Linux). Deux fichiers qui s'affichent à l'identique
+    peuvent donc porter des noms différents octet pour octet : sans normalisation, le JSON d'une photo « été.jpg »
+    n'était pas trouvé.
+    """
+    return unicodedata.normalize("NFC", text).lower()
+
+
 class DirIndex:
     """JSON d'un dossier, indexés par titre (nom d'origine) et par « radical » (titre sans extension)."""
 
-    def __init__(self, folder: Path, names: Iterable[str] | None = None) -> None:
+    def __init__(self, folder: Path, names: Iterable[str] | None = None,
+                 media_names: Iterable[str] | None = None) -> None:
         self.by_title: dict[str, list[_JsonName]] = {}
         self.by_stem: dict[str, list[_JsonName]] = {}
         self.used: set[Path] = set()
-        entries = names if names is not None else _list_names(folder)
+        self._content_titles: dict[Path, str] = {}
+        if names is None:
+            listing = _listdir(folder)                      # un seul parcours : JSON et médias du dossier
+            entries = [n for n in listing if n.lower().endswith(".json")]
+            media_names = [n for n in listing if is_media(n)]
+        else:
+            entries = names
+        self._media_keys = {name_key(n) for n in (media_names or ())}
         for n in entries:
             jn = _json_name(folder / n)
             if jn is None:
                 continue
-            self.by_title.setdefault(jn.title.lower(), []).append(jn)
-            self.by_stem.setdefault(Path(jn.title).stem.lower(), []).append(jn)
+            self.by_title.setdefault(name_key(jn.title), []).append(jn)
+            self.by_stem.setdefault(name_key(Path(jn.title).stem), []).append(jn)
         self.titles = sorted(self.by_title)
 
     def _pick(self, found: Sequence[_JsonName], dup: str) -> Path | None:
-        for jn in found:
-            if jn.dup == dup:
-                return jn.path
-        return None
+        paths = {jn.path for jn in found if jn.dup == dup}
+        return paths.pop() if len(paths) == 1 else None
+
+    def _content_title(self, js: Path) -> str:
+        """Titre écrit DANS le JSON (nom d'origine complet du média), lu une seule fois ; « » s'il manque."""
+        if js not in self._content_titles:
+            sc = load_sidecar(js)
+            self._content_titles[js] = sc.title if sc is not None else ""
+        return self._content_titles[js]
+
+    def _belongs_to_sibling(self, js: Path, media_name: str) -> bool:
+        """Vrai si le titre complet écrit dans `js` désigne un AUTRE média du dossier que `media_name`.
+
+        Google tronque le nom du JSON à 46 caractères : deux médias dont le nom commence pareil visent le même JSON
+        tronqué. Le titre complet, lui, est dans le contenu : s'il nomme exactement un voisin, le JSON est le sien et
+        ne doit pas donner sa date et sa position à celui-ci (LOG-008). Sans titre, ou si le titre ne nomme aucun
+        média présent (fichier renommé, déplacé), l'appariement par préfixe reste celui d'origine.
+        """
+        if not self._media_keys:
+            return False
+        title = self._content_title(js)
+        if not title:
+            return False
+        key = name_key(title)
+        own = {name_key(t) for t, _dup in candidates(media_name)}
+        return key not in own and key in self._media_keys
 
     def find(self, media: Path) -> Path | None:
         """Meilleur JSON pour `media`, ou None. Voir `candidates` pour les noms essayés."""
         for title, dup in candidates(media.name):
-            hit = self._pick(self.by_title.get(title.lower(), ()), dup)
+            hit = self._pick(self.by_title.get(name_key(title), ()), dup)
             if hit:
                 return hit
         # titre tronqué par Google : le nom du JSON est un préfixe long du titre recherché
         for title, dup in candidates(media.name):
-            low = title.lower()
+            low = name_key(title)
             for t in self.titles:
                 if len(t) >= _MIN_TRUNCATED_TITLE and low.startswith(t) and low != t:
                     hit = self._pick(self.by_title[t], dup)
-                    if hit:
+                    if hit and not self._belongs_to_sibling(hit, media.name):
                         return hit
         # fichier converti sans extension d'origine (« photo.avif », « clip.webm »)
         stem = media.stem
         for base, dup in _stem_variants(stem):
-            hit = self._pick(self.by_stem.get(base.lower(), ()), dup)
+            hit = self._pick(self.by_stem.get(name_key(base), ()), dup)
             if hit:
                 return hit
         return None
 
 
-def _list_names(folder: Path) -> list[str]:
+def _listdir(folder: Path) -> list[str]:
     try:
-        return [n for n in os.listdir(folder) if n.lower().endswith(".json")]
+        return os.listdir(folder)
     except OSError:
         return []
+
+
+def _list_names(folder: Path) -> list[str]:
+    return [n for n in _listdir(folder) if n.lower().endswith(".json")]
 
 
 def _stem_variants(stem: str) -> list[tuple[str, str]]:
@@ -270,8 +317,13 @@ def analyze(folder: Path, *, recursive: bool = True, cancel: Callable[[], bool] 
     folder = Path(folder)
     result = Analysis()
     by_dir: dict[Path, list[Path]] = {}
-    for f in iter_files(folder, recursive=recursive, extensions=MEDIA_EXTS, skip_hidden=True, cancel=cancel):
-        by_dir.setdefault(f.parent, []).append(f)
+    json_dirs: set[Path] = set()                  # dossiers où l'on a vu un JSON, même sans média (LOG-009)
+    for f in iter_files(folder, recursive=recursive, extensions=MEDIA_EXTS | {".json"}, skip_hidden=True,
+                        cancel=cancel):
+        if f.suffix.lower() == ".json":
+            json_dirs.add(f.parent)
+        else:
+            by_dir.setdefault(f.parent, []).append(f)
     used: set[Path] = set()
     for d in sorted(by_dir, key=lambda x: str(x).lower()):
         if cancel is not None and cancel():
@@ -295,7 +347,7 @@ def analyze(folder: Path, *, recursive: bool = True, cancel: Callable[[], bool] 
                     item.sidecar, item.state = sc, STATE_READY
             result.items.append(item)
     total_json = 0
-    for d in by_dir:
+    for d in by_dir.keys() | json_dirs:
         total_json += len(_list_names(d))
     result.orphan_json = max(0, total_json - len(used))
     return result
@@ -309,6 +361,7 @@ class Options:
     overwrite: bool = False             # écraser les valeurs déjà présentes dans le fichier
     align_mtime: bool = True            # date de modification du fichier = date de prise de vue
     tz: str = TZ_UTC                    # fuseau des dates EXIF des images : UTC (reproductible) ou heure locale
+    backup: bool = False                # conserver l'original sous « nom.ext_original » avant écriture
 
 
 @dataclass
@@ -378,9 +431,14 @@ def build_plan(path: Path, sidecar: Sidecar, entries: Sequence[tags.TagEntry], o
             plan.notes.append("Date déjà présente : conservée.")
         else:
             value = moment.strftime(tags.EXIF_DATE_FORMAT)
-            plan.changes += [tags.TagChange("set", n, value) for n in names]
+            missing = names if options.overwrite else tuple(n for n in names if not _has(entries, (n,)))
+            plan.changes += [tags.TagChange("set", n, value) for n in missing]
+            if len(missing) < len(names):
+                plan.notes.append("Certaines dates déjà présentes : conservées.")
             if offset:      # le fuseau est écrit explicitement : la date reste exacte quel que soit l'ordinateur
-                plan.changes += [tags.TagChange("set", n, offset) for n in _OFFSET_TAGS]
+                offsets = _OFFSET_TAGS if options.overwrite else tuple(n for n in _OFFSET_TAGS
+                                                                      if not _has(entries, (n,)))
+                plan.changes += [tags.TagChange("set", n, offset) for n in offsets]
     if options.write_gps and sidecar.has_gps:
         present = _has(entries, ("GPSLatitude", "GPSCoordinates", "GPSPosition"))
         if present and not options.overwrite:

@@ -20,15 +20,20 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
-from azimut.core.fsutil import iter_files
+from azimut.core.fsutil import iter_files, move_no_replace
+from azimut.core.logs import get_logger
+
+_log = get_logger("rename.engine")
 
 UNDO_COLLECTION = "rename_undo"
 
-IMAGE_EXTS = frozenset({".jpg", ".jpeg", ".png", ".heic", ".heif", ".avif", ".tif", ".tiff", ".webp", ".bmp",
-                        ".jp2", ".raw", ".cr2", ".cr3", ".nef", ".arw", ".dng", ".orf", ".rw2", ".gif"})
+IMAGE_EXTS = frozenset({".jpg", ".jpeg", ".jpe", ".jfif", ".png", ".heic", ".heif", ".avif", ".jxl", ".tif", ".tiff",
+                        ".webp", ".bmp", ".jp2", ".j2k", ".qoi", ".tga", ".psd", ".mpo", ".gif", ".raw",
+                        ".cr2", ".cr3", ".nef", ".nrw", ".arw", ".dng", ".orf", ".rw2", ".raf", ".pef", ".srw",
+                        ".x3f", ".3fr", ".mef", ".rwl", ".iiq"})
 VIDEO_EXTS = frozenset({".mp4", ".mov", ".avi", ".mkv", ".webm", ".3gp", ".3g2", ".m4v", ".mts", ".m2ts", ".vob",
-                        ".vro", ".mpg", ".mpeg", ".flv", ".wmv", ".ts", ".mxf", ".asf", ".ogv"})
-AUDIO_EXTS = frozenset({".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus", ".amr", ".wma", ".mka", ".aiff"})
+                        ".vro", ".mpg", ".mpeg", ".m2v", ".flv", ".f4v", ".wmv", ".ts", ".mxf", ".asf", ".ogv"})
+AUDIO_EXTS = frozenset({".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus", ".amr", ".wma", ".mka", ".aiff", ".aif", ".ac3", ".mp2", ".wv"})
 SUPPORTED_EXTS = IMAGE_EXTS | VIDEO_EXTS | AUDIO_EXTS
 
 ACRONYM_IMAGE, ACRONYM_VIDEO, ACRONYM_AUDIO = "IMG", "VID", "AUD"
@@ -56,6 +61,12 @@ TAG_BY_STATUS = {STATUS_RENAME: "ok", STATUS_OK: "info", STATUS_SKIPPED: "", STA
 
 TEMP_PREFIX = ".azimut_tmp_"
 _PARASITE_PREFIXES = ("._", TEMP_PREFIX)
+_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+
+
+def csv_safe(cell: str) -> str:
+    """Neutralise une cellule CSV interprétable comme formule par Excel / LibreOffice (CWE-1236)."""
+    return "'" + cell if cell.startswith(_FORMULA_PREFIXES) else cell
 
 
 # ── Lecture des dates (ExifTool) ──────────────────────────────────────
@@ -339,7 +350,7 @@ def execute_renames(pairs: Sequence[tuple[int, Path, Path]], *, cancel: Callable
                 remaining.append(it)               # destination occupée / simple changement de casse
                 continue
             try:
-                os.rename(src, dst)
+                move_no_replace(src, dst)       # os.rename écraserait sous POSIX (AZ-010)
                 log("OK", f"{it[4].name}  →  {dst.name}")
                 finish(idx, True, "", dst.name)
             except OSError as exc:
@@ -352,9 +363,9 @@ def execute_renames(pairs: Sequence[tuple[int, Path, Path]], *, cancel: Callable
             if candidate is None:                  # tout est déjà passé par un temporaire : situation bloquée
                 for it in waiting:
                     try:
-                        os.rename(it[1], it[4])    # on remet le nom d'origine
-                    except OSError:
-                        pass
+                        move_no_replace(it[1], it[4])    # on remet le nom d'origine
+                    except OSError as exc:
+                        _log.debug("Nom d'origine non rétabli (%s) : %s", it[4], exc)
                     log("ERR", f"{it[4].name} : destination déjà occupée ({it[2].name})")
                     finish(it[0], False, "destination déjà occupée", it[4].name)
                 waiting = []
@@ -370,9 +381,9 @@ def execute_renames(pairs: Sequence[tuple[int, Path, Path]], *, cancel: Callable
     for it in waiting:                             # arrêt demandé : on remet les temporaires
         if it[3]:
             try:
-                os.rename(it[1], it[4])
-            except OSError:
-                pass
+                move_no_replace(it[1], it[4])
+            except OSError as exc:
+                _log.debug("Nom d'origine non rétabli à l'arrêt (%s) : %s", it[4], exc)
     return results
 
 
@@ -405,6 +416,6 @@ def plan_csv_lines(rows: Iterable[RenameRow]) -> list[list[str]]:
     header = ["chemin", "ancien_nom", "nouveau_nom", "date", "source", "statut"]
     out = [header]
     for r in rows:
-        out.append([str(r.path), r.old_name, r.new_name, r.date.isoformat(sep=" ") if r.date else "",
-                    r.source, r.status])
+        out.append([csv_safe(str(r.path)), csv_safe(r.old_name), csv_safe(r.new_name),
+                    r.date.isoformat(sep=" ") if r.date else "", r.source, r.status])
     return out
