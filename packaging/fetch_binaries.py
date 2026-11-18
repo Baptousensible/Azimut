@@ -868,7 +868,9 @@ def update_lock(platforms: list[str], branch: str, version: str | None, command:
     with tempfile.TemporaryDirectory(prefix="azimut-lock-") as tmp_name:
         tmp = Path(tmp_name)
         for tag in platforms:
-            plans = _planned_assets(tag, branch) + [_exiftool_plan(tag, exiftool), _perl_plan(tag)]
+            plans = _planned_assets(tag, branch) + [_exiftool_plan(tag, exiftool)]
+            if "perl" in ASSETS_BY_PLATFORM[tag]:   # Windows : Perl est intégré à exiftool.exe
+                plans.append(_perl_plan(tag))
             for plan in plans:
                 label = f"{tag}/{plan['asset']}"
                 candidates = [(url, _url_filename(url)) for url in plan["candidates"]]
