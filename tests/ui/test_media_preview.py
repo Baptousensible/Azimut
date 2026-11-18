@@ -24,6 +24,22 @@ from azimut.ui.widgets import MediaPreview, SeekSlider, VideoPreview, _AudioBus
 needs_multimedia = pytest.mark.skipif(not widgets.MULTIMEDIA_AVAILABLE, reason="QtMultimedia (PySide6-Addons) requis")
 
 
+def _audio_output_available() -> bool:
+    """Une sortie audio est-elle disponible ? Sans serveur de son, Qt ne propage pas le volume."""
+    try:
+        from PySide6.QtMultimedia import QMediaDevices
+    except Exception:                                    # PySide6-Essentials : pas de QtMultimedia
+        return False
+    QApplication.instance() or QApplication([])           # la sonde exige une application
+    return bool(QMediaDevices.audioOutputs())
+
+
+# Prémisse absente sur une machine sans carte ni serveur de son (CI) : le bus de volume
+# n'est alors pas propagé par Qt. Ce test demande donc une machine avec audio.
+needs_audio_output = pytest.mark.skipif(
+    not _audio_output_available(), reason="aucune sortie audio (CI sans serveur de son)")
+
+
 @pytest.fixture(scope="module")
 def qt_app():
     return QApplication.instance() or QApplication([])
@@ -154,6 +170,7 @@ def test_volume_slider_starts_at_full_volume(qt_app):
     video.close()
 
 
+@needs_audio_output
 def test_volume_and_mute_are_shared_between_players(qt_app):
     a, b = VideoPreview(size=80, volume_controls=True), VideoPreview(size=80, volume_controls=True)
     a.volume_slider.setValue(30)

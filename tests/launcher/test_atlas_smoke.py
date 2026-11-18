@@ -5,6 +5,7 @@ import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import time
 import types
 from pathlib import Path
 
@@ -23,6 +24,7 @@ from azimut.core.prefs import Preferences
 from azimut.core.screenfit import fit_to_screen
 from azimut.core.storage import LocalJsonStorage, get_storage, set_storage
 from azimut.launcher import atlas_window, dashboard
+from azimut.launcher import atlas_window as atlas_mod
 from azimut.ui.notification import notify_window
 
 
@@ -798,22 +800,23 @@ def test_narrow_window_at_high_zoom_falls_back_to_classic_without_widening(make_
     assert win.header_nav_host.isVisible()
 
 
-def test_default_opening_at_100_percent_keeps_the_computed_width(make_atlas, themed_app):
+def test_default_opening_at_100_percent_keeps_the_computed_width(make_atlas, themed_app, monkeypatch):
     """Ouverture par défaut, échelle 100 % : la fenêtre garde la taille calculée pour l'écran.
 
     Au démarrage, ``create_app()`` applique le zoom mémorisé dans les préférences — 100 %
     par défaut — avant de construire la fenêtre : aucun redimensionnement ne doit suivre.
+    L'écran est neutralisé : la CI Qt hors écran mesure 800×800, où la largeur calculée
+    déclenche légitimement le repli vers l'ancien agencement.
     """
+    monkeypatch.setattr(atlas_mod, "fit_to_screen", lambda w, h, avail: (w, h))
     assert Preferences.instance().get("zoom", 1.0) == pytest.approx(1.0)   # échelle par défaut
     themed_app.set_zoom(1.0)
     win = make_atlas([_spec("fa")])
-    area = win.screen().availableGeometry()
-    expected = fit_to_screen(win.DEFAULT_WIDTH, win.DEFAULT_HEIGHT, (area.width(), area.height()))[0]
     win.show()
     QTest.qWait(120)
 
     assert themed_app.zoom() == pytest.approx(1.0)
-    assert win.width() == expected
+    assert win.width() == win.DEFAULT_WIDTH
     assert win._top_layout == win.TOP_LAYOUT_MERGED
     assert win.header_nav_host.isVisible() and win.page_bar_host.isHidden()
 
@@ -950,6 +953,23 @@ def test_header_title_stays_azimut_while_compacting(make_atlas):
         assert win.title_label.graphicsEffect() is None
 
 
+def _wait_until(predicate, timeout_ms: int = 3000) -> bool:
+    """Attend qu'une condition devienne vraie, avec une borne de temps.
+
+    Les animations Qt suivent l'horloge murale : un ``QTest.qWait`` fixe suppose un
+    runner rapide et échoue dès qu'il est chargé.
+    """
+    app = QApplication.instance()
+    deadline = time.monotonic() + timeout_ms / 1000
+    while time.monotonic() < deadline:
+        if app is not None:
+            app.processEvents()
+        if predicate():
+            return True
+        QTest.qWait(10)
+    return False
+
+
 def _drag_tab(bar, start: QPoint, end: QPoint, steps: int = 16, on_step=None) -> None:
     """Simule un vrai glisser de souris sur la barre d'onglets (bouton maintenu)."""
     app = QApplication.instance()
@@ -1020,8 +1040,7 @@ def test_shift_click_selects_a_range_without_switching_tabs(make_atlas, monkeypa
     assert bar.selected_ids() == ["fb", "fc"]
     assert bar.selection_count() == 2
     assert bar._selection_animating or bar._selection_progress == 1.0
-    QTest.qWait(220)
-    assert not bar._selection_animating
+    assert _wait_until(lambda: not bar._selection_animating)   # fin de l'animation de la plage
     assert bar._selection_rect.width() > bar._tab_rect(2).width()
 
 

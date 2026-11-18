@@ -4,6 +4,7 @@ import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import sys
 import threading
 import time
 from pathlib import Path
@@ -442,11 +443,24 @@ def test_progress_bar_lives_in_the_action_bar_not_above_the_drop_zone(make_windo
     assert not win.header.findChildren(type(win.progress_bar))
 
 
+def _shortcut_label(sequence: str) -> str:
+    """Libellé d'un raccourci tel que Qt le rend sur cette plateforme (⌘↩ sur macOS).
+
+    Hors macOS, la fenêtre traduit les touches en français ; on reproduit ce rendu au lieu
+    de figer « Ctrl+Entrée ».
+    """
+    label = QKeySequence(sequence).toString(QKeySequence.SequenceFormat.NativeText)
+    if sys.platform != "darwin":
+        label = label.replace("Return", "Entrée").replace("Enter", "Entrée").replace("Esc", "Échap")
+    return label
+
+
 def test_help_dialog_content(make_window):
     win = make_window()
     dlg = win._build_help_dialog()
     text = " ".join(lbl.text() for lbl in dlg.findChildren(QLabel))
-    for needle in ("Azimut Fake", "Module de test.", __version__, "Ctrl+Entrée", "F1", "Échap"):
+    for needle in ("Azimut Fake", "Module de test.", __version__,
+                   _shortcut_label("Ctrl+Return"), _shortcut_label("F1"), _shortcut_label("Esc")):
         assert needle in text, needle
 
 
@@ -766,7 +780,8 @@ def test_describe_binary_warns_about_outdated_version():
     info = BinaryInfo("exiftool", Path("/usr/bin/exiftool"), "system", "12.20", outdated=True)
     text, level, tip = describe_binary(info)
     assert text == "⚠ système · 12.20" and level == "warn"
-    assert "12.24" in tip and "/usr/bin/exiftool" in tip
+    # Chemin rendu par pathlib : les séparateurs suivent la plateforme.
+    assert "12.24" in tip and str(Path("/usr/bin/exiftool")) in tip
 
 
 def test_preferences_dialog_detect_shows_outdated_version(env, monkeypatch):

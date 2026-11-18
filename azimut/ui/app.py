@@ -67,11 +67,13 @@ def restart_command() -> tuple[str, list[str]]:
     args = list(sys.argv[1:])
     if getattr(sys, "frozen", False):                 # application empaquetée (PyInstaller…)
         return sys.executable, args
-    script = sys.argv[0] if sys.argv else ""
-    if script.endswith(os.path.join("azimut", "__main__.py")):
+    # Comparaison par composants de chemin : « azimut/__main__.py » et « azimut\\__main__.py »
+    # désignent le même point d'entrée selon la plateforme.
+    entry = Path(sys.argv[0]) if sys.argv else Path("")
+    if entry.name == "__main__.py" and entry.parent.name == "azimut":
         return sys.executable, ["-m", "azimut", *args]
-    if script:
-        return sys.executable, [os.path.abspath(script), *args]
+    if sys.argv and sys.argv[0]:
+        return sys.executable, [os.path.abspath(sys.argv[0]), *args]
     return sys.executable, ["-m", "azimut", *args]
 
 

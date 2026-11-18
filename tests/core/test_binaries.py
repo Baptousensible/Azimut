@@ -324,7 +324,11 @@ def _no_group(pid: int) -> int:
 
 
 def test_probe_version_failures(monkeypatch):
-    monkeypatch.setattr(binaries.os, "getpgid", _no_group)
+    monkeypatch.setattr(binaries.os, "getpgid", _no_group, raising=False)
+    # Windows : _kill_probe lance taskkill par subprocess.run. Sans ce double, l'appel
+    # atteindrait le faux Popen (sans communicate) et le repli kill() ne serait pas vérifié.
+    monkeypatch.setattr(binaries.subprocess, "run",
+                        lambda args, **kwargs: subprocess.CompletedProcess(args, 1), raising=False)
     fake = FakePopen(timeout=True)
     monkeypatch.setattr(binaries.subprocess, "Popen", fake)
     assert probe_version("ffmpeg", Path("/x")) == ""
