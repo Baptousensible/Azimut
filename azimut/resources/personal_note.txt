@@ -1,0 +1,7 @@
+Merci d'avoir téléchargé cette application ! J'ai peu de connaissances en informatique, j'aime bidouiller, et franchement, merci à l'intelligence artificielle d'être là !
+
+Ce projet est né de quelques lignes dans le terminal, puis petit à petit, s'est agrandi pour devenir un projet plus important qui personnellement, me tient à cœur. L'initiative est née grâce aux membres de ma famille qui me sollicitaient pour me dépanner en informatique, et notamment pour des problèmes d'espace de stockage dans Google Photos. Ainsi, de mes quelques connaissances en informatiques, j'ai recherché plus loin, avec l'aide de l'IA, pour m'épanouir dans la création de ce projet.
+
+Dans tous les cas, j'espère que cette application vous aidera ! Bisous !
+
+BC

@@ -1,7 +1,8 @@
-"""Réglages avancés d'Azimut Convert (logique pure, sans Qt) : CRF, preset, qualité, threads.
+"""Réglages de qualité d'Azimut Convert (logique pure, sans Qt) : CRF, preset, qualité, débit audio, threads.
 
-Un profil fournit des valeurs par défaut ; l'utilisateur peut les surcharger (``Overrides``) sans jamais
-modifier les profils prédéfinis. ``apply_overrides`` renvoie un nouveau ``Profile`` validé et borné.
+Un profil (un par codec) fournit les valeurs de départ ; l'utilisateur les surcharge (``Overrides``) avec les
+curseurs de l'arborescence « Format et qualité » sans jamais modifier les profils eux-mêmes.
+``apply_overrides`` renvoie un nouveau ``Profile`` validé et borné.
 """
 from __future__ import annotations
 
@@ -9,31 +10,104 @@ import os
 from dataclasses import dataclass, replace
 from typing import Any, Collection, Mapping
 
-from azimut.modules.convert.profiles import Profile
+from azimut.modules.convert.profiles import LEGACY_PROFILES, Profile
 
 H264_PRESETS: tuple[str, ...] = ("ultrafast", "superfast", "veryfast", "faster", "fast",
                                  "medium", "slow", "slower", "veryslow")
 SVTAV1_PRESETS: tuple[str, ...] = tuple(str(n) for n in range(0, 14))     # 0 (lent) … 13 (rapide)
 LIBAOM_PRESETS: tuple[str, ...] = tuple(str(n) for n in range(0, 9))      # -cpu-used 0 … 8
+VP9_PRESETS: tuple[str, ...] = tuple(str(n) for n in range(0, 9))         # -cpu-used 0 (lent) … 8 (rapide)
+PNG_LEVELS: tuple[str, ...] = tuple(str(n) for n in range(0, 10))         # -compression_level 0 … 9
+JXL_EFFORT: tuple[str, ...] = tuple(str(n) for n in range(1, 10))         # -effort 1 (rapide) … 9 (lent)
+TIFF_COMPRESSION: tuple[str, ...] = ("packbits", "lzw", "deflate")
+PRORES_PROFILES: tuple[str, ...] = ("proxy", "lt", "standard", "hq", "4444")
+NVENC_PRESETS: tuple[str, ...] = tuple(f"p{n}" for n in range(1, 8))
+QSV_PRESETS: tuple[str, ...] = ("veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow")
 
-CRF_RANGE = {"av1": (0, 63), "h264": (0, 51)}
-QUALITY_RANGE = {"mjpeg": (2, 31), "webp": (0, 100)}        # mjpeg : 2 = meilleur ; webp : 100 = meilleur
+FLAC_LEVELS: tuple[str, ...] = tuple(str(n) for n in range(0, 13))        # -compression_level : 0 (rapide) … 12
+
+CRF_RANGE = {"av1": (0, 63), "h264": (0, 51), "h265": (0, 51), "vp9": (0, 63)}
+# quality : plus la valeur est haute, meilleure est la qualité, sauf mjpeg / jxl / mpeg4 / mpeg2 (inversés)
+QUALITY_RANGE = {"mjpeg": (2, 31), "webp": (0, 100), "jxl": (0, 15), "mpeg4": (1, 31), "mpeg2": (1, 31),
+                 "theora": (0, 10), "heic": (0, 100)}
+REVERSED_QUALITY = frozenset({"mjpeg", "jxl", "mpeg4", "mpeg2"})
+REVERSED_PRESETS = frozenset({"av1", "vp9"})               # 0 = lent : le curseur va de droite à gauche
+BITRATE_RANGE = {"mp3": (32, 320), "aac": (32, 320), "opus": (16, 512), "vorbis": (32, 512),
+                 "ac3": (64, 512), "mp2": (32, 384)}                      # kbit/s
+BITRATE_STEPS: tuple[int, ...] = (16, 24, 32, 48, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512)
 MAX_THREADS = 64
 MAX_PARALLEL = 16
+VIDEO_AUDIO_PREFIX = "video_audio:"       # réglages du codec audio choisi pour la vidéo, distincts de la famille Audio
+
+
+def video_audio_key(profile_id: str) -> str:
+    """Clé de préférences du codec audio utilisé dans une vidéo (indépendante du même codec en audio seul)."""
+    return VIDEO_AUDIO_PREFIX + profile_id
+
+
+_FAMILIES: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("libsvtav1", "libaom-av1"), "av1"),
+    (("libx264", "h264_nvenc", "h264_qsv", "h264_vaapi"), "h264"),
+    (("libx265", "hevc_nvenc", "hevc_qsv", "hevc_vaapi"), "h265"),
+    (("libvpx-vp9",), "vp9"),
+    (("mpeg4",), "mpeg4"),
+    (("mpeg2video",), "mpeg2"),
+    (("libtheora",), "theora"),
+    (("prores_ks",), "prores"),
+    (("mjpeg",), "mjpeg"),
+    (("libwebp",), "webp"),
+    (("png",), "png"),
+    (("libjxl",), "jxl"),
+    (("libopenjpeg",), "jp2"),
+    (("tiff",), "tiff"),
+    (("bmp",), "bmp"),
+    (("qoi",), "qoi"),
+)
+
+
+def hardware_kind(profile: Profile) -> str:
+    """Backend matériel du profil : nvenc | qsv | vaapi | '' (logiciel ou audio)."""
+    for encoder in profile.video_encoders:
+        for suffix in ("nvenc", "qsv", "vaapi"):
+            if encoder.endswith("_" + suffix):
+                return suffix
+    return ""
 
 
 def family(profile: Profile) -> str:
-    """Famille d'encodeur vidéo du profil : av1 | h264 | mjpeg | webp | '' (audio ou inconnu)."""
+    """Famille de l'encodeur image/vidéo du profil (av1, h264, h265, vp9, png, jxl…), ou '' (audio)."""
+    if profile.id == "image_heic":
+        return "heic"
     enc = profile.video_encoders
-    if any(e in enc for e in ("libsvtav1", "libaom-av1")):
-        return "av1"
-    if "libx264" in enc:
-        return "h264"
-    if "mjpeg" in enc:
-        return "mjpeg"
-    if "libwebp" in enc:
-        return "webp"
+    for names, fam in _FAMILIES:
+        if any(e in enc for e in names):
+            return fam
     return ""
+
+
+def audio_family(profile: Profile) -> str:
+    """Famille de l'encodeur audio : mp3 | aac | opus | flac | vorbis | alac | pcm | ac3 | mp2 | ''."""
+    enc = profile.audio_encoders
+    for name, fam in (("libmp3lame", "mp3"), ("aac", "aac"), ("libopus", "opus"), ("flac", "flac"),
+                      ("libvorbis", "vorbis"), ("alac", "alac"),
+                      ("pcm_s16le", "pcm"), ("pcm_s16be", "pcm"), ("pcm_s24le", "pcm"),
+                      ("ac3", "ac3"), ("mp2", "mp2")):
+        if name in enc:
+            return fam
+    return ""
+
+
+def bitrate_kbps(profile: Profile) -> int | None:
+    """Débit audio du profil en kbit/s (« 128k » → 128) ; None s'il n'y en a pas."""
+    text = profile.audio_bitrate
+    return int(text[:-1]) if text.endswith("k") and text[:-1].isdigit() else None
+
+
+def bitrate_range(profile: Profile) -> tuple[int, int] | None:
+    """Plage du curseur de débit audio ; None pour FLAC (sans perte) et les profils sans débit."""
+    if bitrate_kbps(profile) is None:
+        return None
+    return BITRATE_RANGE.get(audio_family(profile))
 
 
 def crf_range(profile: Profile) -> tuple[int, int] | None:
@@ -46,13 +120,32 @@ def quality_range(profile: Profile) -> tuple[int, int] | None:
 
 def preset_choices(profile: Profile, encoders: Collection[str] | None = None) -> tuple[str, ...]:
     """Presets valides pour l'encodeur qui sera réellement utilisé (SVT-AV1 par défaut si inconnu)."""
+    if profile.kind == "audio":                         # FLAC : le « preset » est le niveau de compression
+        return FLAC_LEVELS if audio_family(profile) == "flac" else ()
+    hw = hardware_kind(profile)
+    if hw == "nvenc":
+        return NVENC_PRESETS
+    if hw == "qsv":
+        return QSV_PRESETS
+    if hw == "vaapi":
+        return ()
     fam = family(profile)
-    if fam == "h264":
+    if fam in ("h264", "h265"):
         return H264_PRESETS
     if fam == "av1":
         if encoders is not None and "libsvtav1" not in encoders and "libaom-av1" in encoders:
             return LIBAOM_PRESETS
         return SVTAV1_PRESETS
+    if fam == "vp9":
+        return VP9_PRESETS
+    if fam == "png":
+        return PNG_LEVELS
+    if fam == "jxl":
+        return JXL_EFFORT
+    if fam == "tiff":
+        return TIFF_COMPRESSION
+    if fam == "prores":
+        return PRORES_PROFILES
     return ()
 
 
@@ -63,13 +156,14 @@ class Overrides:
     crf: int | None = None
     preset: str | None = None
     quality: int | None = None
+    bitrate: int | None = None                  # débit audio, en kbit/s
 
     def is_empty(self) -> bool:
-        return self.crf is None and self.preset is None and self.quality is None
+        return all(v is None for v in (self.crf, self.preset, self.quality, self.bitrate))
 
     def to_dict(self) -> dict[str, Any]:
-        return {k: v for k, v in (("crf", self.crf), ("preset", self.preset), ("quality", self.quality))
-                if v is not None}
+        return {k: v for k, v in (("crf", self.crf), ("preset", self.preset), ("quality", self.quality),
+                                  ("bitrate", self.bitrate)) if v is not None}
 
     @classmethod
     def from_dict(cls, data: Any) -> "Overrides":
@@ -87,7 +181,7 @@ class Overrides:
 
         preset = data.get("preset")
         return cls(crf=as_int(data.get("crf")), preset=str(preset) if preset not in (None, "") else None,
-                   quality=as_int(data.get("quality")))
+                   quality=as_int(data.get("quality")), bitrate=as_int(data.get("bitrate")))
 
 
 def clamp_threads(value: Any) -> int:
@@ -120,8 +214,8 @@ def default_video_threads(cpu_count: int | None = None) -> int:
 
 def apply_overrides(profile: Profile, overrides: Overrides | None = None, threads: int = 0,
                     encoders: Collection[str] | None = None) -> Profile:
-    """Profil effectif : valeurs du profil, surchargées et bornées. Un profil sans CRF/preset/qualité
-    ignore le réglage correspondant. Le libellé indique « (personnalisé) » dès qu'une valeur diffère."""
+    """Profil effectif : valeurs du profil, surchargées et bornées. Un profil sans CRF/preset/qualité/débit
+    ignore le réglage correspondant (``describe`` résume les valeurs retenues)."""
     ov = overrides or Overrides()
     changes: dict[str, Any] = {}
     r = crf_range(profile)
@@ -133,26 +227,85 @@ def apply_overrides(profile: Profile, overrides: Overrides | None = None, thread
     q = quality_range(profile)
     if q and ov.quality is not None and ov.quality != profile.quality:
         changes["quality"] = max(q[0], min(q[1], ov.quality))
+    b = bitrate_range(profile)
+    if b and ov.bitrate is not None and ov.bitrate != bitrate_kbps(profile):
+        changes["audio_bitrate"] = f"{max(b[0], min(b[1], ov.bitrate))}k"
     n = clamp_threads(threads)
     if n and profile.kind in ("image", "video"):
         changes["threads"] = n
-    if not changes:
-        return profile
-    custom = any(k in changes for k in ("crf", "preset", "quality"))
-    if custom:
-        changes["label"] = f"{profile.label} (personnalisé)"
-    return replace(profile, **changes)
+    return replace(profile, **changes) if changes else profile
 
 
 def summarize(profile: Profile, base: Profile) -> str:
-    """Résumé des écarts par rapport au profil d'origine (vide si aucun)."""
+    """Résumé des écarts par rapport aux valeurs de départ du profil (vide si aucun)."""
     parts: list[str] = []
     if profile.crf != base.crf:
         parts.append(f"CRF {profile.crf}")
     if profile.preset != base.preset:
-        parts.append(f"preset {profile.preset}")
+        parts.append(f"{_preset_word(profile)} {profile.preset}")
     if profile.quality != base.quality:
-        parts.append(f"qualité {profile.quality}")
+        parts.append(f"{quality_word(profile)} {profile.quality}")
+    if profile.audio_bitrate != base.audio_bitrate:
+        parts.append(f"{bitrate_kbps(profile)} kbit/s")
     if profile.threads != base.threads:
         parts.append(f"{profile.threads} thread(s)")
     return ", ".join(parts)
+
+
+def preset_word(profile: Profile) -> str:
+    """Nom du réglage « preset » dans cette famille : preset, niveau, effort, compression ou profil."""
+    if profile.kind == "audio":
+        return "niveau"
+    return {"png": "niveau", "jxl": "effort", "tiff": "compression", "prores": "profil"}.get(
+        family(profile), "preset")
+
+
+def _preset_word(profile: Profile) -> str:
+    return preset_word(profile)
+
+
+def quality_word(profile: Profile) -> str:
+    """Nom du réglage de qualité : « qualité » ou « distance » (JPEG XL)."""
+    return "distance" if family(profile) == "jxl" else "qualité"
+
+
+def describe(profile: Profile) -> str:
+    """Réglages effectifs d'un profil, pour la file d'attente : « CRF 39 · preset 4 », « 192 kbit/s »…"""
+    parts: list[str] = []
+    if profile.crf is not None:
+        parts.append(f"CRF {profile.crf}")
+    if profile.preset:
+        parts.append(f"{_preset_word(profile)} {profile.preset}")
+    if profile.quality is not None:
+        parts.append(f"{quality_word(profile)} {profile.quality}")
+    if bitrate_range(profile) is not None:
+        parts.append(f"{bitrate_kbps(profile)} kbit/s")
+    return " · ".join(parts)
+
+
+def overrides_diff(base: Profile, overrides: Overrides) -> dict[str, Any]:
+    """Seules les valeurs qui diffèrent de celles du profil sont conservées (ce qui est enregistré)."""
+    start = {"crf": base.crf, "preset": base.preset, "quality": base.quality, "bitrate": bitrate_kbps(base)}
+    return {k: v for k, v in overrides.to_dict().items() if start.get(k) != v}
+
+
+def migrate_legacy(selected: Mapping[str, Any], store: Mapping[str, Any]) -> tuple[dict[str, str], dict[str, Any]]:
+    """Convertit les préférences enregistrées avec les anciens profils fusionnés (AVIF « HQ », WebM « max »…).
+
+    ``selected`` : famille → identifiant du profil choisi ; ``store`` : identifiant → réglages enregistrés.
+    Renvoie (``selected`` et ``store`` à jour). Seul le profil réellement choisi dans chaque famille est
+    reporté, avec les valeurs qu'il impliquait (ex. « AVIF haute qualité » → AVIF, CRF 25), puis ses
+    réglages personnels par-dessus. Les réglages des autres anciens profils sont abandonnés.
+    """
+    new_sel = {k: str(v) for k, v in selected.items()}
+    new_store = {k: dict(v) for k, v in store.items() if k not in LEGACY_PROFILES and isinstance(v, Mapping)}
+    for kind, pid in selected.items():
+        if pid not in LEGACY_PROFILES:
+            continue
+        target, implied = LEGACY_PROFILES[pid]
+        new_sel[kind] = target
+        old = store.get(pid)
+        merged = {**implied, **(dict(old) if isinstance(old, Mapping) else {})}
+        if merged:
+            new_store[target] = {**new_store.get(target, {}), **merged}
+    return new_sel, new_store

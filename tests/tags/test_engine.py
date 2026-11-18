@@ -10,6 +10,8 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
+from PySide6.QtTest import QTest
+from PySide6.QtWidgets import QMessageBox
 
 from azimut.modules.tags import engine as eng
 from azimut.modules.tags.engine import TagChange
@@ -70,6 +72,29 @@ def test_write_command_and_argfile(tmp_path):
     f = eng.write_argfile(["-XMP-dc:Title=Été à Paris", str(tmp_path / "é.jpg")])
     try:
         assert f.read_text(encoding="utf-8").splitlines() == ["-XMP-dc:Title=Été à Paris", str(tmp_path / "é.jpg")]
+    finally:
+        f.unlink()
+
+
+def test_argfile_rejects_relative_and_dash_paths(tmp_path):
+    """Un chemin relatif ne doit jamais être relu comme une option par ExifTool (AZ-012)."""
+    with pytest.raises(ValueError):
+        eng.write_argfile(["photo.jpg"])
+    with pytest.raises(ValueError):
+        eng.write_argfile(["-TAG=x\n-INJECTED"])
+    assert not eng._TAG_RE.match("-x") and not eng._TAG_RE.match("#a.jpg")
+    assert eng._TAG_RE.match("EXIF:Artist") and eng._TAG_RE.match("XMP-dc:Title")
+
+
+def test_argfile_relative_path_with_equals_is_not_an_assignment(tmp_path):
+    """SEC-001 : « = » dans un chemin relatif ne doit pas le faire passer pour une affectation de tag."""
+    for line in ("a=b.jpg", "dir=x/p.jpg", "=x.jpg"):
+        with pytest.raises(ValueError):
+            eng.write_argfile([line])
+    absolute = str(tmp_path / "a=b.jpg")             # un chemin absolu contenant « = » reste valide
+    f = eng.write_argfile(["-XMP-dc:Title=x", absolute])
+    try:
+        assert f.read_text(encoding="utf-8").splitlines() == ["-XMP-dc:Title=x", absolute]
     finally:
         f.unlink()
 
@@ -229,3 +254,261 @@ def test_module_import_does_not_load_qtwidgets():
     env = {**os.environ, "PYTHONPATH": str(root)}
     res = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, cwd=root)
     assert res.returncode == 0, res.stderr
+
+
+def test_sniff_extension_from_magic_bytes(tmp_path):
+    jpg = tmp_path / "photo.heic"
+    jpg.write_bytes(b"\xff\xd8\xff\xe0\x00\x10JFIF")
+    assert eng.sniff_extension(jpg) == ".jpg"
+    png = tmp_path / "photo.heic"
+    png.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 8)
+    assert eng.sniff_extension(png) == ".png"
+    heic = tmp_path / "photo.jpg"
+    heic.write_bytes(b"\x00\x00\x00\x18ftypheic" + b"\x00" * 8)
+    assert eng.sniff_extension(heic) == ".heic"
+    txt = tmp_path / "photo.heic"
+    txt.write_bytes(b"pas une image")
+    assert eng.sniff_extension(txt) is None
+    assert eng.sniff_extension(tmp_path / "absent.heic") is None
+
+
+def test_type_mismatch_detection():
+    assert eng.is_type_mismatch("Error: Not a valid HEIC (looks more like a JPEG)")
+    assert not eng.is_type_mismatch("Error: File format error")
+    assert not eng.is_type_mismatch("")
+
+
+def test_tags_window_navigation_layout_and_labels(qapp, monkeypatch):
+    """Les deux pages Tags utilisent le sélecteur à capsule des thèmes."""
+    from azimut.core import binaries
+    from azimut.core.binaries import BinaryInfo, BinaryNotFoundError
+    from azimut.modules.tags import MODULE
+    from azimut.modules.tags.window import TagsWindow
+    from azimut.ui.controls import SegmentedControl
+
+    monkeypatch.setattr(binaries, "resolve",
+                        lambda name, prefs=None: BinaryInfo(name, None, "missing", ""))
+
+    def missing(name, prefs=None):
+        raise BinaryNotFoundError(f"{name} introuvable")
+
+    monkeypatch.setattr(binaries, "require", missing)
+    w = TagsWindow(MODULE)
+    try:
+        assert w._media.video.volume_slider is not None
+        assert w.run_button.text() == "Appliquer les modifications"
+        assert w.subtabs.count() == 2 and w.subtabs.currentIndex() == 0
+        assert isinstance(w._subtab_strip, SegmentedControl)
+        assert [w._subtab_strip.itemText(i) for i in range(2)] == [
+            "Fichiers et métadonnées", "Modifications en attente"]
+        assert w._subtab_strip.currentIndex() == 0
+        assert w._meta_title.isHidden() and w._meta_title.text() == ""
+        assert not w._clear_btn.isEnabled() and w._clear_btn.property("kind") == "ghost"
+        assert not w._edit_btn.isEnabled() and not w._del_btn.isEnabled()
+        assert not w._pend_remove.isEnabled() and not w._pend_clear.isEnabled()
+
+        w._pending = [eng.TagChange("delete", "EXIF:Make")]
+        w._refresh_pending()
+        assert w._subtab_strip.itemText(1) == "Modifications en attente (1)"
+        assert w._pend_clear.isEnabled()
+        assert not w._pend_remove.isEnabled()
+        w._pending_table.selectRow(0)
+        assert w._pend_remove.isEnabled()
+        w._pend_clear.click()
+        assert not w._pend_clear.isEnabled() and w._pending == []
+
+        w._subtab_strip.setCurrentIndex(1)
+        assert w.subtabs.currentIndex() == 1 and w._subtab_strip.currentIndex() == 1
+
+        layout = w._content_widget.layout()
+        assert layout.indexOf(w.action_bar) > layout.indexOf(w.subtabs)
+    finally:
+        w.close()
+
+
+def test_preset_presence_helpers():
+    with_gps = [eng.TagEntry("EXIF", "Make", "Canon"),
+                eng.TagEntry("GPS", "GPSLatitude", "48.85")]
+    without_gps = [eng.TagEntry("EXIF", "Make", "Canon")]
+    assert eng.has_gps_data(with_gps)
+    assert not eng.has_gps_data(without_gps)
+    assert eng.has_editable_metadata(without_gps)
+    assert not eng.has_editable_metadata([eng.TagEntry("File", "FileName", "a.jpg")])
+
+
+def test_tags_navigation_wraps_its_actions_when_the_window_is_narrow(qapp, monkeypatch):
+    """Le sélecteur garde sa largeur ; les deux actions passent dessous sans le chevaucher."""
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        w.resize(1200, 760)
+        w.show()
+        qapp.processEvents()
+        assert w._nav_wide is True
+        assert w._recursive.parentWidget() is w._nav
+        assert w._clear_btn.parentWidget() is w._nav
+        strip_bottom = w._subtab_strip.mapTo(
+            w._nav, w._subtab_strip.rect().topLeft()).y() + w._subtab_strip.height()
+        assert w._recursive.mapTo(w._nav, w._recursive.rect().topLeft()).y() < strip_bottom
+
+        w.resize(1000, 760)
+        qapp.processEvents()
+        assert w._nav_wide is False
+        assert w._recursive.parentWidget() is w._nav_bottom
+        assert w._clear_btn.parentWidget() is w._nav_bottom
+        strip_bottom = w._subtab_strip.mapTo(
+            w._nav, w._subtab_strip.rect().topLeft()).y() + w._subtab_strip.height()
+        recursive_top = w._recursive.mapTo(w._nav, w._recursive.rect().topLeft()).y()
+        clear_top = w._clear_btn.mapTo(w._nav, w._clear_btn.rect().topLeft()).y()
+        assert recursive_top >= strip_bottom
+        assert clear_top >= strip_bottom
+        assert w._nav.height() >= max(recursive_top + w._recursive.height(),
+                                      clear_top + w._clear_btn.height())
+    finally:
+        w.close()
+
+
+def _tags_window_with_exiftool(monkeypatch):
+    """Fenêtre Tags avec un faux ExifTool disponible pour tester les états d'action."""
+    from azimut.core import binaries
+    from azimut.core.binaries import BinaryInfo
+    from azimut.modules.tags import MODULE
+    from azimut.modules.tags.window import TagsWindow
+
+    path = Path("/usr/bin/exiftool")
+    monkeypatch.setattr(binaries, "resolve",
+                        lambda name, prefs=None: BinaryInfo(name, path, "system", "12.0"))
+    monkeypatch.setattr(binaries, "require", lambda name, prefs=None: path)
+    return TagsWindow(MODULE)
+
+
+def test_tags_apply_reserves_time_for_the_progress_animation(qapp, monkeypatch):
+    """Appliquer les modifications passe la durée minimale à la barre d'actions."""
+    w = _tags_window_with_exiftool(monkeypatch)
+    calls: dict[str, object] = {}
+    try:
+        w._pending = [eng.TagChange("set", "EXIF:Make", "Canon")]
+        w._files = [eng.FileTags(Path("/photos/a.jpg"))]
+        monkeypatch.setattr(w, "_ensure_exiftool", lambda: Path("/usr/bin/exiftool"))
+        monkeypatch.setattr(w._files_table, "selected_rows", lambda: [0])
+        monkeypatch.setattr(QMessageBox, "question",
+                            lambda *args, **kwargs: QMessageBox.StandardButton.Yes)
+        monkeypatch.setattr(w, "run_worker", lambda *args, **kwargs: calls.update(kwargs))
+        w.on_run()
+        assert calls.get("min_progress_ms") == w.APPLY_MIN_PROGRESS_MS
+    finally:
+        w.close()
+
+
+def test_tags_import_progress_stays_in_the_drop_zone(qapp, monkeypatch):
+    """Importer ne doit pas allumer la barre de progression de la barre d'actions."""
+    w = _tags_window_with_exiftool(monkeypatch)
+    calls = []
+    monkeypatch.setattr(w, "run_worker", lambda *args, **kwargs: calls.append(kwargs))
+    try:
+        w.open_paths(["photo.jpg"])
+        assert calls
+        assert calls[0]["import_progress"] is w._drop.import_progress
+        assert calls[0]["show_progress"] is False
+    finally:
+        w.close()
+
+
+def test_tags_presets_follow_the_selected_metadata(qapp, monkeypatch):
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        assert len(w._preset_btns) == 4
+        assert all(not button.isEnabled() for button in w._preset_btns)
+        assert all(button.property("kind") == "ghost" for button in w._preset_btns)
+
+        w._on_files_read([eng.FileTags(
+            Path("photo.jpg"), size=10,
+            entries=[eng.TagEntry("EXIF", "Make", "Canon"),
+                     eng.TagEntry("GPS", "GPSLatitude", "48.85")])])
+        assert all(button.isEnabled() for button in w._preset_btns)
+
+        w._clear_files()
+        assert all(not button.isEnabled() for button in w._preset_btns)
+    finally:
+        w.close()
+
+
+def test_run_button_waits_for_pending_changes(qapp, monkeypatch):
+    """« Appliquer les modifications » n'est actif qu'avec une cible et des changements valides."""
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        assert not w.run_button.isEnabled()
+        w._on_files_read([eng.FileTags(Path("photo.jpg"))])
+        assert not w.run_button.isEnabled()          # aucun changement en attente
+        w._add_pending([eng.TagChange("set", "EXIF:Make", "Canon")])
+        assert w.run_button.isEnabled()
+        w._clear_pending()
+        assert not w.run_button.isEnabled()
+        w._add_pending([eng.TagChange("set", "File:FileName", "x")])
+        assert not w.run_button.isEnabled()          # changement invalide
+    finally:
+        w.close()
+
+
+def test_tags_clear_list_asks_for_confirmation(qapp, monkeypatch):
+    """« Vider la liste » attend la confirmation ; Annuler laisse les fichiers chargés."""
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        w._on_files_read([eng.FileTags(Path("photo.jpg"))])
+        assert w._files and w._clear_btn.isEnabled()
+        monkeypatch.setattr(w, "confirm_clear_list", lambda: False)
+        w._clear_btn.click()
+        assert w._files
+        monkeypatch.setattr(w, "confirm_clear_list", lambda: True)
+        w._clear_btn.click()
+        assert w._files == [] and w._index == {}
+    finally:
+        w.close()
+
+
+def test_tags_presets_without_gps_or_metadata(qapp, monkeypatch):
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        w._on_files_read([eng.FileTags(
+            Path("photo.jpg"), entries=[eng.TagEntry("EXIF", "Make", "Canon")])])
+        assert not w._preset_btns[0].isEnabled()       # aucun GPS
+        assert w._preset_btns[1].isEnabled()           # métadonnées présentes
+        assert w._preset_btns[2].isEnabled() and w._preset_btns[3].isEnabled()
+
+        w._clear_files()
+        w._on_files_read([eng.FileTags(Path("sans-tags.jpg"))])
+        assert not w._preset_btns[0].isEnabled()
+        assert w._preset_btns[1].property("kind") == "ghost"
+        assert w._preset_btns[2].isEnabled() and w._preset_btns[3].isEnabled()
+    finally:
+        w.close()
+
+
+def test_tags_presets_are_disabled_for_an_unwritable_file(qapp, monkeypatch):
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        w._on_files_read([eng.FileTags(
+            Path("video.mkv"), entries=[eng.TagEntry("EXIF", "Make", "Canon")])])
+        assert all(not button.isEnabled() for button in w._preset_btns)
+    finally:
+        w.close()
+
+
+def test_tags_subtabs_use_the_theme_spring_animation(qapp, monkeypatch):
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        w.resize(1000, 760)
+        w.show()
+        qapp.processEvents()
+        strip = w._subtab_strip
+        assert strip.currentIndex() == 0
+
+        strip.setCurrentIndex(1)
+        assert strip.currentIndex() == 1
+        assert strip._timer.isActive()
+        QTest.qWait(1400)
+        qapp.processEvents()
+        assert not strip._timer.isActive()
+        assert abs(strip._position - 1.0) < 0.002
+        assert w.subtabs.currentIndex() == 1
+    finally:
+        w.close()

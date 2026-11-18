@@ -1,14 +1,15 @@
 """Fenêtre d'Azimut Convert."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from dataclasses import replace
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QCoreApplication, QPoint, QSize, Qt, QTimer
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QCheckBox, QComboBox, QFileDialog, QFormLayout, QLabel, QMessageBox, QPushButton, QSpinBox, QToolButton,
-    QVBoxLayout, QWidget,
+    QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QPushButton, QScrollArea, QVBoxLayout, QWidget,
 )
 
 from azimut.core import binaries
@@ -18,28 +19,80 @@ from azimut.core.module_spec import ModuleSpec
 from azimut.core.prefs import Preferences
 from azimut.modules.convert import MODULE, advanced
 from azimut.modules.convert.engine import (
-    STATE_CANCELLED, STATE_RUNNING, SourceItem, initial_state, missing_encoder_message, path_key, state_tag,
+    STATE_CANCELLED, STATE_COPIED, STATE_DONE, STATE_ERROR, STATE_KEPT, STATE_NO_ENCODER, STATE_PENDING,
+    STATE_RUNNING, STATE_SKIPPED, STATE_UNSUPPORTED, SourceItem, initial_state, path_key,
+    profile_unavailable_reason, state_tag,
 )
+from azimut.modules.convert.codec_tree import CodecPanel
 from azimut.modules.convert.profiles import (
-    ALL_EXTS, KIND_LABELS, KINDS, Profile, default_profile, get_profile, profiles_for,
+    ALL_EXTS, COPY_PROFILE, KIND_LABELS, KINDS, LEGACY_PROFILES, OTHER_KIND, PROFILES, Profile, audio_codecs_for, audio_fits,
+    compose_video, default_profile, get_profile,
 )
 from azimut.modules.convert.workers import ConvertOptions, ConvertWorker, ProbeWorker, ScanWorker
+from azimut.ui import icons
+from azimut.ui.controls import SwitchRow, set_action_available
+from azimut.ui.file_dialog import choose_directory, choose_files, media_filter
 from azimut.ui.module_window import ModuleWindow
-from azimut.ui.widgets import Card, Column, DataTable, DropZone, PathField
+from azimut.ui.theme import ThemeManager, scaled
+from azimut.ui.widgets import Card, Column, DataTable, DropZone, plain_tooltip
 
 COLUMNS = [
-    Column("file", "Fichier", width=320, stretch=True),
-    Column("kind", "Type", width=80),
-    Column("size", "Taille", width=90, align="right"),
-    Column("profile", "Profil", width=230),
-    Column("state", "État", width=150),
-    Column("progress", "Progression", width=100, align="center"),
+    Column("file", QCoreApplication.translate("ConvertWindow", "Fichier"), width=320, stretch=True),
+    Column("kind", QCoreApplication.translate("ConvertWindow", "Type"), width=80),
+    Column("size", QCoreApplication.translate("ConvertWindow", "Taille"), width=90, align="right"),
+    Column("profile", QCoreApplication.translate("ConvertWindow", "Format et qualité"), width=260),
+    Column("state", QCoreApplication.translate("ConvertWindow", "État"), width=150),
+    Column("progress", QCoreApplication.translate("ConvertWindow", "Progression"), width=100, align="center"),
 ]
-KIND_TITLES = {"image": "Images", "video": "Vidéos", "audio": "Audio"}
+
+FILTERS = (
+    QCoreApplication.translate("ConvertWindow", "Tous"),
+    QCoreApplication.translate("ConvertWindow", "Images"),
+    QCoreApplication.translate("ConvertWindow", "Vidéos"),
+    QCoreApplication.translate("ConvertWindow", "Audios"),
+    QCoreApplication.translate("ConvertWindow", "Fichiers volumineux"),
+)
+FILTER_LARGE = 4
+FILTER_KINDS = {1: "image", 2: "video", 3: "audio"}
+LARGE_MB_DEFAULT = 50
+LARGE_MB_PRESETS = (10, 25, 50, 100, 250, 500, 1024, 5120)
+
+
+def _threshold_label(mb: int) -> str:
+    """Libellé compact du seuil : « 50 Mo », ou « 1 Go » pour les valeurs rondes en Go."""
+    if mb >= 1024 and mb % 1024 == 0:
+        return f"{mb // 1024} {QCoreApplication.translate('Units', 'Go')}"
+    return f"{mb} {QCoreApplication.translate('Units', 'Mo')}"
+
+
+KIND_TEXT = {
+    "image": QCoreApplication.translate("ConvertWindow", "Image"),
+    "video": QCoreApplication.translate("ConvertWindow", "Vidéo"),
+    "audio": QCoreApplication.translate("ConvertWindow", "Audio"),
+    OTHER_KIND: QCoreApplication.translate("ConvertWindow", "Autre"),
+}
+STATE_TEXT = {
+    STATE_PENDING: QCoreApplication.translate("ConvertWindow", "En attente"),
+    STATE_RUNNING: QCoreApplication.translate("ConvertWindow", "En cours"),
+    STATE_DONE: QCoreApplication.translate("ConvertWindow", "Terminé"),
+    STATE_SKIPPED: QCoreApplication.translate("ConvertWindow", "Déjà converti"),
+    STATE_NO_ENCODER: QCoreApplication.translate("ConvertWindow", "Encodeur manquant"),
+    STATE_UNSUPPORTED: QCoreApplication.translate("ConvertWindow", "Non pris en charge"),
+    STATE_ERROR: QCoreApplication.translate("ConvertWindow", "Erreur"),
+    STATE_CANCELLED: QCoreApplication.translate("ConvertWindow", "Annulé"),
+    STATE_KEPT: QCoreApplication.translate("ConvertWindow", "Source conservée"),
+    STATE_COPIED: QCoreApplication.translate("ConvertWindow", "Copié"),
+}
+
+
+def _format_text(profile: Profile) -> str:
+    """Colonne « Format et qualité » de la file : « AVIF — CRF 39 · preset 4 »."""
+    detail = advanced.describe(profile)
+    return f"{profile.label} — {detail}" if detail else profile.label
 
 
 class ConvertWindow(ModuleWindow):
-    """File d'attente de conversion avec profils par famille de fichiers."""
+    """File d'attente de conversion : format de sortie et qualité réglés par famille de fichiers."""
 
     def __init__(self, spec: ModuleSpec = MODULE, parent: QWidget | None = None) -> None:
         super().__init__(spec, parent)
@@ -51,215 +104,252 @@ class ConvertWindow(ModuleWindow):
         self._ffprobe: Path | None = None
         self._bins_ok = False
         self._pending: list[list[str]] = []
-        self._loading_adv = False
+        self._visible: list[int] = []
+        self.set_run_label(self.tr("Démarrer la conversion"))
+        self._migrate_legacy_prefs()
         self._build_ui()
         self._locate_binaries(log=True)
         self.show_binary_status(("ffmpeg", "ffprobe"))
-        self.set_run_label("Convertir")
         QTimer.singleShot(0, self._probe_encoders)
 
     # ── Interface ───────────────────────────────────────────────────────────
     def _build_ui(self) -> None:
         central = QWidget()
         lay = QVBoxLayout(central)
-        self.drop = DropZone("Glissez ici des fichiers ou des dossiers à convertir\n(ou cliquez pour parcourir)")
+        self.drop = DropZone(self.tr("Glissez ici des fichiers ou des dossiers à convertir\n(ou cliquez pour parcourir)"))
         self.drop.pathsDropped.connect(self.open_paths)
         lay.addWidget(self.drop)
+
+        # Même barre que Rename : filtre d'affichage, seuil des fichiers volumineux,
+        # puis les deux actions qui agissent sur la liste.
+        bar = QHBoxLayout()
+        bar.addWidget(QLabel(self.tr("Afficher :")))
+        self.cmb_filter = QComboBox()
+        self.cmb_filter.addItems(FILTERS)
+        index = int(self.prefs.get("filter_index", 0) or 0)
+        self.cmb_filter.setCurrentIndex(index if 0 <= index < len(FILTERS) else 0)
+        self.cmb_filter.currentIndexChanged.connect(self._on_filter_changed)
+        bar.addWidget(self.cmb_filter)
+        raw_mb = self.prefs.get("large_mb", LARGE_MB_DEFAULT)
+        try:
+            self._large_mb = max(1, min(1_000_000, int(raw_mb or LARGE_MB_DEFAULT)))
+        except (TypeError, ValueError):
+            self._large_mb = LARGE_MB_DEFAULT
+        self.btn_large = QPushButton()
+        self.btn_large.setProperty("kind", "secondary")
+        self.btn_large.setProperty("hasMenu", True)
+        self.btn_large.setMinimumWidth(112)
+        self.btn_large.setAccessibleName(self.tr("Taille minimale des fichiers affichés"))
+        self._large_menu = QMenu(self.btn_large)
+        self._large_actions: list[tuple[int, QAction]] = []
+        for mb in LARGE_MB_PRESETS:
+            action = self._large_menu.addAction(_threshold_label(mb))
+            action.setCheckable(True)
+            action.triggered.connect(lambda _checked=False, value=mb: self._set_large_threshold(value))
+            self._large_actions.append((mb, action))
+        self._large_menu.addSeparator()
+        custom = self._large_menu.addAction(self.tr("Taille personnalisée…"))
+        custom.triggered.connect(lambda _checked=False: self._choose_large_threshold())
+        self.btn_large.setMenu(self._large_menu)
+        self._refresh_large_button()
+        bar.addWidget(self.btn_large)
+        self.btn_remove = QPushButton(self.tr("Retirer la sélection"))
+        self.btn_clear = QPushButton(self.tr("Vider la liste"))
+        self.btn_remove.clicked.connect(self._on_remove)
+        self.btn_clear.clicked.connect(self._on_clear)
+        bar.addWidget(self.btn_remove)
+        bar.addWidget(self.btn_clear)
+        bar.addStretch(1)
+        lay.addLayout(bar)
+
         self.table = DataTable(COLUMNS)
+        self.table.set_empty_text(self.tr("La file est vide : déposez des fichiers ou un dossier ci-dessus."))
+        self.table.selectionRowsChanged.connect(lambda _rows: self._refresh_queue_actions())
         lay.addWidget(self.table, 1)
+        lay.addWidget(self.action_bar)
         self.set_content(central)
 
         side = QWidget()
         sl = QVBoxLayout(side)
-        card_p = Card("Profils")
-        self._combos: dict[str, QComboBox] = {}
-        self._descs: dict[str, QLabel] = {}
-        for kind in KINDS:
-            card_p.body_layout.addWidget(QLabel(KIND_TITLES[kind]))
-            combo = QComboBox()
-            for p in profiles_for(kind):
-                combo.addItem(p.label, p.id)
-            idx = combo.findData(self.prefs.get(f"profile_{kind}", ""))
-            if idx >= 0:
-                combo.setCurrentIndex(idx)
-            combo.currentIndexChanged.connect(lambda _i, k=kind: self._on_profile_changed(k))
-            desc = QLabel()
-            desc.setWordWrap(True)
-            card_p.body_layout.addWidget(combo)
-            card_p.body_layout.addWidget(desc)
-            self._combos[kind], self._descs[kind] = combo, desc
-            self._update_desc(kind)
-        sl.addWidget(card_p)
-        sl.addWidget(self._build_advanced())
+        sl.addWidget(self._build_format_card())
 
-        card_o = Card("Sortie")
-        self.chk_recursive = QCheckBox("Sous-dossiers")
+        card_o = Card(self.tr("Sortie"))
+        self.chk_recursive = SwitchRow(self.tr("Sous-dossiers"))
         self.chk_recursive.setChecked(bool(self.prefs.get("recursive", True)))
         self.chk_recursive.toggled.connect(lambda v: self.prefs.set("recursive", bool(v)))
-        self.out_field = PathField("Dossier de sortie", mode="dir")
-        self.out_field.pathChanged.connect(self._on_out_changed)
-        hint = QLabel("Laisser vide : « <source>_Converted » à côté de chaque dossier ajouté. "
-                      "Obligatoire pour les fichiers ajoutés isolément.")
-        hint.setWordWrap(True)
-        self.chk_name_ext = QCheckBox("Garder l'extension d'origine dans le nom")
-        self.chk_name_ext.setToolTip("« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions "
-                                     "photo.jpg / photo.png et permet de retrouver le JSON Takeout.")
+        self._out_dir = ""
+        self.btn_out = QPushButton(self.tr("Sortie…"))
+        self.btn_out.setObjectName("OutputButton")
+        self.btn_out.setProperty("kind", "secondary")
+        self.btn_out.setIconSize(QSize(scaled(16), scaled(16)))
+        self.btn_out.setAccessibleName(self.tr("Dossier de sortie"))
+        self.btn_out.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.btn_out.clicked.connect(lambda _checked=False: self._choose_output_dir())
+        self.btn_out.customContextMenuRequested.connect(self._show_output_menu)
+        self._refresh_out_button()
+        self.action_layout.insertWidget(0, self.btn_out)
+        ThemeManager.instance().changed.connect(self._refresh_out_button)
+        self.chk_name_ext = SwitchRow(self.tr("Garder l'extension d'origine dans le nom"))
+        self.chk_name_ext.setToolTip(self.tr("« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions "
+                                     "photo.jpg / photo.png et permet de retrouver le JSON Takeout."))
         self.chk_name_ext.setChecked(bool(self.prefs.get("name_ext", True)))
         self.chk_name_ext.toggled.connect(lambda v: self.prefs.set("name_ext", bool(v)))
-        self.chk_takeout = QCheckBox("Réinjecter date et GPS des JSON Google Takeout")
-        self.chk_takeout.setToolTip("Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et "
-                                    "sa position sont écrites dans le fichier converti (ExifTool).")
+        self.chk_takeout = SwitchRow(self.tr("Réinjecter date et GPS des JSON Google Takeout"))
+        self.chk_takeout.setToolTip(self.tr("Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et "
+                                    "sa position sont écrites dans le fichier converti (ExifTool)."))
         self.chk_takeout.setChecked(bool(self.prefs.get("takeout", True)))
         self.chk_takeout.toggled.connect(lambda v: self.prefs.set("takeout", bool(v)))
         card_o.body_layout.addWidget(self.chk_recursive)
         card_o.body_layout.addWidget(self.chk_name_ext)
+        self.chk_copy_others = SwitchRow(self.tr("Copier aussi les autres fichiers (PDF, documents…)"))
+        self.chk_copy_others.setToolTip(self.tr("Les fichiers qui ne sont ni des images, ni des audios, ni des vidéos sont "
+                                        "copiés tels quels dans le dossier de sortie, à la même place que dans la "
+                                        "source. Sans cette case, ils sont ignorés."))
+        self.chk_copy_others.setChecked(bool(self.prefs.get("copy_others", False)))
+        self.chk_copy_others.toggled.connect(self._on_copy_others_toggled)
+        self.chk_skip_json = SwitchRow(self.tr("Ne pas recopier les JSON Takeout déjà réinjectés"))
+        self.chk_skip_json.setToolTip(self.tr("Les JSON dont la date et la position sont écrites dans le fichier converti "
+                                      "ne sont pas copiés dans le dossier de sortie. Rien n'est supprimé : "
+                                      "les JSON restent dans le dossier source. Les autres JSON sont copiés."))
+        self.chk_skip_json.setChecked(bool(self.prefs.get("skip_takeout_json", False)))
+        self.chk_skip_json.toggled.connect(lambda v: self.prefs.set("skip_takeout_json", bool(v)))
+        self.chk_takeout.toggled.connect(self._sync_skip_json_enabled)
+        self.chk_copy_others.toggled.connect(self._sync_skip_json_enabled)
         card_o.body_layout.addWidget(self.chk_takeout)
-        card_o.body_layout.addWidget(self.out_field)
-        card_o.body_layout.addWidget(hint)
+        card_o.body_layout.addWidget(self.chk_copy_others)
+        card_o.body_layout.addWidget(self.chk_skip_json)
         sl.addWidget(card_o)
 
-        card_q = Card("File d'attente")
-        self.btn_remove = QPushButton("Retirer la sélection")
-        self.btn_clear = QPushButton("Vider la liste")
-        self.btn_remove.clicked.connect(self._on_remove)
-        self.btn_clear.clicked.connect(self._on_clear)
-        card_q.body_layout.addWidget(self.btn_remove)
-        card_q.body_layout.addWidget(self.btn_clear)
-        sl.addWidget(card_q)
         sl.addStretch(1)
-        self.set_side_panel(side, "Réglages")
-        self._lockables: list[QWidget] = [*self._combos.values(), self.chk_recursive, self.out_field,
-                                          self.btn_remove, self.btn_clear, self._adv_body, self.chk_name_ext,
-                                          self.chk_takeout]
+        scroll = QScrollArea()                       # le panneau de réglages peut dépasser la hauteur de la fenêtre
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        scroll.setWidget(side)
+        # La largeur vient de ModuleWindow : elle est commune à tous les panneaux de réglages.
+        self.set_side_panel(scroll, self.tr("Réglages"))
+        self._lockables: list[QWidget] = [self.codec_tree, self.chk_recursive, self.btn_out,
+                                          self.cmb_filter, self.btn_large, self.btn_remove, self.btn_clear,
+                                          self.chk_name_ext, self.chk_takeout, self.chk_copy_others,
+                                          self.chk_skip_json]
+        self._sync_skip_json_enabled()
+        self._update_large_filter()
         self._annotate_profiles()
         self._load_advanced()
+        self._refresh_queue_actions()
 
-    def _update_desc(self, kind: str) -> None:
-        eff, base = self._profile(kind), self._base_profile(kind)
-        diff = advanced.summarize(eff, base)
-        self._descs[kind].setText(base.description + (f"\nRéglages personnalisés : {diff}." if diff else ""))
+    # ── Format et qualité ───────────────────────────────────────────────────
+    def _build_format_card(self) -> QWidget:
+        """Panneau unique, sans titre de carte : les sections Images / Vidéos / Audio portent la hiérarchie."""
+        card = Card()
+        # L'en-tête retiré laisse toute la place au panneau : marges égales pour qu'il respire.
+        card.layout().setContentsMargins(16, 16, 16, 16)
+        tree = self.codec_tree = CodecPanel()
+        card.body_layout.addWidget(tree)
+        for kind in KINDS:
+            tree.set_selected(kind, str(self.prefs.get(f"profile_{kind}", "")))
+        tree.set_video_audio(str(self.prefs.get("profile_video_audio", "")))
+        tree.set_hdr_mode(str(self.prefs.get("hdr_mode", "T")))
+        tree.slider_threads.set_value(advanced.clamp_threads(self.prefs.get("threads", 0)))
+        tree.slider_parallel.set_value(advanced.clamp_parallel(self.prefs.get("parallel", 1)))
+        tree.chk_low_priority.setChecked(bool(self.prefs.get("low_priority", True)))
+        tree.chk_memory.setChecked(bool(self.prefs.get("memory_guard", True)))
+        tree.codecChanged.connect(self._on_codec_changed)
+        tree.videoAudioChanged.connect(self._on_video_audio_changed)
+        tree.qualityEdited.connect(self._on_quality_edited)
+        tree.resetRequested.connect(self._reset_quality)
+        tree.hdrChanged.connect(self._on_hdr_changed)
+        tree.performanceChanged.connect(self._on_perf_changed)
+        return card
+
+    def _migrate_legacy_prefs(self) -> None:
+        """Reprend le choix et les réglages enregistrés avec les anciens profils (AVIF « HQ », WebM « max »…)."""
+        if self.prefs.get("repair_mono"):
+            self.prefs.set("repair_mono", False)          # ancienne option supprimée
+        selected = {k: str(self.prefs.get(f"profile_{k}", "") or "") for k in KINDS}
+        store = self._overrides_store()
+        if not any(pid in LEGACY_PROFILES for pid in (*selected.values(), *store)):
+            self._migrate_video_audio_overrides(store)
+            self._migrate_video_bitrate(store)
+            self.prefs.set("advanced", store)
+            return
+        new_sel, new_store = advanced.migrate_legacy(selected, store)
+        for kind, pid in new_sel.items():
+            if pid != selected[kind]:
+                self.prefs.set(f"profile_{kind}", pid)
+        self._migrate_video_audio_overrides(new_store)
+        self._migrate_video_bitrate(new_store)
+        self.prefs.set("advanced", new_store)
+
+    def _migrate_video_audio_overrides(self, store: dict) -> None:
+        """Sépare les réglages historiquement partagés : la vidéo garde une copie de la famille Audio."""
+        if bool(self.prefs.get("video_audio_split", False)):
+            return
+        for profile in PROFILES:
+            key = advanced.video_audio_key(profile.id)
+            if profile.kind == "audio" and key not in store and isinstance(store.get(profile.id), dict):
+                store[key] = dict(store[profile.id])
+        self.prefs.set("video_audio_split", True)
+
+    def _migrate_video_bitrate(self, store: dict) -> None:
+        """Le débit audio était réglé sur le profil vidéo : il appartient maintenant au codec audio choisi."""
+        try:
+            video = get_profile(str(self.prefs.get("profile_video", "") or ""))
+        except KeyError:
+            return
+        saved = store.get(video.id)
+        if not isinstance(saved, dict) or "bitrate" not in saved:
+            return
+        audio = audio_codecs_for(video)[0]
+        value = saved.pop("bitrate")
+        key = advanced.video_audio_key(audio.id)
+        if value is not None:
+            store[key] = {**dict(store.get(key) or {}), "bitrate": value}
+        if not saved:
+            store.pop(video.id, None)
+        self.prefs.set("profile_video_audio", audio.id)
 
     def _profile(self, kind: str) -> Profile:
-        """Profil effectif : profil choisi + réglages avancés (CRF, preset, qualité, threads)."""
+        """Profil effectif : codec choisi + curseurs de qualité + threads (vidéo : codec image + codec audio)."""
         base = self._base_profile(kind)
         store = self._overrides_store()
-        ov = advanced.Overrides.from_dict(store.get(base.id))
-        threads = advanced.clamp_threads(self.prefs.get("threads", 0)) if hasattr(self, "spin_threads") else 0
-        eff = advanced.apply_overrides(base, ov, threads, self._encoders)
-        if eff.kind == "video" and not eff.video_copy:
+        threads = advanced.clamp_threads(self.prefs.get("threads", 0))
+        eff = advanced.apply_overrides(base, advanced.Overrides.from_dict(store.get(base.id)), threads,
+                                       self._encoders)
+        if kind == "video":
+            audio = self._base_audio_for_video()
+            audio = advanced.apply_overrides(audio, advanced.Overrides.from_dict(
+                store.get(advanced.video_audio_key(audio.id))), 0,
+                                             self._encoders)
+            eff = compose_video(eff, audio)
+        if eff.kind == "video":
             eff = replace(eff, hdr_mode=str(self.prefs.get("hdr_mode", "T")))
         return eff
 
+    def _base_audio_for_video(self) -> Profile:
+        """Codec audio choisi pour la vidéo, ou le premier compatible avec ce codec."""
+        video = self._base_profile("video")
+        pid = self.codec_tree.selected("video_audio")
+        if pid:
+            try:
+                audio = get_profile(pid)
+            except KeyError:
+                audio = None
+            if audio is not None and audio.kind == "audio" and audio_fits(video, pid):
+                return audio
+        return audio_codecs_for(video)[0]
+
     def _profiles(self) -> dict[str, Profile]:
-        return {k: self._profile(k) for k in KINDS}
+        profiles = {k: self._profile(k) for k in KINDS}
+        profiles[OTHER_KIND] = COPY_PROFILE
+        return profiles
 
     def _annotate_profiles(self) -> None:
-        """Marque dans les listes les profils impossibles avec ce ffmpeg."""
-        for kind, combo in self._combos.items():
-            for i, p in enumerate(profiles_for(kind)):
-                bad = missing_encoder_message(p, self._encoders)
-                combo.setItemText(i, p.label + (" — encodeur manquant" if bad else ""))
-
-
-    # ── Réglages avancés (CRF, preset, qualité, threads, parallélisme) ──────
-    def _build_advanced(self) -> QWidget:
-        card = Card()
-        self._adv_toggle = QToolButton()
-        self._adv_toggle.setText("Réglages avancés")
-        self._adv_toggle.setCheckable(True)
-        self._adv_toggle.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self._adv_toggle.setArrowType(Qt.ArrowType.RightArrow)
-        self._adv_toggle.setStyleSheet("QToolButton { border: none; font-weight: bold; }")
-        card.body_layout.addWidget(self._adv_toggle)
-
-        self._adv_body = QWidget()
-        body = QVBoxLayout(self._adv_body)
-        body.setContentsMargins(0, 0, 0, 0)
-        hint = QLabel("Les valeurs ci-dessous remplacent celles du profil choisi (conservées par profil). "
-                      "« Rétablir » revient aux valeurs d'origine.")
-        hint.setWordWrap(True)
-        body.addWidget(hint)
-
-        self._adv_rows: dict[str, dict[str, object]] = {}
-        for kind in ("image", "video"):
-            title = QLabel(KIND_TITLES[kind])
-            title.setStyleSheet("font-weight: bold;")
-            form = QFormLayout()
-            form.setContentsMargins(0, 0, 0, 0)
-            crf = QSpinBox()
-            crf.setToolTip("Constant Rate Factor : plus bas = meilleure qualité, fichier plus gros.")
-            preset = QComboBox()
-            preset.setToolTip("Compromis vitesse / compression : les presets lents compressent mieux.")
-            quality = QSpinBox()
-            quality.setToolTip("Qualité de sortie (JPEG : 2 = meilleure, 31 = pire ; WebP : 100 = meilleure).")
-            lab_crf, lab_preset, lab_quality = QLabel("CRF"), QLabel("Preset"), QLabel("Qualité")
-            form.addRow(lab_crf, crf)
-            form.addRow(lab_preset, preset)
-            form.addRow(lab_quality, quality)
-            reset = QPushButton("Rétablir")
-            reset.setProperty("kind", "secondary")
-            for w in (crf, quality):
-                w.valueChanged.connect(lambda _v, k=kind: self._on_advanced_changed(k))
-            preset.currentIndexChanged.connect(lambda _i, k=kind: self._on_advanced_changed(k))
-            reset.clicked.connect(lambda _c=False, k=kind: self._reset_advanced(k))
-            box = QWidget()
-            bl = QVBoxLayout(box)
-            bl.setContentsMargins(0, 0, 0, 0)
-            bl.addWidget(title)
-            bl.addLayout(form)
-            bl.addWidget(reset)
-            body.addWidget(box)
-            self._adv_rows[kind] = {"box": box, "crf": crf, "preset": preset, "quality": quality,
-                                    "labels": (lab_crf, lab_preset, lab_quality), "reset": reset}
-
-        form2 = QFormLayout()
-        form2.setContentsMargins(0, 0, 0, 0)
-        self.spin_threads = QSpinBox()
-        self.spin_threads.setRange(0, advanced.MAX_THREADS)
-        self.spin_threads.setSpecialValueText("Auto")
-        self.spin_threads.setToolTip("Threads par encodage (images et vidéos). « Auto » : bornés pour limiter la "
-                                     "mémoire (vidéo), ou cœurs partagés si plusieurs fichiers sont traités en "
-                                     "parallèle.")
-        self.spin_parallel = QSpinBox()
-        self.spin_parallel.setRange(1, advanced.MAX_PARALLEL)
-        self.spin_parallel.setToolTip("Nombre de fichiers convertis en même temps. Réduisez-le si la mémoire manque.")
-        form2.addRow("Threads", self.spin_threads)
-        form2.addRow("Fichiers en parallèle", self.spin_parallel)
-        self.cmb_hdr = QComboBox()
-        self.cmb_hdr.addItem("Tone-mapping vers SDR", "T")
-        self.cmb_hdr.addItem("HDR natif (AV1 10 bits)", "H")
-        self.cmb_hdr.setToolTip("Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR "
-                                "(profils AV1 uniquement ; H.264 passe toujours en SDR).")
-        idx_hdr = self.cmb_hdr.findData(self.prefs.get("hdr_mode", "T"))
-        self.cmb_hdr.setCurrentIndex(max(0, idx_hdr))
-        self.cmb_hdr.currentIndexChanged.connect(self._on_hdr_changed)
-        form2.addRow("Vidéos HDR", self.cmb_hdr)
-        body.addLayout(form2)
-        self.chk_low_priority = QCheckBox("Priorité basse (garde l'ordinateur réactif)")
-        self.chk_low_priority.setChecked(bool(self.prefs.get("low_priority", True)))
-        self.chk_low_priority.toggled.connect(lambda v: self.prefs.set("low_priority", bool(v)))
-        self.chk_memory = QCheckBox("Attendre si la mémoire est saturée")
-        self.chk_memory.setChecked(bool(self.prefs.get("memory_guard", True)))
-        self.chk_memory.toggled.connect(lambda v: self.prefs.set("memory_guard", bool(v)))
-        body.addWidget(self.chk_low_priority)
-        body.addWidget(self.chk_memory)
-        self.spin_threads.setValue(advanced.clamp_threads(self.prefs.get("threads", 0)))
-        self.spin_parallel.setValue(advanced.clamp_parallel(self.prefs.get("parallel", 1)))
-        self.spin_threads.valueChanged.connect(self._on_perf_changed)
-        self.spin_parallel.valueChanged.connect(self._on_perf_changed)
-
-        card.body_layout.addWidget(self._adv_body)
-        open_ = bool(self.prefs.get("advanced_open", False))
-        self._adv_body.setVisible(open_)
-        self._adv_toggle.setChecked(open_)
-        self._adv_toggle.setArrowType(Qt.ArrowType.DownArrow if open_ else Qt.ArrowType.RightArrow)
-        self._adv_toggle.toggled.connect(self._on_adv_toggled)
-        return card
-
-    def _on_adv_toggled(self, open_: bool) -> None:
-        self._adv_body.setVisible(open_)
-        self._adv_toggle.setArrowType(Qt.ArrowType.DownArrow if open_ else Qt.ArrowType.RightArrow)
-        self.prefs.set("advanced_open", bool(open_))
+        """Marque dans les listes les codecs impossibles avec ce ffmpeg."""
+        for p in PROFILES:
+            # L'audio a sa propre liste : ne pas le compter pour la disponibilité du codec vidéo.
+            check = replace(p, audio_encoders=()) if p.kind == "video" else p
+            reason = profile_unavailable_reason(check, self._encoders)
+            self.codec_tree.set_codec_available(p.id, reason is None, reason or "encodeur manquant")
 
     def _overrides_store(self) -> dict:
         data = self.prefs.get("advanced", {})
@@ -267,79 +357,67 @@ class ConvertWindow(ModuleWindow):
 
     def _base_profile(self, kind: str) -> Profile:
         try:
-            return get_profile(self._combos[kind].currentData())
+            return get_profile(self.codec_tree.selected(kind))
         except KeyError:
             return default_profile(kind)
 
     def _load_advanced(self) -> None:
-        """Remplit les champs de chaque famille avec le profil courant (valeurs d'origine ou personnalisées)."""
-        self._loading_adv = True
-        try:
-            store = self._overrides_store()
-            for kind, row in self._adv_rows.items():
-                base = self._base_profile(kind)
-                ov = advanced.Overrides.from_dict(store.get(base.id))
-                eff = advanced.apply_overrides(base, ov, 0, self._encoders)
-                crf, preset, quality = row["crf"], row["preset"], row["quality"]
-                lab_crf, lab_preset, lab_quality = row["labels"]
-                r = advanced.crf_range(base)
-                crf.setVisible(r is not None)
-                lab_crf.setVisible(r is not None)
-                if r:
-                    crf.setRange(*r)
-                    crf.setValue(eff.crf)
-                choices = advanced.preset_choices(base, self._encoders)
-                preset.setVisible(bool(choices))
-                lab_preset.setVisible(bool(choices))
-                preset.clear()
-                for c in choices:
-                    preset.addItem(c, c)
-                if choices:
-                    preset.setCurrentIndex(max(0, preset.findData(eff.preset)))
-                q = advanced.quality_range(base)
-                quality.setVisible(q is not None)
-                lab_quality.setVisible(q is not None)
-                if q:
-                    quality.setRange(*q)
-                    quality.setValue(eff.quality)
-                row["box"].setVisible(r is not None or bool(choices) or q is not None)
-        finally:
-            self._loading_adv = False
-
-    def _on_advanced_changed(self, kind: str) -> None:
-        if self._loading_adv:
-            return
-        base = self._base_profile(kind)
-        row = self._adv_rows[kind]
-        ov = advanced.Overrides(
-            crf=int(row["crf"].value()) if advanced.crf_range(base) else None,
-            preset=row["preset"].currentData() if advanced.preset_choices(base, self._encoders) else None,
-            quality=int(row["quality"].value()) if advanced.quality_range(base) else None)
+        """Remplit les curseurs de chaque codec avec ses valeurs d'origine ou personnalisées."""
         store = self._overrides_store()
-        diff = {k: v for k, v in ov.to_dict().items() if getattr(base, k) != v}
-        if diff:
-            store[base.id] = diff
+        for base in PROFILES:
+            ov = advanced.Overrides.from_dict(store.get(base.id))
+            eff = advanced.apply_overrides(base, ov, 0, self._encoders)
+            video_audio_eff = None
+            if base.kind == "audio":
+                video_audio_eff = advanced.apply_overrides(
+                    base, advanced.Overrides.from_dict(store.get(advanced.video_audio_key(base.id))),
+                    0, self._encoders)
+            self.codec_tree.configure(base, eff, self._encoders, video_audio_eff)
+
+    def _on_quality_edited(self, profile_id: str) -> None:
+        if profile_id.startswith(advanced.VIDEO_AUDIO_PREFIX):
+            base = get_profile(profile_id[len(advanced.VIDEO_AUDIO_PREFIX):])
+            overrides = self.codec_tree.read_video_audio_overrides(base.id)
         else:
-            store.pop(base.id, None)
+            base = get_profile(profile_id)
+            overrides = self.codec_tree.read_overrides(profile_id)
+        diff = advanced.overrides_diff(base, overrides)
+        store = self._overrides_store()
+        if diff:
+            store[profile_id] = diff
+        else:
+            store.pop(profile_id, None)
         self.prefs.set("advanced", store)
-        self._update_desc(kind)
         self._refresh_states()
 
-    def _reset_advanced(self, kind: str) -> None:
+    def _reset_quality(self, profile_id: str) -> None:
         store = self._overrides_store()
-        store.pop(self._base_profile(kind).id, None)
+        store.pop(profile_id, None)
         self.prefs.set("advanced", store)
         self._load_advanced()
-        self._update_desc(kind)
         self._refresh_states()
 
-    def _on_hdr_changed(self, _i: int) -> None:
-        self.prefs.set("hdr_mode", str(self.cmb_hdr.currentData()))
+    def _on_codec_changed(self, kind: str, profile_id: str) -> None:
+        self.prefs.set(f"profile_{kind}", profile_id)
+        if kind == "video":
+            self.prefs.set("profile_video_audio", self.codec_tree.selected("video_audio"))
         self._refresh_states()
 
-    def _on_perf_changed(self, _value: int) -> None:
-        self.prefs.set("threads", int(self.spin_threads.value()))
-        self.prefs.set("parallel", int(self.spin_parallel.value()))
+    def _on_video_audio_changed(self, profile_id: str) -> None:
+        if profile_id:
+            self.prefs.set("profile_video_audio", profile_id)
+            self._refresh_states()
+
+    def _on_hdr_changed(self, mode: str) -> None:
+        self.prefs.set("hdr_mode", mode)
+        self._refresh_states()
+
+    def _on_perf_changed(self) -> None:
+        tree = self.codec_tree
+        self.prefs.set("threads", int(tree.slider_threads.value()))
+        self.prefs.set("parallel", int(tree.slider_parallel.value()))
+        self.prefs.set("low_priority", bool(tree.chk_low_priority.isChecked()))
+        self.prefs.set("memory_guard", bool(tree.chk_memory.isChecked()))
         self._refresh_states()
 
     # ── Binaires et encodeurs ───────────────────────────────────────────────
@@ -356,7 +434,7 @@ class ConvertWindow(ModuleWindow):
         if not self._bins_ok and log:
             self.log_panel.append_log("WARN", "La conversion est désactivée tant que FFmpeg est introuvable "
                                               "(Préférences… pour indiquer son chemin).")
-        self.set_run_enabled(self._bins_ok and not self.is_busy())
+        self._refresh_run_state()
         return self._bins_ok
 
     def _probe_encoders(self) -> None:
@@ -375,28 +453,97 @@ class ConvertWindow(ModuleWindow):
         self._load_advanced()
         self._refresh_states()
         if self._encoders is not None:
-            bad = [p.label for p in (get_profile(i) for i in
-                                     [c.itemData(n) for c in self._combos.values() for n in range(c.count())])
-                   if missing_encoder_message(p, self._encoders)]
+            bad = [p.label for p in PROFILES if profile_unavailable_reason(p, self._encoders)]
             if bad:
-                self.log_panel.append_log("WARN", "Profils indisponibles avec ce FFmpeg : " + " ; ".join(bad) + ".")
+                self.log_panel.append_log("WARN", "Formats indisponibles avec ce FFmpeg : " + " ; ".join(bad) + ".")
             else:
-                self.log_panel.append_log("INFO", f"{len(self._encoders)} encodeurs détectés : tous les profils sont disponibles.")
+                self.log_panel.append_log("INFO", f"{len(self._encoders)} encodeurs détectés : tous les formats sont disponibles.")
         self._after_worker()
 
     # ── Gestion de la file ──────────────────────────────────────────────────
+    def _matches_filter(self, item: SourceItem) -> bool:
+        index = self.cmb_filter.currentIndex()
+        if index == FILTER_LARGE:
+            return item.size >= self._large_mb * 1024 * 1024
+        return item.kind == FILTER_KINDS.get(index, item.kind)
+
+    def _render_queue(self) -> None:
+        """Applique le filtre d'affichage et reconstruit les lignes visibles."""
+        self._visible = [i for i, item in enumerate(self._items) if self._matches_filter(item)]
+        profiles = self._profiles()
+        self.table.data_model.set_rows([
+            self._row_for(self._items[i], profiles,
+                          initial_state(self._items[i], profiles[self._items[i].kind], self._encoders))
+            for i in self._visible])
+        self._refresh_queue_actions()
+
+    def _refresh_queue_actions(self) -> None:
+        """« Retirer » suit la sélection ; « Vider » n'est actif que si la file contient quelque chose."""
+        if getattr(self, "btn_remove", None) is None:
+            return
+        busy = self.is_busy()
+        set_action_available(self.btn_remove, bool(self.table.selected_rows()) and not busy)
+        set_action_available(self.btn_clear, bool(self._items) and not busy)
+        self._refresh_run_state()
+
+    def _refresh_run_state(self) -> None:
+        """« Démarrer la conversion » n'est actif que si la file et les prérequis sont prêts."""
+        output = self._out_dir.strip()
+        isolated = any(item.root is None for item in self._items)
+        output_ok = not isolated or (bool(output) and not Path(
+            os.path.abspath(os.path.expanduser(output))).is_file())
+        self.set_run_enabled(bool(self._items) and self._bins_ok and output_ok)
+
+    def _view_row(self, item_index: int) -> int | None:
+        """Ligne affichée pour un fichier de la file, ou None s'il est masqué par le filtre."""
+        try:
+            return self._visible.index(item_index)
+        except ValueError:
+            return None
+
+    def _on_filter_changed(self, _index: int) -> None:
+        self.prefs.set("filter_index", self.cmb_filter.currentIndex())
+        self._update_large_filter()
+        self._render_queue()
+
+    def _update_large_filter(self) -> None:
+        active = self.cmb_filter.currentIndex() == FILTER_LARGE
+        self.btn_large.setVisible(active)
+        self.btn_large.setEnabled(active and not self.is_busy())
+
+    def _refresh_large_button(self) -> None:
+        size = _threshold_label(self._large_mb)
+        self.btn_large.setText(self.tr("≥ {size}").format(size=size))
+        self.btn_large.setToolTip(self.tr(
+            "Afficher les fichiers d'au moins {size}. Cliquez pour choisir un autre seuil.").format(size=size))
+        for mb, action in self._large_actions:
+            action.setChecked(mb == self._large_mb)
+
+    def _set_large_threshold(self, value: int) -> None:
+        self._large_mb = max(1, min(1_000_000, int(value)))
+        self.prefs.set("large_mb", self._large_mb)
+        self._refresh_large_button()
+        if self.cmb_filter.currentIndex() == FILTER_LARGE:
+            self._render_queue()
+
+    def _choose_large_threshold(self) -> None:
+        value, ok = QInputDialog.getInt(
+            self, self.tr("Taille minimale"), self.tr("Afficher les fichiers d'au moins (en Mo) :"),
+            self._large_mb, 1, 1_000_000, 1)
+        if ok:
+            self._set_large_threshold(value)
+
     def _row_for(self, item: SourceItem, profiles: dict[str, Profile], state: str) -> dict:
         shown = item.path.name if item.root is None else f"{item.root.name}/{item.rel.as_posix()}"
-        return {"file": shown, "kind": KIND_LABELS[item.kind], "size": format_size(item.size),
-                "profile": profiles[item.kind].label, "state": state, "progress": "", "_tag": state_tag(state)}
+        return {"file": shown, "kind": KIND_TEXT.get(item.kind, KIND_LABELS[item.kind]), "size": format_size(item.size),
+                "_sort_size": item.size,
+                "profile": _format_text(profiles[item.kind]), "state": STATE_TEXT.get(state, state),
+                "progress": "", "_tag": state_tag(state)}
 
     def _refresh_states(self) -> None:
         if self.is_busy():
             return
-        profiles = self._profiles()
-        rows = [self._row_for(it, profiles, initial_state(it, profiles[it.kind], self._encoders))
-                for it in self._items]
-        self.table.data_model.set_rows(rows)
+        self._render_queue()
 
     def open_paths(self, paths: list[str]) -> None:
         paths = [str(p) for p in paths if p]
@@ -409,9 +556,11 @@ class ConvertWindow(ModuleWindow):
         self._start_scan(paths)
 
     def _start_scan(self, paths: list[str]) -> None:
-        worker = ScanWorker(paths, self.chk_recursive.isChecked())
+        worker = ScanWorker(paths, self.chk_recursive.isChecked(),
+                            include_others=self.chk_copy_others.isChecked())
         self.run_worker(worker, on_completed=self._on_scanned,
-                        on_failed=lambda _m: self._after_worker(), on_cancelled=self._after_worker)
+                        on_failed=lambda _m: self._after_worker(), on_cancelled=self._after_worker,
+                        import_progress=self.drop.import_progress)
 
     def _on_scanned(self, result: object) -> None:
         new: list[SourceItem] = []
@@ -424,19 +573,38 @@ class ConvertWindow(ModuleWindow):
             self._keys.add(key)
             new.append(it)
         if new:
-            if self.out_field.path().strip() == "" and any(i.root is None for i in new):
+            if not self._out_dir and any(i.root is None for i in new):
                 last = str(self.prefs.get("output_dir", "") or "")
                 if last:
-                    self.out_field.set_path(last)       # fichiers isolés : dernier dossier utilisé
-            profiles = self._profiles()
-            rows = list(self.table.data_model.rows())
-            for it in new:
-                self._items.append(it)
-                rows.append(self._row_for(it, profiles, initial_state(it, profiles[it.kind], self._encoders)))
-            self.table.data_model.set_rows(rows)
+                    self._set_output_dir(last)          # fichiers isolés : dernier dossier utilisé
+            self._items.extend(new)
+            self._render_queue()
         self.log_panel.append_log("INFO", f"{len(new)} fichier(s) ajouté(s) à la file"
                                           + (f" ({dup} déjà présent(s))." if dup else "."))
         self._after_worker()
+
+    def _sync_skip_json_enabled(self, *_args: object) -> None:
+        """La case « ne pas recopier les JSON » n'a de sens que si les JSON sont lus ET les autres fichiers copiés."""
+        if self.is_busy():
+            return
+        self.chk_skip_json.setEnabled(self.chk_takeout.isChecked() and self.chk_copy_others.isChecked())
+
+    def _on_copy_others_toggled(self, checked: bool) -> None:
+        """Décochée : retire de la file les fichiers « autres » ; cochée : les ajoute depuis les dossiers déjà ajoutés."""
+        self.prefs.set("copy_others", bool(checked))
+        if self.is_busy():
+            return
+        if checked:
+            roots = sorted({str(i.root) for i in self._items if i.root is not None})
+            if roots:
+                self._start_scan(roots)
+            return
+        keep = [n for n, it in enumerate(self._items) if it.kind != OTHER_KIND]
+        if len(keep) == len(self._items):
+            return
+        self._items = [self._items[n] for n in keep]
+        self._keys = {path_key(i.path) for i in self._items}
+        self._render_queue()
 
     def _on_remove(self) -> None:
         if self.is_busy():
@@ -444,52 +612,90 @@ class ConvertWindow(ModuleWindow):
         sel = set(self.table.selected_rows())
         if not sel:
             return
-        rows = list(self.table.data_model.rows())
-        keep = [i for i in range(len(self._items)) if i not in sel]
-        self._items = [self._items[i] for i in keep]
+        drop = {self._visible[i] for i in sel if 0 <= i < len(self._visible)}
+        self._items = [it for i, it in enumerate(self._items) if i not in drop]
         self._keys = {path_key(i.path) for i in self._items}
-        self.table.data_model.set_rows([rows[i] for i in keep])
+        self._render_queue()
 
     def _on_clear(self) -> None:
-        if self.is_busy():
+        if self.is_busy() or not self._items:
+            return
+        if not self.confirm_clear_list():
             return
         self._items.clear()
         self._keys.clear()
+        self._visible.clear()
         self.table.data_model.clear()
+        self._refresh_queue_actions()
 
-    def _on_profile_changed(self, kind: str) -> None:
-        self.prefs.set(f"profile_{kind}", self._combos[kind].currentData())
-        self._load_advanced()
-        self._update_desc(kind)
-        self._refresh_states()
+    def _choose_output_dir(self) -> None:
+        """Choisit le dossier de sortie ; vide = « <source>_Converted » à côté des sources."""
+        if self.is_busy():
+            return
+        start = self._out_dir or str(self.prefs.get("output_dir", "") or "")
+        chosen = choose_directory(self, self.tr("Choisir le dossier de sortie"), start)
+        if chosen:
+            self._set_output_dir(chosen)
 
-    def _on_out_changed(self, text: str) -> None:
-        if text.strip():
-            self.prefs.set("output_dir", text.strip())
+    def _set_output_dir(self, path: str) -> None:
+        self._out_dir = str(path or "").strip()
+        self.prefs.set("output_dir", self._out_dir)
+        self._refresh_out_button()
+        self._refresh_run_state()
 
-    # ── Ouverture ───────────────────────────────────────────────────────────
+    def _refresh_out_button(self, _theme: str = "") -> None:
+        hint = self.tr("Laisser vide : « <source>_Converted » à côté de chaque dossier ajouté. "
+                       "Obligatoire pour les fichiers ajoutés isolément.")
+        current = self._out_dir or self.tr("dossier par défaut")
+        tip = self.tr("{hint}\n\nDossier de sortie : {path}\n\n"
+                      "Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut."
+                      ).format(hint=hint, path=current)
+        self.btn_out.setToolTip(plain_tooltip(tip))
+        self.btn_out.setAccessibleName(self.tr("Dossier de sortie : {path}").format(path=current))
+        self.btn_out.setIconSize(QSize(scaled(16), scaled(16)))
+        self.btn_out.setIcon(icons.icon("folder", "text", scaled(16)))
+        if self._out_dir:
+            folder = Path(self._out_dir).name or self._out_dir
+            shown = self.btn_out.fontMetrics().elidedText(
+                folder, Qt.TextElideMode.ElideMiddle, scaled(180))
+            self.btn_out.setText(self.tr("Sortie : {folder}").format(folder=shown))
+        else:
+            self.btn_out.setText(self.tr("Sortie…"))
+
+    def _show_output_menu(self, pos: QPoint) -> None:
+        menu = QMenu(self)
+        if self._out_dir:
+            shown = self.btn_out.fontMetrics().elidedText(
+                self._out_dir, Qt.TextElideMode.ElideMiddle, scaled(320))
+            current = menu.addAction(shown)
+            current.setEnabled(False)
+            current.setToolTip(plain_tooltip(self._out_dir))
+            menu.addSeparator()
+        choose = menu.addAction(self.tr("Choisir un dossier…"))
+        choose.triggered.connect(lambda _checked=False: self._choose_output_dir())
+        reset = menu.addAction(self.tr("Utiliser le dossier par défaut"))
+        reset.setEnabled(bool(self._out_dir))
+        reset.triggered.connect(lambda _checked=False: self._set_output_dir(""))
+        menu.exec(self.btn_out.mapToGlobal(pos))
+
+    # ── Import ──────────────────────────────────────────────────────────────
     def on_open(self) -> None:
-        box = QMessageBox(self)
-        box.setWindowTitle("Ajouter à la file")
-        box.setText("Que souhaitez-vous ajouter ?")
-        b_files = box.addButton("Fichiers…", QMessageBox.ButtonRole.AcceptRole)
-        b_dir = box.addButton("Dossier…", QMessageBox.ButtonRole.AcceptRole)
-        box.addButton("Annuler", QMessageBox.ButtonRole.RejectRole)
-        box.exec()
-        clicked = box.clickedButton()
         prefs = Preferences.instance()
         start = str(prefs.get("last_dir", "") or "")
-        chosen: list[str] = []
-        if clicked is b_files:
-            filt = "Médias (" + " ".join(f"*{e}" for e in sorted(ALL_EXTS)) + ");;Tous les fichiers (*)"
-            chosen, _ = QFileDialog.getOpenFileNames(self, "Choisir des fichiers", start, filt)
-        elif clicked is b_dir:
-            d = QFileDialog.getExistingDirectory(self, "Choisir un dossier", start)
-            chosen = [d] if d else []
+        patterns = " ".join(f"*{e}" for e in sorted(ALL_EXTS))
+        chosen = choose_files(self, self.tr("Importer des fichiers"), start,
+                              media_filter(patterns))
         if chosen:
-            first = Path(chosen[0])
-            prefs.set("last_dir", str(first if first.is_dir() else first.parent))
+            prefs.set("last_dir", str(Path(chosen[0]).parent))
             self.open_paths(chosen)
+
+    def on_open_folder(self) -> None:
+        prefs = Preferences.instance()
+        start = str(prefs.get("last_dir", "") or "")
+        folder = choose_directory(self, self.tr("Importer un dossier"), start)
+        if folder:
+            prefs.set("last_dir", folder)
+            self.open_paths([folder])
 
     # ── Conversion ──────────────────────────────────────────────────────────
     def on_run(self) -> None:
@@ -500,8 +706,10 @@ class ConvertWindow(ModuleWindow):
             return
         if not self._locate_binaries(log=True) or self._ffmpeg is None or self._ffprobe is None:
             return
-        txt = self.out_field.path().strip()
-        out_dir = Path(txt) if txt else None
+        txt = self._out_dir.strip()
+        # Un chemin relatif saisi à la main serait refusé par les fichiers d'arguments ExifTool :
+        # on le fixe ici, une fois pour toutes, avant de lancer le worker.
+        out_dir = Path(os.path.abspath(os.path.expanduser(txt))) if txt else None
         if out_dir is None and any(i.root is None for i in self._items):
             self.log_panel.append_log("ERR", "Choisissez un dossier de sortie : il est obligatoire pour les "
                                              "fichiers ajoutés isolément.")
@@ -514,11 +722,13 @@ class ConvertWindow(ModuleWindow):
             exiftool = binaries.require("exiftool")
         except BinaryNotFoundError:
             exiftool = None
+        tree = self.codec_tree
         options = ConvertOptions(name_ext=self.chk_name_ext.isChecked(), takeout=self.chk_takeout.isChecked(),
-                                 low_priority=self.chk_low_priority.isChecked(),
-                                 memory_guard=self.chk_memory.isChecked())
+                                 skip_takeout_json=self.chk_skip_json.isChecked() and self.chk_skip_json.isEnabled(),
+                                 low_priority=tree.chk_low_priority.isChecked(),
+                                 memory_guard=tree.chk_memory.isChecked())
         worker = ConvertWorker(self._items, self._profiles(), out_dir, self._ffmpeg, self._ffprobe, encoders,
-                               parallel=int(self.spin_parallel.value()), options=options, exiftool=exiftool)
+                               parallel=int(tree.slider_parallel.value()), options=options, exiftool=exiftool)
         worker.job_updated.connect(self._on_job_updated)
         self.run_worker(worker, on_completed=lambda _r: self._after_worker(),
                         on_failed=lambda _m: self._after_worker(), on_cancelled=self._on_cancelled,
@@ -527,19 +737,37 @@ class ConvertWindow(ModuleWindow):
     def _on_job_updated(self, index: int, values: object) -> None:
         if not isinstance(values, dict) or not 0 <= index < len(self._items):
             return
+        row = self._view_row(index)
+        if row is None:
+            return                                      # ligne masquée par le filtre : rien à peindre
         upd: dict = {}
         if "state" in values:
-            upd["state"] = values["state"]
+            upd["state"] = STATE_TEXT.get(str(values["state"]), str(values["state"]))
             upd["_tag"] = state_tag(values["state"])
         if "progress" in values:
-            upd["progress"] = "" if values["progress"] is None else f"{values['progress']} %"
+            progress = values["progress"]
+            upd["progress"] = "" if progress is None else f"{progress} %"
+            try:
+                pct = int(progress) if progress is not None else None
+            except (TypeError, ValueError):
+                pct = None
+            if pct is not None and 0 <= pct <= 100:
+                # Le tableau donne l'avancement du fichier ; la barre de la barre
+                # d'actions suit la même valeur pour rester vivante pendant l'encodage.
+                if pct == 0:
+                    self.progress_bar.setRange(0, 0)
+                else:
+                    self.progress_bar.setRange(0, 100)
+                    self.progress_bar.setValue(pct)
+                self.progress_bar.show()
         if upd:
-            self.table.data_model.update_row(index, **upd)
+            self.table.data_model.update_row(row, **upd)
 
     def _on_cancelled(self) -> None:
         for i, row in enumerate(self.table.data_model.rows()):
             if row.get("state") == STATE_RUNNING:
-                self.table.data_model.update_row(i, state=STATE_CANCELLED, _tag=state_tag(STATE_CANCELLED))
+                self.table.data_model.update_row(i, state=STATE_TEXT.get(STATE_CANCELLED, STATE_CANCELLED),
+                                                 _tag=state_tag(STATE_CANCELLED))
         self._after_worker()
 
     # ── Fin de traitement ───────────────────────────────────────────────────
@@ -550,7 +778,8 @@ class ConvertWindow(ModuleWindow):
         if self.is_busy():
             QTimer.singleShot(100, self._drain_pending)
             return
-        self.set_run_enabled(self._bins_ok)
+        self._refresh_run_state()
+        self._sync_skip_json_enabled()               # le verrouillage a tout réactivé : on rétablit la dépendance
         if self._pending:
             paths = [p for lst in self._pending for p in lst]
             self._pending.clear()

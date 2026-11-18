@@ -74,6 +74,7 @@ class FileItem:
     width: int | None = None
     height: int | None = None
     digest: str = ""
+    similar_hash: int | None = None    # dHash 64 bits (images similaires uniquement)
     action: str = ACTION_KEEP
     duration: float | None = None      # secondes (vidéos des Live Photos)
 
@@ -192,7 +193,10 @@ def proposal(group: Group, strategy: Strategy | str, live_drop_video: bool = Fal
     if group.kind == KIND_MODIFIED:
         return {i: ACTION_KEEP for i in items}
     if group.kind == KIND_LIVE:
-        return {i: (ACTION_DELETE if live_drop_video and not i.protected and is_video_name(i.name)
+        # Une durée inconnue (ffprobe absent, fichier illisible) ne permet pas de distinguer une vraie
+        # Live Photo d'une vidéo longue : on ne propose alors jamais de supprimer la vidéo.
+        return {i: (ACTION_DELETE if (live_drop_video and i.duration is not None and i.duration > 0
+                                     and not i.protected and is_video_name(i.name))
                     else ACTION_KEEP) for i in items}
     strat = strategy_from_key(strategy)
     if any(i.protected for i in items):
@@ -227,8 +231,11 @@ def ensure_keeper(group: Group, strategy: Strategy | str = Strategy.A_FIRST) -> 
 # ── Corrections manuelles ─────────────────────────────────────────────
 
 def set_actions(group: Group, items: Iterable[FileItem], action: str) -> tuple[bool, str]:
-    """Change l'action de `items`. Refuse (False, message) si un dossier protégé est touché
-    ou si le groupe n'aurait plus aucun exemplaire gardé ; rien n'est modifié dans ce cas."""
+    """Change l'action de `items`. Refuse (False, message) si un dossier protégé est touché.
+
+    Un groupe peut être entièrement proposé à la suppression ; l'interface demande alors
+    une confirmation explicite au moment d'appliquer les modifications.
+    """
     chosen = [i for i in items if i in group.items]
     if not chosen:
         return False, "Aucun fichier à modifier."
@@ -236,8 +243,6 @@ def set_actions(group: Group, items: Iterable[FileItem], action: str) -> tuple[b
         protected = [i for i in chosen if i.protected]
         if protected:
             return False, f"Refusé : « {protected[0].name} » est dans un dossier protégé."
-        if not [i for i in group.items if i.action == ACTION_KEEP and i not in chosen]:
-            return False, "Refusé : un groupe doit garder au moins un exemplaire."
     elif action != ACTION_KEEP:
         return False, f"Action inconnue : {action}"
     for item in chosen:

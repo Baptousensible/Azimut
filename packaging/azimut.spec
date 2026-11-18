@@ -52,6 +52,18 @@ def _platform_tag() -> str:
 TAG = _platform_tag()
 VERSION = _version()
 
+# Les deux thèmes d'icônes sont des données d'exécution : un build incomplet ne doit pas partir.
+ANIMATED_DIR = ROOT / "azimut" / "resources" / "icons_animated"
+ANIMATED_SVGS = sorted(ANIMATED_DIR.glob("*.svg"))
+ANIMATED_LICENSE = ANIMATED_DIR / "LICENSE-lucide-animated.txt"
+THIRD_PARTY_NOTICE = ROOT / "THIRD_PARTY_NOTICES.md"
+if not ANIMATED_SVGS or not ANIMATED_LICENSE.is_file() or not THIRD_PARTY_NOTICE.is_file():
+    raise SystemExit(
+        "[azimut.spec] ERREUR : icônes animées, licence MIT ou THIRD_PARTY_NOTICES.md manquants. "
+        "Vérifiez azimut/resources/icons_animated/ avant de construire le paquet."
+    )
+print(f"[azimut.spec] {len(ANIMATED_SVGS)} icônes animées et leur licence MIT embarquées.")
+
 
 def _icon() -> str | None:
     name = {"win32": "azimut.ico", "darwin": "azimut.icns"}.get(sys.platform)
@@ -96,7 +108,7 @@ _QT_UNUSED = [
     "QtWebEngineCore", "QtWebEngineWidgets", "QtWebEngineQuick",
     "Qt3DCore", "Qt3DRender", "Qt3DInput", "Qt3DLogic", "Qt3DAnimation", "Qt3DExtras",
     "QtQml", "QtQuick", "QtQuickWidgets", "QtQuickControls2", "QtQuick3D",
-    "QtMultimedia", "QtMultimediaWidgets",
+    # « QtMultimedia » et « QtMultimediaWidgets » sont conservés : aperçu vidéo intégré de Tags.
     "QtCharts", "QtDataVisualization", "QtBluetooth", "QtNfc", "QtSensors", "QtSerialPort",
     "QtPdf", "QtPdfWidgets", "QtDesigner", "QtHelp", "QtTest", "QtSql",
     "QtLocation", "QtPositioning", "QtRemoteObjects", "QtScxml", "QtSpatialAudio",
@@ -117,7 +129,12 @@ for _pkg in ("pillow_heif", "send2trash", "rawpy", "psutil"):
     EXTRA_BINARIES += _b
     HIDDEN_IMPORTS += _h
 
-DATAS = [(str(ROOT / "azimut" / "resources"), "azimut/resources")] + _bundled_binaries() + EXTRA_DATAS
+# `resources` couvre Papicons et le dossier icons_animated vérifié plus haut (33 SVG + licence MIT).
+DATAS = [
+    (str(ROOT / "azimut" / "resources"), "azimut/resources"),
+    # Visible à la racine de toutes les distributions PyInstaller (Windows, macOS, AppImage…).
+    (str(THIRD_PARTY_NOTICE), "."),
+] + _bundled_binaries() + EXTRA_DATAS
 ICON = _icon()
 
 a = Analysis(
@@ -177,7 +194,9 @@ if sys.platform == "darwin":
             "CFBundleShortVersionString": VERSION,
             "CFBundleVersion": VERSION,
             "LSApplicationCategoryType": "public.app-category.utilities",
-            "LSMinimumSystemVersion": "12.0",
+            # AZ-C01 : la roue PySide6 6.12 est taguée macOS 14.0+ et Qt 6.12 cible 14.4. Annoncer 12.0 laissait
+            # installer l'application sur un système où elle ne s'ouvre pas, sans message.
+            "LSMinimumSystemVersion": "14.4",
             "NSHighResolutionCapable": True,
         },
     )

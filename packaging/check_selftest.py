@@ -14,6 +14,7 @@ Azimut gère ce cas (« encodeur indisponible »), mais le paquet serait moins c
 from __future__ import annotations
 
 import json
+import logging
 import subprocess
 import sys
 from pathlib import Path
@@ -21,6 +22,8 @@ from pathlib import Path
 # Encodeurs cités par azimut/modules/convert/profiles.py (AV1 : l'un OU l'autre).
 REQUIRED_ENCODERS = ("libx264", "aac", "libmp3lame", "libopus", "flac", "mjpeg", "libwebp")
 AV1_ENCODERS = ("libsvtav1", "libaom-av1")
+
+_log = logging.getLogger("check_selftest")
 
 
 def annotate(level: str, message: str) -> None:
@@ -31,8 +34,8 @@ def main(argv: list[str]) -> int:
     for stream in (sys.stdout, sys.stderr):      # console Windows en cp1252 : on force l'UTF-8
         try:
             stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, ValueError):
-            pass
+        except (AttributeError, ValueError) as exc:
+            _log.debug("Reconfiguration de la console ignorée : %s", exc)
     if len(argv) != 2:
         print(__doc__)
         return 2
@@ -70,7 +73,7 @@ def main(argv: list[str]) -> int:
     if ffmpeg.get("runs") and ffmpeg.get("path"):
         try:
             out = subprocess.run([ffmpeg["path"], "-hide_banner", "-encoders"],
-                                 capture_output=True, text=True, timeout=60).stdout
+                                 capture_output=True, text=True, timeout=60, check=False).stdout
             have = {line.split()[1] for line in out.splitlines() if len(line.split()) > 1}
             missing = [e for e in REQUIRED_ENCODERS if e not in have]
             if not any(e in have for e in AV1_ENCODERS):

@@ -12,7 +12,7 @@ log = get_logger(__name__)
 _PROG = "azimut-launcher"  # argv[0] factice : jamais un chemin existant
 
 AIDE = """Usage :
-  python main.py                       ouvre Atlas, le lanceur Azimut
+  python main.py                       ouvre Azimut
   python main.py <module> [chemins…]   lance directement un module
   python main.py --list                liste les modules disponibles
   python main.py --version             affiche la version
@@ -31,10 +31,10 @@ def _write(stream, text: str) -> None:
     except UnicodeEncodeError:
         try:
             stream.write(text.encode("ascii", "replace").decode("ascii") + "\n")
-        except (OSError, ValueError):
-            pass
-    except (OSError, ValueError):
-        pass
+        except (OSError, ValueError) as exc:
+            log.debug("Écriture de secours ignorée : %s", exc)
+    except (OSError, ValueError) as exc:
+        log.debug("Écriture console ignorée : %s", exc)
 
 
 def _cmd_list() -> int:
@@ -54,20 +54,17 @@ def _cmd_list() -> int:
 def _run_atlas() -> int:
     try:
         from azimut.launcher.atlas_window import AtlasWindow
-        from azimut.ui.app import create_app
+        from azimut.ui.app import create_app, shutdown_ui
 
         app = create_app([_PROG])
         window = AtlasWindow()
         window.show()
         code = int(app.exec())
-        window.close()
-        window.deleteLater()
-        app.processEvents()          # laisse Qt détruire la fenêtre avant l'application
-        del window
+        shutdown_ui(app, window)     # détruit réellement la fenêtre avant la fin de Python
         return code
     except Exception:
-        log.exception("Échec du démarrage d'Atlas")
-        _write(sys.stderr, "Erreur : Atlas n'a pas pu démarrer (voir le journal).")
+        log.exception("Échec du démarrage d'Azimut")
+        _write(sys.stderr, "Erreur : Azimut n'a pas pu démarrer (voir le journal).")
         return 1
 
 

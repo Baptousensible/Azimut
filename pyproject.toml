@@ -5,21 +5,57 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "azimut"
 dynamic = ["version"]
-description = "Azimut : suite d'utilitaires de bureau pour photos, vidéos, audio et JSON."
-requires-python = ">=3.10"
+description = "Azimut : suite d'utilitaires de bureau pour photos, vidéos et audio."
+requires-python = ">=3.11"
 dependencies = [
-    "PySide6>=6.6",
-    "Pillow>=10.0",
+    "PySide6-Essentials>=6.6,<6.13",
+    "PySide6-Addons>=6.6,<6.13",
+    "Pillow>=13.0.0",
 ]
 
 [tool.setuptools.dynamic]
 version = { attr = "azimut.__version__" }
 
+[tool.setuptools]
+# Les données de `resources/` partent aussi dans les archives source (sdist), pas seulement
+# dans les wheels : les icônes animées et leur licence doivent accompagner chaque distribution.
+include-package-data = true
+
 [tool.setuptools.packages.find]
 include = ["azimut*"]
 
 [tool.setuptools.package-data]
-azimut = ["resources/icons/*.svg", "resources/icons/*.txt"]
+azimut = [
+    "resources/icons/*.svg", "resources/icons/*.txt",
+    "resources/icons_animated/*.svg", "resources/icons_animated/*.txt",
+    "resources/icons_animated/*.md",
+    "resources/*.png",
+    "resources/fonts/*.ttf", "resources/fonts/*.txt",
+    "resources/translations/*.qm", "resources/translations/*.ts",
+]
+
+# Documentation et mentions de licences également livrées par `pip install`.
+[tool.setuptools.data-files]
+"share/doc/azimut" = ["README.md", "THIRD_PARTY_NOTICES.md"]
+
+[tool.ruff]
+target-version = "py311"                     # aligné sur requires-python = ">=3.11"
+
+[tool.ruff.lint]
+select = [
+    "F",        # pyflakes : F821 nom indéfini, F401 import mort, F841 variable inutilisée
+    "E4", "E9", # imports/IO et erreurs réelles (pas E5 ni E7 : pas de reformatage)
+    "B",        # bugbear : B905 zip() sans strict, B007 boucle, etc.
+    "PLW1510",  # subprocess.run sans check explicite
+    "S110",     # except …: pass silencieux — le cœur de LINT-001
+]
+ignore = ["B008"]                            # Qt : parent=QModelIndex() en argument par défaut
+
+[tool.ruff.lint.flake8-bandit]
+check-typed-exception = true                 # sinon S110 ne voit que 3 des 56 except: pass
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLW1510"]                     # codes de sortie volontairement ignorés
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

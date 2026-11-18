@@ -148,7 +148,7 @@ def test_history_filter_by_module():
     for i, m in enumerate(["convert", "tags", "convert", "dedup"]):
         hs.add(_e(m, i))
     assert [r.summary for r in hs.recent(module="convert")] == ["résumé 2", "résumé 0"]
-    assert hs.recent(module="press") == []
+    assert hs.recent(module="json") == []
     assert len(hs.recent()) == 4
 
 

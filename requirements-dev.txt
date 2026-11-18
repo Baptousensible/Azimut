@@ -1,2 +1,3 @@
 pytest>=8
-pyinstaller>=6.6
+ruff>=0.17,<0.18      # lint : `python -m ruff check azimut tests` (règles dans pyproject.toml)
+# PyInstaller est déjà déclaré dans requirements-build.txt (évite deux versions résolues).

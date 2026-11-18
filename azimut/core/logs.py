@@ -12,9 +12,11 @@ _FORMAT = "%(asctime)s %(levelname)s %(name)s %(message)s"
 _MARK = "_azimut_file_handler"
 _ROOT_NAME = "azimut"
 
+_log = logging.getLogger("azimut.logs")
+
 
 def setup_logging(level: int = logging.INFO) -> Path:
-    """Configure le journal ``azimut.log`` (idempotent). Renvoie le chemin du fichier."""
+    """Configure le journal ``azimut.log`` (idempotent, permissions 0600). Renvoie le chemin du fichier."""
     path = user_log_dir() / "azimut.log"
     logger = logging.getLogger(_ROOT_NAME)
     logger.setLevel(level)
@@ -26,9 +28,18 @@ def setup_logging(level: int = logging.INFO) -> Path:
             logger.removeHandler(handler)        # autre fichier (ex. dossiers changés) : on remplace
             handler.close()
     try:
+        os.makedirs(path.parent, exist_ok=True)
+        os.chmod(path.parent, 0o700)             # dossier privé (chemins et noms de fichiers personnels)
+    except OSError as exc:
+        _log.debug("Dossier de journaux non préparé (%s) : %s", path.parent, exc)
+    try:
         handler = RotatingFileHandler(path, maxBytes=1_000_000, backupCount=3, encoding="utf-8")
     except OSError:
         return path                              # journal fichier indisponible : on continue sans
+    try:
+        os.chmod(path, 0o600)                    # lisible par le seul utilisateur (AZ-011)
+    except OSError as exc:
+        _log.debug("Permissions du journal non posées (%s) : %s", path, exc)
     handler.setFormatter(logging.Formatter(_FORMAT))
     setattr(handler, _MARK, True)
     logger.addHandler(handler)

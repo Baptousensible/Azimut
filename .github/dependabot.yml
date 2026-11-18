@@ -1,0 +1,17 @@
+# Mises à jour automatisées des dépendances Python et des actions GitHub.
+# Les actions sont épinglées par SHA : Dependabot propose le SHA et le tag correspondants.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "security"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "ci"]

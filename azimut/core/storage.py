@@ -82,8 +82,8 @@ class LocalJsonStorage(StorageBackend):
         with self._lock:
             try:
                 path.unlink()
-            except FileNotFoundError:
-                pass
+            except FileNotFoundError as exc:
+                _log.debug("Document déjà absent (%s) : %s", path, exc)
             except OSError as e:
                 _log.warning("Suppression impossible (%s) : %s", path, e)
 

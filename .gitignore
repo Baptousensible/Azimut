@@ -31,3 +31,19 @@ bin/*/
 Thumbs.db
 release/
 selftest*.json
+
+# Fichiers d'outillage personnel — ne jamais livrer (AZ-008)
+rapport.json
+.cloud-attachments/
+.freebuff/
+*.local.json
+azimut.zip
+
+# Roues Python déposées par erreur à la racine (AZ-H03)
+*.whl
+
+# Rapports d'audit générés localement (lot 0 : collecter_rapports_locaux.sh)
+rapports_locaux/
+
+# Captures de mise au point (ne jamais versionner)
+_probe_*.png

@@ -12,6 +12,7 @@ python -m nuitka main.py \
   --enable-plugin=pyside6 \
   --include-package=azimut \
   --include-data-dir=azimut/resources=azimut/resources \
+  --include-data-file=THIRD_PARTY_NOTICES.md=THIRD_PARTY_NOTICES.md \
   --include-data-dir=bin/linux-x64=bin/linux-x64 \
   --output-dir=dist-nuitka \
   --output-filename=Azimut

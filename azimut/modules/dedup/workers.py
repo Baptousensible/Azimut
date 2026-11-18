@@ -58,13 +58,13 @@ class ApplyWorker(BaseWorker):
     def do_work(self) -> ApplyReport:
         hooks = Hooks(cancel=self.is_cancelled, log=self.emit_log,
                       progress=self.emit_progress, status=self.emit_status)
-        self.emit_status("Application des suppressions…")
+        self.emit_status(self.tr("Application des suppressions…"))
         report = actions.apply_groups(self.groups, self.options, hooks)
         self.report = report
         self.ok_count = report.moved
         self.error_count = report.errors + len(report.skipped)
-        self.summary = (f"{report.moved} fichier(s) traité(s), {len(report.skipped)} ignoré(s), "
-                        f"{report.errors} erreur(s)")
+        self.summary = self.tr("{moved} fichier(s) traité(s), {skipped} ignoré(s), {errors} erreur(s)").format(
+            moved=report.moved, skipped=len(report.skipped), errors=report.errors)
         if report.cancelled:
             raise CancelledError()
         return report
@@ -73,9 +73,10 @@ class ApplyWorker(BaseWorker):
 class UndoWorker(BaseWorker):
     """Relit un journal.csv et remet les fichiers à leur place. `completed` transmet un UndoReport."""
 
-    def __init__(self, journal: Path, parent: QObject | None = None) -> None:
+    def __init__(self, journal: Path, parent: QObject | None = None, *, allow_foreign: bool = False) -> None:
         super().__init__(parent)
         self.journal = Path(journal)
+        self._allow_foreign = allow_foreign      # journal sans racines connues : confirmé par l'utilisateur
         self.report: UndoReport | None = None
         self.ok_count = 0
         self.error_count = 0
@@ -84,13 +85,14 @@ class UndoWorker(BaseWorker):
     def do_work(self) -> UndoReport:
         hooks = Hooks(cancel=self.is_cancelled, log=self.emit_log,
                       progress=self.emit_progress, status=self.emit_status)
-        self.emit_status("Restauration depuis le journal…")
-        report = actions.undo_journal(self.journal, hooks)
+        self.emit_status(self.tr("Restauration depuis le journal…"))
+        report = actions.undo_journal(self.journal, hooks, allow_foreign=self._allow_foreign)
         self.report = report
         self.ok_count = report.restored
         self.error_count = report.errors
-        self.summary = (f"{report.restored} fichier(s) restauré(s), {report.skipped} ignoré(s), "
-                        f"{report.errors} erreur(s)")
+        self.summary = self.tr("{restored} fichier(s) restauré(s), {skipped} ignoré(s), "
+                               "{errors} erreur(s)").format(
+            restored=report.restored, skipped=report.skipped, errors=report.errors)
         if report.cancelled:
             raise CancelledError()
         return report
