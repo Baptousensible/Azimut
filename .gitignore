@@ -47,3 +47,9 @@ rapports_locaux/
 
 # Captures de mise au point (ne jamais versionner)
 _probe_*.png
+
+# Icônes dérivées : régénérées par packaging/make_icons.py à chaque construction
+# (étape « Icônes » du workflow, avant PyInstaller).
+packaging/azimut.png
+packaging/azimut.ico
+packaging/azimut.icns
