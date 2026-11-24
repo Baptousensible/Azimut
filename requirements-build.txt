@@ -3,6 +3,6 @@
 Pillow>=13.0.0        # écriture AVIF ; plus aucune version concernée par les avis connus
 pillow-heif>=1.8      # HEIC / HEIF (1.3.0 corrige l'avis du plancher 0.16)
 send2trash>=1.8       # corbeille système
-rawpy>=0.19           # lecture des RAW (NEF, CR2, DNG…) par Azimut Convert ; embarque libraw
+rawpy>=0.28.0           # lecture des RAW (NEF, CR2, DNG…) par Azimut Convert ; embarque libraw
 psutil>=5.9           # garde-fou mémoire d'Azimut Convert (repli sans lui : /proc ou API Windows)
 pyinstaller>=6.6
