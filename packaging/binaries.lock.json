@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-11-18",
+  "generated_at": "2026-11-24",
   "generator": "python packaging/fetch_binaries.py --update-lock",
   "exiftool_version": "13.64",
   "ffmpeg_branch": "n9.0",
@@ -25,8 +25,8 @@
       "url_immutable": false,
       "note": "Aucun chemin versionné connu ; l'empreinte seule garantit l'identité.",
       "filename": "ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz",
-      "sha256": "2abd12d67768431d44d9e4ada0e21b0d03efacbfc1044f3991a0c8b7f0dcc856",
-      "size": 153903980,
+      "sha256": "d7c47f73cf9f4eab46dc387b9aaef263ec56c3728d9dc783b713406bf2292766",
+      "size": 154011384,
       "magic": "xz"
     },
     {
@@ -62,8 +62,8 @@
       "url_immutable": false,
       "note": "Aucun chemin versionné connu ; l'empreinte seule garantit l'identité.",
       "filename": "ffmpeg.zip",
-      "sha256": "c8ed4c4e6978a03c485edbfe4e0a5dc2380f8a30bba5150531b31b094492d924",
-      "size": 28395699,
+      "sha256": "1f66e9a690a7f1c9e60b012379f8869c11818d1797f45b21dbb2f2564ba61ae1",
+      "size": 28623086,
       "magic": "zip"
     },
     {
@@ -75,8 +75,8 @@
       "url_immutable": false,
       "note": "Aucun chemin versionné connu ; l'empreinte seule garantit l'identité.",
       "filename": "ffprobe.zip",
-      "sha256": "fcbe839537485eaee7a7a8bc5cbc0f90d53617e80943e8a5b2e31cb851197ea6",
-      "size": 28317701,
+      "sha256": "6ef2df5f575042923a28537ab37adf936f28bf3e7b85de23a1447ed447ec1dbd",
+      "size": 28541295,
       "magic": "zip"
     },
     {
@@ -112,8 +112,8 @@
       "url_immutable": false,
       "note": "Aucun chemin versionné connu ; l'empreinte seule garantit l'identité.",
       "filename": "ffmpeg.zip",
-      "sha256": "7c6b4125b191cbf773832dc51f424cf2b6bb7da43007d1e066f95909e47cacd4",
-      "size": 33816391,
+      "sha256": "35b3d82cccc2c1d644d49d15f5e57eb913a08ef68f798042c90eecec62c51f1e",
+      "size": 34064287,
       "magic": "zip"
     },
     {
@@ -125,8 +125,8 @@
       "url_immutable": false,
       "note": "Aucun chemin versionné connu ; l'empreinte seule garantit l'identité.",
       "filename": "ffprobe.zip",
-      "sha256": "2322438ed2f6319a691291b247d09c69dcaa3a982460d1f269a7e1af335cfdfd",
-      "size": 33719233,
+      "sha256": "41ca7b7cba7992e33f1da3f1bf54db8ec103a4d387b1bfac3162062e8b1074ad",
+      "size": 33959464,
       "magic": "zip"
     },
     {
@@ -162,8 +162,8 @@
       "url_immutable": false,
       "note": "Aucun chemin versionné connu ; l'empreinte seule garantit l'identité.",
       "filename": "ffmpeg-n9.0-latest-win64-gpl-9.0.zip",
-      "sha256": "2d6b258b36d699dc1da71ca8a065e5f9831006aadeb88ae4e12bab0679677b3d",
-      "size": 198317075,
+      "sha256": "b2e8f18d97c6c8f9031b6586c756b80e148d5605503a36a0fa1ab1edfae427fb",
+      "size": 198318400,
       "magic": "zip"
     }
   ]
