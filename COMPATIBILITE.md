@@ -136,11 +136,13 @@ Le paquet n'est pas signé et l'UPX est désactivé (bon choix). SmartScreen aff
 exécutable PyInstaller non signé. C'est documenté dans `RELEASING.md` ; un certificat de
 signature reste la seule correction durable.
 
-**W5 — Écrans à échelle différente (priorité moyenne).**
-`azimut/ui/icons.py:52` calcule le facteur HiDPI avec `QGuiApplication.primaryScreen()`
-uniquement, et met le résultat en cache. Sur un portable 150 % relié à un écran 100 %, les
-icônes du second écran sont rendues à la mauvaise échelle (floues ou trop grandes), et le
-changement d'écran ne vide pas le cache.
+**W5 — Écrans à échelle différente (corrigé).**
+`azimut/ui/icons.py` prenait le facteur HiDPI sur `QGuiApplication.primaryScreen()` uniquement,
+résultat mis en cache. Désormais `_active_screen()` lit l'écran de la fenêtre active (la primaire
+ne sert que de repli), le cache de rendu est indexé par densité, et un objet Qt déjà détruit est
+ignoré. Sur un portable 150 % relié à un écran 100 %, chaque écran est donc rendu à sa propre
+échelle. Le zoom suit le même principe : mémorisé par écran (nom + facteur d'échelle, clé
+`zoom_by_screen`), il est réévalué quand la fenêtre change d'écran.
 
 **W6 — CLI silencieuse dans le paquet (priorité moyenne).**
 `console=False` dans `packaging/azimut.spec` : `Azimut.exe --list`, `--version` et `--help` n'écrivent
@@ -421,7 +423,7 @@ plafonne de la même façon.
 | AZ-C05 | P1 | AppImage exclut RHEL 9 / Debian 11 | CI `ubuntu-22.04` | Build `manylinux_2_34`, ou Flatpak |
 | AZ-C06 | ~~P1~~ | Aperçu PDF : QtPdf absent du paquet, rendu assuré par poppler/Ghostscript/ImageMagick | `azimut/ui/widgets.py` (`_render_pdf_external`) | Corrigé ; déclarer un moteur système dans les dépendances du paquet |
 | AZ-C07 | P1 | Chemins > 260 caractères sous Windows | `packaging/azimut.spec` (manifeste) | Vérifier `longPathAware`, documenter la stratégie, tester 300 caractères |
-| AZ-C08 | P2 | Icônes HiDPI calculées sur l'écran principal seulement | `azimut/ui/icons.py:52` | Facteur de l'écran du widget, ou maximum des écrans |
+| AZ-C08 | P2 | Icônes HiDPI calculées sur l'écran principal seulement | `azimut/ui/icons.py` (`_device_pixel_ratio`) | Facteur de l'écran du widget, ou maximum des écrans — **Corrigé : `_active_screen()`, écran de la fenêtre active, primaire en repli** |
 | AZ-C09 | P2 | Taille de police fixe 10 pt, ignore l'échelle système | `azimut/ui/theme.py:20,350` | Partir de `app.font().pointSizeF()` et appliquer le zoom |
 | AZ-C10 | P2 | NFC/NFD non normalisé dans Takeout/Dedup | `azimut/modules/takeout/engine.py` (`DirIndex`) | Normaliser en NFC toutes les clés de noms — **Corrigé : `name_key()` (NFC + minuscules) dans `DirIndex`** |
 | AZ-C11 | P2 | Casse ignorée à tort sous macOS | `azimut/modules/convert/engine.py` (`path_key`) | `casefold()` sur `darwin` |

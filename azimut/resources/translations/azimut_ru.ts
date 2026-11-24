@@ -40,220 +40,208 @@
 <context>
     <name>AtlasWindow</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1218"/>
-        <location filename="../../launcher/atlas_window.py" line="1410"/>
-        <location filename="../../launcher/atlas_window.py" line="1466"/>
+        <location filename="../../launcher/atlas_window.py" line="1260"/>
+        <location filename="../../launcher/atlas_window.py" line="1463"/>
+        <location filename="../../launcher/atlas_window.py" line="1519"/>
         <source>Azimut</source>
         <translation>Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1291"/>
+        <location filename="../../launcher/atlas_window.py" line="1344"/>
         <source>Ouvrez un module, ou déposez-y des fichiers ou des dossiers.</source>
         <translation>Откройте модуль или перетащите в него файлы или папки.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1345"/>
-        <location filename="../../launcher/atlas_window.py" line="1486"/>
+        <location filename="../../launcher/atlas_window.py" line="1398"/>
+        <location filename="../../launcher/atlas_window.py" line="1539"/>
         <source>Tous les outils</source>
         <translation>Все инструменты</translation>
     </message>
     <message>
-        <source>Le recueil des utilitaires Azimut</source>
-        <translation type="vanished">Инструментальная коробка Azimut</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1421"/>
+        <location filename="../../launcher/atlas_window.py" line="1474"/>
         <source>Version {version}</source>
         <translation>Версия {version}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1669"/>
+        <location filename="../../launcher/atlas_window.py" line="1729"/>
         <source>Conseils</source>
         <translation>Советы</translation>
     </message>
     <message>
-        <source>L&apos;ordre conseillé pour traiter un export Google Photos.</source>
-        <translation type="vanished">Рекомендуемый порядок обработки экспорта Google Фото.</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">Тема</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1470"/>
-        <location filename="../../launcher/atlas_window.py" line="1664"/>
+        <location filename="../../launcher/atlas_window.py" line="1523"/>
+        <location filename="../../launcher/atlas_window.py" line="1724"/>
         <source>Préférences…</source>
         <translation>Настройки…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Outils</source>
         <translation>Инструменты</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Afficher les outils Azimut</source>
         <translation>Показать инструменты Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1488"/>
-        <location filename="../../launcher/atlas_window.py" line="1667"/>
+        <location filename="../../launcher/atlas_window.py" line="1541"/>
+        <location filename="../../launcher/atlas_window.py" line="1727"/>
         <source>Journaux et historique</source>
         <translation>Журналы и история</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1074"/>
+        <location filename="../../launcher/atlas_window.py" line="1100"/>
         <source>Ce module n&apos;a pas pu être chargé.</source>
         <translation>Не удалось загрузить этот модуль.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1341"/>
+        <location filename="../../launcher/atlas_window.py" line="1394"/>
         <source>Maj+clic ou Maj+flèches : sélectionner plusieurs onglets. Suppr : fermer l&apos;onglet actif ou la sélection. Glissez un onglet sélectionné pour déplacer le groupe.</source>
         <translation>Shift+щелчок или Shift+стрелки: выбор нескольких вкладок. Удалить: закрыть активную вкладку или выделение. Перетащите выбранную вкладку, чтобы переместить группу.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1419"/>
+        <location filename="../../launcher/atlas_window.py" line="1472"/>
         <source>Le couteau suisse pour convertir, dédoublonner et ranger vos médias</source>
         <translation>Швейцарский армейский нож для конвертации, дедупликации и хранения ваших медиафайлов.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1467"/>
-        <location filename="../../launcher/atlas_window.py" line="1529"/>
+        <location filename="../../launcher/atlas_window.py" line="1520"/>
+        <location filename="../../launcher/atlas_window.py" line="1582"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Об Азимуте</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1475"/>
+        <location filename="../../launcher/atlas_window.py" line="1528"/>
         <source>Quitter</source>
         <translation>Уйти</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1480"/>
+        <location filename="../../launcher/atlas_window.py" line="1533"/>
         <source>Fichier</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1481"/>
+        <location filename="../../launcher/atlas_window.py" line="1534"/>
         <source>Fermer la fenêtre</source>
         <translation>Закрыть окно</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1485"/>
+        <location filename="../../launcher/atlas_window.py" line="1538"/>
         <source>Présentation</source>
         <translation>Презентация</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1491"/>
+        <location filename="../../launcher/atlas_window.py" line="1544"/>
         <source>Navigation dans l&apos;en-tête</source>
         <translation>Навигация по заголовку</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1495"/>
+        <location filename="../../launcher/atlas_window.py" line="1548"/>
         <source>Regroupe « Outils » et « Journaux et historique » dans la barre supérieure. Décochez pour revenir à l&apos;agencement précédent.</source>
         <translation>Группы «Инструменты» и «Журналы и история» в верхней панели. Снимите флажок, чтобы вернуться к предыдущему макету.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1500"/>
+        <location filename="../../launcher/atlas_window.py" line="1553"/>
         <source>Conseils de démarrage…</source>
         <translation>Советы по началу работы…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1502"/>
+        <location filename="../../launcher/atlas_window.py" line="1555"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Переключение между темной и светлой темой</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1506"/>
+        <location filename="../../launcher/atlas_window.py" line="1559"/>
         <source>Agrandir le texte</source>
         <translation>Увеличить текст</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1509"/>
+        <location filename="../../launcher/atlas_window.py" line="1562"/>
         <source>Réduire le texte</source>
         <translation>Уменьшить текст</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1513"/>
+        <location filename="../../launcher/atlas_window.py" line="1566"/>
         <source>Fenêtre</source>
         <translation>Окно</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1514"/>
+        <location filename="../../launcher/atlas_window.py" line="1567"/>
         <source>Réduire</source>
         <translation>Уменьшать</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1517"/>
+        <location filename="../../launcher/atlas_window.py" line="1570"/>
         <source>Zoom</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1521"/>
+        <location filename="../../launcher/atlas_window.py" line="1574"/>
         <source>Aide</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1522"/>
+        <location filename="../../launcher/atlas_window.py" line="1575"/>
         <source>Conseils de démarrage</source>
         <translation>Советы по началу работы</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1527"/>
+        <location filename="../../launcher/atlas_window.py" line="1580"/>
         <source>Le couteau suisse de vos médias.</source>
         <translation>Швейцарский армейский нож для ваших медиафайлов.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1655"/>
+        <location filename="../../launcher/atlas_window.py" line="1715"/>
         <source>Navigation d&apos;Azimut</source>
         <translation>Азимутальная навигация</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1668"/>
+        <location filename="../../launcher/atlas_window.py" line="1728"/>
         <source>Afficher l&apos;historique, le journal et les binaires</source>
         <translation>Показать историю, журнал и двоичные файлы</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1670"/>
+        <location filename="../../launcher/atlas_window.py" line="1730"/>
         <source>Afficher l&apos;ordre conseillé pour traiter un export Google Photos</source>
         <translation>Показать рекомендуемый порядок обработки экспорта Google Фото.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1672"/>
+        <location filename="../../launcher/atlas_window.py" line="1732"/>
         <source>Apparence, langue et outils externes</source>
         <translation>Внешний вид, язык и внешние инструменты</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1863"/>
+        <location filename="../../launcher/atlas_window.py" line="1923"/>
         <source>Aucun module disponible.</source>
         <translation>Модули недоступны.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2081"/>
+        <location filename="../../launcher/atlas_window.py" line="2157"/>
         <source>Binaire(s) requis introuvable(s) : {list}. Indiquez leur chemin dans « Préférences… » ou déposez-les dans le dossier bin/.</source>
         <translation>Не найден(ы) требуемый(е) бинарный(е) файл(ы): {list}. Установите их путь в «Настройки…» или поместите их в папку bin/.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2104"/>
+        <location filename="../../launcher/atlas_window.py" line="2180"/>
         <source>Merci !</source>
         <translation>СПАСИБО !</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2273"/>
+        <location filename="../../launcher/atlas_window.py" line="2361"/>
         <source>Fermer les {count} onglets sélectionnés</source>
         <translation>Закрыть выбранные вкладки: {count}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2275"/>
+        <location filename="../../launcher/atlas_window.py" line="2363"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Закрыть вкладку</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2285"/>
+        <location filename="../../launcher/atlas_window.py" line="2373"/>
         <source>{count} onglets sélectionnés — glissez pour les déplacer, Suppr pour les fermer.</source>
         <translation>Выбрано вкладок: {count} — перетащите, чтобы переместить их, или «Удалить», чтобы закрыть.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2407"/>
+        <location filename="../../launcher/atlas_window.py" line="2495"/>
         <source>Impossible d&apos;ouvrir {name}.
 
 {message}</source>
@@ -262,54 +250,54 @@
 {message}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2442"/>
+        <location filename="../../launcher/atlas_window.py" line="2530"/>
         <source>Les fichiers n&apos;ont pas pu être transmis au module.</source>
         <translation>Файлы не удалось передать в модуль.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2548"/>
+        <location filename="../../launcher/atlas_window.py" line="2636"/>
         <source>Relance impossible</source>
         <translation>Не удалось перезапустить</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2549"/>
+        <location filename="../../launcher/atlas_window.py" line="2637"/>
         <source>Azimut n&apos;a pas pu être relancé automatiquement. Fermez puis rouvrez l&apos;application.</source>
         <translation>Azimut не удалось перезапустить автоматически. Закройте и снова откройте приложение.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2569"/>
+        <location filename="../../launcher/atlas_window.py" line="2657"/>
         <source>Traitements en cours</source>
         <translation>Задачи в процессе</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2570"/>
+        <location filename="../../launcher/atlas_window.py" line="2658"/>
         <source>Traitement en cours dans :
 {modules}</source>
         <translation>Работает в:
 {modules}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2573"/>
+        <location filename="../../launcher/atlas_window.py" line="2661"/>
         <source>Fermer ces onglets interrompra les traitements en cours.</source>
         <translation>Закрытие этих вкладок прервет текущую обработку.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2575"/>
+        <location filename="../../launcher/atlas_window.py" line="2663"/>
         <source>Fermer cet onglet interrompra le traitement en cours.</source>
         <translation>Закрытие этой вкладки остановит выполняемую задачу.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2577"/>
+        <location filename="../../launcher/atlas_window.py" line="2665"/>
         <source>Fermer Azimut interrompra les traitements en cours.</source>
         <translation>Закрытие Azimut остановит выполняющиеся задачи.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2579"/>
+        <location filename="../../launcher/atlas_window.py" line="2667"/>
         <source>Fermer quand même</source>
         <translation>Все равно закрой</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2580"/>
+        <location filename="../../launcher/atlas_window.py" line="2668"/>
         <source>Annuler</source>
         <translation>Отмена</translation>
     </message>
@@ -368,34 +356,79 @@
 <context>
     <name>CodecPanel</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="265"/>
+        <location filename="../../modules/convert/codec_tree.py" line="264"/>
+        <source>GPU : plus rapide et libère le processeur, mais à qualité égale le fichier est souvent plus gros. CPU : plus lent, fichiers plus compacts.</source>
+        <translation>GPU: быстрее и освобождает процессор, но при том же качестве файл часто больше. CPU: медленнее, файлы компактнее.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="311"/>
         <source>Rétablir</source>
         <translation>Восстановить</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="267"/>
+        <location filename="../../modules/convert/codec_tree.py" line="313"/>
         <source>Remet les curseurs de ce codec à leurs valeurs de départ.</source>
         <translation>Возвращает ползунки этого кодека в исходные значения.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="353"/>
+        <location filename="../../modules/convert/codec_tree.py" line="396"/>
+        <source>Parallélisme automatique (recommandé)</source>
+        <translation>Автоматический параллелизм (рекомендуется)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="398"/>
+        <source>Répartit les fichiers selon les cœurs disponibles et le réglage Threads : les copies et les images avancent ensemble ; deux vidéos peuvent avancer si le codec choisi est accéléré par le GPU (NVENC, QSV, VA-API), une seule avec un encodeur processeur, qui utilise déjà tous les cœurs et beaucoup de mémoire. Décochez pour régler chaque famille à la main.</source>
+        <translation>Распределяет файлы по доступным ядрам и настройке «Потоки»: копии и изображения идут вместе; два видео могут идти одновременно, если выбранный кодек ускоряется GPU (NVENC, QSV, VA-API), и только одно — с кодировщиком CPU, который уже использует все ядра и много памяти. Снимите флажок, чтобы настроить каждую группу вручную.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="403"/>
+        <source>Fichiers image convertis en même temps. Chaque encodage utilise le nombre de threads choisi ci-dessus.</source>
+        <translation>Файлы изображений, конвертируемые одновременно. Каждое кодирование использует выбранное выше число потоков.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="405"/>
+        <source>Fichiers audio convertis en même temps : les encodeurs audio sont presque mono-thread, un peu de parallélisme aide.</source>
+        <translation>Аудиофайлы, конвертируемые одновременно: аудиокодировщики почти однопоточные, немного параллелизма помогает.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="407"/>
+        <source>Vidéos encodées en même temps. Au-delà de 1, chaque encodeur doit partager les threads et la mémoire : à réserver aux machines puissantes.</source>
+        <translation>Видео, кодируемые одновременно. Больше 1 — каждому кодировщику придётся делить потоки и память: только для мощных машин.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="410"/>
+        <source>Fichiers copiés en même temps (déjà au bon format, documents, JSON…). Cette étape est limitée par le disque, pas par le processeur.</source>
+        <translation>Копируемые одновременно файлы (уже в нужном формате, документы, JSON…). Этот шаг ограничен диском, а не процессором.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="414"/>
         <source>Priorité basse (garde l&apos;ordinateur réactif)</source>
         <translation>Низкий приоритет (обеспечивает отзывчивость компьютера)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="355"/>
+        <location filename="../../modules/convert/codec_tree.py" line="416"/>
         <source>Les processus FFmpeg sont alors lancés avec une priorité réduite : la conversion peut être un peu plus lente, mais les autres applications restent réactives.</source>
         <translation>Затем процессы FFmpeg запускаются с пониженным приоритетом: преобразование может происходить немного медленнее, но другие приложения остаются отзывчивыми.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="357"/>
+        <location filename="../../modules/convert/codec_tree.py" line="418"/>
         <source>Attendre si la mémoire est saturée</source>
         <translation>Подождите, если память заполнена</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="359"/>
+        <location filename="../../modules/convert/codec_tree.py" line="420"/>
         <source>Avant chaque fichier, la conversion attend si la RAM utilisée atteint 75 % ou si la mémoire disponible tombe sous 20 %. Elle réessaie toutes les 2 secondes et s&apos;interrompt si vous annulez. Sans cette case, les fichiers s&apos;enchaînent même sous pression : ralentissement général, swap et risque d&apos;échec par manque de mémoire.</source>
         <translation>Перед каждым файлом преобразование ожидает, если используемая оперативная память достигает 75% или доступная память падает ниже 20%. Он повторяет попытку каждые 2 секунды и приостанавливает работу, если вы отмените ее. Без этого ящика файлы следуют друг за другом даже под давлением: общая тормозимость, подкачка и риск сбоя из-за нехватки памяти.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="436"/>
+        <source>Chaque fichier utilise le réglage Threads ci-dessus : en manuel, gardez « fichiers simultanés × threads » dans la limite des cœurs de la machine.</source>
+        <translation>Каждый файл использует настройку «Потоки» выше: в ручном режиме держите «одновременные файлы × потоки» в пределах числа ядер машины.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="526"/>
+        <source>Conversion GPU : plus rapide, mais à qualité visuelle égale le fichier est souvent plus gros qu&apos;avec un encodeur CPU.</source>
+        <translation>Конвертация на GPU: быстрее, но при том же визуальном качестве файл часто больше, чем с кодировщиком CPU.</translation>
     </message>
 </context>
 <context>
@@ -419,27 +452,27 @@
 <context>
     <name>ConvertNotification</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="52"/>
+        <location filename="../../modules/convert/workers.py" line="60"/>
         <source>{count} fichier(s) traité(s)</source>
         <translation>Обработано файлов: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="53"/>
+        <location filename="../../modules/convert/workers.py" line="61"/>
         <source>{count} erreur(s)</source>
         <translation>Ошибок: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="57"/>
+        <location filename="../../modules/convert/workers.py" line="65"/>
         <source>{count} ignoré(s)</source>
         <translation>Пропущено: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="60"/>
+        <location filename="../../modules/convert/workers.py" line="68"/>
         <source>{count} sortie(s) manquante(s)</source>
         <translation>Отсутствующих результатов: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="63"/>
+        <location filename="../../modules/convert/workers.py" line="71"/>
         <source>gain {size}</source>
         <translation>выигрыш {size}</translation>
     </message>
@@ -447,275 +480,320 @@
 <context>
     <name>ConvertWindow</name>
     <message>
-        <location filename="../../modules/convert/window.py" line="40"/>
+        <location filename="../../modules/convert/window.py" line="43"/>
         <source>Fichier</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="41"/>
+        <location filename="../../modules/convert/window.py" line="44"/>
         <source>Type</source>
         <translation>Добрый</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="42"/>
+        <location filename="../../modules/convert/window.py" line="45"/>
         <source>Taille</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="43"/>
+        <location filename="../../modules/convert/window.py" line="46"/>
         <source>Format et qualité</source>
         <translation>Формат и качество</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="44"/>
+        <location filename="../../modules/convert/window.py" line="47"/>
         <source>État</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="45"/>
+        <location filename="../../modules/convert/window.py" line="48"/>
         <source>Progression</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="49"/>
+        <location filename="../../modules/convert/window.py" line="52"/>
         <source>Tous</source>
         <translation>Все</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="50"/>
+        <location filename="../../modules/convert/window.py" line="53"/>
         <source>Images</source>
-        <translation>Картинки</translation>
+        <translation>Изображения</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="51"/>
+        <location filename="../../modules/convert/window.py" line="54"/>
         <source>Vidéos</source>
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="52"/>
+        <location filename="../../modules/convert/window.py" line="55"/>
         <source>Audios</source>
-        <translation>Аудиозаписи</translation>
+        <translation>Аудио</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="53"/>
+        <location filename="../../modules/convert/window.py" line="56"/>
         <source>Fichiers volumineux</source>
         <translation>Большие файлы</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="69"/>
+        <location filename="../../modules/convert/window.py" line="74"/>
         <source>Image</source>
         <translation>Картина</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="70"/>
+        <location filename="../../modules/convert/window.py" line="75"/>
         <source>Vidéo</source>
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="71"/>
+        <location filename="../../modules/convert/window.py" line="76"/>
         <source>Audio</source>
         <translation>Аудио</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="72"/>
+        <location filename="../../modules/convert/window.py" line="77"/>
         <source>Autre</source>
         <translation>Другой</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="75"/>
+        <location filename="../../modules/convert/window.py" line="80"/>
         <source>En attente</source>
         <translation>На удерживании</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="76"/>
+        <location filename="../../modules/convert/window.py" line="81"/>
         <source>En cours</source>
         <translation>В ходе выполнения</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="77"/>
+        <location filename="../../modules/convert/window.py" line="82"/>
         <source>Terminé</source>
         <translation>Законченный</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="78"/>
+        <location filename="../../modules/convert/window.py" line="83"/>
         <source>Déjà converti</source>
         <translation>Уже преобразовано</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="79"/>
+        <location filename="../../modules/convert/window.py" line="84"/>
         <source>Encodeur manquant</source>
         <translation>Отсутствует кодировщик</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="80"/>
+        <location filename="../../modules/convert/window.py" line="85"/>
         <source>Non pris en charge</source>
         <translation>Не поддерживается</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="81"/>
+        <location filename="../../modules/convert/window.py" line="86"/>
         <source>Erreur</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="82"/>
+        <location filename="../../modules/convert/window.py" line="87"/>
         <source>Annulé</source>
         <translation>Отменено</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="83"/>
+        <location filename="../../modules/convert/window.py" line="88"/>
         <source>Source conservée</source>
         <translation>Исходник сохранен</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="84"/>
+        <location filename="../../modules/convert/window.py" line="89"/>
         <source>Copié</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="108"/>
+        <location filename="../../modules/convert/window.py" line="114"/>
         <source>Démarrer la conversion</source>
         <translation>Начать преобразование</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="119"/>
+        <location filename="../../modules/convert/window.py" line="131"/>
         <source>Glissez ici des fichiers ou des dossiers à convertir
 (ou cliquez pour parcourir)</source>
         <translation>Перетащите файлы или папки для конвертации сюда
 (или нажмите, чтобы просмотреть)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="126"/>
+        <location filename="../../modules/convert/window.py" line="138"/>
         <source>Afficher :</source>
         <translation>Отображать :</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="142"/>
+        <location filename="../../modules/convert/window.py" line="154"/>
         <source>Taille minimale des fichiers affichés</source>
         <translation>Минимальный размер отображаемых файлов</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="151"/>
+        <location filename="../../modules/convert/window.py" line="163"/>
         <source>Taille personnalisée…</source>
         <translation>Нестандартный размер…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="156"/>
+        <location filename="../../modules/convert/window.py" line="168"/>
         <source>Retirer la sélection</source>
         <translation>Удалить выделение</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="157"/>
+        <location filename="../../modules/convert/window.py" line="169"/>
         <source>Vider la liste</source>
         <translation>Очистить список</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="166"/>
+        <location filename="../../modules/convert/window.py" line="178"/>
         <source>La file est vide : déposez des fichiers ou un dossier ci-dessus.</source>
         <translation>Очередь пуста: сбросьте файлы или папку выше.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="176"/>
+        <location filename="../../modules/convert/window.py" line="195"/>
         <source>Sortie</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="177"/>
+        <location filename="../../modules/convert/window.py" line="196"/>
         <source>Sous-dossiers</source>
         <translation>Подпапки</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="181"/>
-        <location filename="../../modules/convert/window.py" line="663"/>
+        <location filename="../../modules/convert/window.py" line="200"/>
+        <location filename="../../modules/convert/window.py" line="761"/>
         <source>Sortie…</source>
         <translation>Выход…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="185"/>
+        <location filename="../../modules/convert/window.py" line="204"/>
         <source>Dossier de sortie</source>
         <translation>Выходная папка</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="192"/>
+        <location filename="../../modules/convert/window.py" line="211"/>
+        <source>Vérifier la sortie…</source>
+        <translation>Проверка вывода…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="212"/>
+        <source>Après un arrêt forcé ou un plantage : cherche les fichiers incomplets ou corrompus du dossier de sortie et propose de les supprimer pour les reconvertir.</source>
+        <translation>После принудительной остановки или сбоя: ищет неполные или повреждённые файлы в папке вывода и предлагает удалить их для повторной конвертации.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="216"/>
         <source>Garder l&apos;extension d&apos;origine dans le nom</source>
         <translation>Сохранить исходное расширение в имени</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="193"/>
+        <location filename="../../modules/convert/window.py" line="217"/>
         <source>« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions photo.jpg / photo.png et permet de retrouver le JSON Takeout.</source>
         <translation>«photo_jpg.avif» вместо «photo.avif»: позволяет избежать коллизий photo.jpg и photo.png и позволяет найти выдержку JSON.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="197"/>
+        <location filename="../../modules/convert/window.py" line="221"/>
         <source>Réinjecter date et GPS des JSON Google Takeout</source>
         <translation>Повторно ввести дату и GPS из JSON Google Takeout</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="198"/>
+        <location filename="../../modules/convert/window.py" line="222"/>
         <source>Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et sa position sont écrites dans le fichier converti (ExifTool).</source>
         <translation>Если рядом с файлом находится сопутствующий JSON, его дата и положение съемки записываются в преобразованный файл (ExifTool).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="204"/>
+        <location filename="../../modules/convert/window.py" line="228"/>
         <source>Copier aussi les autres fichiers (PDF, documents…)</source>
         <translation>Также копируйте другие файлы (PDF, документы и т.&#xa0;д.)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="205"/>
+        <location filename="../../modules/convert/window.py" line="229"/>
         <source>Les fichiers qui ne sont ni des images, ni des audios, ni des vidéos sont copiés tels quels dans le dossier de sortie, à la même place que dans la source. Sans cette case, ils sont ignorés.</source>
         <translation>Файлы, которые не являются изображениями, аудио или видео, копируются в выходной папке в том же месте, что и в источнике. Без этого поля они игнорируются.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="210"/>
+        <location filename="../../modules/convert/window.py" line="234"/>
         <source>Ne pas recopier les JSON Takeout déjà réinjectés</source>
         <translation>Не копируйте уже повторно введенный JSON Takeout.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="211"/>
+        <location filename="../../modules/convert/window.py" line="235"/>
         <source>Les JSON dont la date et la position sont écrites dans le fichier converti ne sont pas copiés dans le dossier de sortie. Rien n&apos;est supprimé : les JSON restent dans le dossier source. Les autres JSON sont copiés.</source>
         <translation>JSON-файлы с датой и позицией, записанные в преобразованный файл, не копируются в выходную папку. Ничего не удаляется: JSON остается в исходной папке. Другой JSON копируется.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="229"/>
+        <location filename="../../modules/convert/window.py" line="253"/>
         <source>Réglages</source>
         <translation>Настройки</translation>
     </message>
     <message>
+        <location filename="../../modules/convert/window.py" line="485"/>
+        <source>FFmpeg introuvable : matériel GPU indéterminable.</source>
+        <translation>FFmpeg не найден: оборудование GPU не определить.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="498"/>
+        <source>Matériel : détection en cours…</source>
+        <translation>Оборудование: обнаружение…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="499"/>
+        <source>Matériel : indéterminé (FFmpeg n&apos;a pas listé ses encodeurs).</source>
+        <translation>Оборудование: не определено (FFmpeg не перечислил свои кодировщики).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="509"/>
+        <source>GPU : {backends} · pilote ou GPU ne répond pas : {failed}</source>
+        <translation>GPU: {backends} · драйвер или GPU не отвечает: {failed}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="511"/>
+        <source>GPU détecté mais le pilote ou le GPU ne répond pas : {failed} ; les profils marqués GPU resteront indisponibles.</source>
+        <translation>GPU обнаружен, но драйвер или GPU не отвечает: {failed}; профили с пометкой GPU останутся недоступны.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="514"/>
+        <source>Aucune accélération GPU détectée : les profils marqués GPU resteront indisponibles, la conversion se fait par le processeur.</source>
+        <translation>Ускорение GPU не обнаружено: профили с пометкой GPU останутся недоступны, конвертация идёт на процессоре.</translation>
+    </message>
+    <message>
         <location filename="../../modules/convert/window.py" line="516"/>
+        <source>GPU : {backends}</source>
+        <translation>GPU: {backends}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="614"/>
         <source>≥ {size}</source>
         <translation>≥ {size}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="518"/>
+        <location filename="../../modules/convert/window.py" line="616"/>
         <source>Afficher les fichiers d&apos;au moins {size}. Cliquez pour choisir un autre seuil.</source>
         <translation>Показывать файлы не ниже {size}. Нажмите, чтобы выбрать другой порог.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Taille minimale</source>
         <translation>Минимальный размер</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Afficher les fichiers d&apos;au moins (en Mo) :</source>
         <translation>Показать файлы размером не менее (в МБ):</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="636"/>
+        <location filename="../../modules/convert/window.py" line="734"/>
         <source>Choisir le dossier de sortie</source>
         <translation>Выберите выходную папку</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="647"/>
+        <location filename="../../modules/convert/window.py" line="745"/>
         <source>Laisser vide : « &lt;source&gt;_Converted » à côté de chaque dossier ajouté. Obligatoire pour les fichiers ajoutés isolément.</source>
         <translation>Оставьте пустым: «&lt;source&gt;_Converted» рядом с каждой добавленной папкой. Требуется для файлов, добавляемых отдельно.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="649"/>
+        <location filename="../../modules/convert/window.py" line="747"/>
         <source>dossier par défaut</source>
         <translation>папка по умолчанию</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="650"/>
+        <location filename="../../modules/convert/window.py" line="748"/>
         <source>{hint}
 
 Dossier de sortie : {path}
@@ -728,75 +806,214 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
 Нажмите, чтобы выбрать папку; Щелкните правой кнопкой мыши, чтобы вернуться в папку по умолчанию.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="654"/>
+        <location filename="../../modules/convert/window.py" line="752"/>
         <source>Dossier de sortie : {path}</source>
         <translation>Выходная папка: {path}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="661"/>
+        <location filename="../../modules/convert/window.py" line="759"/>
         <source>Sortie : {folder}</source>
         <translation>Выход: {folder}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="674"/>
+        <location filename="../../modules/convert/window.py" line="772"/>
         <source>Choisir un dossier…</source>
         <translation>Выберите папку…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="676"/>
+        <location filename="../../modules/convert/window.py" line="774"/>
         <source>Utiliser le dossier par défaut</source>
         <translation>Использовать папку по умолчанию</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="686"/>
+        <location filename="../../modules/convert/window.py" line="784"/>
         <source>Importer des fichiers</source>
         <translation>Импортировать файлы</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="695"/>
+        <location filename="../../modules/convert/window.py" line="793"/>
         <source>Importer un dossier</source>
         <translation>Импортировать папку</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="836"/>
+        <source>Préparation de la conversion…</source>
+        <translation>Подготовка конвертации…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="891"/>
+        <source>{parts}
+
+Chaque segment est proportionnel au nombre de fichiers à traiter.</source>
+        <translation>{parts}
+
+Каждый сегмент пропорционален числу обрабатываемых файлов.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="920"/>
+        <source>Dossier de sortie à vérifier</source>
+        <translation>Папка вывода для проверки</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="928"/>
+        <source>Vérification de la sortie : {paths}</source>
+        <translation>Проверка вывода: {paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="946"/>
+        <source>Vérification : {count} fichier(s) contrôlé(s), aucun fichier incomplet ou illisible.</source>
+        <translation>Проверка: проверено файлов {count}, неполных или нечитаемых нет.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="949"/>
+        <source>Vérifier la sortie</source>
+        <translation>Проверить вывод</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="950"/>
+        <source>Aucun fichier incomplet ou corrompu n&apos;a été trouvé.
+
+{count} fichier(s) contrôlé(s) dans :
+{paths}</source>
+        <translation>Неполных или повреждённых файлов не найдено.
+
+Проверено файлов: {count} в:
+{paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="955"/>
+        <source>Vérification : {bad} fichier(s) suspect(s) sur {count} contrôlé(s) ; ne supprimez pas vos originaux.</source>
+        <translation>Проверка: подозрительных файлов {bad} из {count} проверенных; не удаляйте оригиналы.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="957"/>
+        <source>conversion interrompue (fichier temporaire)</source>
+        <translation>конвертация прервана (временный файл)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="958"/>
+        <source>taille inattendue : fichier tronqué ?</source>
+        <translation>неожиданный размер: усечённый файл?</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="959"/>
+        <source>illisible pour FFprobe</source>
+        <translation>нечитаемо для FFprobe</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="964"/>
+        <source>… et {count} autre(s) fichier(s) suspect(s).</source>
+        <translation>… и ещё {count} подозрительных файлов.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="967"/>
+        <source>Fichiers à vérifier</source>
+        <translation>Файлы для проверки</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="968"/>
+        <source>{bad} fichier(s) de la sortie peuvent être incomplets ou corrompus.
+
+Les supprimer ? Ils seront recréés à la prochaine conversion ; aucun autre fichier n&apos;est touché et les originaux ne sont jamais concernés.</source>
+        <translation>{bad} файлов в выводе могут быть неполными или повреждёнными.
+
+Удалить их? Они будут созданы заново при следующей конвертации; другие файлы не затрагиваются, оригиналы никогда не страдают.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="990"/>
+        <source>{path} : suppression impossible ({error}).</source>
+        <translation>{path}: удалить невозможно ({error}).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="993"/>
+        <source>{count} fichier(s) supprimé(s) ; relancez la conversion pour les recréer.</source>
+        <translation>Удалено файлов: {count}; запустите конвертацию снова, чтобы их воссоздать.</translation>
     </message>
 </context>
 <context>
     <name>ConvertWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="260"/>
-        <source>{done} / {total} — {name}</source>
-        <translation>{done} / {total} — {name}</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Copies</source>
+        <translation>Копии</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="289"/>
-        <source>{done} / {total} terminé(s)</source>
-        <translation>{done} / {total} готово</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Images</source>
+        <translation>Изображения</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="304"/>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Audios</source>
+        <translation>Аудио</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Vidéos</source>
+        <translation>Видео</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="425"/>
+        <source>Étape {number}/{steps} · {label}</source>
+        <translation>Шаг {number}/{steps} · {label}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="430"/>
+        <source>reste ~{time}</source>
+        <translation>осталось ~{time}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="511"/>
+        <source>Parallélisme : copies {copy} · images {image} · audios {audio} · vidéos {video} fichier(s) à la fois.</source>
+        <translation>Параллелизм: копий {copy} · изображений {image} · аудио {audio} · видео {video} одновременно.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>vidéo</source>
+        <translation>видео</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>image</source>
+        <translation>изображение</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="519"/>
+        <source>Parallélisme {kind} : {count} × {threads} threads pour {cpus} cœur(s) ; réduisez le nombre de fichiers simultanés ou le réglage Threads pour éviter la surcharge.</source>
+        <translation>Параллелизм {kind}: {count} × {threads} потоков на {cpus} ядер; уменьшите число одновременных файлов или настройку «Потоки», чтобы избежать перегрузки.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="530"/>
+        <source>Étape {number}/{steps} : {label} ({count} fichier(s), {parallel} en parallèle).</source>
+        <translation>Шаг {number}/{steps}: {label} (файлов: {count}, параллельно: {parallel}).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="547"/>
         <source>{ok} converti(s), {copied} copié(s), {kept} source(s) conservée(s), {skipped} déjà converti(s), {unsupported} non pris en charge, {errors} erreur(s) ; gain : {gain}</source>
         <translation>Преобразовано: {ok}, скопировано: {copied}, исходных сохранено: {kept}, уже преобразовано: {skipped}, не поддерживается: {unsupported}, ошибок: {errors}; выигрыш: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="310"/>
+        <location filename="../../modules/convert/workers.py" line="553"/>
         <source> ; métadonnées Takeout : {ok}, sans JSON : {missing}</source>
         <translation> ; метаданные Takeout: {ok}, без JSON: {missing}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="313"/>
+        <location filename="../../modules/convert/workers.py" line="556"/>
         <source> ; JSON Takeout non recopiés : {count}</source>
         <translation> ; JSON Takeout не скопировано: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="315"/>
+        <location filename="../../modules/convert/workers.py" line="558"/>
         <source> ; métadonnées d&apos;origine recopiées : {count}</source>
         <translation> ; исходных метаданных скопировано: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="318"/>
+        <location filename="../../modules/convert/workers.py" line="561"/>
         <source> ; métadonnées non recopiées : {count}</source>
         <translation> ; метаданных не скопировано: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="321"/>
+        <location filename="../../modules/convert/workers.py" line="564"/>
         <source> ; champs Takeout non inscriptibles : {count}</source>
         <translation> ; полей Takeout, недоступных для записи: {count}</translation>
     </message>
@@ -804,7 +1021,7 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
 <context>
     <name>CopyFeedbackButton</name>
     <message>
-        <location filename="../../ui/controls.py" line="1034"/>
+        <location filename="../../ui/controls.py" line="1049"/>
         <source>Copié</source>
         <translation>Копировать</translation>
     </message>
@@ -878,17 +1095,17 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
 <context>
     <name>DedupWindow</name>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1392"/>
+        <location filename="../../modules/dedup/window.py" line="1403"/>
         <source>Choisir le journal d&apos;une quarantaine</source>
         <translation>Выбираем дневник карантина</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1393"/>
+        <location filename="../../modules/dedup/window.py" line="1404"/>
         <source>Journal (journal.csv);;Fichiers CSV (*.csv)</source>
         <translation>Журнал (journal.csv);;Файлы CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="847"/>
+        <location filename="../../modules/dedup/window.py" line="858"/>
         <source>Importer un dossier</source>
         <translation>Импортировать папку</translation>
     </message>
@@ -960,7 +1177,7 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="105"/>
-        <location filename="../../modules/dedup/window.py" line="582"/>
+        <location filename="../../modules/dedup/window.py" line="583"/>
         <source>Live Photos</source>
         <translation>Живые фотографии</translation>
     </message>
@@ -996,13 +1213,13 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="115"/>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder</source>
         <translation>Держать</translation>
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="116"/>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Supprimer</source>
         <translation>УДАЛИТЬ</translation>
     </message>
@@ -1073,7 +1290,7 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="465"/>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Appliquer les modifications</source>
         <translation>Применить изменения</translation>
     </message>
@@ -1212,152 +1429,152 @@ Cliquez pour ouvrir ou fermer le cadenas.</source>
         <translation>Обнаружение визуально близких изображений (dHash); допуск регулирует принятое отклонение.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="577"/>
+        <location filename="../../modules/dedup/window.py" line="578"/>
         <source>Tolérance :</source>
         <translation>Толерантность:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="583"/>
+        <location filename="../../modules/dedup/window.py" line="584"/>
         <source>Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, sauf si vous demandez d&apos;écarter la vidéo.</source>
         <translation>Находит пары IMG_1234.HEIC + IMG_1234.MOV (или преобразованные имена IMG_1234_heic.avif + IMG_1234_mov.webm). Они помечаются только до тех пор, пока вы не попросите закрыть видео.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="591"/>
+        <location filename="../../modules/dedup/window.py" line="593"/>
         <source>Écarter la vidéo</source>
         <translation>Удалить видео</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="593"/>
+        <location filename="../../modules/dedup/window.py" line="595"/>
         <source>Proposer la vidéo à la suppression ; la photo est conservée.</source>
         <translation>Предложить видео на удаление; фото сохранилось.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="599"/>
+        <location filename="../../modules/dedup/window.py" line="601"/>
         <source>Durée max :</source>
         <translation>Максимальная продолжительность:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="602"/>
+        <location filename="../../modules/dedup/window.py" line="604"/>
         <source>Détection</source>
         <translation>Обнаружение</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="605"/>
+        <location filename="../../modules/dedup/window.py" line="607"/>
         <source>Proposition automatique :</source>
         <translation>Автоматическое предложение:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="612"/>
+        <location filename="../../modules/dedup/window.py" line="615"/>
         <source>Mode de suppression :</source>
         <translation>Режим удаления:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="620"/>
+        <location filename="../../modules/dedup/window.py" line="624"/>
         <source>Dossiers vides</source>
         <translation>Пустые папки</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="621"/>
+        <location filename="../../modules/dedup/window.py" line="625"/>
         <source>Supprimer les dossiers devenus vides après les suppressions.</source>
         <translation>Удалите папки, которые после удаления стали пустыми.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="624"/>
+        <location filename="../../modules/dedup/window.py" line="628"/>
         <source>Dossier de quarantaine :</source>
         <translation>Папка карантина:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="627"/>
+        <location filename="../../modules/dedup/window.py" line="631"/>
         <source>Traitement</source>
         <translation>Уход</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="646"/>
+        <location filename="../../modules/dedup/window.py" line="650"/>
         <source>Afficher :</source>
         <translation>Отображать :</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="766"/>
+        <location filename="../../modules/dedup/window.py" line="770"/>
         <source>Corrections manuelles</source>
         <translation>Ручные исправления</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder la sélection</source>
         <translation>Сохранить выбор</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Proposer la sélection à la suppression (Suppr)</source>
         <translation>Предложить выбор для удаления (Удалить)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="773"/>
+        <location filename="../../modules/dedup/window.py" line="777"/>
         <source>Tout supprimer</source>
         <translation>Удалить все</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="774"/>
+        <location filename="../../modules/dedup/window.py" line="778"/>
         <source>Proposer tous les fichiers du groupe sélectionné à la suppression (les fichiers protégés sont conservés)</source>
         <translation>Предложить удалить все файлы в выбранной группе (защищенные файлы сохраняются)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder uniquement celui-ci</source>
         <translation>Оставь только этот</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder ce fichier, proposer les autres du groupe</source>
         <translation>Сохраните этот файл, предложите другие из группы</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Proposition auto pour la sélection</source>
         <translation>Автопредложение на выбор</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Appliquer la stratégie choisie à la sélection</source>
         <translation>Применить выбранную стратегию к выделению</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="783"/>
+        <location filename="../../modules/dedup/window.py" line="787"/>
         <source>Espace : bascule Garder / Supprimer · Suppr : Supprimer · Double-clic : lire (audio, vidéo) ou ouvrir le fichier</source>
         <translation>Пробел: переключатель «Сохранить/Удалить» · Удалить: Удалить · Двойной щелчок: воспроизвести (аудио, видео) или открыть файл.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="788"/>
+        <location filename="../../modules/dedup/window.py" line="799"/>
         <source>Aperçu et corrections</source>
         <translation>Обзор и исправления</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1061"/>
+        <location filename="../../modules/dedup/window.py" line="1072"/>
         <source>Groupe {id} · {kind} · {count} fichiers · gain : {gain}</source>
         <translation>Группа {id} · {kind} · {count} файлов · усиление: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1069"/>
+        <location filename="../../modules/dedup/window.py" line="1080"/>
         <source> · protégé</source>
         <translation>· защищенный</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1082"/>
+        <location filename="../../modules/dedup/window.py" line="1093"/>
         <source>Aucune analyse effectuée.</source>
         <translation>Анализ не проводился.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1085"/>
+        <location filename="../../modules/dedup/window.py" line="1096"/>
         <source>{scanned} fichier(s) analysé(s) · {count} groupe(s) · {files} fichier(s) concerné(s) · gain libérable : {gain}</source>
         <translation>{scanned} файл(ы) отсканировано · {count} группа(ы) · {files} рассматриваемый файл(ы) · высвобождаемый выигрыш: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1165"/>
+        <location filename="../../modules/dedup/window.py" line="1176"/>
         <source>Groupe {id}</source>
         <translation>Группа {id}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1166"/>
+        <location filename="../../modules/dedup/window.py" line="1177"/>
         <source>{count} fichiers · {kind}
 Taille totale : {size}
 Gain libérable : {gain}</source>
@@ -1366,27 +1583,27 @@ Gain libérable : {gain}</source>
 Возможная прибыль: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1172"/>
+        <location filename="../../modules/dedup/window.py" line="1183"/>
         <source>Sélectionnez un fichier, ou deux fichiers du même groupe pour les comparer.</source>
         <translation>Выберите файл или два файла из одной группы, чтобы сравнить их.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1173"/>
+        <location filename="../../modules/dedup/window.py" line="1184"/>
         <source>{count} fichier(s) sélectionné(s)</source>
         <translation>{count} выбранных файлов</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1250"/>
+        <location filename="../../modules/dedup/window.py" line="1261"/>
         <source>{count} fichier(s) proposé(s) à la suppression dans {groups} groupe(s).</source>
         <translation>Файл(ы) {count} предложен к удалению в группе(ах) {groups}.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1254"/>
+        <location filename="../../modules/dedup/window.py" line="1265"/>
         <source>{count} fichier(s) protégé(s) conservé(s).</source>
         <translation>Сохранено защищенных файлов: {count}.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1318"/>
+        <location filename="../../modules/dedup/window.py" line="1329"/>
         <source>Aucun fichier ne sera conservé dans {groups} groupe(s) ({files} fichier(s)).
 Tous les fichiers de ces groupes seront supprimés.
 
@@ -1397,17 +1614,17 @@ Tous les fichiers de ces groupes seront supprimés.
 </translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Aucun fichier conservé</source>
         <translation>Файлы не сохраняются</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1401"/>
+        <location filename="../../modules/dedup/window.py" line="1412"/>
         <source>Journal non vérifiable</source>
         <translation>Непроверяемый журнал</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1402"/>
+        <location filename="../../modules/dedup/window.py" line="1413"/>
         <source>Ce journal ne contient pas la liste des dossiers analysés (journal importé ou antérieur).
 
 La restauration déplacera des fichiers vers les emplacements qu&apos;il indique. Ne continuez que si vous faites entièrement confiance à ce journal.
@@ -1420,12 +1637,12 @@ Restaurer ?</source>
 Восстановить?</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1430"/>
+        <location filename="../../modules/dedup/window.py" line="1441"/>
         <source>Exporter le rapport</source>
         <translation>Экспортировать отчёт</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1431"/>
+        <location filename="../../modules/dedup/window.py" line="1442"/>
         <source>Fichiers CSV (*.csv)</source>
         <translation>Файлы CSV (*.csv)</translation>
     </message>
@@ -1433,32 +1650,32 @@ Restaurer ?</source>
 <context>
     <name>DropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1410"/>
+        <location filename="../../ui/widgets.py" line="1512"/>
         <source>Choisir des fichiers…</source>
         <translation>Выберите файлы…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1411"/>
+        <location filename="../../ui/widgets.py" line="1513"/>
         <source>Choisir un dossier…</source>
         <translation>Выберите папку…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1427"/>
+        <location filename="../../ui/widgets.py" line="1529"/>
         <source>Fichiers acceptés ({masks});;Tous les fichiers (*)</source>
         <translation>Принятые файлы ({masks});;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1429"/>
+        <location filename="../../ui/widgets.py" line="1531"/>
         <source>Tous les fichiers (*)</source>
         <translation>Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1430"/>
+        <location filename="../../ui/widgets.py" line="1532"/>
         <source>Choisir des fichiers</source>
         <translation>Выбрать файлы</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1438"/>
+        <location filename="../../ui/widgets.py" line="1540"/>
         <source>Choisir un dossier</source>
         <translation>Выберите папку</translation>
     </message>
@@ -1620,10 +1837,6 @@ Restaurer ?</source>
         <translation>{count} записей</translation>
     </message>
     <message>
-        <source>{count} entrée(s)</source>
-        <translation type="vanished">{count} записи</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="150"/>
         <source>du module « {name} »</source>
         <translation>для модуля «{name}»</translation>
@@ -1642,7 +1855,7 @@ Restaurer ?</source>
 <context>
     <name>ImagePreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="3070"/>
+        <location filename="../../ui/widgets.py" line="3189"/>
         <source>Chargement…</source>
         <translation>Загрузка…</translation>
     </message>
@@ -1650,7 +1863,7 @@ Restaurer ?</source>
 <context>
     <name>ImportProgress</name>
     <message>
-        <location filename="../../ui/widgets.py" line="758"/>
+        <location filename="../../ui/widgets.py" line="860"/>
         <source>Importation terminée !</source>
         <translation>Импорт завершён!</translation>
     </message>
@@ -1678,10 +1891,6 @@ Restaurer ?</source>
         <translation>{count} последних строк</translation>
     </message>
     <message>
-        <source>{count} dernière(s) ligne(s)</source>
-        <translation type="vanished">{count} последние строки</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="200"/>
         <source>(Le journal est vide ou introuvable.)</source>
         <translation>(Журнал пуст или отсутствует.)</translation>
@@ -1690,26 +1899,22 @@ Restaurer ?</source>
 <context>
     <name>ModuleCard</name>
     <message>
-        <source>Déposez des fichiers ou un dossier ici pour les ouvrir directement.</source>
-        <translation type="vanished">Перетащите файлы или папку сюда, чтобы открыть их напрямую.</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="140"/>
+        <location filename="../../launcher/atlas_window.py" line="141"/>
         <source>Ouvrir</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="166"/>
+        <location filename="../../launcher/atlas_window.py" line="167"/>
         <source>erreur inconnue</source>
         <translation>неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="172"/>
+        <location filename="../../launcher/atlas_window.py" line="173"/>
         <source>✖ indisponible</source>
         <translation>✖ недоступно</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="191"/>
+        <location filename="../../launcher/atlas_window.py" line="192"/>
         <source>Introuvable : voir « Préférences… » ou le dossier bin/.</source>
         <translation>Не найдено: см. «Настройки…» или папку bin/.</translation>
     </message>
@@ -1717,226 +1922,222 @@ Restaurer ?</source>
 <context>
     <name>ModuleWindow</name>
     <message>
-        <location filename="../../ui/module_window.py" line="203"/>
-        <location filename="../../ui/module_window.py" line="470"/>
-        <location filename="../../ui/module_window.py" line="477"/>
+        <location filename="../../ui/module_window.py" line="207"/>
+        <location filename="../../ui/module_window.py" line="483"/>
+        <location filename="../../ui/module_window.py" line="490"/>
         <source>Journal</source>
         <translation>Журнал</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="204"/>
+        <location filename="../../ui/module_window.py" line="208"/>
         <source>Afficher ou masquer le journal</source>
         <translation>Показать или скрыть журнал</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="62"/>
-        <location filename="../../ui/module_window.py" line="208"/>
-        <location filename="../../ui/module_window.py" line="384"/>
+        <location filename="../../ui/module_window.py" line="64"/>
+        <location filename="../../ui/module_window.py" line="212"/>
+        <location filename="../../ui/module_window.py" line="397"/>
         <source>Aide</source>
         <translation>помощь</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="59"/>
-        <location filename="../../ui/module_window.py" line="357"/>
+        <location filename="../../ui/module_window.py" line="61"/>
+        <location filename="../../ui/module_window.py" line="370"/>
         <source>Afficher / masquer le journal</source>
         <translation>Показать/скрыть журнал</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="60"/>
-        <location filename="../../ui/module_window.py" line="359"/>
+        <location filename="../../ui/module_window.py" line="62"/>
+        <location filename="../../ui/module_window.py" line="372"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Переключение между темной и светлой темой</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="209"/>
+        <location filename="../../ui/module_window.py" line="213"/>
         <source>Aide et raccourcis</source>
         <translation>Справка и ярлыки</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="285"/>
-        <location filename="../../ui/module_window.py" line="371"/>
+        <location filename="../../ui/module_window.py" line="298"/>
+        <location filename="../../ui/module_window.py" line="384"/>
         <source>Démarrer</source>
         <translation>Начать</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="57"/>
-        <location filename="../../ui/module_window.py" line="286"/>
+        <location filename="../../ui/module_window.py" line="59"/>
+        <location filename="../../ui/module_window.py" line="299"/>
         <source>Démarrer le traitement</source>
         <translation>Начать обработку</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="288"/>
-        <location filename="../../ui/module_window.py" line="345"/>
-        <location filename="../../ui/module_window.py" line="373"/>
+        <location filename="../../ui/module_window.py" line="301"/>
+        <location filename="../../ui/module_window.py" line="358"/>
+        <location filename="../../ui/module_window.py" line="386"/>
         <source>Annuler</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="58"/>
-        <location filename="../../ui/module_window.py" line="289"/>
+        <location filename="../../ui/module_window.py" line="60"/>
+        <location filename="../../ui/module_window.py" line="302"/>
         <source>Annuler le traitement en cours</source>
         <translation>Отменить текущую задачу</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="295"/>
+        <location filename="../../ui/module_window.py" line="308"/>
         <source>Principale</source>
         <translation>главный</translation>
     </message>
     <message>
-        <source>Changer de thème</source>
-        <translation type="vanished">Сменить тему</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="61"/>
-        <location filename="../../ui/module_window.py" line="306"/>
+        <location filename="../../ui/module_window.py" line="63"/>
         <location filename="../../ui/module_window.py" line="319"/>
+        <location filename="../../ui/module_window.py" line="332"/>
         <source>Préférences…</source>
         <translation>Настройки…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="69"/>
+        <location filename="../../ui/module_window.py" line="71"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="70"/>
+        <location filename="../../ui/module_window.py" line="72"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="71"/>
+        <location filename="../../ui/module_window.py" line="73"/>
         <source>Résumé</source>
         <translation>Краткое содержание</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="72"/>
+        <location filename="../../ui/module_window.py" line="74"/>
         <source>Réussis</source>
         <translation>Преуспевать</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="73"/>
+        <location filename="../../ui/module_window.py" line="75"/>
         <source>Erreurs</source>
         <translation>Ошибки</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="307"/>
+        <location filename="../../ui/module_window.py" line="320"/>
         <source>Langue, thème, taille du texte, outils externes</source>
         <translation>Язык, тема, размер текста, внешние инструменты</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="315"/>
+        <location filename="../../ui/module_window.py" line="328"/>
         <source>Azimut</source>
         <translation>Азимут</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="316"/>
-        <location filename="../../ui/module_window.py" line="421"/>
+        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="434"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Об Азимуте</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="323"/>
+        <location filename="../../ui/module_window.py" line="336"/>
         <source>Quitter</source>
         <translation>Уйти</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="328"/>
+        <location filename="../../ui/module_window.py" line="341"/>
         <source>Fichier</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="342"/>
         <source>Ajouter des fichiers…</source>
         <translation>Добавить файлы…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="331"/>
+        <location filename="../../ui/module_window.py" line="344"/>
         <source>Ajouter un dossier…</source>
         <translation>Добавить папку…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="338"/>
+        <location filename="../../ui/module_window.py" line="351"/>
         <source>Édition</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="339"/>
-        <location filename="../../ui/module_window.py" line="404"/>
+        <location filename="../../ui/module_window.py" line="352"/>
+        <location filename="../../ui/module_window.py" line="417"/>
         <source>Annuler le dernier renommage</source>
         <translation>Отменить последнее переименование</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="346"/>
+        <location filename="../../ui/module_window.py" line="359"/>
         <source>Rétablir</source>
         <translation>Восстановить</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="360"/>
         <source>Couper</source>
         <translation>Резать</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="348"/>
+        <location filename="../../ui/module_window.py" line="361"/>
         <source>Copier</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="349"/>
+        <location filename="../../ui/module_window.py" line="362"/>
         <source>Coller</source>
         <translation>Палка</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="350"/>
+        <location filename="../../ui/module_window.py" line="363"/>
         <source>Tout sélectionner</source>
         <translation>Выбрать все</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="356"/>
+        <location filename="../../ui/module_window.py" line="369"/>
         <source>Présentation</source>
         <translation>Презентация</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="363"/>
+        <location filename="../../ui/module_window.py" line="376"/>
         <source>Agrandir le texte</source>
         <translation>Увеличить текст</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="366"/>
+        <location filename="../../ui/module_window.py" line="379"/>
         <source>Réduire le texte</source>
         <translation>Уменьшить текст</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="370"/>
+        <location filename="../../ui/module_window.py" line="383"/>
         <source>Traitement</source>
         <translation>Уход</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="376"/>
+        <location filename="../../ui/module_window.py" line="389"/>
         <source>Fenêtre</source>
         <translation>Окно</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="377"/>
+        <location filename="../../ui/module_window.py" line="390"/>
         <source>Réduire</source>
         <translation>Уменьшать</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="380"/>
+        <location filename="../../ui/module_window.py" line="393"/>
         <source>Zoom</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="385"/>
+        <location filename="../../ui/module_window.py" line="398"/>
         <source>Raccourcis clavier</source>
         <translation>Сочетания клавиш</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="413"/>
+        <location filename="../../ui/module_window.py" line="426"/>
         <source>Vider la liste</source>
         <translation>Очистить список</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="414"/>
+        <location filename="../../ui/module_window.py" line="427"/>
         <source>Voulez-vous vraiment vider la liste ?
 
 Les fichiers ne seront pas modifiés.</source>
@@ -1945,99 +2146,83 @@ Les fichiers ne seront pas modifiés.</source>
 Файлы не будут изменены.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="471"/>
+        <location filename="../../ui/module_window.py" line="484"/>
         <source>Historique</source>
         <translation>История</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="473"/>
+        <location filename="../../ui/module_window.py" line="486"/>
         <source>Effacer le journal</source>
         <translation>Очистить журнал</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="603"/>
+        <location filename="../../ui/module_window.py" line="662"/>
         <source>{name} est introuvable.
 Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>{name} не найден. Установите 
  или укажите его путь в настройках.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="648"/>
+        <location filename="../../ui/module_window.py" line="707"/>
         <source>Un traitement est déjà en cours : nouvelle demande ignorée.</source>
         <translation>Задача уже выполняется: новый запрос проигнорирован.</translation>
     </message>
     <message>
-        <source>En cours…</source>
-        <translation type="vanished">Бег…</translation>
-    </message>
-    <message>
-        <source>Annulation en cours…</source>
-        <translation type="vanished">Отмена…</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="703"/>
+        <location filename="../../ui/module_window.py" line="762"/>
         <source>Annulation demandée…</source>
         <translation>Запрошена отмена…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="736"/>
-        <location filename="../../ui/module_window.py" line="845"/>
+        <location filename="../../ui/module_window.py" line="789"/>
+        <location filename="../../ui/module_window.py" line="898"/>
         <source>Traitement terminé.</source>
         <translation>Обработка завершена.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="741"/>
-        <location filename="../../ui/module_window.py" line="854"/>
+        <location filename="../../ui/module_window.py" line="794"/>
+        <location filename="../../ui/module_window.py" line="907"/>
         <source>Traitement annulé.</source>
         <translation>Обработка отменена.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="746"/>
+        <location filename="../../ui/module_window.py" line="799"/>
         <source>Échec du traitement : {message}</source>
         <translation>Обработка не удалась: {message}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="838"/>
+        <location filename="../../ui/module_window.py" line="891"/>
         <source>Erreur interne : {error}</source>
         <translation>Внутренняя ошибка: {error}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="849"/>
-        <location filename="../../ui/module_window.py" line="855"/>
+        <location filename="../../ui/module_window.py" line="902"/>
+        <location filename="../../ui/module_window.py" line="908"/>
         <source>Échec : {reason}</source>
         <translation>Не удалось: {reason}</translation>
     </message>
     <message>
-        <source>Clair</source>
-        <translation type="vanished">Свет</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">Тёмный</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="965"/>
+        <location filename="../../ui/module_window.py" line="1042"/>
         <source>Aide — {name}</source>
         <translation>Помощь — {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="986"/>
+        <location filename="../../ui/module_window.py" line="1063"/>
         <source>{app} · version {version}</source>
         <translation>{app} · версия {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="334"/>
-        <location filename="../../ui/module_window.py" line="996"/>
+        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="1073"/>
         <source>Fermer</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1013"/>
+        <location filename="../../ui/module_window.py" line="1090"/>
         <source>Un traitement est en cours : dépôt ignoré.</source>
         <translation>Запускается задание: игнорируется удаление.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1038"/>
+        <location filename="../../ui/module_window.py" line="1115"/>
         <source>Fermeture reportée : le traitement doit s&apos;arrêter.</source>
         <translation>Закрытие отложено: обработка должна быть остановлена.</translation>
     </message>
@@ -2060,10 +2245,6 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>Запишите дату съемки в имени файла</translation>
     </message>
     <message>
-        <source>Comparer deux dossiers : même arborescence, même nombre de fichiers ?</source>
-        <translation type="vanished">Сравнить две папки: одинаковое дерево, одинаковое количество файлов?</translation>
-    </message>
-    <message>
         <location filename="../../modules/tags/__init__.py" line="11"/>
         <source>Lire, modifier et supprimer les métadonnées EXIF, IPTC et XMP</source>
         <translation>Читать, редактировать и удалять метаданные EXIF, IPTC и XMP</translation>
@@ -2082,32 +2263,32 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>OpenFileButton</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2990"/>
+        <location filename="../../ui/widgets.py" line="3109"/>
         <source>Ouvre le fichier sélectionné dans l&apos;application associée du système (lecteur vidéo, visionneuse d&apos;images, lecteur PDF…).</source>
         <translation>Открывает выбранный файл в соответствующем системном приложении (видеоплеер, программа просмотра изображений, программа чтения PDF-файлов и т. д.).</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3006"/>
+        <location filename="../../ui/widgets.py" line="3125"/>
         <source>Ouvrir dans une application</source>
         <translation>Открыть в приложении</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3004"/>
+        <location filename="../../ui/widgets.py" line="3123"/>
         <source>Afficher le dossier</source>
         <translation>Показать папку</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3020"/>
+        <location filename="../../ui/widgets.py" line="3139"/>
         <source>Impossible d&apos;ouvrir : {target}</source>
         <translation>Невозможно открыть: {target}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3022"/>
+        <location filename="../../ui/widgets.py" line="3141"/>
         <source>Ouverture impossible</source>
         <translation>Невозможно открыть</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3023"/>
+        <location filename="../../ui/widgets.py" line="3142"/>
         <source>Aucune application n&apos;est associée à ce fichier :
 {name}</source>
         <translation>С этим файлом не связано ни одно приложение:
@@ -2117,13 +2298,13 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PathDropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1477"/>
-        <location filename="../../ui/widgets.py" line="1478"/>
+        <location filename="../../ui/widgets.py" line="1579"/>
+        <location filename="../../ui/widgets.py" line="1580"/>
         <source>Effacer le dossier</source>
         <translation>Очистить папку</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1678"/>
+        <location filename="../../ui/widgets.py" line="1780"/>
         <source>Glissez un dossier ici ou cliquez pour parcourir</source>
         <translation>Перетащите папку сюда или нажмите, чтобы просмотреть</translation>
     </message>
@@ -2182,397 +2363,288 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="40"/>
+        <location filename="../../ui/preferences_dialog.py" line="41"/>
         <source> — traduction à venir</source>
         <translation>— перевод будет</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="46"/>
+        <location filename="../../ui/preferences_dialog.py" line="47"/>
         <source>embarqué</source>
         <translation>на борту</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="47"/>
+        <location filename="../../ui/preferences_dialog.py" line="48"/>
         <source>personnalisé</source>
         <translation>персонализированный</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="48"/>
+        <location filename="../../ui/preferences_dialog.py" line="49"/>
         <source>système</source>
         <translation>система</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="49"/>
+        <location filename="../../ui/preferences_dialog.py" line="50"/>
         <source>introuvable</source>
         <translation>не найдено</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="56"/>
+        <location filename="../../ui/preferences_dialog.py" line="57"/>
         <source>✖ introuvable</source>
         <translation>✖ не найден</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="57"/>
+        <location filename="../../ui/preferences_dialog.py" line="58"/>
         <source>{name} est introuvable : indiquez son chemin ou installez-le.</source>
         <translation>Невозможно найти {name}: укажите путь к нему или установите его.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="61"/>
+        <location filename="../../ui/preferences_dialog.py" line="62"/>
         <source>⚠ {source} · {version}</source>
         <translation>⚠ {source} · {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="62"/>
+        <location filename="../../ui/preferences_dialog.py" line="63"/>
         <source>Version {version} antérieure au minimum recommandé ({minimum}) ; mettez-le à jour. Chemin : {path}</source>
         <translation>Версия {version} более ранняя, чем рекомендуемая минимальная ({minimum}); обновите его. Путь: {path}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="67"/>
+        <location filename="../../ui/preferences_dialog.py" line="68"/>
         <source>✔ {source}</source>
         <translation>✔ {source}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="625"/>
+        <location filename="../../ui/preferences_dialog.py" line="622"/>
         <source>Préférences</source>
         <translation>Предпочтения</translation>
-    </message>
-    <message>
-        <source>Apparence</source>
-        <translation type="vanished">Внешность</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">Тёмный</translation>
-    </message>
-    <message>
-        <source>Clair</source>
-        <translation type="vanished">Свет</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">Тема</translation>
-    </message>
-    <message>
-        <source>Taille du texte</source>
-        <translation type="vanished">Размер текста</translation>
-    </message>
-    <message>
-        <source>Langue</source>
-        <translation type="vanished">Язык</translation>
-    </message>
-    <message>
-        <source>Langue de l&apos;interface</source>
-        <translation type="vanished">Язык интерфейса</translation>
-    </message>
-    <message>
-        <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
-        <translation type="vanished">«Автоматически» соответствует языку системы. Языки с пометкой «будущий перевод» пока не имеют каталога: используются английский, затем французский. Изменение вступит в силу при следующем запуске Azimut.</translation>
-    </message>
-    <message>
-        <source>Outils externes</source>
-        <translation type="vanished">Внешние инструменты</translation>
-    </message>
-    <message>
-        <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
-        <translation type="vanished">Сначала используется комплектная копия; в противном случае вводится указанный путь, затем системный PATH. Изменения сохраняются с помощью «Сохранить».</translation>
-    </message>
-    <message>
-        <source>Tous les fichiers (*)</source>
-        <translation type="vanished">Все файлы (*)</translation>
-    </message>
-    <message>
-        <source>Détecter</source>
-        <translation type="vanished">Обнаружить</translation>
-    </message>
-    <message>
-        <source>Enregistrer</source>
-        <translation type="vanished">Сохранить</translation>
-    </message>
-    <message>
-        <source>Annuler</source>
-        <translation type="vanished">Отмена</translation>
-    </message>
-    <message>
-        <source>Enregistrer et relancer</source>
-        <translation type="vanished">Сохранить и перезапустить</translation>
-    </message>
-    <message>
-        <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
-        <translation type="vanished">Сохраняет настройки и перезапускает Azimut для применения языка.</translation>
-    </message>
-    <message>
-        <source>Automatique (système)</source>
-        <translation type="vanished">Автоматический (системный)</translation>
-    </message>
-    <message>
-        <source>Suit la langue de l&apos;interface du système.</source>
-        <translation type="vanished">Соответствует языку интерфейса системы.</translation>
-    </message>
-    <message>
-        <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
-        <translation type="vanished">{language}: каталог появится, сначала на английском, а затем на французском языке.</translation>
-    </message>
-    <message>
-        <source>✔ saisi</source>
-        <translation type="vanished">✔ введено</translation>
-    </message>
-    <message>
-        <source>Chemin saisi, pas encore enregistré.</source>
-        <translation type="vanished">Введённый путь ещё не сохранён.</translation>
-    </message>
-    <message>
-        <source>✖ chemin saisi inutilisable</source>
-        <translation type="vanished">✖ введённый путь непригоден</translation>
-    </message>
-    <message>
-        <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
-        <translation type="vanished">Введенный файл не может быть выполнен.</translation>
-    </message>
-    <message>
-        <source>Apparence, langue et outils externes.</source>
-        <translation type="vanished">Внешность, язык и внешние инструменты.</translation>
     </message>
 </context>
 <context>
     <name>PreferencesPage</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="98"/>
+        <location filename="../../ui/preferences_dialog.py" line="99"/>
         <source>Préférences</source>
         <translation>Предпочтения</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="99"/>
+        <location filename="../../ui/preferences_dialog.py" line="100"/>
         <source>Apparence, langue et outils externes.</source>
         <translation>Внешний вид, язык и внешние инструменты.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="109"/>
+        <location filename="../../ui/preferences_dialog.py" line="110"/>
         <source>Apparence</source>
         <translation>Появление</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="114"/>
+        <location filename="../../ui/preferences_dialog.py" line="115"/>
         <source>Système</source>
         <translation>Система</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="115"/>
+        <location filename="../../ui/preferences_dialog.py" line="116"/>
         <source>Sombre</source>
         <translation>Темный</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="116"/>
+        <location filename="../../ui/preferences_dialog.py" line="117"/>
         <source>Clair</source>
         <translation>Прозрачный</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="120"/>
-        <source>Le thème suit le système à chaque démarrage ; un choix explicite ne dure que jusqu&apos;à la fermeture d&apos;Azimut.</source>
-        <translation>Тема следует за системой при каждом запуске; явный выбор действует только до тех пор, пока Azimut не закроется.</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="128"/>
+        <location filename="../../ui/preferences_dialog.py" line="125"/>
         <source>Thème</source>
         <translation>Тема</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="130"/>
+        <location filename="../../ui/preferences_dialog.py" line="127"/>
         <source>Taille du texte</source>
         <translation>Размер текста</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="133"/>
+        <location filename="../../ui/preferences_dialog.py" line="130"/>
         <source>Papicons</source>
         <translation>Papicons</translation>
     </message>
     <message>
-        <source>Animées</source>
-        <translation type="vanished">анимированные</translation>
-    </message>
-    <message>
-        <source>Papicons : icônes pleines historiques. Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
-        <translation type="vanished">Papicons: классические залитые значки. анимированные: контурные значки, анимация при наведении (без анимации, если анимация ограничена).</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="134"/>
+        <location filename="../../ui/preferences_dialog.py" line="131"/>
         <source>Lucide Animées</source>
         <translation>Lucide Анимированные</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="137"/>
+        <location filename="../../ui/preferences_dialog.py" line="134"/>
         <source>Papicons : icônes pleines historiques. Lucide Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
         <translation>Papicons: классические залитые значки. Lucide Анимированные: контурные значки, анимация при наведении (без анимации, если анимация ограничена).</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="139"/>
+        <location filename="../../ui/preferences_dialog.py" line="136"/>
         <source>Icônes</source>
         <translation>Значки</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="148"/>
+        <location filename="../../ui/preferences_dialog.py" line="145"/>
         <source>Accessibilité</source>
         <translation>Доступность</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="151"/>
+        <location filename="../../ui/preferences_dialog.py" line="148"/>
         <source>Réduire les animations</source>
         <translation>Уменьшить анимацию</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="153"/>
+        <location filename="../../ui/preferences_dialog.py" line="150"/>
         <source>Coupe les animations de capsule, d&apos;en-tête et les icônes d&apos;onglet animées.</source>
         <translation>Обрезает анимацию капсул, анимацию заголовков и анимированные значки вкладок.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="154"/>
+        <location filename="../../ui/preferences_dialog.py" line="151"/>
         <source>Réduire la transparence</source>
         <translation>Уменьшить прозрачность</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="156"/>
+        <location filename="../../ui/preferences_dialog.py" line="153"/>
         <source>Rend opaques les surfaces en verre : barres, cartes et dialogues restent nets.</source>
         <translation>Делает стеклянные поверхности непрозрачными: полосы, карточки и диалоги остаются четкими.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="157"/>
+        <location filename="../../ui/preferences_dialog.py" line="154"/>
         <source>Contraste élevé</source>
         <translation>Высокая контрастность</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="159"/>
+        <location filename="../../ui/preferences_dialog.py" line="156"/>
         <source>Renforce les liserés et l&apos;anneau de focus pour les personnes à basse vision.</source>
         <translation>Усиливает границы и кольцо фокусировки для людей со слабым зрением.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="168"/>
+        <location filename="../../ui/preferences_dialog.py" line="165"/>
         <source>Tant qu&apos;une option n&apos;est pas modifiée ici, elle suit le réglage d&apos;accessibilité du système lorsqu&apos;il est disponible.</source>
         <translation>Пока здесь не будет изменена опция, она будет соответствовать настройке специальных возможностей системы, если она доступна.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="177"/>
+        <location filename="../../ui/preferences_dialog.py" line="174"/>
         <source>Langue</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="183"/>
+        <location filename="../../ui/preferences_dialog.py" line="180"/>
         <source>Langue de l&apos;interface</source>
         <translation>Язык интерфейса</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="189"/>
+        <location filename="../../ui/preferences_dialog.py" line="186"/>
         <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
         <translation>«Автоматически» соответствует языку системы. Языки с пометкой «будущий перевод» пока не имеют каталога: используются английский, затем французский. Изменение вступит в силу при следующем запуске Azimut.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="198"/>
+        <location filename="../../ui/preferences_dialog.py" line="195"/>
         <source>Outils externes</source>
         <translation>Внешние инструменты</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="200"/>
+        <location filename="../../ui/preferences_dialog.py" line="197"/>
         <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
         <translation>Встроенная копия используется в качестве приоритета; в противном случае введенный путь, затем системный PATH. Изменения сохраняются кнопкой «Сохранить».</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="209"/>
+        <location filename="../../ui/preferences_dialog.py" line="206"/>
         <source>Tous les fichiers (*)</source>
         <translation>Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="214"/>
+        <location filename="../../ui/preferences_dialog.py" line="211"/>
         <source>Détecter</source>
         <translation>Обнаружить</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="265"/>
+        <location filename="../../ui/preferences_dialog.py" line="262"/>
         <source>Préférences enregistrées.</source>
         <translation>Сохраненные настройки.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="270"/>
+        <location filename="../../ui/preferences_dialog.py" line="267"/>
         <source>Annuler</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="274"/>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="271"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer</source>
         <translation>Сохранять</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="314"/>
+        <location filename="../../ui/preferences_dialog.py" line="311"/>
         <source>Automatique (système)</source>
         <translation>Автоматический (системный)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="315"/>
+        <location filename="../../ui/preferences_dialog.py" line="312"/>
         <source>Suit la langue de l&apos;interface du système.</source>
         <translation>Соответствует языку интерфейса системы.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="323"/>
+        <location filename="../../ui/preferences_dialog.py" line="320"/>
         <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
         <translation>{language}: каталог появится, сначала на английском, а затем на французском языке.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer et relancer</source>
         <translation>Сохранить и перезапустить</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="364"/>
+        <location filename="../../ui/preferences_dialog.py" line="361"/>
         <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
         <translation>Сохраните настройки и перезапустите Azimut, чтобы применить язык.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="403"/>
-        <location filename="../../ui/preferences_dialog.py" line="472"/>
+        <location filename="../../ui/preferences_dialog.py" line="400"/>
+        <location filename="../../ui/preferences_dialog.py" line="469"/>
         <source>… non vérifié</source>
         <translation>…не проверено</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="404"/>
-        <location filename="../../ui/preferences_dialog.py" line="473"/>
+        <location filename="../../ui/preferences_dialog.py" line="401"/>
+        <location filename="../../ui/preferences_dialog.py" line="470"/>
         <source>Cliquez sur « Détecter » pour vérifier le chemin saisi.</source>
         <translation>Нажмите «Определить», чтобы проверить введенный путь.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="443"/>
+        <location filename="../../ui/preferences_dialog.py" line="440"/>
         <source>… vérification</source>
         <translation>… проверка</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="444"/>
+        <location filename="../../ui/preferences_dialog.py" line="441"/>
         <source>Exécution du binaire saisi pour lire sa version.</source>
         <translation>Выполнение введенного двоичного файла для чтения его версии.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="475"/>
+        <location filename="../../ui/preferences_dialog.py" line="472"/>
         <source>✔ saisi</source>
         <translation>✔ вошел</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="476"/>
+        <location filename="../../ui/preferences_dialog.py" line="473"/>
         <source>Chemin saisi, pas encore enregistré.</source>
         <translation>Путь введен, еще не сохранен.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="478"/>
+        <location filename="../../ui/preferences_dialog.py" line="475"/>
         <source>✖ chemin saisi inutilisable</source>
         <translation>✖ введенный путь непригоден для использования</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="479"/>
+        <location filename="../../ui/preferences_dialog.py" line="476"/>
         <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
         <translation>Введенный файл не может быть выполнен.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="524"/>
+        <location filename="../../ui/preferences_dialog.py" line="521"/>
         <source>✖ détection impossible</source>
         <translation>✖ обнаружение невозможно</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="525"/>
+        <location filename="../../ui/preferences_dialog.py" line="522"/>
         <source>La détection a échoué (voir le journal).</source>
         <translation>Обнаружение не удалось (см. журнал).</translation>
     </message>
@@ -2580,192 +2652,207 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>Profiles</name>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="75"/>
+        <location filename="../../modules/convert/profiles.py" line="76"/>
         <source>Fichier ni image, ni vidéo, ni audio : copié sans modification dans le dossier de sortie.</source>
         <translation>Не изображение, не видео и не аудио: копируется без изменений в папку вывода.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="82"/>
+        <location filename="../../modules/convert/profiles.py" line="83"/>
         <source>AVIF (AV1) : très compact, excellente qualité visuelle ; encodage assez lent.</source>
         <translation>AVIF (AV1): очень компактный, отличное визуальное качество; довольно медленное кодирование.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="85"/>
+        <location filename="../../modules/convert/profiles.py" line="86"/>
         <source>HEIC : format Apple compact ; nécessite pillow-heif. La qualité se règle de 0 à 100.</source>
         <translation>HEIC: компактный формат Apple; требуется pillow-heif. Качество задаётся от 0 до 100.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="88"/>
+        <location filename="../../modules/convert/profiles.py" line="89"/>
         <source>WebP : bon compromis taille / qualité, largement pris en charge.</source>
         <translation>WebP: хороший компромисс между размером и качеством, широко поддерживается.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="91"/>
+        <location filename="../../modules/convert/profiles.py" line="92"/>
         <source>JPEG : lisible partout, compression avec perte.</source>
         <translation>JPEG: читается везде, сжатие с потерями.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="94"/>
+        <location filename="../../modules/convert/profiles.py" line="95"/>
         <source>PNG : sans perte, idéal pour les captures et les aplats ; le niveau règle la compression.</source>
         <translation>PNG: без потерь, идеален для снимков экрана и однотонных областей; уровень задаёт сжатие.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="97"/>
+        <location filename="../../modules/convert/profiles.py" line="98"/>
         <source>JPEG XL : très bonne qualité à taille réduite, sans perte possible (distance 0).</source>
         <translation>JPEG XL: очень хорошее качество при малом размере, возможен без потерь (расстояние 0).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="100"/>
+        <location filename="../../modules/convert/profiles.py" line="101"/>
         <source>JPEG 2000 : sans perte, apprécié en archivage et en imagerie professionnelle.</source>
         <translation>JPEG 2000: без потерь, ценится в архивировании и профессиональной обработке изображений.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="103"/>
+        <location filename="../../modules/convert/profiles.py" line="104"/>
         <source>TIFF : sans perte, pour l&apos;impression et l&apos;archivage ; la compression se choisit.</source>
         <translation>TIFF: без потерь, для печати и архивирования; сжатие выбирается.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="106"/>
+        <location filename="../../modules/convert/profiles.py" line="107"/>
         <source>BMP : sans compression, universel sous Windows ; fichiers volumineux.</source>
         <translation>BMP: без сжатия, универсален в Windows; большие файлы.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="109"/>
+        <location filename="../../modules/convert/profiles.py" line="110"/>
         <source>QOI : sans perte, très rapide à lire et à écrire ; format récent, peu répandu.</source>
         <translation>QOI: без потерь, очень быстрое чтение и запись; новый, малораспространённый формат.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="115"/>
+        <location filename="../../modules/convert/profiles.py" line="116"/>
         <source>Vidéo AV1 dans un WebM : très compact, encodage lent.</source>
         <translation>Видео AV1 в WebM: очень компактно, медленное кодирование.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="120"/>
+        <location filename="../../modules/convert/profiles.py" line="121"/>
         <source>Vidéo AV1 dans un MP4 : très compact, plus compatible que l&apos;AV1 en WebM sur certains lecteurs.</source>
         <translation>Видео AV1 в MP4: очень компактно, на некоторых проигрывателях совместимее, чем AV1 в WebM.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="125"/>
+        <location filename="../../modules/convert/profiles.py" line="126"/>
         <source>Vidéo H.264 dans un MKV : conteneur souple, sous-titres texte copiés et audio varié.</source>
         <translation>Видео H.264 в MKV: гибкий контейнер, текстовые субтитры копируются, звук может быть разным.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="129"/>
+        <location filename="../../modules/convert/profiles.py" line="130"/>
         <source>Vidéo H.264 dans un MP4 : lisible partout.</source>
         <translation>Видео H.264 в MP4: читается везде.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="134"/>
+        <location filename="../../modules/convert/profiles.py" line="135"/>
         <source>Vidéo H.265 dans un MP4 : meilleure compression que H.264, un peu moins universel.</source>
         <translation>Видео H.265 в MP4: лучшее сжатие, чем H.264, чуть менее универсально.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="139"/>
+        <location filename="../../modules/convert/profiles.py" line="140"/>
         <source>H.264 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.264 с ускорением NVIDIA NVENC. Требуется совместимая видеокарта и драйвер NVIDIA.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="144"/>
+        <location filename="../../modules/convert/profiles.py" line="145"/>
         <source>H.265 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.265 с ускорением NVIDIA NVENC. Требуется совместимая видеокарта и драйвер NVIDIA.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="149"/>
+        <location filename="../../modules/convert/profiles.py" line="150"/>
+        <source>AV1 accéléré par NVIDIA NVENC (RTX 40 et plus). Proposé seulement si FFmpeg expose av1_nvenc ; nécessite un GPU et le pilote NVIDIA compatibles.</source>
+        <translation>AV1 с ускорением NVIDIA NVENC (RTX 40 и новее). Предлагается, только если FFmpeg предоставляет av1_nvenc; нужны совместимые GPU и драйвер NVIDIA.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="157"/>
         <source>H.264 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.264 с ускорением Intel Quick Sync Video. Требуется совместимый процессор и драйвер.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="154"/>
+        <location filename="../../modules/convert/profiles.py" line="162"/>
         <source>H.265 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.265 с ускорением Intel Quick Sync Video. Требуется совместимый процессор и драйвер.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="159"/>
+        <location filename="../../modules/convert/profiles.py" line="167"/>
+        <source>AV1 accéléré par Intel Quick Sync Video (GPU Intel Arc et suivants). Proposé seulement si FFmpeg expose av1_qsv ; nécessite un pilote compatible.</source>
+        <translation>AV1 с ускорением Intel Quick Sync Video (GPU Intel Arc и новее). Предлагается, только если FFmpeg предоставляет av1_qsv; нужен совместимый драйвер.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="174"/>
         <source>H.264 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.264 с ускорением VA-API (Linux). Требуется совместимое устройство /dev/dri/renderD*.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="164"/>
+        <location filename="../../modules/convert/profiles.py" line="179"/>
         <source>H.265 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.265 с ускорением VA-API (Linux). Требуется совместимое устройство /dev/dri/renderD*.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="169"/>
+        <location filename="../../modules/convert/profiles.py" line="184"/>
+        <source>AV1 accéléré par VA-API (Linux, Mesa récent). Proposé seulement si FFmpeg expose av1_vaapi ; nécessite un périphérique /dev/dri/renderD* qui sait encoder l&apos;AV1.</source>
+        <translation>AV1 с ускорением VA-API (Linux, свежий Mesa). Предлагается, только если FFmpeg предоставляет av1_vaapi; нужно устройство /dev/dri/renderD*, умеющее кодировать AV1.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="191"/>
         <source>Vidéo VP9 dans un WebM : bon compromis, bien pris en charge par les navigateurs.</source>
         <translation>Видео VP9 в WebM: хороший компромисс, хорошо поддерживается браузерами.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="174"/>
+        <location filename="../../modules/convert/profiles.py" line="196"/>
         <source>Vidéo MPEG-4 partie 2 dans un MP4 : ancien format, très compatible avec les lecteurs logiciels.</source>
         <translation>Видео MPEG-4 часть 2 в MP4: старый формат, очень совместим с программными проигрывателями.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="179"/>
+        <location filename="../../modules/convert/profiles.py" line="201"/>
         <source>Vidéo MPEG-2 et audio MP2 : pour la télévision, les DVD et les appareils anciens.</source>
         <translation>Видео MPEG-2 и звук MP2: для телевидения, DVD и старых устройств.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="183"/>
+        <location filename="../../modules/convert/profiles.py" line="205"/>
         <source>Vidéo Theora et audio Vorbis dans un OGV : libre, lisible par les lecteurs Ogg.</source>
         <translation>Видео Theora и звук Vorbis в OGV: свободный, читается проигрывателями Ogg.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="187"/>
+        <location filename="../../modules/convert/profiles.py" line="209"/>
         <source>ProRes dans un MOV : montage vidéo, audio PCM 24 bits par défaut ; fichiers volumineux mais faciles à décoder.</source>
         <translation>ProRes в MOV: видеомонтаж, по умолчанию 24-битный PCM; большие, но легко декодируемые файлы.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="196"/>
+        <location filename="../../modules/convert/profiles.py" line="218"/>
         <source>MP3 : compatible avec tous les lecteurs.</source>
         <translation>MP3: совместим со всеми проигрывателями.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="199"/>
+        <location filename="../../modules/convert/profiles.py" line="221"/>
         <source>AAC dans un conteneur M4A.</source>
         <translation>AAC в контейнере M4A.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="202"/>
+        <location filename="../../modules/convert/profiles.py" line="224"/>
         <source>Opus : excellent rapport qualité / taille.</source>
         <translation>Opus: отличное соотношение качества и размера.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="206"/>
+        <location filename="../../modules/convert/profiles.py" line="228"/>
         <source>FLAC : compression sans perte (le curseur ne change que la taille et la vitesse).</source>
         <translation>FLAC: сжатие без потерь (ползунок меняет только размер и скорость).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="209"/>
+        <location filename="../../modules/convert/profiles.py" line="231"/>
         <source>Vorbis dans un OGG : libre, bon rapport qualité / taille.</source>
         <translation>Vorbis в OGG: свободный, хорошее соотношение качества и размера.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="212"/>
+        <location filename="../../modules/convert/profiles.py" line="234"/>
         <source>ALAC : compression sans perte Apple, dans un conteneur M4A.</source>
         <translation>ALAC: сжатие без потерь Apple в контейнере M4A.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="215"/>
+        <location filename="../../modules/convert/profiles.py" line="237"/>
         <source>WAV : audio non compressé, fichier volumineux.</source>
         <translation>WAV: несжатый звук, большой файл.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="218"/>
+        <location filename="../../modules/convert/profiles.py" line="240"/>
         <source>AC-3 : utilisé par les DVD et la télévision.</source>
         <translation>AC-3: используется на DVD и в телевидении.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="221"/>
+        <location filename="../../modules/convert/profiles.py" line="243"/>
         <source>MP2 : audio des flux MPEG-2 (télévision, DVD).</source>
         <translation>MP2: звук потоков MPEG-2 (телевидение, DVD).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="224"/>
+        <location filename="../../modules/convert/profiles.py" line="246"/>
         <source>AIFF : PCM 16 bits non compressé, pour le montage et l&apos;archivage sur macOS.</source>
         <translation>AIFF: несжатый 16-битный PCM для монтажа и архивирования в macOS.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="227"/>
+        <location filename="../../modules/convert/profiles.py" line="249"/>
         <source>WAV : PCM 24 bits non compressé, pour le montage et l&apos;archivage audio.</source>
         <translation>WAV: несжатый 24-битный PCM для монтажа и архивирования звука.</translation>
     </message>
@@ -2883,8 +2970,8 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="76"/>
-        <location filename="../../modules/rename/window.py" line="483"/>
-        <location filename="../../modules/rename/window.py" line="507"/>
+        <location filename="../../modules/rename/window.py" line="485"/>
+        <location filename="../../modules/rename/window.py" line="509"/>
         <source>Annuler le dernier renommage</source>
         <translation>Отменить последнее переименование</translation>
     </message>
@@ -2930,7 +3017,7 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="120"/>
-        <location filename="../../modules/rename/window.py" line="315"/>
+        <location filename="../../modules/rename/window.py" line="317"/>
         <source>Aucun dossier analysé.</source>
         <translation>Ни один файл не проанализирован.</translation>
     </message>
@@ -2960,87 +3047,87 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>ГГГГ-ММ-ДД (только день, 15 июня 2008 г.)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="143"/>
+        <location filename="../../modules/rename/window.py" line="145"/>
         <source>Conserver le préfixe personnalisé</source>
         <translation>Сохранить собственный префикс</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="144"/>
+        <location filename="../../modules/rename/window.py" line="146"/>
         <source>Ajouter IMG / VID / AUD au début</source>
         <translation>Добавьте IMG/VID/AUD в начале</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="145"/>
+        <location filename="../../modules/rename/window.py" line="147"/>
         <source>Sans métadonnées : utiliser la date de modification</source>
         <translation>Без метаданных: используйте дату изменения</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="146"/>
+        <location filename="../../modules/rename/window.py" line="148"/>
         <source>Inclure les sous-dossiers</source>
         <translation>Включить подпапки</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="154"/>
+        <location filename="../../modules/rename/window.py" line="156"/>
         <source>Préfixe personnalisé</source>
         <translation>Пользовательский префикс</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="156"/>
+        <location filename="../../modules/rename/window.py" line="158"/>
         <source>(aucun) — ex. Vacances Corse</source>
         <translation>(нет) — например. Корсика: праздники</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="158"/>
+        <location filename="../../modules/rename/window.py" line="160"/>
         <source>Appliquer à la sélection</source>
         <translation>Применить к выбору</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="160"/>
+        <location filename="../../modules/rename/window.py" line="162"/>
         <source>Rétablir le préfixe automatique</source>
         <translation>Восстановить автоматический префикс</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="166"/>
+        <location filename="../../modules/rename/window.py" line="168"/>
         <source>Sélection</source>
         <translation>Выбор</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="177"/>
+        <location filename="../../modules/rename/window.py" line="179"/>
         <source>Entrée ou double-clic : cocher / décocher la ligne. Le contenu, les métadonnées et la date de modification ne sont jamais touchés.</source>
         <translation>Введите или дважды щелкните: установите/снимите флажок со строки. Содержимое, метаданные и дата изменения никогда не затрагиваются.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="187"/>
+        <location filename="../../modules/rename/window.py" line="189"/>
         <source>Réglages</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="225"/>
+        <location filename="../../modules/rename/window.py" line="227"/>
         <source>Importer des fichiers</source>
         <translation>Импортировать файлы</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="233"/>
+        <location filename="../../modules/rename/window.py" line="235"/>
         <source>Importer un dossier</source>
         <translation>Импортировать папку</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="319"/>
+        <location filename="../../modules/rename/window.py" line="321"/>
         <source>{shown} affiché(s) / {total} fichiers · à renommer {rename} · conformes {ok} · décochés {skipped} · sans date {nodate}</source>
         <translation>Отображается {shown} / файлы {total} · необходимо переименовать в {rename} · соответствует {ok} · не отмечено {skipped} · без даты {nodate}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="332"/>
+        <location filename="../../modules/rename/window.py" line="334"/>
         <source>{count} fichiers sélectionnés</source>
         <translation>{count} выбранных файлов</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="336"/>
+        <location filename="../../modules/rename/window.py" line="338"/>
         <source>(inchangé)</source>
         <translation>(без изменений)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="337"/>
+        <location filename="../../modules/rename/window.py" line="339"/>
         <source>Avant : {before}
 Après : {after}
 Date : {date}
@@ -3053,57 +3140,57 @@ Statut : {status}</source>
 Статус: {status}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Rien à renommer</source>
         <translation>Нечего переименовывать</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Aucun fichier coché à renommer.</source>
         <translation>Нет отмеченных файлов для переименования.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="436"/>
+        <location filename="../../modules/rename/window.py" line="438"/>
         <source>Confirmer le renommage</source>
         <translation>Подтвердите переименование</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Rien à annuler</source>
         <translation>Нечего отменять</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Aucun renommage à annuler.</source>
         <translation>Нет переименования для отмены.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="508"/>
+        <location filename="../../modules/rename/window.py" line="510"/>
         <source>Rendre leur ancien nom aux {count} fichier(s) renommés le {date} ?</source>
         <translation>Вернуть файлам(ам) {count}, переименованным {date}, их старое имя?</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Rien à exporter</source>
         <translation>Ничего экспортировать</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Aucun résultat d&apos;analyse.</source>
         <translation>Никаких результатов анализа.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>Exporter le plan</source>
         <translation>Экспортировать план</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>CSV (*.csv)</source>
         <translation>CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="532"/>
+        <location filename="../../modules/rename/window.py" line="534"/>
         <source>Erreur</source>
         <translation>Ошибка</translation>
     </message>
@@ -3111,7 +3198,7 @@ Statut : {status}</source>
 <context>
     <name>ScanWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="104"/>
+        <location filename="../../modules/convert/workers.py" line="143"/>
         <source>Analyse des fichiers…</source>
         <translation>Анализ файлов…</translation>
     </message>
@@ -4115,7 +4202,7 @@ Ajouter cette modification en attente ?</source>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="57"/>
-        <location filename="../../modules/takeout/window.py" line="348"/>
+        <location filename="../../modules/takeout/window.py" line="350"/>
         <source>Annuler la dernière application</source>
         <translation>Отменить последнее приложение</translation>
     </message>
@@ -4173,13 +4260,13 @@ Ajouter cette modification en attente ?</source>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="96"/>
-        <location filename="../../modules/takeout/window.py" line="237"/>
+        <location filename="../../modules/takeout/window.py" line="239"/>
         <source>Aucun fichier : déposez un export Google Photos.</source>
         <translation>Нет файлов: отмените экспорт Google Фото.</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="100"/>
-        <location filename="../../modules/takeout/window.py" line="243"/>
+        <location filename="../../modules/takeout/window.py" line="245"/>
         <source>Aucun dossier analysé.</source>
         <translation>Ни один файл не проанализирован.</translation>
     </message>
@@ -4249,88 +4336,88 @@ Ajouter cette modification en attente ?</source>
         <translation>Google записывает время в формате UTC. Часовой пояс также записывается в файл (OffsetTime), поэтому дата остается точной для программного обеспечения, которое ее считывает. Видео QuickTime всегда записываются в формате UTC.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="176"/>
+        <location filename="../../modules/takeout/window.py" line="178"/>
         <source>Importer des fichiers</source>
         <translation>Импортировать файлы</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="184"/>
+        <location filename="../../modules/takeout/window.py" line="186"/>
         <source>Importer le dossier de l&apos;export Google Photos</source>
         <translation>Импортировать папку из экспорта Google Фото</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="233"/>
+        <location filename="../../modules/takeout/window.py" line="235"/>
         <source>Aucun fichier retiré.</source>
         <translation>Ни один файл не удален.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="235"/>
+        <location filename="../../modules/takeout/window.py" line="237"/>
         <source>Aucun fichier sans JSON.</source>
         <translation>Нет файлов без JSON.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="241"/>
+        <location filename="../../modules/takeout/window.py" line="243"/>
         <source>{n} fichier(s) retiré(s) de la liste.</source>
         <translation>{n} файлов удалено из списка.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="247"/>
+        <location filename="../../modules/takeout/window.py" line="249"/>
         <source>{total} média(s) · {ready} prêt(s) · {nojson} sans JSON · {nodata} sans date ni position · {orphans} JSON sans média.</source>
         <translation>{total} носители · {ready} готовы · {nojson} без JSON · {nodata} без даты и положения · {orphans} JSON без носителя.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>ExifTool introuvable</source>
         <translation>ExifTool не найден</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
         <source>Impossible d&apos;appliquer sans ExifTool.</source>
         <translation>Невозможно применить без ExifTool.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Rien à écrire</source>
         <translation>Нечего писать</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Cochez au moins une option d&apos;écriture.</source>
         <translation>Отметьте хотя бы один вариант написания.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Rien à appliquer</source>
         <translation>Нечего применять</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Aucun média prêt : ajoutez un dossier d&apos;export.</source>
         <translation>Нет готовых носителей: добавьте папку экспорта.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="309"/>
+        <location filename="../../modules/takeout/window.py" line="311"/>
         <source>Confirmer l&apos;application</source>
         <translation>Подтвердить заявку</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>Impossible d&apos;annuler sans ExifTool.</source>
         <translation>Невозможно отменить без ExifTool.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Rien à annuler</source>
         <translation>Нечего отменять</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Aucune application à annuler.</source>
         <translation>Нет приложений, которые можно было бы отменить.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="349"/>
+        <location filename="../../modules/takeout/window.py" line="351"/>
         <source>Rétablir l&apos;état d&apos;avant l&apos;application du {date} sur {count} fichier(s) ?</source>
         <translation>Восстановить состояние перед применением {date} к файлам {count}?</translation>
     </message>
@@ -4341,42 +4428,6 @@ Ajouter cette modification en attente ?</source>
         <location filename="../../launcher/tips_dialog.py" line="313"/>
         <source>Conseils</source>
         <translation>Советы</translation>
-    </message>
-    <message>
-        <source>De Google Photos à vos dossiers</source>
-        <translation type="vanished">От Google Photos к вашим папкам</translation>
-    </message>
-    <message>
-        <source>L&apos;ordre recommandé pour traiter un export Google Photos :</source>
-        <translation type="vanished">Рекомендуемый порядок обработки экспорта Google Фото:</translation>
-    </message>
-    <message>
-        <source>Demandez l&apos;export à Google (Takeout), décompressez-le, puis réinjectez les dates et les positions GPS dans vos fichiers.</source>
-        <translation type="vanished">Запросите экспорт из Google (Архиватор), разархивируйте его, затем повторно добавьте даты и координаты GPS в свои файлы.</translation>
-    </message>
-    <message>
-        <source>Écartez d&apos;abord les doublons : les étapes suivantes seront plus rapides et plus sûres.</source>
-        <translation type="vanished">Сначала удалите дубликаты: следующие шаги будут быстрее и безопаснее.</translation>
-    </message>
-    <message>
-        <source>Convertissez ensuite au format et à la qualité souhaités, par lots.</source>
-        <translation type="vanished">Затем преобразуйте в нужный формат и качество, партиями.</translation>
-    </message>
-    <message>
-        <source>Inscrivez la date de prise de vue dans les noms pour classer les fichiers chronologiquement.</source>
-        <translation type="vanished">Записывайте дату создания в названия, чтобы сортировать файлы по хронологии.</translation>
-    </message>
-    <message>
-        <source>Comparez les dossiers avant et après pour vérifier que rien ne manque.</source>
-        <translation type="vanished">Сравните папки до и после, чтобы проверить, что ничего не пропало.</translation>
-    </message>
-    <message>
-        <source>Terminez par les métadonnées : lecture, complément ou suppression des EXIF, IPTC et XMP.</source>
-        <translation type="vanished">Завершите с метаданными: прочитайте, заполните или удалите EXIF, IPTC и XMP.</translation>
-    </message>
-    <message>
-        <source>Chaque étape correspond à un module : ouvrez-le depuis sa carte dans Azimut.</source>
-        <translation type="vanished">Каждый шаг — это модуль: откройте его с карточки в Azimut.</translation>
     </message>
     <message>
         <location filename="../../launcher/tips_dialog.py" line="324"/>
@@ -4541,59 +4592,87 @@ Ajouter cette modification en attente ?</source>
     </message>
 </context>
 <context>
+    <name>VerifyWorker</name>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="190"/>
+        <source>Dossier de sortie introuvable : {path}</source>
+        <translation>Папка вывода не найдена: {path}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="193"/>
+        <source>Aucun dossier de sortie à vérifier.</source>
+        <translation>Нет папки вывода для проверки.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="196"/>
+        <source>Recherche des conversions interrompues…</source>
+        <translation>Поиск прерванных конвертаций…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="208"/>
+        <source>FFprobe introuvable : le contenu des vidéos et des audios n&apos;est pas contrôlé.</source>
+        <translation>FFprobe не найден: содержимое видео и аудио не проверяется.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="231"/>
+        <source>{checked} fichier(s) contrôlé(s), {bad} suspect(s).</source>
+        <translation>Проверено файлов: {checked}, подозрительных: {bad}.</translation>
+    </message>
+</context>
+<context>
     <name>VideoPreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2641"/>
+        <location filename="../../ui/widgets.py" line="2760"/>
         <source>Lire ou mettre en pause</source>
         <translation>Воспроизвести или поставить на паузу</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2644"/>
+        <location filename="../../ui/widgets.py" line="2763"/>
         <source>Position dans le média</source>
         <translation>Позиция в медиафайле</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2669"/>
+        <location filename="../../ui/widgets.py" line="2788"/>
         <source>Couper ou rétablir le son</source>
         <translation>Отключить или включить звук</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2672"/>
-        <location filename="../../ui/widgets.py" line="2679"/>
+        <location filename="../../ui/widgets.py" line="2791"/>
+        <location filename="../../ui/widgets.py" line="2798"/>
         <source>Volume</source>
         <translation>Объем</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2725"/>
+        <location filename="../../ui/widgets.py" line="2844"/>
         <source>Lecture vidéo indisponible
 (installez PySide6-Addons)</source>
         <translation>Воспроизведение видео недоступно
 (установите PySide6-Addons)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2766"/>
+        <location filename="../../ui/widgets.py" line="2885"/>
         <source>Chargement…</source>
         <translation>Загрузка…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Mettre en pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Lire</source>
         <translation>Читать</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2961"/>
+        <location filename="../../ui/widgets.py" line="3080"/>
         <source>Lecture impossible
 {reason}</source>
         <translation>Невозможно прочитать
 {reason}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2932"/>
+        <location filename="../../ui/widgets.py" line="3051"/>
         <source>Aperçu vidéo limité (codec non pris en charge)</source>
         <translation>Ограниченный предпросмотр видео (неподдерживаемый кодек)</translation>
     </message>
@@ -4631,12 +4710,12 @@ Ajouter cette modification en attente ?</source>
         <translation>неизвестное состояние</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1989"/>
+        <location filename="../../ui/widgets.py" line="2097"/>
         <source>Aucun élément</source>
         <translation>Нет товаров</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2257"/>
+        <location filename="../../ui/widgets.py" line="2376"/>
         <source>{label}
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4645,7 +4724,7 @@ Ajouter cette modification en attente ?</source>
 (для предварительного просмотра требуется ffmpeg)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2370"/>
+        <location filename="../../ui/widgets.py" line="2489"/>
         <source>PDF
 {name}
 (aperçu indisponible : installez poppler ou Ghostscript)</source>
@@ -4654,14 +4733,14 @@ Ajouter cette modification en attente ?</source>
 (предварительная версия недоступна: установите poppler или Ghostscript)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2387"/>
+        <location filename="../../ui/widgets.py" line="2506"/>
         <source>Audio
 {name}</source>
         <translation>Аудио
 {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2417"/>
+        <location filename="../../ui/widgets.py" line="2536"/>
         <source>Vidéo
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4670,7 +4749,7 @@ Ajouter cette modification en attente ?</source>
 (для предварительного просмотра требуется ffmpeg)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2439"/>
+        <location filename="../../ui/widgets.py" line="2558"/>
         <source>Vidéo
 {name}
 ({reason})</source>
@@ -4679,7 +4758,7 @@ Ajouter cette modification en attente ?</source>
 ({reason})</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2465"/>
+        <location filename="../../ui/widgets.py" line="2584"/>
         <source>Image</source>
         <translation>Картина</translation>
     </message>
@@ -4748,35 +4827,35 @@ Ajouter cette modification en attente ?</source>
 <context>
     <name>_HdrRow</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="126"/>
+        <location filename="../../modules/convert/codec_tree.py" line="136"/>
         <source>HDR</source>
         <translation>HDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="129"/>
+        <location filename="../../modules/convert/codec_tree.py" line="140"/>
         <source>Tone-mapping vers SDR</source>
         <translation>Преобразование тонов в SDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="130"/>
+        <location filename="../../modules/convert/codec_tree.py" line="141"/>
         <source>HDR natif (AV1 10 bits)</source>
         <translation>Собственный HDR (10-битный AV1)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="131"/>
+        <location filename="../../modules/convert/codec_tree.py" line="142"/>
         <source>Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR (codec AV1 uniquement ; les autres codecs passent toujours en SDR).</source>
         <translation>HDR-видео: преобразование в SDR (совместимо везде) или сохранение HDR (только кодек AV1; другие кодеки всегда переключаются на SDR).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="134"/>
-        <source>Le HDR natif n&apos;est possible qu&apos;avec le codec vidéo AV1 : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
-        <translation>Собственный HDR возможен только с видеокодеком AV1: с помощью выбранного кодека HDR-видео преобразуется в SDR (тональное отображение).</translation>
+        <location filename="../../modules/convert/codec_tree.py" line="145"/>
+        <source>Le HDR natif n&apos;est possible qu&apos;avec l&apos;AV1 logiciel (SVT-AV1 ou libaom) : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
+        <translation>Нативный HDR возможен только с программным AV1 (SVT-AV1 или libaom): с выбранным кодеком HDR-видео конвертируется в SDR (tone mapping).</translation>
     </message>
 </context>
 <context>
     <name>_TabCloseButton</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1045"/>
+        <location filename="../../launcher/atlas_window.py" line="1071"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Закрыть вкладку</translation>
     </message>

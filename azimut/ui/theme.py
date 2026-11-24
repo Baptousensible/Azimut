@@ -8,7 +8,7 @@ from string import Template
 from typing import Any
 
 from PySide6.QtCore import QEvent, QObject, Qt, Signal
-from PySide6.QtGui import QColor, QFocusEvent, QFont, QGuiApplication, QPalette
+from PySide6.QtGui import QColor, QFocusEvent, QFont, QGuiApplication, QPalette, QScreen
 from PySide6.QtWidgets import QAbstractButton, QApplication, QWidget
 
 from azimut.core import system_accessibility
@@ -23,8 +23,18 @@ APPEARANCES: tuple[str, ...] = ("system", "dark", "light")
 # Thèmes d'icônes : Papicons (historique) et Lucide Animées (lucide-animated, animé au survol).
 ICON_THEMES: tuple[str, ...] = ("papicons", "animated")
 ZOOM_MIN, ZOOM_MAX = 0.8, 1.6
+# Crans de zoom proposés dans les préférences ; le calibrage du premier lancement y retombe.
+ZOOM_STEPS: tuple[float, ...] = (0.8, 0.85, 0.9, 1.0, 1.1, 1.25, 1.5)
+TARGET_BODY_MM = 2.3            # corps de texte visé au premier lancement, sur l'écran
+CALIBRATION_MIN, CALIBRATION_MAX = 0.85, 1.25
 BASE_POINT_SIZE = 13.0          # repli de build_qss ; apply() reprend la taille du système
-MIN_POINT_SIZE = 10.0
+MIN_POINT_SIZE = 8.0            # plancher absolu : en dessous, le texte n'est plus lisible
+# Échelle typographique unique, exprimée en fraction du corps (base × zoom). Des tailles
+# absolues (10 pt de libellé, plancher de 13 pt pour un titre) inversaient la hiérarchie
+# selon la police du système : sous Windows (9 pt), les libellés passaient au-dessus du
+# corps ; sous macOS (13 pt), le titre du panneau latéral dépassait le nom du module.
+CAPTION_SIZE_RATIO = 0.8        # libellés secondaires (pastilles, titres de source…)
+TITLE_SIZE_RATIO = 1.2          # nom du module et titre d'une boîte de dialogue
 
 # Accent Azimut : orange profond de l'aiguille, décliné pour chaque fond.
 # nom : (clair, sombre)
@@ -43,19 +53,25 @@ _PALETTE: dict[str, tuple[str, str]] = {
     "danger": ("#c93b3b", "#c24141"),
     "danger_hover": ("#b13434", "#a03333"),
     "accent": ("#e34b00", "#e8590c"),
-    "focus": ("#e34b00", "#e8590c"),
+    "focus": ("#b8400a", "#e8590c"),
     "accent_hover": ("#c2410c", "#f97316"),
     "secondary": ("#ced8e2", "#1b2c45"),
     "secondary_hover": ("#b8c6d6", "#24395a"),
-    "ok_txt": ("#2c6e4d", "#7cc79a"),
-    "warn_txt": ("#b45309", "#ffb27a"),
-    "err_txt": ("#b02a2a", "#ff7b7b"),
-    "info_txt": ("#3f5961", "#a9bdd4"),
+    # Textes des pastilles : sur leur fond clair, chaque teinte atteint 4,5:1.
+    "ok_txt": ("#1f5138", "#7cc79a"),
+    "warn_txt": ("#7a3a05", "#ffb27a"),
+    "err_txt": ("#7d1d1d", "#ff7b7b"),
+    "info_txt": ("#33484f", "#a9bdd4"),
     "ok_bg": ("#aacdba", "#17382a"),
     "warn_bg": ("#dfc5af", "#3a2618"),
     "err_bg": ("#cfaeaa", "#362222"),
     "info_bg": ("#b4c6d6", "#16283d"),
     "accent_bg": ("#dfb79c", "#3a2313"),
+    # Segments de la barre de progression de Convert : une teinte par famille de fichiers.
+    "seg_image": ("#2f6f9f", "#4fa3e0"),
+    "seg_audio": ("#6b4c9a", "#a98bf0"),
+    "seg_video": ("#c2410c", "#e8590c"),
+    "seg_copy": ("#64748b", "#8ea3b8"),
 }
 # Variantes à contraste élevé : liserés et anneau de focus plus francs.
 _HIGH_CONTRAST: dict[str, tuple[str, str]] = {
@@ -117,8 +133,10 @@ _GLASS: dict[str, dict[str, str]] = {
         "glass_button_pressed_top": "#c3cedb",
         "glass_button_pressed_bottom": "#aebdcd",
         "page_hover": "#14032b4c",
-        "action": "#e34b00",
-        "action_hover": "#c2410c",
+        # Orange d'action assombri : sur le fond clair, #e34b00 ne tenait que 2,7:1
+        # (cases, curseurs, sélection) alors que le repère non textuel en demande 3.
+        "action": "#b8400a",
+        "action_hover": "#9a3000",
     },
 }
 
@@ -183,6 +201,63 @@ def normalize_icon_theme(value: Any) -> str:
     if name == "lucide":
         return "animated"
     return name if name in ICON_THEMES else "papicons"
+
+
+def point_size_floor(base_point_size: float) -> float:
+    """Plancher du corps de texte pour une taille de système donnée.
+
+    Le plancher fixe de 10 pt d'avant ne laissait aucune marge sous 100 % aux systèmes dont
+    la police fait moins : sur Windows (9 pt), 100 %, 90 % et 80 % donnaient tous 10 pt et
+    seules les marges rétrécissaient. Le plancher suit donc la taille du système sans jamais
+    la dépasser, et garde un minimum absolu pour la lisibilité.
+    """
+    return min(MIN_POINT_SIZE, float(base_point_size))
+
+
+def _screen_density(screen: QScreen | None = None) -> float | None:
+    """Pixels logiques par pouce d'un écran (le principal par défaut), None si inconnue.
+
+    Hors écran (tests, CI), la taille physique rapportée est une valeur de synthèse
+    (800 × 800 px pour 203,2 mm) : calibrer dessus figerait un zoom arbitraire.
+    """
+    if QGuiApplication.platformName() == "offscreen":
+        return None
+    screen = screen if screen is not None else QGuiApplication.primaryScreen()
+    if screen is None:
+        return None
+    width = screen.geometry().width()
+    millimetres = screen.physicalSize().width()
+    if width <= 0 or millimetres <= 0:
+        return None
+    return width / (millimetres / 25.4)
+
+
+def screen_key(screen: QScreen) -> str:
+    """Clé d'un écran : son nom et son facteur d'échelle.
+
+    Le facteur fait partie de la clé : le même moniteur passé de 150 % à 200 % (ou deux
+    écrans portant le même nom de modèle) doit garder deux réglages distincts.
+    """
+    return f"{screen.name() or 'écran'}|{float(screen.devicePixelRatio()):.2f}"
+
+
+def calibrated_zoom(base_point_size: float, logical_dpi: float, density: float) -> float:
+    """Zoom amenant le corps de texte à ~2,3 mm sur un écran de densité donnée.
+
+    Le corps vaut ``base × logical_dpi / 72`` pixels logiques (conversion point → pixel de
+    Qt), donc ``corps / densité × 25,4`` millimètres. La densité seule relie un pixel à une
+    taille physique : la résolution en pixels, elle, ne dit rien (un 27" 4K à 200 % est
+    moins dense qu'un 13" en 1440 × 900). Le résultat est borné à 0,85–1,25, puis ramené
+    au cran proposé le plus proche pour que les préférences affichent la valeur réelle.
+    """
+    if base_point_size <= 0 or logical_dpi <= 0 or density <= 0:
+        return 1.0
+    body_mm = (base_point_size * logical_dpi / 72.0) / density * 25.4
+    if body_mm <= 0:
+        return 1.0
+    wanted = max(CALIBRATION_MIN, min(CALIBRATION_MAX, TARGET_BODY_MM / body_mm))
+    steps = [step for step in ZOOM_STEPS if CALIBRATION_MIN <= step <= CALIBRATION_MAX]
+    return min(steps, key=lambda step: abs(step - wanted))
 
 
 def clamp_zoom(value: Any) -> float:
@@ -626,6 +701,7 @@ def build_qss(theme: str, zoom: float = 1.0, *,
     g = glass_style(theme, reduce_transparency)
     z = clamp_zoom(zoom)
     base = max(MIN_POINT_SIZE, float(base_point_size))
+    floor = point_size_floor(base)
     mapping: dict[str, str] = dict(p)
     mapping.update(g)
     for n in (2, 4, 6, 8, 10, 12, 14, 16, 24, 32):
@@ -634,11 +710,14 @@ def build_qss(theme: str, zoom: float = 1.0, *,
     mapping["ind"] = f"{indicator}px"                     # cases et radios suivent le zoom
     mapping["ind_r"] = f"{max(3, round(indicator * 0.31))}px"
     mapping["ind_radio"] = f"{indicator // 2}px"
-    mapping["side_title_size"] = f"{round(base * 1.2 * z, 1):g}pt"
-    # Libellés secondaires : jamais sous 10 pt, et solidaires du zoom.
-    mapping["caption_size"] = f"{max(MIN_POINT_SIZE, round(10.0 * z, 1)):g}pt"
-    mapping["dialog_title_size"] = f"{max(13.0, round((base + 2.0) * z, 1)):g}pt"
-    mapping["module_title_size"] = f"{max(MIN_POINT_SIZE, round(max(12.0, base) * z, 1)):g}pt"
+    # Tout dérive du corps réel (base × zoom) : les rapports restent identiques d'une
+    # plateforme à l'autre, seule l'échelle change.
+    body = max(floor, base * z)
+    title = max(floor, round(body * TITLE_SIZE_RATIO, 1))
+    mapping["module_title_size"] = f"{title:g}pt"       # nom du module : rang de titre
+    mapping["dialog_title_size"] = f"{title:g}pt"
+    mapping["side_title_size"] = f"{body:g}pt"          # « Réglages » : rang du corps
+    mapping["caption_size"] = f"{max(floor, round(body * CAPTION_SIZE_RATIO, 1)):g}pt"
     images = build_images(theme, p)
     for name in ("check", "radio", "chevron_right", "chevron_down", "chevron_up"):
         mapping[f"img_{name}"] = f'url("{images[name]}")' if name in images else "none"
@@ -680,9 +759,8 @@ def _build_palette(theme: str, high_contrast: bool = False,
 class ThemeManager(QObject):
     """Thème et zoom courants ; réapplique la feuille de style à chaud.
 
-    Seul le zoom (avec les réglages d'accessibilité) est mémorisé. Le thème suit le
-    bureau : chaque lancement repart de « system », et un choix Sombre/Clair ne vaut
-    que jusqu'à la fermeture de l'application.
+    Le zoom (avec les réglages d'accessibilité) et l'apparence choisie sont mémorisés :
+    « system » suit le bureau, « Sombre » et « Clair » sont repris au lancement suivant.
     """
 
     changed = Signal(str)                     # "dark" | "light" (émis aussi quand le zoom change)
@@ -694,11 +772,8 @@ class ThemeManager(QObject):
     def __init__(self, prefs: Preferences | None = None, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._prefs = prefs if prefs is not None else Preferences.instance()
-        # Aucune apparence n'est relue : un lancement démarre toujours « selon le système ».
-        # Une ancienne préférence « theme » restée sur le disque est ignorée.
-        self._appearance: str = "system"
+        self._appearance: str = self._stored_appearance()
         self._theme: str = self._resolve(self._appearance)
-        self._zoom: float = clamp_zoom(self._prefs.get("zoom", 1.0))
         self._icon_theme: str = normalize_icon_theme(self._prefs.get("icon_theme", "papicons"))
         # Une préférence explicite gagne ; sinon, on reprend le réglage du système.
         self._explicit: dict[str, bool] = {}
@@ -712,6 +787,10 @@ class ThemeManager(QObject):
         self._state_app: QApplication | None = None
         self._app: QApplication | None = None
         self._base_font: QFont | None = None
+        # Zoom solidaire de l'écran : chaque écran garde le sien (voir `zoom_for`).
+        self._screen_key: str | None = None
+        # Après `_base_font` : le calibrage du premier lancement lit la taille du système.
+        self._zoom: float = self._initial_zoom()
         self._scheme_hints: object | None = None
         self._prefs.changed.connect(self._on_pref_changed)
 
@@ -728,8 +807,107 @@ class ThemeManager(QObject):
     def zoom(self) -> float:
         return self._zoom
 
+    def _stored_appearance(self) -> str:
+        """Apparence enregistrée ; absente ou inconnue, elle revient à « system ».
+
+        Une préférence « theme » écrite par une version antérieure est relue telle quelle :
+        ses valeurs « dark » et « light » sont exactement celles d'aujourd'hui.
+        """
+        value = str(self._prefs.get("theme", "system") or "system").strip().lower()
+        return value if value in APPEARANCES else "system"
+
+    def _initial_zoom(self) -> float:
+        """Zoom de départ : celui mémorisé par l'écran principal, sinon son calibrage.
+
+        Le calibrage n'a lieu qu'une fois par écran (aucun réglage enregistré pour lui) et
+        son résultat est mémorisé : il n'est plus recalculé ensuite. Sans écran mesurable,
+        rien n'est figé et le repli est 100 %.
+        """
+        screen = QGuiApplication.primaryScreen()
+        if screen is None:
+            return 1.0
+        self._screen_key = screen_key(screen)
+        return self.zoom_for(screen)
+
+    def zoom_for(self, screen: QScreen) -> float:
+        """Zoom mémorisé pour cet écran ; à défaut, son calibrage (une seule fois)."""
+        key = screen_key(screen)
+        saved = self._saved_zooms()
+        if key in saved:
+            return saved[key]
+        legacy = self._legacy_zoom()
+        if legacy is not None:
+            # Migration : l'ancienne valeur globale devient celle de l'écran courant.
+            self._remember_zoom(key, legacy)
+            return legacy
+        density = _screen_density(screen)
+        if density is None:
+            return 1.0                        # écran non mesurable : ne rien figer
+        zoom = calibrated_zoom(self.base_point_size(), screen.logicalDotsPerInch(), density)
+        self._remember_zoom(key, zoom)
+        self._prefs.set("zoom", zoom)         # miroir : dernière valeur appliquée
+        return zoom
+
+    def activate_screen(self, screen: QScreen | None) -> None:
+        """Adopte le zoom de l'écran où se trouve la fenêtre (à chaque changement d'écran).
+
+        Chaque écran a son réglage : passer la fenêtre sur un second moniteur reprend le
+        zoom mémorisé pour lui, au lieu de garder une valeur globale unique.
+        """
+        if screen is None:
+            return
+        key = screen_key(screen)
+        if key == self._screen_key:
+            return
+        self._screen_key = key
+        self._set_zoom_value(self.zoom_for(screen))
+
+    def _saved_zooms(self) -> dict[str, float]:
+        """Zooms mémorisés par écran (lecture tolérante : une entrée illisible est ignorée)."""
+        raw = self._prefs.get("zoom_by_screen", {})
+        if not isinstance(raw, dict):
+            return {}
+        saved: dict[str, float] = {}
+        for key, value in raw.items():
+            try:
+                saved[str(key)] = clamp_zoom(value)
+            except (TypeError, ValueError):
+                continue
+        return saved
+
+    def _remember_zoom(self, key: str | None, zoom: float) -> None:
+        if key is None:
+            return
+        saved = self._saved_zooms()
+        zoom = clamp_zoom(zoom)
+        if key in saved and abs(saved[key] - zoom) < 1e-9:
+            return                            # déjà enregistré : ne pas réécrire le disque
+        saved[key] = zoom
+        self._prefs.set("zoom_by_screen", saved)
+
+    def _legacy_zoom(self) -> float | None:
+        """Ancienne préférence globale, lue une seule fois pour migrer vers le par écran."""
+        if self._prefs.contains("zoom_by_screen") or not self._prefs.contains("zoom"):
+            return None
+        return clamp_zoom(self._prefs.get("zoom", 1.0))
+
+    def _set_zoom_value(self, z: float) -> None:
+        z = clamp_zoom(z)
+        if abs(z - self._zoom) < 1e-9:
+            return
+        # Certaines fenêtres doivent se replier avant que la nouvelle police ne
+        # impose une largeur minimale plus grande (voir AtlasWindow).
+        self.zoomChanging.emit(z)
+        self._zoom = z
+        self._reapply()
+        self.changed.emit(self._theme)
+
     def base_point_size(self) -> float:
-        """Taille de corps du système, plancher 10 pt (avant application du zoom)."""
+        """Taille de corps du système (avant application du zoom), plancher absolu seul.
+
+        La taille du système est reprise telle quelle : la relever à 10 pt retirait toute
+        marge de zoom aux systèmes à 9 pt (voir ``point_size_floor``).
+        """
         if self._base_font is not None:
             return max(MIN_POINT_SIZE, self._base_font.pointSizeF())
         app = QGuiApplication.instance()
@@ -756,17 +934,22 @@ class ThemeManager(QObject):
 
     # ── Modifications ───────────────────────────────────────────────────────
     def set_theme(self, name: str) -> None:
-        """Choisit l'apparence pour la session ; « system » suit le réglage du système.
+        """Choisit l'apparence ; « system » suit le réglage du système, et le reste est retenu.
 
-        Le choix n'est pas enregistré : le prochain lancement repart de « system ».
+        Le choix est enregistré : sombre ou clair est repris au lancement suivant.
         """
         if name not in APPEARANCES:
             raise ValueError(f"Apparence inconnue : {name!r}")
         resolved = self._resolve(name)
-        if name == self._appearance and resolved == self._theme:
-            return
+        changed = name != self._appearance or resolved != self._theme
         self._appearance = name
         self._theme = resolved
+        # Enregistré avant la réapplication : la préférence reste la source de vérité, et
+        # le signal qu'elle émet ne reboucle pas (l'apparence est déjà à jour).
+        if str(self._prefs.get("theme", "system") or "system") != name:
+            self._prefs.set("theme", name)
+        if not changed:
+            return
         self._reapply()
         self.changed.emit(self._theme)
 
@@ -797,16 +980,13 @@ class ThemeManager(QObject):
         self.changed.emit(self._theme)
 
     def set_zoom(self, z: float) -> None:
+        """Choisit le zoom, mémorisé pour l'écran d'où vient le choix."""
         z = clamp_zoom(z)
+        self._remember_zoom(self._screen_key, z)
         if abs(z - self._zoom) < 1e-9:
             return
-        # Certaines fenêtres doivent se replier avant que la nouvelle police ne
-        # impose une largeur minimale plus grande (voir AtlasWindow).
-        self.zoomChanging.emit(z)
-        self._zoom = z
-        self._prefs.set("zoom", z)
-        self._reapply()
-        self.changed.emit(self._theme)
+        self._prefs.set("zoom", z)            # miroir : dernière valeur appliquée
+        self._set_zoom_value(z)
 
     def toggle(self) -> None:
         self.set_theme("light" if self._theme == "dark" else "dark")
@@ -819,16 +999,26 @@ class ThemeManager(QObject):
             self._base_font = QFont(app.font())      # police du système, mémorisée avant toute modification
         base = self.base_point_size()
         font = QFont(self._base_font)
-        # 100 % = taille du système ; le zoom ne descend jamais sous 10 pt.
-        font.setPointSizeF(max(MIN_POINT_SIZE, base * self._zoom))
-        app.setFont(font)
+        # 100 % = taille du système ; le plancher suit cette taille (voir point_size_floor).
+        font.setPointSizeF(max(point_size_floor(base), base * self._zoom))
         high_contrast = self.high_contrast()
         reduce_transparency = self.reduce_transparency()
         app.setPalette(_build_palette(self._theme, high_contrast, reduce_transparency))
         install_focus_ring_filter(app)
+        # La police vient *avant* la feuille de style : le moteur de style de Qt fige la
+        # police des widgets qu'il re-polit. Appliquée après, la nouvelle taille n'était
+        # reprise que par une partie des textes ; les autres gardaient le zoom précédent
+        # jusqu'au changement suivant (infobulle, boutons des cartes, onglets).
+        app.setFont(font)
         app.setStyleSheet(build_qss(self._theme, self._zoom, high_contrast=high_contrast,
                                     reduce_transparency=reduce_transparency,
                                     base_point_size=base))
+        # La feuille de style fait repartir de la police *par défaut* les widgets créés
+        # après elle (13 pt sous macOS, quel que soit le zoom). La police doit donc être
+        # la dernière chose posée : sans ce rappel, une fenêtre construite au lancement —
+        # presque tout le texte de l'interface — apparaissait à 100 % et ne prenait le
+        # zoom qu'au changement suivant (AZ-C12).
+        app.setFont(font)
         self._watch_system_appearance(app)
         if self._state_app is not app:
             app.applicationStateChanged.connect(self._on_app_state)
@@ -920,11 +1110,10 @@ class ThemeManager(QObject):
         self._refresh_system_scheme()
 
     def _on_pref_changed(self, key: str, value: object) -> None:
-        """Suit le zoom et les réglages d'accessibilité modifiés ailleurs dans les préférences.
-
-        Le thème n'est volontairement pas suivi : ce n'est pas une préférence enregistrée.
-        """
-        if key == "zoom":
+        """Suit l'apparence, le zoom et l'accessibilité modifiés ailleurs dans les préférences."""
+        if key == "theme":
+            self.set_theme(str(value or "system"))
+        elif key == "zoom":
             z = clamp_zoom(value)
             if abs(z - self._zoom) >= 1e-9:
                 self._zoom = z
@@ -951,8 +1140,11 @@ def token(name: str) -> str:
 
 
 def caption_point_size() -> float:
-    """Taille des libellés secondaires : 10 pt minimum, solidaire du zoom."""
-    return max(MIN_POINT_SIZE, round(10.0 * ThemeManager.instance().zoom(), 1))
+    """Taille des libellés secondaires : une fraction du corps, jamais sous le plancher."""
+    manager = ThemeManager.instance()
+    floor = point_size_floor(manager.base_point_size())
+    body = max(floor, manager.base_point_size() * manager.zoom())
+    return max(floor, round(body * CAPTION_SIZE_RATIO, 1))
 
 
 def action_color() -> str:
@@ -963,3 +1155,14 @@ def action_color() -> str:
 def scaled(px: float) -> int:
     """Taille logique mise à l'échelle du zoom courant (icônes, indicateurs, marges d'image)."""
     return max(1, round(px * ThemeManager.instance().zoom()))
+
+
+def system_text_scale() -> float:
+    """Facteur de la taille de texte du système par rapport au corps de référence.
+
+    Les tailles exprimées en pixels (lettrage du titre) ne suivent pas la taille de
+    corps choisie dans le système : ce facteur les y raccorde, sans réappliquer le
+    zoom que `scaled` prend déjà en charge. Il ne descend jamais sous 1 : un système
+    à 9 pt n'a pas à rapetisser le logotype sous sa taille de dessin.
+    """
+    return max(1.0, ThemeManager.instance().base_point_size() / BASE_POINT_SIZE)

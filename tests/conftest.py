@@ -29,6 +29,13 @@ def _neutral_system_accessibility(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def _disable_sleep_guard(monkeypatch):
+    """Les tests ne doivent jamais retenir la machine éveillée."""
+    from azimut.core import power
+    monkeypatch.setattr(power, "_guard", power._SleepGuard(factory=lambda: None))
+
+
+@pytest.fixture(autouse=True)
 def _reset_translators():
     """Aucun test n'hérite d'un traducteur installé par create_app() (état global de l'application)."""
     from PySide6.QtCore import QCoreApplication

@@ -37,6 +37,8 @@ BITRATE_RANGE = {"mp3": (32, 320), "aac": (32, 320), "opus": (16, 512), "vorbis"
 BITRATE_STEPS: tuple[int, ...] = (16, 24, 32, 48, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512)
 MAX_THREADS = 64
 MAX_PARALLEL = 16
+MAX_PARALLEL_VIDEO = 4              # une vidéo utilise déjà tous les cœurs et beaucoup de RAM
+PARALLEL_KINDS: tuple[str, ...] = ("copy", "image", "audio", "video")
 VIDEO_AUDIO_PREFIX = "video_audio:"       # réglages du codec audio choisi pour la vidéo, distincts de la famille Audio
 
 
@@ -46,7 +48,7 @@ def video_audio_key(profile_id: str) -> str:
 
 
 _FAMILIES: tuple[tuple[tuple[str, ...], str], ...] = (
-    (("libsvtav1", "libaom-av1"), "av1"),
+    (("libsvtav1", "libaom-av1", "av1_nvenc", "av1_qsv", "av1_vaapi"), "av1"),
     (("libx264", "h264_nvenc", "h264_qsv", "h264_vaapi"), "h264"),
     (("libx265", "hevc_nvenc", "hevc_qsv", "hevc_vaapi"), "h265"),
     (("libvpx-vp9",), "vp9"),
@@ -192,12 +194,51 @@ def clamp_threads(value: Any) -> int:
     return max(0, min(MAX_THREADS, n))
 
 
-def clamp_parallel(value: Any) -> int:
+def max_parallel(kind: str) -> int:
+    """Nombre maximal de fichiers d'une famille traités en même temps."""
+    return MAX_PARALLEL_VIDEO if kind == "video" else MAX_PARALLEL
+
+
+def clamp_parallel(value: Any, kind: str = "image") -> int:
     try:
         n = int(value)
     except (TypeError, ValueError):
         return 1
-    return max(1, min(MAX_PARALLEL, n))
+    return max(1, min(max_parallel(kind), n))
+
+
+def auto_parallel(kind: str, threads: int = 0, cpu_count: int | None = None,
+                  hardware_video: bool = False) -> int:
+    """Fichiers d'une famille traités en même temps en mode automatique.
+
+    Les familles sont traitées l'une après l'autre : chacune peut donc utiliser tout le budget de cœurs.
+    ``threads`` est la valeur du réglage « Threads » (0 = Auto) ; elle sert à ne pas lancer plus d'encodages
+    que la machine ne peut en nourrir. Un encodeur vidéo logiciel est déjà multi-thread et sa mémoire croît
+    avec les threads : une seule vidéo à la fois. Avec un encodeur matériel (``hardware_video``), le GPU
+    encode et le processeur ne fait que décoder et filtrer : deux vidéos peuvent avancer ensemble.
+    """
+    cpus = cpu_count if cpu_count is not None else (os.cpu_count() or 4)
+    if kind == "copy":
+        return max(2, min(4, cpus // 2))                 # entrées/sorties : peu de processeur
+    if kind == "audio":
+        return max(1, min(4, cpus // 2))                 # encodeurs audio presque mono-thread
+    if kind == "video":
+        return 2 if hardware_video else 1
+    per_file = threads if threads > 0 else max(2, min(4, cpus // 4))
+    return max(1, min(max_parallel("image"), cpus // max(1, per_file)))
+
+
+def parallel_counts(mode: str, values: Mapping[str, Any] | None = None, threads: int = 0,
+                    cpu_count: int | None = None, hardware_video: bool = False) -> dict[str, int]:
+    """Parallélisme effectif par famille : « auto » suit les cœurs, le réglage Threads et l'encodeur vidéo.
+
+    En manuel, ``hardware_video`` n'intervient pas : les valeurs choisies par l'utilisateur sont respectées.
+    """
+    if mode != "manual":
+        t = clamp_threads(threads)
+        return {kind: auto_parallel(kind, t, cpu_count, hardware_video) for kind in PARALLEL_KINDS}
+    data = values or {}
+    return {kind: clamp_parallel(data.get(kind, 1), kind) for kind in PARALLEL_KINDS}
 
 
 def auto_threads(parallel: int, cpu_count: int | None = None) -> int:

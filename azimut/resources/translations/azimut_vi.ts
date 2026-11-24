@@ -40,216 +40,208 @@
 <context>
     <name>AtlasWindow</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1218"/>
-        <location filename="../../launcher/atlas_window.py" line="1410"/>
-        <location filename="../../launcher/atlas_window.py" line="1466"/>
+        <location filename="../../launcher/atlas_window.py" line="1260"/>
+        <location filename="../../launcher/atlas_window.py" line="1463"/>
+        <location filename="../../launcher/atlas_window.py" line="1519"/>
         <source>Azimut</source>
         <translation>Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1291"/>
+        <location filename="../../launcher/atlas_window.py" line="1344"/>
         <source>Ouvrez un module, ou déposez-y des fichiers ou des dossiers.</source>
         <translation>Mở một mô-đun hoặc thả tệp hoặc thư mục vào đó.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1345"/>
-        <location filename="../../launcher/atlas_window.py" line="1486"/>
+        <location filename="../../launcher/atlas_window.py" line="1398"/>
+        <location filename="../../launcher/atlas_window.py" line="1539"/>
         <source>Tous les outils</source>
         <translation>Tất cả các công cụ</translation>
     </message>
     <message>
-        <source>Le recueil des utilitaires Azimut</source>
-        <translation type="vanished">Hộp công cụ Azimut</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1421"/>
+        <location filename="../../launcher/atlas_window.py" line="1474"/>
         <source>Version {version}</source>
         <translation>Phiên bản {version}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1669"/>
+        <location filename="../../launcher/atlas_window.py" line="1729"/>
         <source>Conseils</source>
         <translation>Mẹo</translation>
     </message>
     <message>
-        <source>Thème</source>
-        <translation type="vanished">Chủ đề</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1470"/>
-        <location filename="../../launcher/atlas_window.py" line="1664"/>
+        <location filename="../../launcher/atlas_window.py" line="1523"/>
+        <location filename="../../launcher/atlas_window.py" line="1724"/>
         <source>Préférences…</source>
         <translation>Tùy chọn…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Outils</source>
         <translation>Công cụ</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Afficher les outils Azimut</source>
         <translation>Hiển thị các công cụ Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1488"/>
-        <location filename="../../launcher/atlas_window.py" line="1667"/>
+        <location filename="../../launcher/atlas_window.py" line="1541"/>
+        <location filename="../../launcher/atlas_window.py" line="1727"/>
         <source>Journaux et historique</source>
         <translation>Nhật ký và lịch sử</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1074"/>
+        <location filename="../../launcher/atlas_window.py" line="1100"/>
         <source>Ce module n&apos;a pas pu être chargé.</source>
         <translation>Không thể tải mô-đun này.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1341"/>
+        <location filename="../../launcher/atlas_window.py" line="1394"/>
         <source>Maj+clic ou Maj+flèches : sélectionner plusieurs onglets. Suppr : fermer l&apos;onglet actif ou la sélection. Glissez un onglet sélectionné pour déplacer le groupe.</source>
         <translation>Shift+nhấp hoặc Shift+mũi tên: chọn nhiều tab. Del: đóng tab đang hoạt động hoặc vùng chọn. Kéo một tab đã chọn để di chuyển cả nhóm.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1419"/>
+        <location filename="../../launcher/atlas_window.py" line="1472"/>
         <source>Le couteau suisse pour convertir, dédoublonner et ranger vos médias</source>
         <translation>Con dao quân đội Thụy Sĩ để chuyển đổi, sao chép và lưu trữ phương tiện của bạn</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1467"/>
-        <location filename="../../launcher/atlas_window.py" line="1529"/>
+        <location filename="../../launcher/atlas_window.py" line="1520"/>
+        <location filename="../../launcher/atlas_window.py" line="1582"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Giới thiệu về Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1475"/>
+        <location filename="../../launcher/atlas_window.py" line="1528"/>
         <source>Quitter</source>
         <translation>rời đi</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1480"/>
+        <location filename="../../launcher/atlas_window.py" line="1533"/>
         <source>Fichier</source>
         <translation>Tài liệu</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1481"/>
+        <location filename="../../launcher/atlas_window.py" line="1534"/>
         <source>Fermer la fenêtre</source>
         <translation>Đóng cửa sổ</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1485"/>
+        <location filename="../../launcher/atlas_window.py" line="1538"/>
         <source>Présentation</source>
         <translation>Bài thuyết trình</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1491"/>
+        <location filename="../../launcher/atlas_window.py" line="1544"/>
         <source>Navigation dans l&apos;en-tête</source>
         <translation>Điều hướng trên thanh tiêu đề</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1495"/>
+        <location filename="../../launcher/atlas_window.py" line="1548"/>
         <source>Regroupe « Outils » et « Journaux et historique » dans la barre supérieure. Décochez pour revenir à l&apos;agencement précédent.</source>
         <translation>Gộp « Công cụ » và « Nhật ký và lịch sử » vào thanh trên. Bỏ chọn để quay lại bố cục trước.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1500"/>
+        <location filename="../../launcher/atlas_window.py" line="1553"/>
         <source>Conseils de démarrage…</source>
         <translation>Mẹo bắt đầu…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1502"/>
+        <location filename="../../launcher/atlas_window.py" line="1555"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Chuyển đổi giữa chủ đề tối và sáng</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1506"/>
+        <location filename="../../launcher/atlas_window.py" line="1559"/>
         <source>Agrandir le texte</source>
         <translation>Phóng to văn bản</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1509"/>
+        <location filename="../../launcher/atlas_window.py" line="1562"/>
         <source>Réduire le texte</source>
         <translation>Giảm văn bản</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1513"/>
+        <location filename="../../launcher/atlas_window.py" line="1566"/>
         <source>Fenêtre</source>
         <translation>Cửa sổ</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1514"/>
+        <location filename="../../launcher/atlas_window.py" line="1567"/>
         <source>Réduire</source>
         <translation>Giảm bớt</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1517"/>
+        <location filename="../../launcher/atlas_window.py" line="1570"/>
         <source>Zoom</source>
         <translation>Phóng</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1521"/>
+        <location filename="../../launcher/atlas_window.py" line="1574"/>
         <source>Aide</source>
         <translation>Giúp đỡ</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1522"/>
+        <location filename="../../launcher/atlas_window.py" line="1575"/>
         <source>Conseils de démarrage</source>
         <translation>Mẹo bắt đầu</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1527"/>
+        <location filename="../../launcher/atlas_window.py" line="1580"/>
         <source>Le couteau suisse de vos médias.</source>
         <translation>Con dao quân đội Thụy Sĩ cho phương tiện của bạn</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1655"/>
+        <location filename="../../launcher/atlas_window.py" line="1715"/>
         <source>Navigation d&apos;Azimut</source>
         <translation>Điều hướng Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1668"/>
+        <location filename="../../launcher/atlas_window.py" line="1728"/>
         <source>Afficher l&apos;historique, le journal et les binaires</source>
         <translation>Hiện lịch sử, nhật ký và tệp nhị phân</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1670"/>
+        <location filename="../../launcher/atlas_window.py" line="1730"/>
         <source>Afficher l&apos;ordre conseillé pour traiter un export Google Photos</source>
         <translation>Hiện thứ tự gợi ý để xử lý bản xuất Google Photos</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1672"/>
+        <location filename="../../launcher/atlas_window.py" line="1732"/>
         <source>Apparence, langue et outils externes</source>
         <translation>Ngoại hình, ngôn ngữ và các công cụ bên ngoài</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1863"/>
+        <location filename="../../launcher/atlas_window.py" line="1923"/>
         <source>Aucun module disponible.</source>
         <translation>Không có mô-đun nào có sẵn.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2081"/>
+        <location filename="../../launcher/atlas_window.py" line="2157"/>
         <source>Binaire(s) requis introuvable(s) : {list}. Indiquez leur chemin dans « Préférences… » ou déposez-les dans le dossier bin/.</source>
         <translation>Không tìm thấy tệp nhị phân cần thiết: {list}. Đặt đường dẫn của chúng trong “Preferences…” hoặc thả chúng vào thư mục bin/.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2104"/>
+        <location filename="../../launcher/atlas_window.py" line="2180"/>
         <source>Merci !</source>
         <translation>CẢM ƠN !</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2273"/>
+        <location filename="../../launcher/atlas_window.py" line="2361"/>
         <source>Fermer les {count} onglets sélectionnés</source>
         <translation>Đóng các tab {count} đã chọn</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2275"/>
+        <location filename="../../launcher/atlas_window.py" line="2363"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Đóng tab</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2285"/>
+        <location filename="../../launcher/atlas_window.py" line="2373"/>
         <source>{count} onglets sélectionnés — glissez pour les déplacer, Suppr pour les fermer.</source>
         <translation>{count} tab đã chọn — kéo để di chuyển chúng, Xóa để đóng chúng.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2407"/>
+        <location filename="../../launcher/atlas_window.py" line="2495"/>
         <source>Impossible d&apos;ouvrir {name}.
 
 {message}</source>
@@ -258,54 +250,54 @@
 {message}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2442"/>
+        <location filename="../../launcher/atlas_window.py" line="2530"/>
         <source>Les fichiers n&apos;ont pas pu être transmis au module.</source>
         <translation>Không thể truyền tệp cho mô-đun.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2548"/>
+        <location filename="../../launcher/atlas_window.py" line="2636"/>
         <source>Relance impossible</source>
         <translation>Khởi động lại thất bại</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2549"/>
+        <location filename="../../launcher/atlas_window.py" line="2637"/>
         <source>Azimut n&apos;a pas pu être relancé automatiquement. Fermez puis rouvrez l&apos;application.</source>
         <translation>Không thể tự động khởi động lại Azimut. Hãy đóng rồi mở lại ứng dụng.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2569"/>
+        <location filename="../../launcher/atlas_window.py" line="2657"/>
         <source>Traitements en cours</source>
         <translation>Các nhiệm vụ đang tiến hành</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2570"/>
+        <location filename="../../launcher/atlas_window.py" line="2658"/>
         <source>Traitement en cours dans :
 {modules}</source>
         <translation>Chạy trong:
 {modules}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2573"/>
+        <location filename="../../launcher/atlas_window.py" line="2661"/>
         <source>Fermer ces onglets interrompra les traitements en cours.</source>
         <translation>Việc đóng các tab này sẽ làm gián đoạn quá trình xử lý hiện tại.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2575"/>
+        <location filename="../../launcher/atlas_window.py" line="2663"/>
         <source>Fermer cet onglet interrompra le traitement en cours.</source>
         <translation>Đóng tab này sẽ dừng tác vụ đang chạy.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2577"/>
+        <location filename="../../launcher/atlas_window.py" line="2665"/>
         <source>Fermer Azimut interrompra les traitements en cours.</source>
         <translation>Đóng Azimut sẽ dừng các tác vụ đang chạy.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2579"/>
+        <location filename="../../launcher/atlas_window.py" line="2667"/>
         <source>Fermer quand même</source>
         <translation>Đóng lại dù sao đi nữa</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2580"/>
+        <location filename="../../launcher/atlas_window.py" line="2668"/>
         <source>Annuler</source>
         <translation>Hủy</translation>
     </message>
@@ -364,34 +356,79 @@
 <context>
     <name>CodecPanel</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="265"/>
+        <location filename="../../modules/convert/codec_tree.py" line="264"/>
+        <source>GPU : plus rapide et libère le processeur, mais à qualité égale le fichier est souvent plus gros. CPU : plus lent, fichiers plus compacts.</source>
+        <translation>GPU: nhanh hơn và giải phóng bộ xử lý, nhưng với cùng chất lượng tệp thường lớn hơn. CPU: chậm hơn, tệp nhỏ gọn hơn.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="311"/>
         <source>Rétablir</source>
         <translation>Khôi phục</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="267"/>
+        <location filename="../../modules/convert/codec_tree.py" line="313"/>
         <source>Remet les curseurs de ce codec à leurs valeurs de départ.</source>
         <translation>Trả về các thanh trượt của codec này về giá trị ban đầu của chúng.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="353"/>
+        <location filename="../../modules/convert/codec_tree.py" line="396"/>
+        <source>Parallélisme automatique (recommandé)</source>
+        <translation>Song song tự động (khuyến nghị)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="398"/>
+        <source>Répartit les fichiers selon les cœurs disponibles et le réglage Threads : les copies et les images avancent ensemble ; deux vidéos peuvent avancer si le codec choisi est accéléré par le GPU (NVENC, QSV, VA-API), une seule avec un encodeur processeur, qui utilise déjà tous les cœurs et beaucoup de mémoire. Décochez pour régler chaque famille à la main.</source>
+        <translation>Phân bổ tệp theo số nhân khả dụng và thiết lập Luồng: bản sao và hình ảnh chạy cùng nhau; hai video có thể chạy cùng lúc nếu codec đã chọn được GPU tăng tốc (NVENC, QSV, VA-API), chỉ một video với bộ mã hóa CPU vì nó đã dùng toàn bộ nhân và nhiều bộ nhớ. Bỏ chọn để chỉnh từng nhóm bằng tay.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="403"/>
+        <source>Fichiers image convertis en même temps. Chaque encodage utilise le nombre de threads choisi ci-dessus.</source>
+        <translation>Tệp hình ảnh được chuyển đổi đồng thời. Mỗi lần mã hóa dùng số luồng đã chọn ở trên.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="405"/>
+        <source>Fichiers audio convertis en même temps : les encodeurs audio sont presque mono-thread, un peu de parallélisme aide.</source>
+        <translation>Tệp âm thanh được chuyển đổi đồng thời: bộ mã hóa âm thanh gần như đơn luồng, một chút song song sẽ giúp ích.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="407"/>
+        <source>Vidéos encodées en même temps. Au-delà de 1, chaque encodeur doit partager les threads et la mémoire : à réserver aux machines puissantes.</source>
+        <translation>Video được mã hóa đồng thời. Trên 1, mỗi bộ mã hóa phải chia sẻ luồng và bộ nhớ: chỉ dành cho máy mạnh.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="410"/>
+        <source>Fichiers copiés en même temps (déjà au bon format, documents, JSON…). Cette étape est limitée par le disque, pas par le processeur.</source>
+        <translation>Tệp được sao chép đồng thời (đã đúng định dạng, tài liệu, JSON…). Bước này bị giới hạn bởi ổ đĩa, không phải bộ xử lý.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="414"/>
         <source>Priorité basse (garde l&apos;ordinateur réactif)</source>
         <translation>Ưu tiên thấp (giữ máy tính phản hồi nhanh)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="355"/>
+        <location filename="../../modules/convert/codec_tree.py" line="416"/>
         <source>Les processus FFmpeg sont alors lancés avec une priorité réduite : la conversion peut être un peu plus lente, mais les autres applications restent réactives.</source>
         <translation>Sau đó, các quy trình FFmpeg được khởi chạy với mức độ ưu tiên giảm: quá trình chuyển đổi có thể chậm hơn một chút nhưng các ứng dụng khác vẫn phản hồi.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="357"/>
+        <location filename="../../modules/convert/codec_tree.py" line="418"/>
         <source>Attendre si la mémoire est saturée</source>
         <translation>Chờ nếu bộ nhớ đã đầy</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="359"/>
+        <location filename="../../modules/convert/codec_tree.py" line="420"/>
         <source>Avant chaque fichier, la conversion attend si la RAM utilisée atteint 75 % ou si la mémoire disponible tombe sous 20 %. Elle réessaie toutes les 2 secondes et s&apos;interrompt si vous annulez. Sans cette case, les fichiers s&apos;enchaînent même sous pression : ralentissement général, swap et risque d&apos;échec par manque de mémoire.</source>
         <translation>Trước mỗi tệp, quá trình chuyển đổi sẽ chờ nếu RAM đã dùng đạt 75 % hoặc bộ nhớ trống dưới 20 %. Nó thử lại mỗi 2 giây và dừng nếu bạn huỷ. Không chọn ô này, các tệp vẫn chạy liên tiếp dưới áp lực: chậm toàn hệ thống, swap và nguy cơ lỗi do thiếu bộ nhớ.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="436"/>
+        <source>Chaque fichier utilise le réglage Threads ci-dessus : en manuel, gardez « fichiers simultanés × threads » dans la limite des cœurs de la machine.</source>
+        <translation>Mỗi tệp dùng thiết lập Luồng ở trên: ở chế độ thủ công, hãy giữ «tệp đồng thời × luồng» trong giới hạn số nhân của máy.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="526"/>
+        <source>Conversion GPU : plus rapide, mais à qualité visuelle égale le fichier est souvent plus gros qu&apos;avec un encodeur CPU.</source>
+        <translation>Chuyển đổi bằng GPU: nhanh hơn, nhưng với cùng chất lượng hình ảnh, tệp thường lớn hơn so với bộ mã hóa CPU.</translation>
     </message>
 </context>
 <context>
@@ -415,27 +452,27 @@
 <context>
     <name>ConvertNotification</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="52"/>
+        <location filename="../../modules/convert/workers.py" line="60"/>
         <source>{count} fichier(s) traité(s)</source>
         <translation>Đã xử lý {count} tệp</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="53"/>
+        <location filename="../../modules/convert/workers.py" line="61"/>
         <source>{count} erreur(s)</source>
         <translation>{count} lỗi</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="57"/>
+        <location filename="../../modules/convert/workers.py" line="65"/>
         <source>{count} ignoré(s)</source>
         <translation>Đã bỏ qua {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="60"/>
+        <location filename="../../modules/convert/workers.py" line="68"/>
         <source>{count} sortie(s) manquante(s)</source>
         <translation>{count} đầu ra bị thiếu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="63"/>
+        <location filename="../../modules/convert/workers.py" line="71"/>
         <source>gain {size}</source>
         <translation>tiết kiệm {size}</translation>
     </message>
@@ -443,275 +480,320 @@
 <context>
     <name>ConvertWindow</name>
     <message>
-        <location filename="../../modules/convert/window.py" line="40"/>
+        <location filename="../../modules/convert/window.py" line="43"/>
         <source>Fichier</source>
         <translation>Tài liệu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="41"/>
+        <location filename="../../modules/convert/window.py" line="44"/>
         <source>Type</source>
         <translation>Loại</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="42"/>
+        <location filename="../../modules/convert/window.py" line="45"/>
         <source>Taille</source>
         <translation>Kích cỡ</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="43"/>
+        <location filename="../../modules/convert/window.py" line="46"/>
         <source>Format et qualité</source>
         <translation>Hình thức và chất lượng</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="44"/>
+        <location filename="../../modules/convert/window.py" line="47"/>
         <source>État</source>
         <translation>Tình trạng</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="45"/>
+        <location filename="../../modules/convert/window.py" line="48"/>
         <source>Progression</source>
         <translation>Tiến triển</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="49"/>
+        <location filename="../../modules/convert/window.py" line="52"/>
         <source>Tous</source>
         <translation>Tất cả</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="50"/>
+        <location filename="../../modules/convert/window.py" line="53"/>
         <source>Images</source>
         <translation>Hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="51"/>
+        <location filename="../../modules/convert/window.py" line="54"/>
         <source>Vidéos</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="52"/>
+        <location filename="../../modules/convert/window.py" line="55"/>
         <source>Audios</source>
         <translation>Âm thanh</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="53"/>
+        <location filename="../../modules/convert/window.py" line="56"/>
         <source>Fichiers volumineux</source>
         <translation>Tệp lớn</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="69"/>
+        <location filename="../../modules/convert/window.py" line="74"/>
         <source>Image</source>
         <translation>Hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="70"/>
+        <location filename="../../modules/convert/window.py" line="75"/>
         <source>Vidéo</source>
         <translation>Băng hình</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="71"/>
+        <location filename="../../modules/convert/window.py" line="76"/>
         <source>Audio</source>
         <translation>Âm thanh</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="72"/>
+        <location filename="../../modules/convert/window.py" line="77"/>
         <source>Autre</source>
         <translation>Khác</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="75"/>
+        <location filename="../../modules/convert/window.py" line="80"/>
         <source>En attente</source>
         <translation>Đang chờ</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="76"/>
+        <location filename="../../modules/convert/window.py" line="81"/>
         <source>En cours</source>
         <translation>Đang tiến hành</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="77"/>
+        <location filename="../../modules/convert/window.py" line="82"/>
         <source>Terminé</source>
         <translation>Hoàn thành</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="78"/>
+        <location filename="../../modules/convert/window.py" line="83"/>
         <source>Déjà converti</source>
         <translation>Đã chuyển đổi</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="79"/>
+        <location filename="../../modules/convert/window.py" line="84"/>
         <source>Encodeur manquant</source>
         <translation>Thiếu bộ mã hóa</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="80"/>
+        <location filename="../../modules/convert/window.py" line="85"/>
         <source>Non pris en charge</source>
         <translation>Không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="81"/>
+        <location filename="../../modules/convert/window.py" line="86"/>
         <source>Erreur</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="82"/>
+        <location filename="../../modules/convert/window.py" line="87"/>
         <source>Annulé</source>
         <translation>Đã hủy</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="83"/>
+        <location filename="../../modules/convert/window.py" line="88"/>
         <source>Source conservée</source>
         <translation>Nguồn được bảo tồn</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="84"/>
+        <location filename="../../modules/convert/window.py" line="89"/>
         <source>Copié</source>
         <translation>Sao chép</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="108"/>
+        <location filename="../../modules/convert/window.py" line="114"/>
         <source>Démarrer la conversion</source>
         <translation>Bắt đầu chuyển đổi</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="119"/>
+        <location filename="../../modules/convert/window.py" line="131"/>
         <source>Glissez ici des fichiers ou des dossiers à convertir
 (ou cliquez pour parcourir)</source>
         <translation>Kéo tập tin hoặc thư mục để chuyển đổi vào đây
 (hoặc bấm vào để duyệt)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="126"/>
+        <location filename="../../modules/convert/window.py" line="138"/>
         <source>Afficher :</source>
         <translation>Trưng bày :</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="142"/>
+        <location filename="../../modules/convert/window.py" line="154"/>
         <source>Taille minimale des fichiers affichés</source>
         <translation>Kích thước tối thiểu của tập tin được hiển thị</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="151"/>
+        <location filename="../../modules/convert/window.py" line="163"/>
         <source>Taille personnalisée…</source>
         <translation>Kích thước tùy chỉnh…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="156"/>
+        <location filename="../../modules/convert/window.py" line="168"/>
         <source>Retirer la sélection</source>
         <translation>Xóa lựa chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="157"/>
+        <location filename="../../modules/convert/window.py" line="169"/>
         <source>Vider la liste</source>
         <translation>Xóa danh sách</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="166"/>
+        <location filename="../../modules/convert/window.py" line="178"/>
         <source>La file est vide : déposez des fichiers ou un dossier ci-dessus.</source>
         <translation>Hàng đợi trống: thả tập tin hoặc thư mục ở trên.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="176"/>
+        <location filename="../../modules/convert/window.py" line="195"/>
         <source>Sortie</source>
         <translation>Ra</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="177"/>
+        <location filename="../../modules/convert/window.py" line="196"/>
         <source>Sous-dossiers</source>
         <translation>Thư mục con</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="181"/>
-        <location filename="../../modules/convert/window.py" line="663"/>
+        <location filename="../../modules/convert/window.py" line="200"/>
+        <location filename="../../modules/convert/window.py" line="761"/>
         <source>Sortie…</source>
         <translation>Ra…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="185"/>
+        <location filename="../../modules/convert/window.py" line="204"/>
         <source>Dossier de sortie</source>
         <translation>Thư mục đầu ra</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="192"/>
+        <location filename="../../modules/convert/window.py" line="211"/>
+        <source>Vérifier la sortie…</source>
+        <translation>Đang kiểm tra đầu ra…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="212"/>
+        <source>Après un arrêt forcé ou un plantage : cherche les fichiers incomplets ou corrompus du dossier de sortie et propose de les supprimer pour les reconvertir.</source>
+        <translation>Sau khi dừng cưỡng bức hoặc sự cố: tìm các tệp chưa hoàn chỉnh hoặc bị hỏng trong thư mục đầu ra và đề nghị xóa chúng để chuyển đổi lại.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="216"/>
         <source>Garder l&apos;extension d&apos;origine dans le nom</source>
         <translation>Giữ phần mở rộng gốc trong tên</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="193"/>
+        <location filename="../../modules/convert/window.py" line="217"/>
         <source>« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions photo.jpg / photo.png et permet de retrouver le JSON Takeout.</source>
         <translation>“photo_jpg.avif” thay vì “photo.avif”: tránh xung đột giữa photo.jpg / photo.png và cho phép bạn tìm JSON Takeout.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="197"/>
+        <location filename="../../modules/convert/window.py" line="221"/>
         <source>Réinjecter date et GPS des JSON Google Takeout</source>
         <translation>Từ chối ngày và GPS từ JSON Google Takeout</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="198"/>
+        <location filename="../../modules/convert/window.py" line="222"/>
         <source>Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et sa position sont écrites dans le fichier converti (ExifTool).</source>
         <translation>Nếu tìm thấy JSON đồng hành bên cạnh tệp, ngày và vị trí chụp của nó sẽ được ghi vào tệp đã chuyển đổi (ExifTool).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="204"/>
+        <location filename="../../modules/convert/window.py" line="228"/>
         <source>Copier aussi les autres fichiers (PDF, documents…)</source>
         <translation>Đồng thời sao chép các tệp khác (PDF, tài liệu, v.v.)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="205"/>
+        <location filename="../../modules/convert/window.py" line="229"/>
         <source>Les fichiers qui ne sont ni des images, ni des audios, ni des vidéos sont copiés tels quels dans le dossier de sortie, à la même place que dans la source. Sans cette case, ils sont ignorés.</source>
         <translation>Các tệp không phải là hình ảnh, âm thanh hoặc video sẽ được sao chép nguyên trạng vào thư mục đầu ra, ở cùng vị trí với thư mục nguồn. Không có hộp này, họ sẽ bị bỏ qua.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="210"/>
+        <location filename="../../modules/convert/window.py" line="234"/>
         <source>Ne pas recopier les JSON Takeout déjà réinjectés</source>
         <translation>Không sao chép JSON Takeout đã được chèn lại</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="211"/>
+        <location filename="../../modules/convert/window.py" line="235"/>
         <source>Les JSON dont la date et la position sont écrites dans le fichier converti ne sont pas copiés dans le dossier de sortie. Rien n&apos;est supprimé : les JSON restent dans le dossier source. Les autres JSON sont copiés.</source>
         <translation>Các tệp JSON có ngày và vị trí đã ghi vào tệp đã chuyển đổi sẽ không được sao chép vào thư mục đầu ra. Không có gì bị xoá: JSON vẫn ở thư mục nguồn. Các JSON khác được sao chép.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="229"/>
+        <location filename="../../modules/convert/window.py" line="253"/>
         <source>Réglages</source>
         <translation>Cài đặt</translation>
     </message>
     <message>
+        <location filename="../../modules/convert/window.py" line="485"/>
+        <source>FFmpeg introuvable : matériel GPU indéterminable.</source>
+        <translation>Không tìm thấy FFmpeg: không xác định được phần cứng GPU.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="498"/>
+        <source>Matériel : détection en cours…</source>
+        <translation>Phần cứng: đang nhận diện…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="499"/>
+        <source>Matériel : indéterminé (FFmpeg n&apos;a pas listé ses encodeurs).</source>
+        <translation>Phần cứng: không xác định (FFmpeg không liệt kê bộ mã hóa của nó).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="509"/>
+        <source>GPU : {backends} · pilote ou GPU ne répond pas : {failed}</source>
+        <translation>GPU: {backends} · trình điều khiển hoặc GPU không phản hồi: {failed}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="511"/>
+        <source>GPU détecté mais le pilote ou le GPU ne répond pas : {failed} ; les profils marqués GPU resteront indisponibles.</source>
+        <translation>Đã phát hiện GPU nhưng trình điều khiển hoặc GPU không phản hồi: {failed}; các hồ sơ có nhãn GPU sẽ không dùng được.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="514"/>
+        <source>Aucune accélération GPU détectée : les profils marqués GPU resteront indisponibles, la conversion se fait par le processeur.</source>
+        <translation>Không phát hiện tăng tốc GPU: các hồ sơ có nhãn GPU sẽ không dùng được, quá trình chuyển đổi chạy trên bộ xử lý.</translation>
+    </message>
+    <message>
         <location filename="../../modules/convert/window.py" line="516"/>
+        <source>GPU : {backends}</source>
+        <translation>GPU: {backends}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="614"/>
         <source>≥ {size}</source>
         <translation>≥ {size}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="518"/>
+        <location filename="../../modules/convert/window.py" line="616"/>
         <source>Afficher les fichiers d&apos;au moins {size}. Cliquez pour choisir un autre seuil.</source>
         <translation>Hiện các tệp có kích thước ít nhất {size}. Nhấp để chọn ngưỡng khác.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Taille minimale</source>
         <translation>Kích thước tối thiểu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Afficher les fichiers d&apos;au moins (en Mo) :</source>
         <translation>Hiện các tệp có kích thước ít nhất (MB):</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="636"/>
+        <location filename="../../modules/convert/window.py" line="734"/>
         <source>Choisir le dossier de sortie</source>
         <translation>Chọn thư mục đầu ra</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="647"/>
+        <location filename="../../modules/convert/window.py" line="745"/>
         <source>Laisser vide : « &lt;source&gt;_Converted » à côté de chaque dossier ajouté. Obligatoire pour les fichiers ajoutés isolément.</source>
         <translation>Để trống: “&lt;source&gt;_Converted” bên cạnh mỗi thư mục được thêm vào. Cần thiết cho các tập tin được thêm riêng biệt.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="649"/>
+        <location filename="../../modules/convert/window.py" line="747"/>
         <source>dossier par défaut</source>
         <translation>thư mục mặc định</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="650"/>
+        <location filename="../../modules/convert/window.py" line="748"/>
         <source>{hint}
 
 Dossier de sortie : {path}
@@ -724,75 +806,214 @@ Thư mục đầu ra: {path}
 Nhấp để chọn thư mục; nhấp chuột phải để quay lại thư mục mặc định.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="654"/>
+        <location filename="../../modules/convert/window.py" line="752"/>
         <source>Dossier de sortie : {path}</source>
         <translation>Thư mục đầu ra: {path}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="661"/>
+        <location filename="../../modules/convert/window.py" line="759"/>
         <source>Sortie : {folder}</source>
         <translation>Đầu ra: {folder}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="674"/>
+        <location filename="../../modules/convert/window.py" line="772"/>
         <source>Choisir un dossier…</source>
         <translation>Chọn một thư mục…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="676"/>
+        <location filename="../../modules/convert/window.py" line="774"/>
         <source>Utiliser le dossier par défaut</source>
         <translation>Sử dụng thư mục mặc định</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="686"/>
+        <location filename="../../modules/convert/window.py" line="784"/>
         <source>Importer des fichiers</source>
         <translation>Nhập tệp</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="695"/>
+        <location filename="../../modules/convert/window.py" line="793"/>
         <source>Importer un dossier</source>
         <translation>Nhập thư mục</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="836"/>
+        <source>Préparation de la conversion…</source>
+        <translation>Đang chuẩn bị chuyển đổi…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="891"/>
+        <source>{parts}
+
+Chaque segment est proportionnel au nombre de fichiers à traiter.</source>
+        <translation>{parts}
+
+Mỗi đoạn tỷ lệ với số tệp cần xử lý.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="920"/>
+        <source>Dossier de sortie à vérifier</source>
+        <translation>Thư mục đầu ra cần kiểm tra</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="928"/>
+        <source>Vérification de la sortie : {paths}</source>
+        <translation>Kiểm tra đầu ra: {paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="946"/>
+        <source>Vérification : {count} fichier(s) contrôlé(s), aucun fichier incomplet ou illisible.</source>
+        <translation>Kiểm tra: đã kiểm tra {count} tệp, không có tệp chưa hoàn chỉnh hoặc không đọc được.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="949"/>
+        <source>Vérifier la sortie</source>
+        <translation>Kiểm tra đầu ra</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="950"/>
+        <source>Aucun fichier incomplet ou corrompu n&apos;a été trouvé.
+
+{count} fichier(s) contrôlé(s) dans :
+{paths}</source>
+        <translation>Không tìm thấy tệp chưa hoàn chỉnh hoặc bị hỏng.
+
+Đã kiểm tra {count} tệp trong:
+{paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="955"/>
+        <source>Vérification : {bad} fichier(s) suspect(s) sur {count} contrôlé(s) ; ne supprimez pas vos originaux.</source>
+        <translation>Kiểm tra: {bad} tệp đáng ngờ trong {count} tệp đã kiểm tra; đừng xóa bản gốc.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="957"/>
+        <source>conversion interrompue (fichier temporaire)</source>
+        <translation>chuyển đổi bị gián đoạn (tệp tạm)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="958"/>
+        <source>taille inattendue : fichier tronqué ?</source>
+        <translation>kích thước bất thường: tệp bị cắt ngắn?</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="959"/>
+        <source>illisible pour FFprobe</source>
+        <translation>FFprobe không đọc được</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="964"/>
+        <source>… et {count} autre(s) fichier(s) suspect(s).</source>
+        <translation>… và {count} tệp đáng ngờ khác.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="967"/>
+        <source>Fichiers à vérifier</source>
+        <translation>Tệp cần kiểm tra</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="968"/>
+        <source>{bad} fichier(s) de la sortie peuvent être incomplets ou corrompus.
+
+Les supprimer ? Ils seront recréés à la prochaine conversion ; aucun autre fichier n&apos;est touché et les originaux ne sont jamais concernés.</source>
+        <translation>{bad} tệp trong đầu ra có thể chưa hoàn chỉnh hoặc bị hỏng.
+
+Xóa chúng? Chúng sẽ được tạo lại trong lần chuyển đổi tiếp theo; không tệp nào khác bị đụng tới và bản gốc không bao giờ bị ảnh hưởng.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="990"/>
+        <source>{path} : suppression impossible ({error}).</source>
+        <translation>{path}: không thể xóa ({error}).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="993"/>
+        <source>{count} fichier(s) supprimé(s) ; relancez la conversion pour les recréer.</source>
+        <translation>Đã xóa {count} tệp; hãy chạy lại quá trình chuyển đổi để tạo lại chúng.</translation>
     </message>
 </context>
 <context>
     <name>ConvertWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="260"/>
-        <source>{done} / {total} — {name}</source>
-        <translation>{done} / {total} — {name}</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Copies</source>
+        <translation>Bản sao</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="289"/>
-        <source>{done} / {total} terminé(s)</source>
-        <translation>{done} / {total} hoàn tất</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Images</source>
+        <translation>Hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="304"/>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Audios</source>
+        <translation>Âm thanh</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Vidéos</source>
+        <translation>Video</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="425"/>
+        <source>Étape {number}/{steps} · {label}</source>
+        <translation>Bước {number}/{steps} · {label}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="430"/>
+        <source>reste ~{time}</source>
+        <translation>còn ~{time}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="511"/>
+        <source>Parallélisme : copies {copy} · images {image} · audios {audio} · vidéos {video} fichier(s) à la fois.</source>
+        <translation>Song song: bản sao {copy} · hình ảnh {image} · âm thanh {audio} · video {video} cùng lúc.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>vidéo</source>
+        <translation>video</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>image</source>
+        <translation>hình ảnh</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="519"/>
+        <source>Parallélisme {kind} : {count} × {threads} threads pour {cpus} cœur(s) ; réduisez le nombre de fichiers simultanés ou le réglage Threads pour éviter la surcharge.</source>
+        <translation>Song song {kind}: {count} × {threads} luồng cho {cpus} nhân; giảm số tệp đồng thời hoặc thiết lập Luồng để tránh quá tải.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="530"/>
+        <source>Étape {number}/{steps} : {label} ({count} fichier(s), {parallel} en parallèle).</source>
+        <translation>Bước {number}/{steps}: {label} ({count} tệp, {parallel} song song).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="547"/>
         <source>{ok} converti(s), {copied} copié(s), {kept} source(s) conservée(s), {skipped} déjà converti(s), {unsupported} non pris en charge, {errors} erreur(s) ; gain : {gain}</source>
         <translation>Đã chuyển đổi {ok}, đã sao chép {copied}, giữ nguồn {kept}, đã chuyển đổi trước đó {skipped}, không hỗ trợ {unsupported}, {errors} lỗi; tiết kiệm: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="310"/>
+        <location filename="../../modules/convert/workers.py" line="553"/>
         <source> ; métadonnées Takeout : {ok}, sans JSON : {missing}</source>
         <translation> ; siêu dữ liệu Takeout: {ok}, không có JSON: {missing}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="313"/>
+        <location filename="../../modules/convert/workers.py" line="556"/>
         <source> ; JSON Takeout non recopiés : {count}</source>
         <translation> ; JSON Takeout không được sao chép: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="315"/>
+        <location filename="../../modules/convert/workers.py" line="558"/>
         <source> ; métadonnées d&apos;origine recopiées : {count}</source>
         <translation> ; siêu dữ liệu gốc được sao chép: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="318"/>
+        <location filename="../../modules/convert/workers.py" line="561"/>
         <source> ; métadonnées non recopiées : {count}</source>
         <translation> ; siêu dữ liệu không được sao chép: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="321"/>
+        <location filename="../../modules/convert/workers.py" line="564"/>
         <source> ; champs Takeout non inscriptibles : {count}</source>
         <translation> ; trường Takeout không ghi được: {count}</translation>
     </message>
@@ -800,7 +1021,7 @@ Nhấp để chọn thư mục; nhấp chuột phải để quay lại thư mụ
 <context>
     <name>CopyFeedbackButton</name>
     <message>
-        <location filename="../../ui/controls.py" line="1034"/>
+        <location filename="../../ui/controls.py" line="1049"/>
         <source>Copié</source>
         <translation>Sao chép</translation>
     </message>
@@ -874,17 +1095,17 @@ Nhấp để chọn thư mục; nhấp chuột phải để quay lại thư mụ
 <context>
     <name>DedupWindow</name>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1392"/>
+        <location filename="../../modules/dedup/window.py" line="1403"/>
         <source>Choisir le journal d&apos;une quarantaine</source>
         <translation>Chọn nhật ký của một vùng cách ly</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1393"/>
+        <location filename="../../modules/dedup/window.py" line="1404"/>
         <source>Journal (journal.csv);;Fichiers CSV (*.csv)</source>
         <translation>Nhật ký (journal.csv);;Tệp CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="847"/>
+        <location filename="../../modules/dedup/window.py" line="858"/>
         <source>Importer un dossier</source>
         <translation>Nhập thư mục</translation>
     </message>
@@ -956,7 +1177,7 @@ Nhấp để chọn thư mục; nhấp chuột phải để quay lại thư mụ
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="105"/>
-        <location filename="../../modules/dedup/window.py" line="582"/>
+        <location filename="../../modules/dedup/window.py" line="583"/>
         <source>Live Photos</source>
         <translation>Ảnh trực tiếp</translation>
     </message>
@@ -992,13 +1213,13 @@ Nhấp để chọn thư mục; nhấp chuột phải để quay lại thư mụ
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="115"/>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder</source>
         <translation>Giữ</translation>
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="116"/>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Supprimer</source>
         <translation>XÓA BỎ</translation>
     </message>
@@ -1069,7 +1290,7 @@ Nhấp để chọn thư mục; nhấp chuột phải để quay lại thư mụ
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="465"/>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Appliquer les modifications</source>
         <translation>Áp dụng thay đổi</translation>
     </message>
@@ -1208,152 +1429,152 @@ Bấm để mở hoặc đóng ổ khóa.</translation>
         <translation>Phát hiện ảnh trông giống nhau (dHash); dung sai quy định mức khác biệt được chấp nhận.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="577"/>
+        <location filename="../../modules/dedup/window.py" line="578"/>
         <source>Tolérance :</source>
         <translation>Sức chịu đựng :</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="583"/>
+        <location filename="../../modules/dedup/window.py" line="584"/>
         <source>Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, sauf si vous demandez d&apos;écarter la vidéo.</source>
         <translation>Nhận diện cặp IMG_1234.HEIC + IMG_1234.MOV (hoặc tên đã chuyển đổi IMG_1234_heic.avif + IMG_1234_mov.webm). Chúng chỉ được báo hiệu, trừ khi bạn yêu cầu loại bỏ video.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="591"/>
+        <location filename="../../modules/dedup/window.py" line="593"/>
         <source>Écarter la vidéo</source>
         <translation>Hủy video</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="593"/>
+        <location filename="../../modules/dedup/window.py" line="595"/>
         <source>Proposer la vidéo à la suppression ; la photo est conservée.</source>
         <translation>Đề nghị xóa video; bức ảnh được bảo tồn.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="599"/>
+        <location filename="../../modules/dedup/window.py" line="601"/>
         <source>Durée max :</source>
         <translation>Thời lượng tối đa:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="602"/>
+        <location filename="../../modules/dedup/window.py" line="604"/>
         <source>Détection</source>
         <translation>Phát hiện</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="605"/>
+        <location filename="../../modules/dedup/window.py" line="607"/>
         <source>Proposition automatique :</source>
         <translation>Đề xuất tự động:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="612"/>
+        <location filename="../../modules/dedup/window.py" line="615"/>
         <source>Mode de suppression :</source>
         <translation>Chế độ xóa:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="620"/>
+        <location filename="../../modules/dedup/window.py" line="624"/>
         <source>Dossiers vides</source>
         <translation>Thư mục trống</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="621"/>
+        <location filename="../../modules/dedup/window.py" line="625"/>
         <source>Supprimer les dossiers devenus vides après les suppressions.</source>
         <translation>Xóa các thư mục đã trống sau khi xóa.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="624"/>
+        <location filename="../../modules/dedup/window.py" line="628"/>
         <source>Dossier de quarantaine :</source>
         <translation>Thư mục cách ly:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="627"/>
+        <location filename="../../modules/dedup/window.py" line="631"/>
         <source>Traitement</source>
         <translation>Sự đối đãi</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="646"/>
+        <location filename="../../modules/dedup/window.py" line="650"/>
         <source>Afficher :</source>
         <translation>Trưng bày :</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="766"/>
+        <location filename="../../modules/dedup/window.py" line="770"/>
         <source>Corrections manuelles</source>
         <translation>Chỉnh sửa thủ công</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder la sélection</source>
         <translation>Giữ lựa chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Proposer la sélection à la suppression (Suppr)</source>
         <translation>Đề xuất lựa chọn xóa (Delete)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="773"/>
+        <location filename="../../modules/dedup/window.py" line="777"/>
         <source>Tout supprimer</source>
         <translation>Xóa tất cả</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="774"/>
+        <location filename="../../modules/dedup/window.py" line="778"/>
         <source>Proposer tous les fichiers du groupe sélectionné à la suppression (les fichiers protégés sont conservés)</source>
         <translation>Đề xuất xóa tất cả các file trong nhóm đã chọn (các file được bảo vệ sẽ được giữ lại)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder uniquement celui-ci</source>
         <translation>Chỉ giữ lại cái này</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder ce fichier, proposer les autres du groupe</source>
         <translation>Giữ tập tin này, đề xuất những người khác trong nhóm</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Proposition auto pour la sélection</source>
         <translation>Tự động đề xuất lựa chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Appliquer la stratégie choisie à la sélection</source>
         <translation>Áp dụng chiến lược đã chọn vào vùng chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="783"/>
+        <location filename="../../modules/dedup/window.py" line="787"/>
         <source>Espace : bascule Garder / Supprimer · Suppr : Supprimer · Double-clic : lire (audio, vidéo) ou ouvrir le fichier</source>
         <translation>Dấu cách: Chuyển đổi Giữ/Xóa · Xóa: Xóa · Nhấp đúp: phát (âm thanh, video) hoặc mở tập tin</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="788"/>
+        <location filename="../../modules/dedup/window.py" line="799"/>
         <source>Aperçu et corrections</source>
         <translation>Tổng quan và sửa lỗi</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1061"/>
+        <location filename="../../modules/dedup/window.py" line="1072"/>
         <source>Groupe {id} · {kind} · {count} fichiers · gain : {gain}</source>
         <translation>Nhóm {id} · {kind} · {count} tệp · đạt được: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1069"/>
+        <location filename="../../modules/dedup/window.py" line="1080"/>
         <source> · protégé</source>
         <translation>· được bảo vệ</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1082"/>
+        <location filename="../../modules/dedup/window.py" line="1093"/>
         <source>Aucune analyse effectuée.</source>
         <translation>Không có phân tích nào được thực hiện.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1085"/>
+        <location filename="../../modules/dedup/window.py" line="1096"/>
         <source>{scanned} fichier(s) analysé(s) · {count} groupe(s) · {files} fichier(s) concerné(s) · gain libérable : {gain}</source>
         <translation>{scanned} tệp đã quét · {count} nhóm · {files} tệp có liên quan · mức tăng có thể giải phóng: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1165"/>
+        <location filename="../../modules/dedup/window.py" line="1176"/>
         <source>Groupe {id}</source>
         <translation>Nhóm {id}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1166"/>
+        <location filename="../../modules/dedup/window.py" line="1177"/>
         <source>{count} fichiers · {kind}
 Taille totale : {size}
 Gain libérable : {gain}</source>
@@ -1362,27 +1583,27 @@ Tổng kích thước: {size}
 Có thể giải phóng: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1172"/>
+        <location filename="../../modules/dedup/window.py" line="1183"/>
         <source>Sélectionnez un fichier, ou deux fichiers du même groupe pour les comparer.</source>
         <translation>Chọn một hoặc hai tệp từ cùng một nhóm để so sánh chúng.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1173"/>
+        <location filename="../../modules/dedup/window.py" line="1184"/>
         <source>{count} fichier(s) sélectionné(s)</source>
         <translation>{count} tệp đã chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1250"/>
+        <location filename="../../modules/dedup/window.py" line="1261"/>
         <source>{count} fichier(s) proposé(s) à la suppression dans {groups} groupe(s).</source>
         <translation>{count} tệp được đề xuất xóa trong {groups} nhóm.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1254"/>
+        <location filename="../../modules/dedup/window.py" line="1265"/>
         <source>{count} fichier(s) protégé(s) conservé(s).</source>
         <translation>{count} tệp được bảo vệ được giữ lại.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1318"/>
+        <location filename="../../modules/dedup/window.py" line="1329"/>
         <source>Aucun fichier ne sera conservé dans {groups} groupe(s) ({files} fichier(s)).
 Tous les fichiers de ces groupes seront supprimés.
 
@@ -1393,17 +1614,17 @@ Tất cả các tập tin trong các nhóm này sẽ bị xóa.
 </translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Aucun fichier conservé</source>
         <translation>Không có tập tin nào được lưu giữ</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1401"/>
+        <location filename="../../modules/dedup/window.py" line="1412"/>
         <source>Journal non vérifiable</source>
         <translation>Nhật ký không thể xác minh</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1402"/>
+        <location filename="../../modules/dedup/window.py" line="1413"/>
         <source>Ce journal ne contient pas la liste des dossiers analysés (journal importé ou antérieur).
 
 La restauration déplacera des fichiers vers les emplacements qu&apos;il indique. Ne continuez que si vous faites entièrement confiance à ce journal.
@@ -1416,12 +1637,12 @@ Việc khôi phục sẽ di chuyển tệp đến các vị trí mà nhật ký 
 Khôi phục?</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1430"/>
+        <location filename="../../modules/dedup/window.py" line="1441"/>
         <source>Exporter le rapport</source>
         <translation>Xuất báo cáo</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1431"/>
+        <location filename="../../modules/dedup/window.py" line="1442"/>
         <source>Fichiers CSV (*.csv)</source>
         <translation>Tệp CSV (*.csv)</translation>
     </message>
@@ -1429,32 +1650,32 @@ Khôi phục?</translation>
 <context>
     <name>DropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1410"/>
+        <location filename="../../ui/widgets.py" line="1512"/>
         <source>Choisir des fichiers…</source>
         <translation>Chọn tệp…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1411"/>
+        <location filename="../../ui/widgets.py" line="1513"/>
         <source>Choisir un dossier…</source>
         <translation>Chọn một thư mục…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1427"/>
+        <location filename="../../ui/widgets.py" line="1529"/>
         <source>Fichiers acceptés ({masks});;Tous les fichiers (*)</source>
         <translation>Các tệp được chấp nhận ({masks});;Tất cả các tệp (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1429"/>
+        <location filename="../../ui/widgets.py" line="1531"/>
         <source>Tous les fichiers (*)</source>
         <translation>Tất cả các tập tin (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1430"/>
+        <location filename="../../ui/widgets.py" line="1532"/>
         <source>Choisir des fichiers</source>
         <translation>Chọn tệp</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1438"/>
+        <location filename="../../ui/widgets.py" line="1540"/>
         <source>Choisir un dossier</source>
         <translation>Chọn một thư mục</translation>
     </message>
@@ -1616,10 +1837,6 @@ Khôi phục?</translation>
         <translation>{count} mục</translation>
     </message>
     <message>
-        <source>{count} entrée(s)</source>
-        <translation type="vanished">Các mục {count}</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="150"/>
         <source>du module « {name} »</source>
         <translation>cho mô-đun “{name}”</translation>
@@ -1638,7 +1855,7 @@ Khôi phục?</translation>
 <context>
     <name>ImagePreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="3070"/>
+        <location filename="../../ui/widgets.py" line="3189"/>
         <source>Chargement…</source>
         <translation>Đang tải…</translation>
     </message>
@@ -1646,7 +1863,7 @@ Khôi phục?</translation>
 <context>
     <name>ImportProgress</name>
     <message>
-        <location filename="../../ui/widgets.py" line="758"/>
+        <location filename="../../ui/widgets.py" line="860"/>
         <source>Importation terminée !</source>
         <translation>Nhập đã hoàn tất!</translation>
     </message>
@@ -1674,10 +1891,6 @@ Khôi phục?</translation>
         <translation>{count} dòng cuối cùng</translation>
     </message>
     <message>
-        <source>{count} dernière(s) ligne(s)</source>
-        <translation type="vanished">Dòng cuối {count}</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="200"/>
         <source>(Le journal est vide ou introuvable.)</source>
         <translation>(Nhật ký trống hoặc bị mất.)</translation>
@@ -1686,26 +1899,22 @@ Khôi phục?</translation>
 <context>
     <name>ModuleCard</name>
     <message>
-        <source>Déposez des fichiers ou un dossier ici pour les ouvrir directement.</source>
-        <translation type="vanished">Kéo các tập tin hoặc một thư mục vào đây để mở trực tiếp.</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="140"/>
+        <location filename="../../launcher/atlas_window.py" line="141"/>
         <source>Ouvrir</source>
         <translation>Mở</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="166"/>
+        <location filename="../../launcher/atlas_window.py" line="167"/>
         <source>erreur inconnue</source>
         <translation>lỗi không xác định</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="172"/>
+        <location filename="../../launcher/atlas_window.py" line="173"/>
         <source>✖ indisponible</source>
         <translation>✖ không có sẵn</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="191"/>
+        <location filename="../../launcher/atlas_window.py" line="192"/>
         <source>Introuvable : voir « Préférences… » ou le dossier bin/.</source>
         <translation>Không tìm thấy: xem “Tùy chọn…” hoặc thư mục bin/.</translation>
     </message>
@@ -1713,226 +1922,222 @@ Khôi phục?</translation>
 <context>
     <name>ModuleWindow</name>
     <message>
-        <location filename="../../ui/module_window.py" line="203"/>
-        <location filename="../../ui/module_window.py" line="470"/>
-        <location filename="../../ui/module_window.py" line="477"/>
+        <location filename="../../ui/module_window.py" line="207"/>
+        <location filename="../../ui/module_window.py" line="483"/>
+        <location filename="../../ui/module_window.py" line="490"/>
         <source>Journal</source>
         <translation>Nhật ký</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="204"/>
+        <location filename="../../ui/module_window.py" line="208"/>
         <source>Afficher ou masquer le journal</source>
         <translation>Hiển thị hoặc ẩn nhật ký</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="62"/>
-        <location filename="../../ui/module_window.py" line="208"/>
-        <location filename="../../ui/module_window.py" line="384"/>
+        <location filename="../../ui/module_window.py" line="64"/>
+        <location filename="../../ui/module_window.py" line="212"/>
+        <location filename="../../ui/module_window.py" line="397"/>
         <source>Aide</source>
         <translation>giúp</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="59"/>
-        <location filename="../../ui/module_window.py" line="357"/>
+        <location filename="../../ui/module_window.py" line="61"/>
+        <location filename="../../ui/module_window.py" line="370"/>
         <source>Afficher / masquer le journal</source>
         <translation>Hiển thị/ẩn nhật ký</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="60"/>
-        <location filename="../../ui/module_window.py" line="359"/>
+        <location filename="../../ui/module_window.py" line="62"/>
+        <location filename="../../ui/module_window.py" line="372"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Chuyển đổi giữa chủ đề tối và sáng</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="209"/>
+        <location filename="../../ui/module_window.py" line="213"/>
         <source>Aide et raccourcis</source>
         <translation>Trợ giúp và phím tắt</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="285"/>
-        <location filename="../../ui/module_window.py" line="371"/>
+        <location filename="../../ui/module_window.py" line="298"/>
+        <location filename="../../ui/module_window.py" line="384"/>
         <source>Démarrer</source>
         <translation>Bắt đầu</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="57"/>
-        <location filename="../../ui/module_window.py" line="286"/>
+        <location filename="../../ui/module_window.py" line="59"/>
+        <location filename="../../ui/module_window.py" line="299"/>
         <source>Démarrer le traitement</source>
         <translation>Bắt đầu xử lý</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="288"/>
-        <location filename="../../ui/module_window.py" line="345"/>
-        <location filename="../../ui/module_window.py" line="373"/>
+        <location filename="../../ui/module_window.py" line="301"/>
+        <location filename="../../ui/module_window.py" line="358"/>
+        <location filename="../../ui/module_window.py" line="386"/>
         <source>Annuler</source>
         <translation>Hủy</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="58"/>
-        <location filename="../../ui/module_window.py" line="289"/>
+        <location filename="../../ui/module_window.py" line="60"/>
+        <location filename="../../ui/module_window.py" line="302"/>
         <source>Annuler le traitement en cours</source>
         <translation>Hủy công việc hiện tại</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="295"/>
+        <location filename="../../ui/module_window.py" line="308"/>
         <source>Principale</source>
         <translation>chính</translation>
     </message>
     <message>
-        <source>Changer de thème</source>
-        <translation type="vanished">Chuyển giao diện</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="61"/>
-        <location filename="../../ui/module_window.py" line="306"/>
+        <location filename="../../ui/module_window.py" line="63"/>
         <location filename="../../ui/module_window.py" line="319"/>
+        <location filename="../../ui/module_window.py" line="332"/>
         <source>Préférences…</source>
         <translation>Tùy chọn…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="69"/>
+        <location filename="../../ui/module_window.py" line="71"/>
         <source>Date</source>
         <translation>Ngày</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="70"/>
+        <location filename="../../ui/module_window.py" line="72"/>
         <source>Action</source>
         <translation>Hoạt động</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="71"/>
+        <location filename="../../ui/module_window.py" line="73"/>
         <source>Résumé</source>
         <translation>Bản tóm tắt</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="72"/>
+        <location filename="../../ui/module_window.py" line="74"/>
         <source>Réussis</source>
         <translation>Thành công</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="73"/>
+        <location filename="../../ui/module_window.py" line="75"/>
         <source>Erreurs</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="307"/>
+        <location filename="../../ui/module_window.py" line="320"/>
         <source>Langue, thème, taille du texte, outils externes</source>
         <translation>Ngôn ngữ, chủ đề, kích thước văn bản, công cụ bên ngoài</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="315"/>
+        <location filename="../../ui/module_window.py" line="328"/>
         <source>Azimut</source>
         <translation>Phương vị</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="316"/>
-        <location filename="../../ui/module_window.py" line="421"/>
+        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="434"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Giới thiệu về Azimut</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="323"/>
+        <location filename="../../ui/module_window.py" line="336"/>
         <source>Quitter</source>
         <translation>rời đi</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="328"/>
+        <location filename="../../ui/module_window.py" line="341"/>
         <source>Fichier</source>
         <translation>Tài liệu</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="342"/>
         <source>Ajouter des fichiers…</source>
         <translation>Thêm tập tin…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="331"/>
+        <location filename="../../ui/module_window.py" line="344"/>
         <source>Ajouter un dossier…</source>
         <translation>Thêm thư mục…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="338"/>
+        <location filename="../../ui/module_window.py" line="351"/>
         <source>Édition</source>
         <translation>Phiên bản</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="339"/>
-        <location filename="../../ui/module_window.py" line="404"/>
+        <location filename="../../ui/module_window.py" line="352"/>
+        <location filename="../../ui/module_window.py" line="417"/>
         <source>Annuler le dernier renommage</source>
         <translation>Hoàn tác lần đổi tên cuối cùng</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="346"/>
+        <location filename="../../ui/module_window.py" line="359"/>
         <source>Rétablir</source>
         <translation>Khôi phục</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="360"/>
         <source>Couper</source>
         <translation>Cắt</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="348"/>
+        <location filename="../../ui/module_window.py" line="361"/>
         <source>Copier</source>
         <translation>Sao chép</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="349"/>
+        <location filename="../../ui/module_window.py" line="362"/>
         <source>Coller</source>
         <translation>Dán</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="350"/>
+        <location filename="../../ui/module_window.py" line="363"/>
         <source>Tout sélectionner</source>
         <translation>Chọn tất cả</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="356"/>
+        <location filename="../../ui/module_window.py" line="369"/>
         <source>Présentation</source>
         <translation>Bài thuyết trình</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="363"/>
+        <location filename="../../ui/module_window.py" line="376"/>
         <source>Agrandir le texte</source>
         <translation>Phóng to văn bản</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="366"/>
+        <location filename="../../ui/module_window.py" line="379"/>
         <source>Réduire le texte</source>
         <translation>Giảm văn bản</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="370"/>
+        <location filename="../../ui/module_window.py" line="383"/>
         <source>Traitement</source>
         <translation>Sự đối đãi</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="376"/>
+        <location filename="../../ui/module_window.py" line="389"/>
         <source>Fenêtre</source>
         <translation>Cửa sổ</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="377"/>
+        <location filename="../../ui/module_window.py" line="390"/>
         <source>Réduire</source>
         <translation>Giảm bớt</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="380"/>
+        <location filename="../../ui/module_window.py" line="393"/>
         <source>Zoom</source>
         <translation>Phóng</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="385"/>
+        <location filename="../../ui/module_window.py" line="398"/>
         <source>Raccourcis clavier</source>
         <translation>Phím tắt</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="413"/>
+        <location filename="../../ui/module_window.py" line="426"/>
         <source>Vider la liste</source>
         <translation>Xóa danh sách</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="414"/>
+        <location filename="../../ui/module_window.py" line="427"/>
         <source>Voulez-vous vraiment vider la liste ?
 
 Les fichiers ne seront pas modifiés.</source>
@@ -1941,99 +2146,83 @@ Les fichiers ne seront pas modifiés.</source>
 Các tập tin sẽ không được sửa đổi.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="471"/>
+        <location filename="../../ui/module_window.py" line="484"/>
         <source>Historique</source>
         <translation>Lịch sử</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="473"/>
+        <location filename="../../ui/module_window.py" line="486"/>
         <source>Effacer le journal</source>
         <translation>Xóa nhật ký</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="603"/>
+        <location filename="../../ui/module_window.py" line="662"/>
         <source>{name} est introuvable.
 Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>{name} không được tìm thấy. 
  Cài đặt nó hoặc thiết lập đường dẫn của nó trong Cài đặt.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="648"/>
+        <location filename="../../ui/module_window.py" line="707"/>
         <source>Un traitement est déjà en cours : nouvelle demande ignorée.</source>
         <translation>Một công việc đang chạy: yêu cầu mới bị bỏ qua.</translation>
     </message>
     <message>
-        <source>En cours…</source>
-        <translation type="vanished">Đang chạy…</translation>
-    </message>
-    <message>
-        <source>Annulation en cours…</source>
-        <translation type="vanished">Đang hủy…</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="703"/>
+        <location filename="../../ui/module_window.py" line="762"/>
         <source>Annulation demandée…</source>
         <translation>Đã yêu cầu hủy…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="736"/>
-        <location filename="../../ui/module_window.py" line="845"/>
+        <location filename="../../ui/module_window.py" line="789"/>
+        <location filename="../../ui/module_window.py" line="898"/>
         <source>Traitement terminé.</source>
         <translation>Xử lý hoàn tất.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="741"/>
-        <location filename="../../ui/module_window.py" line="854"/>
+        <location filename="../../ui/module_window.py" line="794"/>
+        <location filename="../../ui/module_window.py" line="907"/>
         <source>Traitement annulé.</source>
         <translation>Đã hủy xử lý.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="746"/>
+        <location filename="../../ui/module_window.py" line="799"/>
         <source>Échec du traitement : {message}</source>
         <translation>Xử lý thất bại: {message}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="838"/>
+        <location filename="../../ui/module_window.py" line="891"/>
         <source>Erreur interne : {error}</source>
         <translation>Lỗi nội bộ: {error}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="849"/>
-        <location filename="../../ui/module_window.py" line="855"/>
+        <location filename="../../ui/module_window.py" line="902"/>
+        <location filename="../../ui/module_window.py" line="908"/>
         <source>Échec : {reason}</source>
         <translation>Thất bại: {reason}</translation>
     </message>
     <message>
-        <source>Clair</source>
-        <translation type="vanished">Ánh sáng</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">Tối</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="965"/>
+        <location filename="../../ui/module_window.py" line="1042"/>
         <source>Aide — {name}</source>
         <translation>Giúp đỡ — {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="986"/>
+        <location filename="../../ui/module_window.py" line="1063"/>
         <source>{app} · version {version}</source>
         <translation>{app} · phiên bản {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="334"/>
-        <location filename="../../ui/module_window.py" line="996"/>
+        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="1073"/>
         <source>Fermer</source>
         <translation>Đóng</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1013"/>
+        <location filename="../../ui/module_window.py" line="1090"/>
         <source>Un traitement est en cours : dépôt ignoré.</source>
         <translation>Một công việc đang chạy: lệnh xóa bị bỏ qua.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1038"/>
+        <location filename="../../ui/module_window.py" line="1115"/>
         <source>Fermeture reportée : le traitement doit s&apos;arrêter.</source>
         <translation>Đã hoãn đóng: quá trình xử lý phải dừng lại.</translation>
     </message>
@@ -2056,10 +2245,6 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>Ghi ngày chụp vào tên tệp của bạn</translation>
     </message>
     <message>
-        <source>Comparer deux dossiers : même arborescence, même nombre de fichiers ?</source>
-        <translation type="vanished">So sánh hai thư mục: cùng cấu trúc cây, cùng số lượng tệp?</translation>
-    </message>
-    <message>
         <location filename="../../modules/tags/__init__.py" line="11"/>
         <source>Lire, modifier et supprimer les métadonnées EXIF, IPTC et XMP</source>
         <translation>Đọc, chỉnh sửa và xóa metadata EXIF, IPTC và XMP</translation>
@@ -2078,32 +2263,32 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>OpenFileButton</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2990"/>
+        <location filename="../../ui/widgets.py" line="3109"/>
         <source>Ouvre le fichier sélectionné dans l&apos;application associée du système (lecteur vidéo, visionneuse d&apos;images, lecteur PDF…).</source>
         <translation>Mở tệp đã chọn bằng ứng dụng liên kết của hệ thống (trình phát video, trình xem ảnh, trình đọc PDF…).</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3006"/>
+        <location filename="../../ui/widgets.py" line="3125"/>
         <source>Ouvrir dans une application</source>
         <translation>Mở bằng ứng dụng</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3004"/>
+        <location filename="../../ui/widgets.py" line="3123"/>
         <source>Afficher le dossier</source>
         <translation>Hiển thị thư mục</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3020"/>
+        <location filename="../../ui/widgets.py" line="3139"/>
         <source>Impossible d&apos;ouvrir : {target}</source>
         <translation>Không thể mở: {target}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3022"/>
+        <location filename="../../ui/widgets.py" line="3141"/>
         <source>Ouverture impossible</source>
         <translation>Không thể mở được</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3023"/>
+        <location filename="../../ui/widgets.py" line="3142"/>
         <source>Aucune application n&apos;est associée à ce fichier :
 {name}</source>
         <translation>Không có ứng dụng nào liên kết với tệp này:
@@ -2113,13 +2298,13 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PathDropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1477"/>
-        <location filename="../../ui/widgets.py" line="1478"/>
+        <location filename="../../ui/widgets.py" line="1579"/>
+        <location filename="../../ui/widgets.py" line="1580"/>
         <source>Effacer le dossier</source>
         <translation>Xóa thư mục</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1678"/>
+        <location filename="../../ui/widgets.py" line="1780"/>
         <source>Glissez un dossier ici ou cliquez pour parcourir</source>
         <translation>Kéo một thư mục vào đây hoặc nhấp để duyệt</translation>
     </message>
@@ -2178,377 +2363,288 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="40"/>
+        <location filename="../../ui/preferences_dialog.py" line="41"/>
         <source> — traduction à venir</source>
         <translation>- sắp có bản dịch</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="46"/>
+        <location filename="../../ui/preferences_dialog.py" line="47"/>
         <source>embarqué</source>
         <translation>trên tàu</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="47"/>
+        <location filename="../../ui/preferences_dialog.py" line="48"/>
         <source>personnalisé</source>
         <translation>cá nhân hóa</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="48"/>
+        <location filename="../../ui/preferences_dialog.py" line="49"/>
         <source>système</source>
         <translation>hệ thống</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="49"/>
+        <location filename="../../ui/preferences_dialog.py" line="50"/>
         <source>introuvable</source>
         <translation>không tìm thấy</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="56"/>
+        <location filename="../../ui/preferences_dialog.py" line="57"/>
         <source>✖ introuvable</source>
         <translation>✖ không tìm thấy</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="57"/>
+        <location filename="../../ui/preferences_dialog.py" line="58"/>
         <source>{name} est introuvable : indiquez son chemin ou installez-le.</source>
         <translation>Không thể tìm thấy {name}: cung cấp đường dẫn hoặc cài đặt nó.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="61"/>
+        <location filename="../../ui/preferences_dialog.py" line="62"/>
         <source>⚠ {source} · {version}</source>
         <translation>⚠ {source} · {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="62"/>
+        <location filename="../../ui/preferences_dialog.py" line="63"/>
         <source>Version {version} antérieure au minimum recommandé ({minimum}) ; mettez-le à jour. Chemin : {path}</source>
         <translation>Phiên bản {version} thấp hơn mức tối thiểu khuyến nghị ({minimum}); hãy cập nhật. Đường dẫn: {path}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="67"/>
+        <location filename="../../ui/preferences_dialog.py" line="68"/>
         <source>✔ {source}</source>
         <translation>✔ {source}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="625"/>
+        <location filename="../../ui/preferences_dialog.py" line="622"/>
         <source>Préférences</source>
         <translation>Tùy chọn</translation>
-    </message>
-    <message>
-        <source>Apparence</source>
-        <translation type="vanished">Bề ngoài</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">Tối</translation>
-    </message>
-    <message>
-        <source>Clair</source>
-        <translation type="vanished">Ánh sáng</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">Chủ đề</translation>
-    </message>
-    <message>
-        <source>Taille du texte</source>
-        <translation type="vanished">Kích thước văn bản</translation>
-    </message>
-    <message>
-        <source>Langue</source>
-        <translation type="vanished">Ngôn ngữ</translation>
-    </message>
-    <message>
-        <source>Outils externes</source>
-        <translation type="vanished">Công cụ bên ngoài</translation>
-    </message>
-    <message>
-        <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
-        <translation type="vanished">Một bản sao đi kèm được sử dụng trước; nếu không, sử dụng đường dẫn đã nhập, sau đó là PATH hệ thống. Các thay đổi được lưu bằng “Lưu”.</translation>
-    </message>
-    <message>
-        <source>Tous les fichiers (*)</source>
-        <translation type="vanished">Tất cả các tập tin (*)</translation>
-    </message>
-    <message>
-        <source>Détecter</source>
-        <translation type="vanished">Phát hiện</translation>
-    </message>
-    <message>
-        <source>Enregistrer</source>
-        <translation type="vanished">Lưu</translation>
-    </message>
-    <message>
-        <source>Annuler</source>
-        <translation type="vanished">Hủy</translation>
-    </message>
-    <message>
-        <source>Enregistrer et relancer</source>
-        <translation type="vanished">Lưu và khởi động lại</translation>
-    </message>
-    <message>
-        <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
-        <translation type="vanished">Lưu các tùy chọn và khởi động lại Azimut để áp dụng ngôn ngữ.</translation>
-    </message>
-    <message>
-        <source>Automatique (système)</source>
-        <translation type="vanished">Tự động (hệ thống)</translation>
-    </message>
-    <message>
-        <source>✔ saisi</source>
-        <translation type="vanished">✔ đã nhập</translation>
-    </message>
-    <message>
-        <source>Chemin saisi, pas encore enregistré.</source>
-        <translation type="vanished">Đường dẫn đã nhập, chưa được lưu.</translation>
-    </message>
-    <message>
-        <source>✖ chemin saisi inutilisable</source>
-        <translation type="vanished">✖ đường dẫn đã nhập không sử dụng được</translation>
-    </message>
-    <message>
-        <source>Apparence, langue et outils externes.</source>
-        <translation type="vanished">Bề ngoài, ngôn ngữ và công cụ bên ngoài.</translation>
     </message>
 </context>
 <context>
     <name>PreferencesPage</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="98"/>
+        <location filename="../../ui/preferences_dialog.py" line="99"/>
         <source>Préférences</source>
         <translation>Tùy chọn</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="99"/>
+        <location filename="../../ui/preferences_dialog.py" line="100"/>
         <source>Apparence, langue et outils externes.</source>
         <translation>Ngoại hình, ngôn ngữ và các công cụ bên ngoài.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="109"/>
+        <location filename="../../ui/preferences_dialog.py" line="110"/>
         <source>Apparence</source>
         <translation>Vẻ bề ngoài</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="114"/>
+        <location filename="../../ui/preferences_dialog.py" line="115"/>
         <source>Système</source>
         <translation>Hệ thống</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="115"/>
+        <location filename="../../ui/preferences_dialog.py" line="116"/>
         <source>Sombre</source>
         <translation>Tối tăm</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="116"/>
+        <location filename="../../ui/preferences_dialog.py" line="117"/>
         <source>Clair</source>
         <translation>Thông thoáng</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="120"/>
-        <source>Le thème suit le système à chaque démarrage ; un choix explicite ne dure que jusqu&apos;à la fermeture d&apos;Azimut.</source>
-        <translation>Giao diện theo hệ thống mỗi lần khởi động; lựa chọn rõ ràng chỉ có hiệu lực đến khi đóng Azimut.</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="128"/>
+        <location filename="../../ui/preferences_dialog.py" line="125"/>
         <source>Thème</source>
         <translation>chủ đề</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="130"/>
+        <location filename="../../ui/preferences_dialog.py" line="127"/>
         <source>Taille du texte</source>
         <translation>Kích thước văn bản</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="133"/>
+        <location filename="../../ui/preferences_dialog.py" line="130"/>
         <source>Papicons</source>
         <translation>Papicons</translation>
     </message>
     <message>
-        <source>Animées</source>
-        <translation type="vanished">động</translation>
-    </message>
-    <message>
-        <source>Papicons : icônes pleines historiques. Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
-        <translation type="vanished">Papicons: biểu tượng đặc cổ điển. động: biểu tượng nét, có hiệu ứng khi rê chuột (không hiệu ứng nếu đã giảm chuyển động).</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="134"/>
+        <location filename="../../ui/preferences_dialog.py" line="131"/>
         <source>Lucide Animées</source>
         <translation>Lucide Động</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="137"/>
+        <location filename="../../ui/preferences_dialog.py" line="134"/>
         <source>Papicons : icônes pleines historiques. Lucide Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
         <translation>Papicons: biểu tượng đặc cổ điển. Lucide Động: biểu tượng nét, có hiệu ứng khi rê chuột (không hiệu ứng nếu đã giảm chuyển động).</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="139"/>
+        <location filename="../../ui/preferences_dialog.py" line="136"/>
         <source>Icônes</source>
         <translation>Biểu tượng</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="148"/>
+        <location filename="../../ui/preferences_dialog.py" line="145"/>
         <source>Accessibilité</source>
         <translation>Khả năng tiếp cận</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="151"/>
+        <location filename="../../ui/preferences_dialog.py" line="148"/>
         <source>Réduire les animations</source>
         <translation>Giảm hình ảnh động</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="153"/>
+        <location filename="../../ui/preferences_dialog.py" line="150"/>
         <source>Coupe les animations de capsule, d&apos;en-tête et les icônes d&apos;onglet animées.</source>
         <translation>Tắt hiệu ứng của viên nang, thanh tiêu đề và biểu tượng tab động.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="154"/>
+        <location filename="../../ui/preferences_dialog.py" line="151"/>
         <source>Réduire la transparence</source>
         <translation>Giảm tính minh bạch</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="156"/>
+        <location filename="../../ui/preferences_dialog.py" line="153"/>
         <source>Rend opaques les surfaces en verre : barres, cartes et dialogues restent nets.</source>
         <translation>Làm cho bề mặt kính mờ đục: thanh, thẻ và hộp thoại vẫn rõ ràng.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="157"/>
+        <location filename="../../ui/preferences_dialog.py" line="154"/>
         <source>Contraste élevé</source>
         <translation>Độ tương phản cao</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="159"/>
+        <location filename="../../ui/preferences_dialog.py" line="156"/>
         <source>Renforce les liserés et l&apos;anneau de focus pour les personnes à basse vision.</source>
         <translation>Tăng cường đường viền và vòng tiêu điểm cho người thị lực kém.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="168"/>
+        <location filename="../../ui/preferences_dialog.py" line="165"/>
         <source>Tant qu&apos;une option n&apos;est pas modifiée ici, elle suit le réglage d&apos;accessibilité du système lorsqu&apos;il est disponible.</source>
         <translation>Khi một tuỳ chọn chưa được sửa ở đây, nó theo cài đặt trợ năng của hệ thống khi có sẵn.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="177"/>
+        <location filename="../../ui/preferences_dialog.py" line="174"/>
         <source>Langue</source>
         <translation>Ngôn ngữ</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="183"/>
+        <location filename="../../ui/preferences_dialog.py" line="180"/>
         <source>Langue de l&apos;interface</source>
         <translation>Ngôn ngữ giao diện</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="189"/>
+        <location filename="../../ui/preferences_dialog.py" line="186"/>
         <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
         <translation>« Tự động » theo ngôn ngữ hệ thống. Các ngôn ngữ ghi « bản dịch sắp có » chưa có danh mục: tiếng Anh, rồi tiếng Pháp được dùng. Thay đổi có hiệu lực ở lần khởi động Azimut tiếp theo.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="198"/>
+        <location filename="../../ui/preferences_dialog.py" line="195"/>
         <source>Outils externes</source>
         <translation>Công cụ bên ngoài</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="200"/>
+        <location filename="../../ui/preferences_dialog.py" line="197"/>
         <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
         <translation>Một bản sao tích hợp được ưu tiên sử dụng; nếu không thì đường dẫn đã nhập, sau đó là PATH của hệ thống. Các thay đổi được lưu bằng nút “Save”.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="209"/>
+        <location filename="../../ui/preferences_dialog.py" line="206"/>
         <source>Tous les fichiers (*)</source>
         <translation>Tất cả các tập tin (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="214"/>
+        <location filename="../../ui/preferences_dialog.py" line="211"/>
         <source>Détecter</source>
         <translation>Phát hiện</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="265"/>
+        <location filename="../../ui/preferences_dialog.py" line="262"/>
         <source>Préférences enregistrées.</source>
         <translation>Tùy chọn đã lưu.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="270"/>
+        <location filename="../../ui/preferences_dialog.py" line="267"/>
         <source>Annuler</source>
         <translation>Hủy bỏ</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="274"/>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="271"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer</source>
         <translation>Cứu</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="314"/>
+        <location filename="../../ui/preferences_dialog.py" line="311"/>
         <source>Automatique (système)</source>
         <translation>Tự động (hệ thống)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="315"/>
+        <location filename="../../ui/preferences_dialog.py" line="312"/>
         <source>Suit la langue de l&apos;interface du système.</source>
         <translation>Theo ngôn ngữ giao diện của hệ thống.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="323"/>
+        <location filename="../../ui/preferences_dialog.py" line="320"/>
         <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
         <translation>{language}: danh mục sắp có, dự phòng tiếng Anh rồi tiếng Pháp.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer et relancer</source>
         <translation>Lưu và khởi động lại</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="364"/>
+        <location filename="../../ui/preferences_dialog.py" line="361"/>
         <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
         <translation>Lưu tùy chọn và khởi động lại Azimut để áp dụng ngôn ngữ.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="403"/>
-        <location filename="../../ui/preferences_dialog.py" line="472"/>
+        <location filename="../../ui/preferences_dialog.py" line="400"/>
+        <location filename="../../ui/preferences_dialog.py" line="469"/>
         <source>… non vérifié</source>
         <translation>…chưa được xác minh</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="404"/>
-        <location filename="../../ui/preferences_dialog.py" line="473"/>
+        <location filename="../../ui/preferences_dialog.py" line="401"/>
+        <location filename="../../ui/preferences_dialog.py" line="470"/>
         <source>Cliquez sur « Détecter » pour vérifier le chemin saisi.</source>
         <translation>Nhấp vào “Phát hiện” để kiểm tra đường dẫn đã nhập.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="443"/>
+        <location filename="../../ui/preferences_dialog.py" line="440"/>
         <source>… vérification</source>
         <translation>… xác minh</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="444"/>
+        <location filename="../../ui/preferences_dialog.py" line="441"/>
         <source>Exécution du binaire saisi pour lire sa version.</source>
         <translation>Thực thi nhị phân đã nhập để đọc phiên bản của nó.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="475"/>
+        <location filename="../../ui/preferences_dialog.py" line="472"/>
         <source>✔ saisi</source>
         <translation>✔ đã nhập</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="476"/>
+        <location filename="../../ui/preferences_dialog.py" line="473"/>
         <source>Chemin saisi, pas encore enregistré.</source>
         <translation>Đường dẫn đã nhập, chưa được lưu.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="478"/>
+        <location filename="../../ui/preferences_dialog.py" line="475"/>
         <source>✖ chemin saisi inutilisable</source>
         <translation>✖ đường dẫn đã vào không sử dụng được</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="479"/>
+        <location filename="../../ui/preferences_dialog.py" line="476"/>
         <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
         <translation>Không thể chạy tệp đã nhập.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="524"/>
+        <location filename="../../ui/preferences_dialog.py" line="521"/>
         <source>✖ détection impossible</source>
         <translation>✖ không thể phát hiện</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="525"/>
+        <location filename="../../ui/preferences_dialog.py" line="522"/>
         <source>La détection a échoué (voir le journal).</source>
         <translation>Phát hiện không thành công (xem nhật ký).</translation>
     </message>
@@ -2556,192 +2652,207 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>Profiles</name>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="75"/>
+        <location filename="../../modules/convert/profiles.py" line="76"/>
         <source>Fichier ni image, ni vidéo, ni audio : copié sans modification dans le dossier de sortie.</source>
         <translation>Không phải ảnh, video hay âm thanh: được sao chép nguyên trạng vào thư mục đầu ra.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="82"/>
+        <location filename="../../modules/convert/profiles.py" line="83"/>
         <source>AVIF (AV1) : très compact, excellente qualité visuelle ; encodage assez lent.</source>
         <translation>AVIF (AV1): rất nhỏ gọn, chất lượng hình ảnh tuyệt vời; mã hoá khá chậm.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="85"/>
+        <location filename="../../modules/convert/profiles.py" line="86"/>
         <source>HEIC : format Apple compact ; nécessite pillow-heif. La qualité se règle de 0 à 100.</source>
         <translation>HEIC: định dạng Apple nhỏ gọn; cần pillow-heif. Chất lượng đặt từ 0 đến 100.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="88"/>
+        <location filename="../../modules/convert/profiles.py" line="89"/>
         <source>WebP : bon compromis taille / qualité, largement pris en charge.</source>
         <translation>WebP: cân bằng tốt giữa kích thước và chất lượng, được hỗ trợ rộng rãi.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="91"/>
+        <location filename="../../modules/convert/profiles.py" line="92"/>
         <source>JPEG : lisible partout, compression avec perte.</source>
         <translation>JPEG: đọc được ở mọi nơi, nén có mất dữ liệu.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="94"/>
+        <location filename="../../modules/convert/profiles.py" line="95"/>
         <source>PNG : sans perte, idéal pour les captures et les aplats ; le niveau règle la compression.</source>
         <translation>PNG: không mất dữ liệu, lý tưởng cho ảnh chụp màn hình và vùng màu phẳng; mức điều chỉnh nén.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="97"/>
+        <location filename="../../modules/convert/profiles.py" line="98"/>
         <source>JPEG XL : très bonne qualité à taille réduite, sans perte possible (distance 0).</source>
         <translation>JPEG XL: chất lượng rất tốt với kích thước nhỏ, có thể không mất dữ liệu (khoảng cách 0).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="100"/>
+        <location filename="../../modules/convert/profiles.py" line="101"/>
         <source>JPEG 2000 : sans perte, apprécié en archivage et en imagerie professionnelle.</source>
         <translation>JPEG 2000: không mất dữ liệu, được ưa chuộng trong lưu trữ và hình ảnh chuyên nghiệp.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="103"/>
+        <location filename="../../modules/convert/profiles.py" line="104"/>
         <source>TIFF : sans perte, pour l&apos;impression et l&apos;archivage ; la compression se choisit.</source>
         <translation>TIFF: không mất dữ liệu, dùng cho in ấn và lưu trữ; có thể chọn kiểu nén.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="106"/>
+        <location filename="../../modules/convert/profiles.py" line="107"/>
         <source>BMP : sans compression, universel sous Windows ; fichiers volumineux.</source>
         <translation>BMP: không nén, phổ biến trên Windows; tệp lớn.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="109"/>
+        <location filename="../../modules/convert/profiles.py" line="110"/>
         <source>QOI : sans perte, très rapide à lire et à écrire ; format récent, peu répandu.</source>
         <translation>QOI: không mất dữ liệu, đọc ghi rất nhanh; định dạng mới, ít phổ biến.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="115"/>
+        <location filename="../../modules/convert/profiles.py" line="116"/>
         <source>Vidéo AV1 dans un WebM : très compact, encodage lent.</source>
         <translation>Video AV1 trong WebM: rất nhỏ gọn, mã hoá chậm.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="120"/>
+        <location filename="../../modules/convert/profiles.py" line="121"/>
         <source>Vidéo AV1 dans un MP4 : très compact, plus compatible que l&apos;AV1 en WebM sur certains lecteurs.</source>
         <translation>Video AV1 trong MP4: rất nhỏ gọn, tương thích hơn AV1 trong WebM trên một số trình phát.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="125"/>
+        <location filename="../../modules/convert/profiles.py" line="126"/>
         <source>Vidéo H.264 dans un MKV : conteneur souple, sous-titres texte copiés et audio varié.</source>
         <translation>Video H.264 trong MKV: vùng chứa linh hoạt, phụ đề văn bản được sao chép và âm thanh đa dạng.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="129"/>
+        <location filename="../../modules/convert/profiles.py" line="130"/>
         <source>Vidéo H.264 dans un MP4 : lisible partout.</source>
         <translation>Video H.264 trong MP4: đọc được ở mọi nơi.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="134"/>
+        <location filename="../../modules/convert/profiles.py" line="135"/>
         <source>Vidéo H.265 dans un MP4 : meilleure compression que H.264, un peu moins universel.</source>
         <translation>Video H.265 trong MP4: nén tốt hơn H.264, hơi kém phổ quát hơn.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="139"/>
+        <location filename="../../modules/convert/profiles.py" line="140"/>
         <source>H.264 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.264 tăng tốc bằng NVIDIA NVENC. Cần GPU và trình điều khiển NVIDIA tương thích.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="144"/>
+        <location filename="../../modules/convert/profiles.py" line="145"/>
         <source>H.265 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.265 tăng tốc bằng NVIDIA NVENC. Cần GPU và trình điều khiển NVIDIA tương thích.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="149"/>
+        <location filename="../../modules/convert/profiles.py" line="150"/>
+        <source>AV1 accéléré par NVIDIA NVENC (RTX 40 et plus). Proposé seulement si FFmpeg expose av1_nvenc ; nécessite un GPU et le pilote NVIDIA compatibles.</source>
+        <translation>AV1 tăng tốc bằng NVIDIA NVENC (RTX 40 trở lên). Chỉ được đề xuất nếu FFmpeg cung cấp av1_nvenc; cần GPU và trình điều khiển NVIDIA tương thích.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="157"/>
         <source>H.264 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.264 tăng tốc bằng Intel Quick Sync Video. Cần CPU và trình điều khiển tương thích.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="154"/>
+        <location filename="../../modules/convert/profiles.py" line="162"/>
         <source>H.265 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.265 tăng tốc bằng Intel Quick Sync Video. Cần CPU và trình điều khiển tương thích.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="159"/>
+        <location filename="../../modules/convert/profiles.py" line="167"/>
+        <source>AV1 accéléré par Intel Quick Sync Video (GPU Intel Arc et suivants). Proposé seulement si FFmpeg expose av1_qsv ; nécessite un pilote compatible.</source>
+        <translation>AV1 tăng tốc bằng Intel Quick Sync Video (GPU Intel Arc trở lên). Chỉ được đề xuất nếu FFmpeg cung cấp av1_qsv; cần trình điều khiển tương thích.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="174"/>
         <source>H.264 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.264 tăng tốc bằng VA-API (Linux). Cần thiết bị /dev/dri/renderD* tương thích.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="164"/>
+        <location filename="../../modules/convert/profiles.py" line="179"/>
         <source>H.265 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.265 tăng tốc bằng VA-API (Linux). Cần thiết bị /dev/dri/renderD* tương thích.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="169"/>
+        <location filename="../../modules/convert/profiles.py" line="184"/>
+        <source>AV1 accéléré par VA-API (Linux, Mesa récent). Proposé seulement si FFmpeg expose av1_vaapi ; nécessite un périphérique /dev/dri/renderD* qui sait encoder l&apos;AV1.</source>
+        <translation>AV1 tăng tốc bằng VA-API (Linux, Mesa mới). Chỉ được đề xuất nếu FFmpeg cung cấp av1_vaapi; cần thiết bị /dev/dri/renderD* có khả năng mã hóa AV1.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="191"/>
         <source>Vidéo VP9 dans un WebM : bon compromis, bien pris en charge par les navigateurs.</source>
         <translation>Video VP9 trong WebM: cân bằng tốt, được trình duyệt hỗ trợ tốt.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="174"/>
+        <location filename="../../modules/convert/profiles.py" line="196"/>
         <source>Vidéo MPEG-4 partie 2 dans un MP4 : ancien format, très compatible avec les lecteurs logiciels.</source>
         <translation>Video MPEG-4 phần 2 trong MP4: định dạng cũ, rất tương thích với trình phát phần mềm.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="179"/>
+        <location filename="../../modules/convert/profiles.py" line="201"/>
         <source>Vidéo MPEG-2 et audio MP2 : pour la télévision, les DVD et les appareils anciens.</source>
         <translation>Video MPEG-2 và âm thanh MP2: cho truyền hình, DVD và thiết bị cũ.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="183"/>
+        <location filename="../../modules/convert/profiles.py" line="205"/>
         <source>Vidéo Theora et audio Vorbis dans un OGV : libre, lisible par les lecteurs Ogg.</source>
         <translation>Video Theora và âm thanh Vorbis trong OGV: tự do, trình phát Ogg đọc được.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="187"/>
+        <location filename="../../modules/convert/profiles.py" line="209"/>
         <source>ProRes dans un MOV : montage vidéo, audio PCM 24 bits par défaut ; fichiers volumineux mais faciles à décoder.</source>
         <translation>ProRes trong MOV: dựng video, mặc định âm thanh PCM 24 bit; tệp lớn nhưng dễ giải mã.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="196"/>
+        <location filename="../../modules/convert/profiles.py" line="218"/>
         <source>MP3 : compatible avec tous les lecteurs.</source>
         <translation>MP3: tương thích với mọi trình phát.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="199"/>
+        <location filename="../../modules/convert/profiles.py" line="221"/>
         <source>AAC dans un conteneur M4A.</source>
         <translation>AAC trong vùng chứa M4A.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="202"/>
+        <location filename="../../modules/convert/profiles.py" line="224"/>
         <source>Opus : excellent rapport qualité / taille.</source>
         <translation>Opus: tỷ lệ chất lượng/kích thước tuyệt vời.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="206"/>
+        <location filename="../../modules/convert/profiles.py" line="228"/>
         <source>FLAC : compression sans perte (le curseur ne change que la taille et la vitesse).</source>
         <translation>FLAC: nén không mất dữ liệu (thanh trượt chỉ đổi kích thước và tốc độ).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="209"/>
+        <location filename="../../modules/convert/profiles.py" line="231"/>
         <source>Vorbis dans un OGG : libre, bon rapport qualité / taille.</source>
         <translation>Vorbis trong OGG: tự do, tỷ lệ chất lượng/kích thước tốt.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="212"/>
+        <location filename="../../modules/convert/profiles.py" line="234"/>
         <source>ALAC : compression sans perte Apple, dans un conteneur M4A.</source>
         <translation>ALAC: nén không mất dữ liệu của Apple, trong vùng chứa M4A.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="215"/>
+        <location filename="../../modules/convert/profiles.py" line="237"/>
         <source>WAV : audio non compressé, fichier volumineux.</source>
         <translation>WAV: âm thanh không nén, tệp lớn.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="218"/>
+        <location filename="../../modules/convert/profiles.py" line="240"/>
         <source>AC-3 : utilisé par les DVD et la télévision.</source>
         <translation>AC-3: được DVD và truyền hình sử dụng.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="221"/>
+        <location filename="../../modules/convert/profiles.py" line="243"/>
         <source>MP2 : audio des flux MPEG-2 (télévision, DVD).</source>
         <translation>MP2: âm thanh của luồng MPEG-2 (truyền hình, DVD).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="224"/>
+        <location filename="../../modules/convert/profiles.py" line="246"/>
         <source>AIFF : PCM 16 bits non compressé, pour le montage et l&apos;archivage sur macOS.</source>
         <translation>AIFF: PCM 16 bit không nén, để dựng và lưu trữ trên macOS.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="227"/>
+        <location filename="../../modules/convert/profiles.py" line="249"/>
         <source>WAV : PCM 24 bits non compressé, pour le montage et l&apos;archivage audio.</source>
         <translation>WAV: PCM 24 bit không nén, để dựng và lưu trữ âm thanh.</translation>
     </message>
@@ -2859,8 +2970,8 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="76"/>
-        <location filename="../../modules/rename/window.py" line="483"/>
-        <location filename="../../modules/rename/window.py" line="507"/>
+        <location filename="../../modules/rename/window.py" line="485"/>
+        <location filename="../../modules/rename/window.py" line="509"/>
         <source>Annuler le dernier renommage</source>
         <translation>Hoàn tác lần đổi tên cuối cùng</translation>
     </message>
@@ -2906,7 +3017,7 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="120"/>
-        <location filename="../../modules/rename/window.py" line="315"/>
+        <location filename="../../modules/rename/window.py" line="317"/>
         <source>Aucun dossier analysé.</source>
         <translation>Không có tập tin nào được phân tích.</translation>
     </message>
@@ -2936,87 +3047,87 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>YYYY-MM-DD (chỉ ngày, 15-06-2008)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="143"/>
+        <location filename="../../modules/rename/window.py" line="145"/>
         <source>Conserver le préfixe personnalisé</source>
         <translation>Giữ tiền tố tùy chỉnh</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="144"/>
+        <location filename="../../modules/rename/window.py" line="146"/>
         <source>Ajouter IMG / VID / AUD au début</source>
         <translation>Thêm IMG/VID/AUD vào đầu</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="145"/>
+        <location filename="../../modules/rename/window.py" line="147"/>
         <source>Sans métadonnées : utiliser la date de modification</source>
         <translation>Không có siêu dữ liệu: sử dụng ngày sửa đổi</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="146"/>
+        <location filename="../../modules/rename/window.py" line="148"/>
         <source>Inclure les sous-dossiers</source>
         <translation>Bao gồm các thư mục con</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="154"/>
+        <location filename="../../modules/rename/window.py" line="156"/>
         <source>Préfixe personnalisé</source>
         <translation>Tiền tố tùy chỉnh</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="156"/>
+        <location filename="../../modules/rename/window.py" line="158"/>
         <source>(aucun) — ex. Vacances Corse</source>
         <translation>(không có) - ví dụ: Kỳ nghỉ tại Corsica</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="158"/>
+        <location filename="../../modules/rename/window.py" line="160"/>
         <source>Appliquer à la sélection</source>
         <translation>Áp dụng để lựa chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="160"/>
+        <location filename="../../modules/rename/window.py" line="162"/>
         <source>Rétablir le préfixe automatique</source>
         <translation>Khôi phục tiền tố tự động</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="166"/>
+        <location filename="../../modules/rename/window.py" line="168"/>
         <source>Sélection</source>
         <translation>Lựa chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="177"/>
+        <location filename="../../modules/rename/window.py" line="179"/>
         <source>Entrée ou double-clic : cocher / décocher la ligne. Le contenu, les métadonnées et la date de modification ne sont jamais touchés.</source>
         <translation>Nhập hoặc nhấp đúp: chọn/bỏ chọn dòng. Nội dung, siêu dữ liệu và ngày sửa đổi không bao giờ được chạm vào.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="187"/>
+        <location filename="../../modules/rename/window.py" line="189"/>
         <source>Réglages</source>
         <translation>Cài đặt</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="225"/>
+        <location filename="../../modules/rename/window.py" line="227"/>
         <source>Importer des fichiers</source>
         <translation>Nhập tệp</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="233"/>
+        <location filename="../../modules/rename/window.py" line="235"/>
         <source>Importer un dossier</source>
         <translation>Nhập thư mục</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="319"/>
+        <location filename="../../modules/rename/window.py" line="321"/>
         <source>{shown} affiché(s) / {total} fichiers · à renommer {rename} · conformes {ok} · décochés {skipped} · sans date {nodate}</source>
         <translation>{shown} hiển thị / {total} tệp · cần đổi tên {rename} · đúng chuẩn {ok} · bỏ chọn {skipped} · không có ngày {nodate}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="332"/>
+        <location filename="../../modules/rename/window.py" line="334"/>
         <source>{count} fichiers sélectionnés</source>
         <translation>{count} tệp đã chọn</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="336"/>
+        <location filename="../../modules/rename/window.py" line="338"/>
         <source>(inchangé)</source>
         <translation>(không thay đổi)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="337"/>
+        <location filename="../../modules/rename/window.py" line="339"/>
         <source>Avant : {before}
 Après : {after}
 Date : {date}
@@ -3029,57 +3140,57 @@ Nguồn: {source}
 Trạng thái: {status}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Rien à renommer</source>
         <translation>Không có gì để đổi tên</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Aucun fichier coché à renommer.</source>
         <translation>Không có tập tin được kiểm tra để đổi tên.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="436"/>
+        <location filename="../../modules/rename/window.py" line="438"/>
         <source>Confirmer le renommage</source>
         <translation>Xác nhận đổi tên</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Rien à annuler</source>
         <translation>Không có gì để hủy</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Aucun renommage à annuler.</source>
         <translation>Không đổi tên để hoàn tác.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="508"/>
+        <location filename="../../modules/rename/window.py" line="510"/>
         <source>Rendre leur ancien nom aux {count} fichier(s) renommés le {date} ?</source>
         <translation>Trả lại (các) tệp {count} được đổi tên vào {date} về tên cũ của chúng?</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Rien à exporter</source>
         <translation>Không có gì để xuất khẩu</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Aucun résultat d&apos;analyse.</source>
         <translation>Không có kết quả phân tích.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>Exporter le plan</source>
         <translation>Xuất kế hoạch</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>CSV (*.csv)</source>
         <translation>CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="532"/>
+        <location filename="../../modules/rename/window.py" line="534"/>
         <source>Erreur</source>
         <translation>Lỗi</translation>
     </message>
@@ -3087,7 +3198,7 @@ Trạng thái: {status}</translation>
 <context>
     <name>ScanWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="104"/>
+        <location filename="../../modules/convert/workers.py" line="143"/>
         <source>Analyse des fichiers…</source>
         <translation>Đang phân tích tệp…</translation>
     </message>
@@ -4091,7 +4202,7 @@ Thêm thay đổi đang chờ này?</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="57"/>
-        <location filename="../../modules/takeout/window.py" line="348"/>
+        <location filename="../../modules/takeout/window.py" line="350"/>
         <source>Annuler la dernière application</source>
         <translation>Hoàn tác ứng dụng cuối cùng</translation>
     </message>
@@ -4149,13 +4260,13 @@ Thêm thay đổi đang chờ này?</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="96"/>
-        <location filename="../../modules/takeout/window.py" line="237"/>
+        <location filename="../../modules/takeout/window.py" line="239"/>
         <source>Aucun fichier : déposez un export Google Photos.</source>
         <translation>Không có tệp: bỏ xuất Google Photos.</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="100"/>
-        <location filename="../../modules/takeout/window.py" line="243"/>
+        <location filename="../../modules/takeout/window.py" line="245"/>
         <source>Aucun dossier analysé.</source>
         <translation>Không có tập tin nào được phân tích.</translation>
     </message>
@@ -4225,88 +4336,88 @@ Thêm thay đổi đang chờ này?</translation>
         <translation>Google ghi giờ theo UTC. Múi giờ cũng được ghi vào tệp (OffsetTime), nên ngày vẫn chính xác với phần mềm đọc được. Video QuickTime luôn được ghi theo UTC.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="176"/>
+        <location filename="../../modules/takeout/window.py" line="178"/>
         <source>Importer des fichiers</source>
         <translation>Nhập tệp</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="184"/>
+        <location filename="../../modules/takeout/window.py" line="186"/>
         <source>Importer le dossier de l&apos;export Google Photos</source>
         <translation>Nhập thư mục bản xuất Google Photos</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="233"/>
+        <location filename="../../modules/takeout/window.py" line="235"/>
         <source>Aucun fichier retiré.</source>
         <translation>Không có tập tin nào bị xóa.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="235"/>
+        <location filename="../../modules/takeout/window.py" line="237"/>
         <source>Aucun fichier sans JSON.</source>
         <translation>Không có tệp nào không có JSON.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="241"/>
+        <location filename="../../modules/takeout/window.py" line="243"/>
         <source>{n} fichier(s) retiré(s) de la liste.</source>
         <translation>{n} tệp đã bị xóa khỏi danh sách.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="247"/>
+        <location filename="../../modules/takeout/window.py" line="249"/>
         <source>{total} média(s) · {ready} prêt(s) · {nojson} sans JSON · {nodata} sans date ni position · {orphans} JSON sans média.</source>
         <translation>{total} media · {ready} sẵn sàng · {nojson} không có JSON · {nodata} không có ngày và vị trí · {orphans} JSON không có media.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>ExifTool introuvable</source>
         <translation>Không tìm thấy ExifTool</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
         <source>Impossible d&apos;appliquer sans ExifTool.</source>
         <translation>Không thể áp dụng mà không có ExifTool.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Rien à écrire</source>
         <translation>Không có gì để viết</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Cochez au moins une option d&apos;écriture.</source>
         <translation>Hãy chọn ít nhất một tuỳ chọn ghi.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Rien à appliquer</source>
         <translation>Không có gì để áp dụng</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Aucun média prêt : ajoutez un dossier d&apos;export.</source>
         <translation>Chưa có media sẵn sàng: hãy thêm thư mục xuất.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="309"/>
+        <location filename="../../modules/takeout/window.py" line="311"/>
         <source>Confirmer l&apos;application</source>
         <translation>Xác nhận áp dụng</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>Impossible d&apos;annuler sans ExifTool.</source>
         <translation>Không thể hoàn tác mà không có ExifTool.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Rien à annuler</source>
         <translation>Không có gì để hủy</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Aucune application à annuler.</source>
         <translation>Không có ứng dụng nào để hủy.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="349"/>
+        <location filename="../../modules/takeout/window.py" line="351"/>
         <source>Rétablir l&apos;état d&apos;avant l&apos;application du {date} sur {count} fichier(s) ?</source>
         <translation>Khôi phục trạng thái trước khi áp dụng ngày {date} trên {count} tệp?</translation>
     </message>
@@ -4317,30 +4428,6 @@ Thêm thay đổi đang chờ này?</translation>
         <location filename="../../launcher/tips_dialog.py" line="313"/>
         <source>Conseils</source>
         <translation>Mẹo</translation>
-    </message>
-    <message>
-        <source>De Google Photos à vos dossiers</source>
-        <translation type="vanished">Từ Google Photos đến các thư mục của bạn</translation>
-    </message>
-    <message>
-        <source>Convertissez ensuite au format et à la qualité souhaités, par lots.</source>
-        <translation type="vanished">Sau đó chuyển đổi sang định dạng và chất lượng mong muốn, theo từng lô.</translation>
-    </message>
-    <message>
-        <source>Inscrivez la date de prise de vue dans les noms pour classer les fichiers chronologiquement.</source>
-        <translation type="vanished">Ghi ngày chụp vào tên để sắp xếp các tệp của bạn theo thứ tự thời gian.</translation>
-    </message>
-    <message>
-        <source>Comparez les dossiers avant et après pour vérifier que rien ne manque.</source>
-        <translation type="vanished">So sánh các thư mục trước và sau để kiểm tra xem có gì bị thiếu không.</translation>
-    </message>
-    <message>
-        <source>Terminez par les métadonnées : lecture, complément ou suppression des EXIF, IPTC et XMP.</source>
-        <translation type="vanished">Hoàn tất với siêu dữ liệu: đọc, hoàn thành hoặc xóa EXIF, IPTC và XMP.</translation>
-    </message>
-    <message>
-        <source>Chaque étape correspond à un module : ouvrez-le depuis sa carte dans Azimut.</source>
-        <translation type="vanished">Mỗi bước là một mô-đun: mở nó từ thẻ của nó trong Azimut.</translation>
     </message>
     <message>
         <location filename="../../launcher/tips_dialog.py" line="324"/>
@@ -4505,59 +4592,87 @@ Thêm thay đổi đang chờ này?</translation>
     </message>
 </context>
 <context>
+    <name>VerifyWorker</name>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="190"/>
+        <source>Dossier de sortie introuvable : {path}</source>
+        <translation>Không tìm thấy thư mục đầu ra: {path}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="193"/>
+        <source>Aucun dossier de sortie à vérifier.</source>
+        <translation>Không có thư mục đầu ra để kiểm tra.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="196"/>
+        <source>Recherche des conversions interrompues…</source>
+        <translation>Đang tìm các lần chuyển đổi bị gián đoạn…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="208"/>
+        <source>FFprobe introuvable : le contenu des vidéos et des audios n&apos;est pas contrôlé.</source>
+        <translation>Không tìm thấy FFprobe: nội dung video và âm thanh không được kiểm tra.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="231"/>
+        <source>{checked} fichier(s) contrôlé(s), {bad} suspect(s).</source>
+        <translation>Đã kiểm tra {checked} tệp, {bad} đáng ngờ.</translation>
+    </message>
+</context>
+<context>
     <name>VideoPreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2641"/>
+        <location filename="../../ui/widgets.py" line="2760"/>
         <source>Lire ou mettre en pause</source>
         <translation>Chơi hoặc tạm dừng</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2644"/>
+        <location filename="../../ui/widgets.py" line="2763"/>
         <source>Position dans le média</source>
         <translation>Vị trí trong tệp media</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2669"/>
+        <location filename="../../ui/widgets.py" line="2788"/>
         <source>Couper ou rétablir le son</source>
         <translation>Tắt tiếng hoặc bật tiếng</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2672"/>
-        <location filename="../../ui/widgets.py" line="2679"/>
+        <location filename="../../ui/widgets.py" line="2791"/>
+        <location filename="../../ui/widgets.py" line="2798"/>
         <source>Volume</source>
         <translation>Âm lượng</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2725"/>
+        <location filename="../../ui/widgets.py" line="2844"/>
         <source>Lecture vidéo indisponible
 (installez PySide6-Addons)</source>
         <translation>Tính năng phát lại video không khả dụng
 (cài đặt PySide6-Addons)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2766"/>
+        <location filename="../../ui/widgets.py" line="2885"/>
         <source>Chargement…</source>
         <translation>Đang tải…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Mettre en pause</source>
         <translation>Tạm dừng</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Lire</source>
         <translation>Đọc</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2961"/>
+        <location filename="../../ui/widgets.py" line="3080"/>
         <source>Lecture impossible
 {reason}</source>
         <translation>Không thể phát
 {reason}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2932"/>
+        <location filename="../../ui/widgets.py" line="3051"/>
         <source>Aperçu vidéo limité (codec non pris en charge)</source>
         <translation>Xem trước video giới hạn (codec không được hỗ trợ)</translation>
     </message>
@@ -4595,12 +4710,12 @@ Thêm thay đổi đang chờ này?</translation>
         <translation>trạng thái không xác định</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1989"/>
+        <location filename="../../ui/widgets.py" line="2097"/>
         <source>Aucun élément</source>
         <translation>Không có mục nào</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2257"/>
+        <location filename="../../ui/widgets.py" line="2376"/>
         <source>{label}
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4609,7 +4724,7 @@ Thêm thay đổi đang chờ này?</translation>
 (cần ffmpeg để xem trước)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2370"/>
+        <location filename="../../ui/widgets.py" line="2489"/>
         <source>PDF
 {name}
 (aperçu indisponible : installez poppler ou Ghostscript)</source>
@@ -4618,14 +4733,14 @@ Thêm thay đổi đang chờ này?</translation>
 (xem trước không khả dụng: cài poppler hoặc Ghostscript)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2387"/>
+        <location filename="../../ui/widgets.py" line="2506"/>
         <source>Audio
 {name}</source>
         <translation>Âm thanh
 {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2417"/>
+        <location filename="../../ui/widgets.py" line="2536"/>
         <source>Vidéo
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4634,7 +4749,7 @@ Thêm thay đổi đang chờ này?</translation>
 (cần ffmpeg để xem trước)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2439"/>
+        <location filename="../../ui/widgets.py" line="2558"/>
         <source>Vidéo
 {name}
 ({reason})</source>
@@ -4643,7 +4758,7 @@ Thêm thay đổi đang chờ này?</translation>
 ({reason})</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2465"/>
+        <location filename="../../ui/widgets.py" line="2584"/>
         <source>Image</source>
         <translation>Hình ảnh</translation>
     </message>
@@ -4712,35 +4827,35 @@ Thêm thay đổi đang chờ này?</translation>
 <context>
     <name>_HdrRow</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="126"/>
+        <location filename="../../modules/convert/codec_tree.py" line="136"/>
         <source>HDR</source>
         <translation>HDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="129"/>
+        <location filename="../../modules/convert/codec_tree.py" line="140"/>
         <source>Tone-mapping vers SDR</source>
         <translation>Ánh xạ giai điệu tới SDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="130"/>
+        <location filename="../../modules/convert/codec_tree.py" line="141"/>
         <source>HDR natif (AV1 10 bits)</source>
         <translation>HDR gốc (10-bit AV1)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="131"/>
+        <location filename="../../modules/convert/codec_tree.py" line="142"/>
         <source>Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR (codec AV1 uniquement ; les autres codecs passent toujours en SDR).</source>
         <translation>Video HDR: chuyển đổi sang SDR (tương thích ở mọi nơi) hoặc giữ nguyên HDR (chỉ codec AV1; các codec khác luôn chuyển sang SDR).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="134"/>
-        <source>Le HDR natif n&apos;est possible qu&apos;avec le codec vidéo AV1 : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
-        <translation>HDR gốc chỉ khả dụng với codec video AV1: với codec đã chọn, video HDR được chuyển sang SDR (tone-mapping).</translation>
+        <location filename="../../modules/convert/codec_tree.py" line="145"/>
+        <source>Le HDR natif n&apos;est possible qu&apos;avec l&apos;AV1 logiciel (SVT-AV1 ou libaom) : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
+        <translation>HDR gốc chỉ khả thi với AV1 phần mềm (SVT-AV1 hoặc libaom): với codec đã chọn, video HDR được chuyển sang SDR (tone mapping).</translation>
     </message>
 </context>
 <context>
     <name>_TabCloseButton</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1045"/>
+        <location filename="../../launcher/atlas_window.py" line="1071"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Đóng tab</translation>
     </message>

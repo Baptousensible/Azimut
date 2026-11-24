@@ -20,7 +20,7 @@ from azimut.core.storage import get_storage
 from azimut.modules.rename import MODULE, engine as eng
 from azimut.modules.rename.workers import ApplyWorker, ScanResult, ScanWorker, UndoWorker
 from azimut.modules.tags import engine as tags
-from azimut.ui.controls import CheckBox, set_action_available
+from azimut.ui.controls import CheckBox, fit_combo_to_panel, set_action_available
 from azimut.ui.file_dialog import choose_directory, choose_files, choose_save_file, media_filter
 from azimut.ui.flow_layout import FlowLayout
 from azimut.ui.module_window import ModuleWindow
@@ -135,10 +135,30 @@ class RenameWindow(ModuleWindow):
             "compact": self.tr("AAAAMMJJ_HHMMSS   (20080615_143000)"),
             "day": self.tr("AAAA-MM-JJ   (jour seul, 2008-06-15)"),
         }
+        self._date_examples: dict[str, str] = {}
         for fid in eng.DATE_FORMATS:
-            self.cmb_format.addItem(date_labels.get(fid, fid), fid)
+            full = date_labels.get(fid, fid)
+            pattern, separator, example = full.partition("   (")
+            if separator:
+                example = example[:-1] if example.endswith(")") else example
+            else:
+                pattern, example = full, ""
+            index = self.cmb_format.count()
+            self.cmb_format.addItem(pattern, fid)
+            self.cmb_format.setItemData(index, full, Qt.ItemDataRole.ToolTipRole)
+            self._date_examples[fid] = example
         self.cmb_format.setCurrentIndex(max(0, self.cmb_format.findData(p.get("format", eng.DEFAULT_FORMAT))))
+        # Les libellés de format sont longs : la liste ne doit pas élargir le panneau.
+        fit_combo_to_panel(self.cmb_format)
+        self.cmb_format.setToolTip(self.cmb_format.currentText())
+        self.cmb_format.setAccessibleDescription(self.cmb_format.currentText())
         self.cmb_format.currentIndexChanged.connect(lambda _i: self._on_option("format", self.cmb_format.currentData()))
+        self.cmb_format.currentIndexChanged.connect(self._sync_format_tooltip)
+        self.date_example = QLabel()
+        self.date_example.setProperty("role", "muted")
+        self.date_example.setWordWrap(True)
+        card.body_layout.addWidget(self.date_example)
+        self._sync_format_tooltip()
         card.body_layout.addWidget(self.cmb_format)
         self.chk_prefix = CheckBox(self.tr("Conserver le préfixe personnalisé"))
         self.chk_type = CheckBox(self.tr("Ajouter IMG / VID / AUD au début"))
@@ -194,6 +214,17 @@ class RenameWindow(ModuleWindow):
     def _options(self) -> eng.Options:
         return eng.Options(fmt=str(self.cmb_format.currentData()), keep_prefix=self.chk_prefix.isChecked(),
                            add_type=self.chk_type.isChecked(), use_mtime=self.chk_mtime.isChecked())
+
+    def _sync_format_tooltip(self, _index: int = 0) -> None:
+        """Sépare le format de son exemple : la liste fermée reste lisible à 80 %."""
+        fid = self.cmb_format.currentData()
+        example = self._date_examples.get(fid, "")
+        full = (self.cmb_format.itemData(self.cmb_format.currentIndex(), Qt.ItemDataRole.ToolTipRole)
+                or self.cmb_format.currentText())
+        self.cmb_format.setToolTip(str(full))
+        self.cmb_format.setAccessibleDescription(str(full))
+        self.date_example.setText(str(example))
+        self.date_example.setVisible(bool(example))
 
     def _on_option(self, key: str, value: object) -> None:
         self.prefs.set(key, value)

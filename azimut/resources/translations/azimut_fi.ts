@@ -40,220 +40,208 @@
 <context>
     <name>AtlasWindow</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1218"/>
-        <location filename="../../launcher/atlas_window.py" line="1410"/>
-        <location filename="../../launcher/atlas_window.py" line="1466"/>
+        <location filename="../../launcher/atlas_window.py" line="1260"/>
+        <location filename="../../launcher/atlas_window.py" line="1463"/>
+        <location filename="../../launcher/atlas_window.py" line="1519"/>
         <source>Azimut</source>
         <translation>Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1291"/>
+        <location filename="../../launcher/atlas_window.py" line="1344"/>
         <source>Ouvrez un module, ou déposez-y des fichiers ou des dossiers.</source>
         <translation>Avaa moduuli tai pudota siihen tiedostoja tai kansioita.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1345"/>
-        <location filename="../../launcher/atlas_window.py" line="1486"/>
+        <location filename="../../launcher/atlas_window.py" line="1398"/>
+        <location filename="../../launcher/atlas_window.py" line="1539"/>
         <source>Tous les outils</source>
         <translation>Kaikki työkalut</translation>
     </message>
     <message>
-        <source>Le recueil des utilitaires Azimut</source>
-        <translation type="vanished">Azimut työkalupakki</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1421"/>
+        <location filename="../../launcher/atlas_window.py" line="1474"/>
         <source>Version {version}</source>
         <translation>Versio {version}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1669"/>
+        <location filename="../../launcher/atlas_window.py" line="1729"/>
         <source>Conseils</source>
         <translation>vinkkejä</translation>
     </message>
     <message>
-        <source>L&apos;ordre conseillé pour traiter un export Google Photos.</source>
-        <translation type="vanished">Suositeltu tilaus Google Kuvien viennin käsittelemiseksi.</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">teema</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1470"/>
-        <location filename="../../launcher/atlas_window.py" line="1664"/>
+        <location filename="../../launcher/atlas_window.py" line="1523"/>
+        <location filename="../../launcher/atlas_window.py" line="1724"/>
         <source>Préférences…</source>
         <translation>Asetukset…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Outils</source>
         <translation>Työkalut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Afficher les outils Azimut</source>
         <translation>Näytä Azimut-työkalut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1488"/>
-        <location filename="../../launcher/atlas_window.py" line="1667"/>
+        <location filename="../../launcher/atlas_window.py" line="1541"/>
+        <location filename="../../launcher/atlas_window.py" line="1727"/>
         <source>Journaux et historique</source>
         <translation>Lokit ja historia</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1074"/>
+        <location filename="../../launcher/atlas_window.py" line="1100"/>
         <source>Ce module n&apos;a pas pu être chargé.</source>
         <translation>Tätä moduulia ei voitu ladata.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1341"/>
+        <location filename="../../launcher/atlas_window.py" line="1394"/>
         <source>Maj+clic ou Maj+flèches : sélectionner plusieurs onglets. Suppr : fermer l&apos;onglet actif ou la sélection. Glissez un onglet sélectionné pour déplacer le groupe.</source>
         <translation>Vaihto+napsautus tai Vaihto+nuolet: valitse useita välilehtiä. Poista: sulje aktiivinen välilehti tai valinta. Siirrä ryhmä vetämällä valittua välilehteä.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1419"/>
+        <location filename="../../launcher/atlas_window.py" line="1472"/>
         <source>Le couteau suisse pour convertir, dédoublonner et ranger vos médias</source>
         <translation>Sveitsin armeijan veitsi median muuntamiseen, kopioiden poistamiseen ja tallentamiseen</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1467"/>
-        <location filename="../../launcher/atlas_window.py" line="1529"/>
+        <location filename="../../launcher/atlas_window.py" line="1520"/>
+        <location filename="../../launcher/atlas_window.py" line="1582"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Tietoja Azimutista</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1475"/>
+        <location filename="../../launcher/atlas_window.py" line="1528"/>
         <source>Quitter</source>
         <translation>lähteä</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1480"/>
+        <location filename="../../launcher/atlas_window.py" line="1533"/>
         <source>Fichier</source>
         <translation>Tiedosto</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1481"/>
+        <location filename="../../launcher/atlas_window.py" line="1534"/>
         <source>Fermer la fenêtre</source>
         <translation>Sulje ikkuna</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1485"/>
+        <location filename="../../launcher/atlas_window.py" line="1538"/>
         <source>Présentation</source>
         <translation>Esittely</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1491"/>
+        <location filename="../../launcher/atlas_window.py" line="1544"/>
         <source>Navigation dans l&apos;en-tête</source>
         <translation>Otsikkonavigointi</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1495"/>
+        <location filename="../../launcher/atlas_window.py" line="1548"/>
         <source>Regroupe « Outils » et « Journaux et historique » dans la barre supérieure. Décochez pour revenir à l&apos;agencement précédent.</source>
         <translation>Ryhmät &quot;Työkalut&quot; ja &quot;Lokit ja historia&quot; yläpalkissa. Poista valinta palataksesi edelliseen asetteluun.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1500"/>
+        <location filename="../../launcher/atlas_window.py" line="1553"/>
         <source>Conseils de démarrage…</source>
         <translation>Aloitusvinkkejä…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1502"/>
+        <location filename="../../launcher/atlas_window.py" line="1555"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Vaihda tumman ja vaalean teeman välillä</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1506"/>
+        <location filename="../../launcher/atlas_window.py" line="1559"/>
         <source>Agrandir le texte</source>
         <translation>Suurenna tekstiä</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1509"/>
+        <location filename="../../launcher/atlas_window.py" line="1562"/>
         <source>Réduire le texte</source>
         <translation>Pienennä tekstiä</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1513"/>
+        <location filename="../../launcher/atlas_window.py" line="1566"/>
         <source>Fenêtre</source>
         <translation>Ikkuna</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1514"/>
+        <location filename="../../launcher/atlas_window.py" line="1567"/>
         <source>Réduire</source>
         <translation>Vähentää</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1517"/>
+        <location filename="../../launcher/atlas_window.py" line="1570"/>
         <source>Zoom</source>
         <translation>Zoomaa</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1521"/>
+        <location filename="../../launcher/atlas_window.py" line="1574"/>
         <source>Aide</source>
         <translation>Auttaa</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1522"/>
+        <location filename="../../launcher/atlas_window.py" line="1575"/>
         <source>Conseils de démarrage</source>
         <translation>Aloitusvinkkejä</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1527"/>
+        <location filename="../../launcher/atlas_window.py" line="1580"/>
         <source>Le couteau suisse de vos médias.</source>
         <translation>Sveitsin armeijan veitsi medialle</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1655"/>
+        <location filename="../../launcher/atlas_window.py" line="1715"/>
         <source>Navigation d&apos;Azimut</source>
         <translation>Atsimuutti-navigointi</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1668"/>
+        <location filename="../../launcher/atlas_window.py" line="1728"/>
         <source>Afficher l&apos;historique, le journal et les binaires</source>
         <translation>Näytä historia, loki ja binaarit</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1670"/>
+        <location filename="../../launcher/atlas_window.py" line="1730"/>
         <source>Afficher l&apos;ordre conseillé pour traiter un export Google Photos</source>
         <translation>Näytä suositeltu tilaus Google Kuvien viennin käsittelyä varten</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1672"/>
+        <location filename="../../launcher/atlas_window.py" line="1732"/>
         <source>Apparence, langue et outils externes</source>
         <translation>Ulkonäkö, kieli ja ulkoiset työkalut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1863"/>
+        <location filename="../../launcher/atlas_window.py" line="1923"/>
         <source>Aucun module disponible.</source>
         <translation>Moduuleja ei ole saatavilla.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2081"/>
+        <location filename="../../launcher/atlas_window.py" line="2157"/>
         <source>Binaire(s) requis introuvable(s) : {list}. Indiquez leur chemin dans « Préférences… » ou déposez-les dans le dossier bin/.</source>
         <translation>Vaadittuja binääriä ei löydy: {list}. Ilmoita heidän polkunsa &quot;Asetukset...&quot;-kohdassa tai pudota ne roskakoriin/kansioon.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2104"/>
+        <location filename="../../launcher/atlas_window.py" line="2180"/>
         <source>Merci !</source>
         <translation>KIITOS!</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2273"/>
+        <location filename="../../launcher/atlas_window.py" line="2361"/>
         <source>Fermer les {count} onglets sélectionnés</source>
         <translation>Sulje valitut {count} välilehteä</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2275"/>
+        <location filename="../../launcher/atlas_window.py" line="2363"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Sulje välilehti</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2285"/>
+        <location filename="../../launcher/atlas_window.py" line="2373"/>
         <source>{count} onglets sélectionnés — glissez pour les déplacer, Suppr pour les fermer.</source>
         <translation>{count} valittua välilehteä – siirrä ne vetämällä ja sulje ne poistamalla.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2407"/>
+        <location filename="../../launcher/atlas_window.py" line="2495"/>
         <source>Impossible d&apos;ouvrir {name}.
 
 {message}</source>
@@ -262,54 +250,54 @@
 {message}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2442"/>
+        <location filename="../../launcher/atlas_window.py" line="2530"/>
         <source>Les fichiers n&apos;ont pas pu être transmis au module.</source>
         <translation>Tiedostoja ei voitu siirtää moduuliin.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2548"/>
+        <location filename="../../launcher/atlas_window.py" line="2636"/>
         <source>Relance impossible</source>
         <translation>Uudelleenkäynnistys epäonnistui</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2549"/>
+        <location filename="../../launcher/atlas_window.py" line="2637"/>
         <source>Azimut n&apos;a pas pu être relancé automatiquement. Fermez puis rouvrez l&apos;application.</source>
         <translation>Azimutia ei voitu käynnistää uudelleen automaattisesti. Sulje ja avaa sovellus uudelleen.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2569"/>
+        <location filename="../../launcher/atlas_window.py" line="2657"/>
         <source>Traitements en cours</source>
         <translation>Tehtävät kesken</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2570"/>
+        <location filename="../../launcher/atlas_window.py" line="2658"/>
         <source>Traitement en cours dans :
 {modules}</source>
         <translation>Käynnissä:
 {modules}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2573"/>
+        <location filename="../../launcher/atlas_window.py" line="2661"/>
         <source>Fermer ces onglets interrompra les traitements en cours.</source>
         <translation>Näiden välilehtien sulkeminen keskeyttää nykyisen käsittelyn.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2575"/>
+        <location filename="../../launcher/atlas_window.py" line="2663"/>
         <source>Fermer cet onglet interrompra le traitement en cours.</source>
         <translation>Tämän välilehden sulkeminen pysäyttää käynnissä olevan tehtävän.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2577"/>
+        <location filename="../../launcher/atlas_window.py" line="2665"/>
         <source>Fermer Azimut interrompra les traitements en cours.</source>
         <translation>Azimut:n sulkeminen pysäyttää käynnissä olevat tehtävät.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2579"/>
+        <location filename="../../launcher/atlas_window.py" line="2667"/>
         <source>Fermer quand même</source>
         <translation>Sulje joka tapauksessa</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2580"/>
+        <location filename="../../launcher/atlas_window.py" line="2668"/>
         <source>Annuler</source>
         <translation>Peruuta</translation>
     </message>
@@ -368,34 +356,79 @@
 <context>
     <name>CodecPanel</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="265"/>
+        <location filename="../../modules/convert/codec_tree.py" line="264"/>
+        <source>GPU : plus rapide et libère le processeur, mais à qualité égale le fichier est souvent plus gros. CPU : plus lent, fichiers plus compacts.</source>
+        <translation>GPU: nopeampi ja vapauttaa suorittimen, mutta samalla laadulla tiedosto on usein suurempi. CPU: hitaampi, pienemmät tiedostot.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="311"/>
         <source>Rétablir</source>
         <translation>Palauttaa</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="267"/>
+        <location filename="../../modules/convert/codec_tree.py" line="313"/>
         <source>Remet les curseurs de ce codec à leurs valeurs de départ.</source>
         <translation>Palauttaa tämän koodekin liukusäätimet alkuarvoihinsa.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="353"/>
+        <location filename="../../modules/convert/codec_tree.py" line="396"/>
+        <source>Parallélisme automatique (recommandé)</source>
+        <translation>Automaattinen rinnakkaisuus (suositus)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="398"/>
+        <source>Répartit les fichiers selon les cœurs disponibles et le réglage Threads : les copies et les images avancent ensemble ; deux vidéos peuvent avancer si le codec choisi est accéléré par le GPU (NVENC, QSV, VA-API), une seule avec un encodeur processeur, qui utilise déjà tous les cœurs et beaucoup de mémoire. Décochez pour régler chaque famille à la main.</source>
+        <translation>Jakaa tiedostot käytettävissä oleville ytimille ja Säikeet-asetuksen mukaan: kopiot ja kuvat etenevät yhdessä; kaksi videota voi edetä, jos valittu koodekki on GPU-kiihdytetty (NVENC, QSV, VA-API), vain yksi CPU-koodaimella, joka käyttää jo kaikkia ytimiä ja paljon muistia. Poista valinta säätääksesi jokaisen ryhmän käsin.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="403"/>
+        <source>Fichiers image convertis en même temps. Chaque encodage utilise le nombre de threads choisi ci-dessus.</source>
+        <translation>Samanaikaisesti muunnettavat kuvatiedostot. Jokainen koodaus käyttää yllä valittua säikeiden määrää.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="405"/>
+        <source>Fichiers audio convertis en même temps : les encodeurs audio sont presque mono-thread, un peu de parallélisme aide.</source>
+        <translation>Samanaikaisesti muunnettavat äänitiedostot: äänikoodaimet ovat lähes yksisäikeisiä, pieni rinnakkaisuus auttaa.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="407"/>
+        <source>Vidéos encodées en même temps. Au-delà de 1, chaque encodeur doit partager les threads et la mémoire : à réserver aux machines puissantes.</source>
+        <translation>Samanaikaisesti koodattavat videot. Yli 1:ssä jokaisen koodaimen on jaettava säikeet ja muisti: tarkoitettu tehokkaille koneille.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="410"/>
+        <source>Fichiers copiés en même temps (déjà au bon format, documents, JSON…). Cette étape est limitée par le disque, pas par le processeur.</source>
+        <translation>Samanaikaisesti kopioitavat tiedostot (jo oikeassa muodossa, asiakirjat, JSON…). Tätä vaihetta rajoittaa levy, ei suoritin.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="414"/>
         <source>Priorité basse (garde l&apos;ordinateur réactif)</source>
         <translation>Matala prioriteetti (pitää tietokoneen responsiivisena)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="355"/>
+        <location filename="../../modules/convert/codec_tree.py" line="416"/>
         <source>Les processus FFmpeg sont alors lancés avec une priorité réduite : la conversion peut être un peu plus lente, mais les autres applications restent réactives.</source>
         <translation>FFmpeg-prosessit käynnistetään sitten pienemmällä prioriteetilla: muunnos voi olla hieman hitaampi, mutta muut sovellukset reagoivat edelleen.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="357"/>
+        <location filename="../../modules/convert/codec_tree.py" line="418"/>
         <source>Attendre si la mémoire est saturée</source>
         <translation>Odota, jos muisti on täynnä</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="359"/>
+        <location filename="../../modules/convert/codec_tree.py" line="420"/>
         <source>Avant chaque fichier, la conversion attend si la RAM utilisée atteint 75 % ou si la mémoire disponible tombe sous 20 %. Elle réessaie toutes les 2 secondes et s&apos;interrompt si vous annulez. Sans cette case, les fichiers s&apos;enchaînent même sous pression : ralentissement général, swap et risque d&apos;échec par manque de mémoire.</source>
         <translation>Ennen jokaista tiedostoa muunnos odottaa, jos käytetty RAM saavuttaa 75 % tai käytettävissä oleva muisti laskee alle 20 %. Se yrittää uudelleen 2 sekunnin välein ja pysähtyy, jos peruutat. Ilman tätä laatikkoa tiedostot seuraavat toisiaan jopa paineen alaisena: yleinen hidastuminen, vaihto ja epäonnistumisriski muistin puutteen vuoksi.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="436"/>
+        <source>Chaque fichier utilise le réglage Threads ci-dessus : en manuel, gardez « fichiers simultanés × threads » dans la limite des cœurs de la machine.</source>
+        <translation>Jokainen tiedosto käyttää yllä olevaa Säikeet-asetusta: pidä manuaalisessa tilassa &quot;samanaikaiset tiedostot × säikeet&quot; koneen ytimien määrän rajoissa.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="526"/>
+        <source>Conversion GPU : plus rapide, mais à qualité visuelle égale le fichier est souvent plus gros qu&apos;avec un encodeur CPU.</source>
+        <translation>GPU-muunnos: nopeampi, mutta samalla visuaalisella laadulla tiedosto on usein suurempi kuin CPU-koodaimella.</translation>
     </message>
 </context>
 <context>
@@ -419,27 +452,27 @@
 <context>
     <name>ConvertNotification</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="52"/>
+        <location filename="../../modules/convert/workers.py" line="60"/>
         <source>{count} fichier(s) traité(s)</source>
         <translation>{count} tiedosto(a) käsitelty</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="53"/>
+        <location filename="../../modules/convert/workers.py" line="61"/>
         <source>{count} erreur(s)</source>
         <translation>{count} virhettä</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="57"/>
+        <location filename="../../modules/convert/workers.py" line="65"/>
         <source>{count} ignoré(s)</source>
         <translation>{count} ohitettu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="60"/>
+        <location filename="../../modules/convert/workers.py" line="68"/>
         <source>{count} sortie(s) manquante(s)</source>
         <translation>{count} puuttuvaa tulosta</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="63"/>
+        <location filename="../../modules/convert/workers.py" line="71"/>
         <source>gain {size}</source>
         <translation>hyöty {size}</translation>
     </message>
@@ -447,275 +480,320 @@
 <context>
     <name>ConvertWindow</name>
     <message>
-        <location filename="../../modules/convert/window.py" line="40"/>
+        <location filename="../../modules/convert/window.py" line="43"/>
         <source>Fichier</source>
         <translation>Tiedosto</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="41"/>
+        <location filename="../../modules/convert/window.py" line="44"/>
         <source>Type</source>
         <translation>Ystävällinen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="42"/>
+        <location filename="../../modules/convert/window.py" line="45"/>
         <source>Taille</source>
         <translation>Koko</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="43"/>
+        <location filename="../../modules/convert/window.py" line="46"/>
         <source>Format et qualité</source>
         <translation>Muoto ja laatu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="44"/>
+        <location filename="../../modules/convert/window.py" line="47"/>
         <source>État</source>
         <translation>Osavaltio</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="45"/>
+        <location filename="../../modules/convert/window.py" line="48"/>
         <source>Progression</source>
         <translation>Edistyminen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="49"/>
+        <location filename="../../modules/convert/window.py" line="52"/>
         <source>Tous</source>
         <translation>Kaikki</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="50"/>
+        <location filename="../../modules/convert/window.py" line="53"/>
         <source>Images</source>
-        <translation>Kuvia</translation>
+        <translation>Kuvat</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="51"/>
+        <location filename="../../modules/convert/window.py" line="54"/>
         <source>Vidéos</source>
         <translation>Videot</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="52"/>
+        <location filename="../../modules/convert/window.py" line="55"/>
         <source>Audios</source>
         <translation>Äänet</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="53"/>
+        <location filename="../../modules/convert/window.py" line="56"/>
         <source>Fichiers volumineux</source>
         <translation>Suuret tiedostot</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="69"/>
+        <location filename="../../modules/convert/window.py" line="74"/>
         <source>Image</source>
         <translation>Kuva</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="70"/>
+        <location filename="../../modules/convert/window.py" line="75"/>
         <source>Vidéo</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="71"/>
+        <location filename="../../modules/convert/window.py" line="76"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="72"/>
+        <location filename="../../modules/convert/window.py" line="77"/>
         <source>Autre</source>
         <translation>muu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="75"/>
+        <location filename="../../modules/convert/window.py" line="80"/>
         <source>En attente</source>
         <translation>Odotustilassa</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="76"/>
+        <location filename="../../modules/convert/window.py" line="81"/>
         <source>En cours</source>
         <translation>Käynnissä</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="77"/>
+        <location filename="../../modules/convert/window.py" line="82"/>
         <source>Terminé</source>
         <translation>Valmis</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="78"/>
+        <location filename="../../modules/convert/window.py" line="83"/>
         <source>Déjà converti</source>
         <translation>Jo muunnettu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="79"/>
+        <location filename="../../modules/convert/window.py" line="84"/>
         <source>Encodeur manquant</source>
         <translation>Enkooderi puuttuu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="80"/>
+        <location filename="../../modules/convert/window.py" line="85"/>
         <source>Non pris en charge</source>
         <translation>Ei tuettu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="81"/>
+        <location filename="../../modules/convert/window.py" line="86"/>
         <source>Erreur</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="82"/>
+        <location filename="../../modules/convert/window.py" line="87"/>
         <source>Annulé</source>
         <translation>Peruutettu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="83"/>
+        <location filename="../../modules/convert/window.py" line="88"/>
         <source>Source conservée</source>
         <translation>Lähde säilynyt</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="84"/>
+        <location filename="../../modules/convert/window.py" line="89"/>
         <source>Copié</source>
         <translation>Kopioida</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="108"/>
+        <location filename="../../modules/convert/window.py" line="114"/>
         <source>Démarrer la conversion</source>
         <translation>Aloita muuntaminen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="119"/>
+        <location filename="../../modules/convert/window.py" line="131"/>
         <source>Glissez ici des fichiers ou des dossiers à convertir
 (ou cliquez pour parcourir)</source>
         <translation>Vedä tiedostot tai kansiot muuntaaksesi tähän
 (tai napsauta selataksesi)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="126"/>
+        <location filename="../../modules/convert/window.py" line="138"/>
         <source>Afficher :</source>
         <translation>Näyttö:</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="142"/>
+        <location filename="../../modules/convert/window.py" line="154"/>
         <source>Taille minimale des fichiers affichés</source>
         <translation>Näytettävien tiedostojen vähimmäiskoko</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="151"/>
+        <location filename="../../modules/convert/window.py" line="163"/>
         <source>Taille personnalisée…</source>
         <translation>Mukautettu koko…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="156"/>
+        <location filename="../../modules/convert/window.py" line="168"/>
         <source>Retirer la sélection</source>
         <translation>Poista valinta</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="157"/>
+        <location filename="../../modules/convert/window.py" line="169"/>
         <source>Vider la liste</source>
         <translation>Tyhjennä lista</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="166"/>
+        <location filename="../../modules/convert/window.py" line="178"/>
         <source>La file est vide : déposez des fichiers ou un dossier ci-dessus.</source>
         <translation>Jono on tyhjä: pudota tiedostot tai kansio yllä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="176"/>
+        <location filename="../../modules/convert/window.py" line="195"/>
         <source>Sortie</source>
         <translation>Poistu</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="177"/>
+        <location filename="../../modules/convert/window.py" line="196"/>
         <source>Sous-dossiers</source>
         <translation>Alikansiot</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="181"/>
-        <location filename="../../modules/convert/window.py" line="663"/>
+        <location filename="../../modules/convert/window.py" line="200"/>
+        <location filename="../../modules/convert/window.py" line="761"/>
         <source>Sortie…</source>
         <translation>Poistu…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="185"/>
+        <location filename="../../modules/convert/window.py" line="204"/>
         <source>Dossier de sortie</source>
         <translation>Tulostuskansio</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="192"/>
+        <location filename="../../modules/convert/window.py" line="211"/>
+        <source>Vérifier la sortie…</source>
+        <translation>Tarkistetaan tuloste…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="212"/>
+        <source>Après un arrêt forcé ou un plantage : cherche les fichiers incomplets ou corrompus du dossier de sortie et propose de les supprimer pour les reconvertir.</source>
+        <translation>Pakotetun pysäytyksen tai kaatumisen jälkeen: etsii keskeneräiset tai vioittuneet tiedostot tulostekansiosta ja tarjoaa niiden poistamista uudelleenmuuntoa varten.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="216"/>
         <source>Garder l&apos;extension d&apos;origine dans le nom</source>
         <translation>Säilytä alkuperäinen pääte nimessä</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="193"/>
+        <location filename="../../modules/convert/window.py" line="217"/>
         <source>« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions photo.jpg / photo.png et permet de retrouver le JSON Takeout.</source>
         <translation>&quot;photo_jpg.avif&quot; sanan &quot;photo.avif&quot; sijaan: välttää photo.jpg / photo.png törmäykset ja antaa sinun löytää JSON Takeout.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="197"/>
+        <location filename="../../modules/convert/window.py" line="221"/>
         <source>Réinjecter date et GPS des JSON Google Takeout</source>
         <translation>Lisää päivämäärä ja GPS uudelleen JSON Google Takeoutista</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="198"/>
+        <location filename="../../modules/convert/window.py" line="222"/>
         <source>Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et sa position sont écrites dans le fichier converti (ExifTool).</source>
         <translation>Jos tiedoston vierestä löytyy täydentävä JSON, sen kuvauspäivämäärä ja -sijainti kirjoitetaan muunnetuun tiedostoon (ExifTool).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="204"/>
+        <location filename="../../modules/convert/window.py" line="228"/>
         <source>Copier aussi les autres fichiers (PDF, documents…)</source>
         <translation>Kopioi myös muita tiedostoja (PDF, asiakirjat jne.)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="205"/>
+        <location filename="../../modules/convert/window.py" line="229"/>
         <source>Les fichiers qui ne sont ni des images, ni des audios, ni des vidéos sont copiés tels quels dans le dossier de sortie, à la même place que dans la source. Sans cette case, ils sont ignorés.</source>
         <translation>Tiedostot, jotka eivät ole kuvia, ääntä tai videoita, kopioidaan sellaisenaan lähtökansioon, samaan paikkaan kuin lähteessä. Ilman tätä laatikkoa ne jätetään huomiotta.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="210"/>
+        <location filename="../../modules/convert/window.py" line="234"/>
         <source>Ne pas recopier les JSON Takeout déjà réinjectés</source>
         <translation>Älä kopioi jo uudelleen syötettyä JSON Takeoutia</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="211"/>
+        <location filename="../../modules/convert/window.py" line="235"/>
         <source>Les JSON dont la date et la position sont écrites dans le fichier converti ne sont pas copiés dans le dossier de sortie. Rien n&apos;est supprimé : les JSON restent dans le dossier source. Les autres JSON sont copiés.</source>
         <translation>JSON-tiedostoja, joiden päivämäärä ja sijainti on kirjoitettu muunnetuun tiedostoon, ei kopioida tuloskansioon. Mitään ei poisteta: JSON pysyy lähdekansiossa. Toinen JSON kopioidaan.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="229"/>
+        <location filename="../../modules/convert/window.py" line="253"/>
         <source>Réglages</source>
         <translation>Asetukset</translation>
     </message>
     <message>
+        <location filename="../../modules/convert/window.py" line="485"/>
+        <source>FFmpeg introuvable : matériel GPU indéterminable.</source>
+        <translation>FFmpegiä ei löytynyt: GPU-laitteistoa ei voi määrittää.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="498"/>
+        <source>Matériel : détection en cours…</source>
+        <translation>Laitteisto: tunnistetaan…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="499"/>
+        <source>Matériel : indéterminé (FFmpeg n&apos;a pas listé ses encodeurs).</source>
+        <translation>Laitteisto: tuntematon (FFmpeg ei luetellut koodaimiaan).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="509"/>
+        <source>GPU : {backends} · pilote ou GPU ne répond pas : {failed}</source>
+        <translation>GPU: {backends} · ajuri tai GPU ei vastaa: {failed}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="511"/>
+        <source>GPU détecté mais le pilote ou le GPU ne répond pas : {failed} ; les profils marqués GPU resteront indisponibles.</source>
+        <translation>GPU havaittiin, mutta ajuri tai GPU ei vastaa: {failed}; GPU-merkityt profiilit pysyvät poissa käytöstä.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="514"/>
+        <source>Aucune accélération GPU détectée : les profils marqués GPU resteront indisponibles, la conversion se fait par le processeur.</source>
+        <translation>GPU-kiihdytystä ei havaittu: GPU-merkityt profiilit pysyvät poissa käytöstä; muunnos tehdään suorittimella.</translation>
+    </message>
+    <message>
         <location filename="../../modules/convert/window.py" line="516"/>
+        <source>GPU : {backends}</source>
+        <translation>GPU: {backends}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="614"/>
         <source>≥ {size}</source>
         <translation>≥ {size}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="518"/>
+        <location filename="../../modules/convert/window.py" line="616"/>
         <source>Afficher les fichiers d&apos;au moins {size}. Cliquez pour choisir un autre seuil.</source>
         <translation>Näytä tiedostot vähintään {size}. Valitse toinen kynnys napsauttamalla.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Taille minimale</source>
         <translation>Minimikoko</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Afficher les fichiers d&apos;au moins (en Mo) :</source>
         <translation>Näytä vähintään (Mt:na) tiedostot:</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="636"/>
+        <location filename="../../modules/convert/window.py" line="734"/>
         <source>Choisir le dossier de sortie</source>
         <translation>Valitse tulostuskansio</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="647"/>
+        <location filename="../../modules/convert/window.py" line="745"/>
         <source>Laisser vide : « &lt;source&gt;_Converted » à côté de chaque dossier ajouté. Obligatoire pour les fichiers ajoutés isolément.</source>
         <translation>Jätä tyhjäksi: &quot;&lt;source&gt;_Converted&quot; jokaisen lisätyn kansion vieressä. Vaaditaan erikseen lisätyille tiedostoille.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="649"/>
+        <location filename="../../modules/convert/window.py" line="747"/>
         <source>dossier par défaut</source>
         <translation>oletuskansio</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="650"/>
+        <location filename="../../modules/convert/window.py" line="748"/>
         <source>{hint}
 
 Dossier de sortie : {path}
@@ -728,75 +806,214 @@ Tulostuskansio: {path}
 Napsauta valitaksesi kansio; Napsauta hiiren kakkospainikkeella palataksesi oletuskansioon.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="654"/>
+        <location filename="../../modules/convert/window.py" line="752"/>
         <source>Dossier de sortie : {path}</source>
         <translation>Tuloskansio: {path}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="661"/>
+        <location filename="../../modules/convert/window.py" line="759"/>
         <source>Sortie : {folder}</source>
         <translation>Tulostus: {folder}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="674"/>
+        <location filename="../../modules/convert/window.py" line="772"/>
         <source>Choisir un dossier…</source>
         <translation>Valitse kansio…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="676"/>
+        <location filename="../../modules/convert/window.py" line="774"/>
         <source>Utiliser le dossier par défaut</source>
         <translation>Käytä oletuskansiota</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="686"/>
+        <location filename="../../modules/convert/window.py" line="784"/>
         <source>Importer des fichiers</source>
         <translation>Tuo tiedostoja</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="695"/>
+        <location filename="../../modules/convert/window.py" line="793"/>
         <source>Importer un dossier</source>
         <translation>Tuo kansio</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="836"/>
+        <source>Préparation de la conversion…</source>
+        <translation>Valmistellaan muuntoa…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="891"/>
+        <source>{parts}
+
+Chaque segment est proportionnel au nombre de fichiers à traiter.</source>
+        <translation>{parts}
+
+Jokainen osuus on verrannollinen käsiteltävien tiedostojen määrään.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="920"/>
+        <source>Dossier de sortie à vérifier</source>
+        <translation>Tarkistettava tulostekansio</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="928"/>
+        <source>Vérification de la sortie : {paths}</source>
+        <translation>Tarkistetaan tuloste: {paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="946"/>
+        <source>Vérification : {count} fichier(s) contrôlé(s), aucun fichier incomplet ou illisible.</source>
+        <translation>Tarkistus: {count} tiedostoa tarkistettu, ei keskeneräisiä tai lukukelvottomia tiedostoja.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="949"/>
+        <source>Vérifier la sortie</source>
+        <translation>Tarkista tuloste</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="950"/>
+        <source>Aucun fichier incomplet ou corrompu n&apos;a été trouvé.
+
+{count} fichier(s) contrôlé(s) dans :
+{paths}</source>
+        <translation>Keskeneräisiä tai vioittuneita tiedostoja ei löytynyt.
+
+{count} tiedostoa tarkistettu kansiossa:
+{paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="955"/>
+        <source>Vérification : {bad} fichier(s) suspect(s) sur {count} contrôlé(s) ; ne supprimez pas vos originaux.</source>
+        <translation>Tarkistus: {bad} epäilyttävää tiedostoa {count} tarkistetusta; älä poista alkuperäisiä.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="957"/>
+        <source>conversion interrompue (fichier temporaire)</source>
+        <translation>keskeytynyt muunnos (väliaikaistiedosto)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="958"/>
+        <source>taille inattendue : fichier tronqué ?</source>
+        <translation>odottamaton koko: katkaistu tiedosto?</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="959"/>
+        <source>illisible pour FFprobe</source>
+        <translation>FFproben lukukelvoton</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="964"/>
+        <source>… et {count} autre(s) fichier(s) suspect(s).</source>
+        <translation>… ja {count} muuta epäilyttävää tiedostoa.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="967"/>
+        <source>Fichiers à vérifier</source>
+        <translation>Tarkistettavat tiedostot</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="968"/>
+        <source>{bad} fichier(s) de la sortie peuvent être incomplets ou corrompus.
+
+Les supprimer ? Ils seront recréés à la prochaine conversion ; aucun autre fichier n&apos;est touché et les originaux ne sont jamais concernés.</source>
+        <translation>{bad} tiedostoa tulosteessa voi olla keskeneräisiä tai vioittuneita.
+
+Poistetaanko ne? Ne luodaan uudelleen seuraavassa muunnossa; muita tiedostoja ei kosketa, eikä alkuperäisiin kosketa koskaan.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="990"/>
+        <source>{path} : suppression impossible ({error}).</source>
+        <translation>{path}: poisto ei onnistu ({error}).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="993"/>
+        <source>{count} fichier(s) supprimé(s) ; relancez la conversion pour les recréer.</source>
+        <translation>{count} tiedostoa poistettu; käynnistä muunto uudelleen luodaksesi ne.</translation>
     </message>
 </context>
 <context>
     <name>ConvertWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="260"/>
-        <source>{done} / {total} — {name}</source>
-        <translation>{done} / {total} — {name}</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Copies</source>
+        <translation>Kopiot</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="289"/>
-        <source>{done} / {total} terminé(s)</source>
-        <translation>{done} / {total} valmis</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Images</source>
+        <translation>Kuvat</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="304"/>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Audios</source>
+        <translation>Äänet</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Vidéos</source>
+        <translation>Videot</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="425"/>
+        <source>Étape {number}/{steps} · {label}</source>
+        <translation>Vaihe {number}/{steps} · {label}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="430"/>
+        <source>reste ~{time}</source>
+        <translation>~{time} jäljellä</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="511"/>
+        <source>Parallélisme : copies {copy} · images {image} · audios {audio} · vidéos {video} fichier(s) à la fois.</source>
+        <translation>Rinnakkaisuus: kopiot {copy} · kuvat {image} · äänet {audio} · videot {video} tiedostoa kerrallaan.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>vidéo</source>
+        <translation>video</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>image</source>
+        <translation>kuva</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="519"/>
+        <source>Parallélisme {kind} : {count} × {threads} threads pour {cpus} cœur(s) ; réduisez le nombre de fichiers simultanés ou le réglage Threads pour éviter la surcharge.</source>
+        <translation>Rinnakkaisuus {kind}: {count} × {threads} säiettä {cpus} ytimelle; vähennä samanaikaisten tiedostojen määrää tai Säikeet-asetusta ylikuormituksen välttämiseksi.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="530"/>
+        <source>Étape {number}/{steps} : {label} ({count} fichier(s), {parallel} en parallèle).</source>
+        <translation>Vaihe {number}/{steps}: {label} ({count} tiedostoa, {parallel} rinnakkain).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="547"/>
         <source>{ok} converti(s), {copied} copié(s), {kept} source(s) conservée(s), {skipped} déjà converti(s), {unsupported} non pris en charge, {errors} erreur(s) ; gain : {gain}</source>
         <translation>{ok} muunnettu, {copied} kopioitu, {kept} lähde(ttä) säilytetty, {skipped} jo muunnettu, {unsupported} ei tuettu, {errors} virhettä; hyöty: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="310"/>
+        <location filename="../../modules/convert/workers.py" line="553"/>
         <source> ; métadonnées Takeout : {ok}, sans JSON : {missing}</source>
         <translation> ; Takeout-metatiedot: {ok}, ilman JSONia: {missing}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="313"/>
+        <location filename="../../modules/convert/workers.py" line="556"/>
         <source> ; JSON Takeout non recopiés : {count}</source>
         <translation> ; kopioimattomat Takeout-JSONit: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="315"/>
+        <location filename="../../modules/convert/workers.py" line="558"/>
         <source> ; métadonnées d&apos;origine recopiées : {count}</source>
         <translation> ; alkuperäiset metatiedot kopioitu: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="318"/>
+        <location filename="../../modules/convert/workers.py" line="561"/>
         <source> ; métadonnées non recopiées : {count}</source>
         <translation> ; metatietoja ei kopioitu: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="321"/>
+        <location filename="../../modules/convert/workers.py" line="564"/>
         <source> ; champs Takeout non inscriptibles : {count}</source>
         <translation> ; Takeout-kentät, joita ei voi kirjoittaa: {count}</translation>
     </message>
@@ -804,7 +1021,7 @@ Napsauta valitaksesi kansio; Napsauta hiiren kakkospainikkeella palataksesi olet
 <context>
     <name>CopyFeedbackButton</name>
     <message>
-        <location filename="../../ui/controls.py" line="1034"/>
+        <location filename="../../ui/controls.py" line="1049"/>
         <source>Copié</source>
         <translation>Kopioida</translation>
     </message>
@@ -878,17 +1095,17 @@ Napsauta valitaksesi kansio; Napsauta hiiren kakkospainikkeella palataksesi olet
 <context>
     <name>DedupWindow</name>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1392"/>
+        <location filename="../../modules/dedup/window.py" line="1403"/>
         <source>Choisir le journal d&apos;une quarantaine</source>
         <translation>Karanteenin päiväkirjan valinta</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1393"/>
+        <location filename="../../modules/dedup/window.py" line="1404"/>
         <source>Journal (journal.csv);;Fichiers CSV (*.csv)</source>
         <translation>Loki (journal.csv);;CSV-tiedostot (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="847"/>
+        <location filename="../../modules/dedup/window.py" line="858"/>
         <source>Importer un dossier</source>
         <translation>Tuo kansio</translation>
     </message>
@@ -960,7 +1177,7 @@ Napsauta valitaksesi kansio; Napsauta hiiren kakkospainikkeella palataksesi olet
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="105"/>
-        <location filename="../../modules/dedup/window.py" line="582"/>
+        <location filename="../../modules/dedup/window.py" line="583"/>
         <source>Live Photos</source>
         <translation>Live-kuvat</translation>
     </message>
@@ -996,13 +1213,13 @@ Napsauta valitaksesi kansio; Napsauta hiiren kakkospainikkeella palataksesi olet
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="115"/>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder</source>
         <translation>Pitää</translation>
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="116"/>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Supprimer</source>
         <translation>POISTAA</translation>
     </message>
@@ -1073,7 +1290,7 @@ Napsauta valitaksesi kansio; Napsauta hiiren kakkospainikkeella palataksesi olet
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="465"/>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Appliquer les modifications</source>
         <translation>Ota muutokset käyttöön</translation>
     </message>
@@ -1212,152 +1429,152 @@ Napsauta avataksesi tai sulkeaksesi riippulukon.</translation>
         <translation>Tunnista visuaalisesti läheiset kuvat (dHash); toleranssi säätelee hyväksyttyä poikkeamaa.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="577"/>
+        <location filename="../../modules/dedup/window.py" line="578"/>
         <source>Tolérance :</source>
         <translation>Toleranssi:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="583"/>
+        <location filename="../../modules/dedup/window.py" line="584"/>
         <source>Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, sauf si vous demandez d&apos;écarter la vidéo.</source>
         <translation>Etsii parit IMG_1234.HEIC + IMG_1234.MOV (tai muunnetut nimet IMG_1234_heic.avif + IMG_1234_mov.webm). Ne merkitään vain, jos et pyydä videon hylkäämistä.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="591"/>
+        <location filename="../../modules/dedup/window.py" line="593"/>
         <source>Écarter la vidéo</source>
         <translation>Hylkää video</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="593"/>
+        <location filename="../../modules/dedup/window.py" line="595"/>
         <source>Proposer la vidéo à la suppression ; la photo est conservée.</source>
         <translation>Ehdota videon poistamista; valokuva säilyy.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="599"/>
+        <location filename="../../modules/dedup/window.py" line="601"/>
         <source>Durée max :</source>
         <translation>Enimmäiskesto:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="602"/>
+        <location filename="../../modules/dedup/window.py" line="604"/>
         <source>Détection</source>
         <translation>Havaitseminen</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="605"/>
+        <location filename="../../modules/dedup/window.py" line="607"/>
         <source>Proposition automatique :</source>
         <translation>Automaattinen ehdotus:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="612"/>
+        <location filename="../../modules/dedup/window.py" line="615"/>
         <source>Mode de suppression :</source>
         <translation>Poistotila:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="620"/>
+        <location filename="../../modules/dedup/window.py" line="624"/>
         <source>Dossiers vides</source>
         <translation>Tyhjät kansiot</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="621"/>
+        <location filename="../../modules/dedup/window.py" line="625"/>
         <source>Supprimer les dossiers devenus vides après les suppressions.</source>
         <translation>Poista kansiot, jotka ovat tyhjentyneet poistamisen jälkeen.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="624"/>
+        <location filename="../../modules/dedup/window.py" line="628"/>
         <source>Dossier de quarantaine :</source>
         <translation>Karanteenikansio:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="627"/>
+        <location filename="../../modules/dedup/window.py" line="631"/>
         <source>Traitement</source>
         <translation>Hoito</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="646"/>
+        <location filename="../../modules/dedup/window.py" line="650"/>
         <source>Afficher :</source>
         <translation>Näyttö:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="766"/>
+        <location filename="../../modules/dedup/window.py" line="770"/>
         <source>Corrections manuelles</source>
         <translation>Manuaaliset korjaukset</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder la sélection</source>
         <translation>Säilytä valinta</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Proposer la sélection à la suppression (Suppr)</source>
         <translation>Ehdota valintaa poistettavaksi (Poista)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="773"/>
+        <location filename="../../modules/dedup/window.py" line="777"/>
         <source>Tout supprimer</source>
         <translation>Poista kaikki</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="774"/>
+        <location filename="../../modules/dedup/window.py" line="778"/>
         <source>Proposer tous les fichiers du groupe sélectionné à la suppression (les fichiers protégés sont conservés)</source>
         <translation>Ehdota kaikki valitun ryhmän tiedostot poistettavaksi (suojatut tiedostot säilytetään)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder uniquement celui-ci</source>
         <translation>Säilytä vain tämä</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder ce fichier, proposer les autres du groupe</source>
         <translation>Säilytä tämä tiedosto, ehdota muita ryhmästä</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Proposition auto pour la sélection</source>
         <translation>Automaattinen valintaehdotus</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Appliquer la stratégie choisie à la sélection</source>
         <translation>Käytä valittua strategiaa valintaan</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="783"/>
+        <location filename="../../modules/dedup/window.py" line="787"/>
         <source>Espace : bascule Garder / Supprimer · Suppr : Supprimer · Double-clic : lire (audio, vidéo) ou ouvrir le fichier</source>
         <translation>Välilyönti: Säilytä / Poista -kytkin · Poista: Poista · Kaksoisnapsauta: toista (ääni, video) tai avaa tiedosto</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="788"/>
+        <location filename="../../modules/dedup/window.py" line="799"/>
         <source>Aperçu et corrections</source>
         <translation>Yleiskatsaus ja korjaukset</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1061"/>
+        <location filename="../../modules/dedup/window.py" line="1072"/>
         <source>Groupe {id} · {kind} · {count} fichiers · gain : {gain}</source>
         <translation>Ryhmä {id} · {kind} · {count} tiedostoa · vahvistus: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1069"/>
+        <location filename="../../modules/dedup/window.py" line="1080"/>
         <source> · protégé</source>
         <translation>· suojattu</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1082"/>
+        <location filename="../../modules/dedup/window.py" line="1093"/>
         <source>Aucune analyse effectuée.</source>
         <translation>Analyyseja ei tehty.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1085"/>
+        <location filename="../../modules/dedup/window.py" line="1096"/>
         <source>{scanned} fichier(s) analysé(s) · {count} groupe(s) · {files} fichier(s) concerné(s) · gain libérable : {gain}</source>
         <translation>{scanned}-tiedosto(t) analysoitu · {count}-ryhmä(t) · Asianomaiset {files}-tiedostot · vapautettava vahvistus: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1165"/>
+        <location filename="../../modules/dedup/window.py" line="1176"/>
         <source>Groupe {id}</source>
         <translation>Ryhmä {id}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1166"/>
+        <location filename="../../modules/dedup/window.py" line="1177"/>
         <source>{count} fichiers · {kind}
 Taille totale : {size}
 Gain libérable : {gain}</source>
@@ -1366,27 +1583,27 @@ Kokonaiskoko: {size}
 Vapautettava vahvistus: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1172"/>
+        <location filename="../../modules/dedup/window.py" line="1183"/>
         <source>Sélectionnez un fichier, ou deux fichiers du même groupe pour les comparer.</source>
         <translation>Valitse tiedosto tai kaksi tiedostoa samasta ryhmästä vertaillaksesi niitä.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1173"/>
+        <location filename="../../modules/dedup/window.py" line="1184"/>
         <source>{count} fichier(s) sélectionné(s)</source>
         <translation>{count} valittua tiedostoa</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1250"/>
+        <location filename="../../modules/dedup/window.py" line="1261"/>
         <source>{count} fichier(s) proposé(s) à la suppression dans {groups} groupe(s).</source>
         <translation>{count} tiedostoa ehdotettiin poistettavaksi {groups} ryhmässä.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1254"/>
+        <location filename="../../modules/dedup/window.py" line="1265"/>
         <source>{count} fichier(s) protégé(s) conservé(s).</source>
         <translation>{count} suojattua tiedostoa säilytettiin.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1318"/>
+        <location filename="../../modules/dedup/window.py" line="1329"/>
         <source>Aucun fichier ne sera conservé dans {groups} groupe(s) ({files} fichier(s)).
 Tous les fichiers de ces groupes seront supprimés.
 
@@ -1397,17 +1614,17 @@ Kaikki näiden ryhmien tiedostot poistetaan.
 </translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Aucun fichier conservé</source>
         <translation>Ei tiedostoja säilytetty</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1401"/>
+        <location filename="../../modules/dedup/window.py" line="1412"/>
         <source>Journal non vérifiable</source>
         <translation>Vahvistamaton loki</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1402"/>
+        <location filename="../../modules/dedup/window.py" line="1413"/>
         <source>Ce journal ne contient pas la liste des dossiers analysés (journal importé ou antérieur).
 
 La restauration déplacera des fichiers vers les emplacements qu&apos;il indique. Ne continuez que si vous faites entièrement confiance à ce journal.
@@ -1420,12 +1637,12 @@ Palautus siirtää tiedostot lokin osoittamiin paikkoihin. Jatka vain, jos luota
 Palautetaanko?</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1430"/>
+        <location filename="../../modules/dedup/window.py" line="1441"/>
         <source>Exporter le rapport</source>
         <translation>Vie raportti</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1431"/>
+        <location filename="../../modules/dedup/window.py" line="1442"/>
         <source>Fichiers CSV (*.csv)</source>
         <translation>CSV-tiedostot (*.csv)</translation>
     </message>
@@ -1433,32 +1650,32 @@ Palautetaanko?</translation>
 <context>
     <name>DropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1410"/>
+        <location filename="../../ui/widgets.py" line="1512"/>
         <source>Choisir des fichiers…</source>
         <translation>Valitse tiedostot…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1411"/>
+        <location filename="../../ui/widgets.py" line="1513"/>
         <source>Choisir un dossier…</source>
         <translation>Valitse kansio…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1427"/>
+        <location filename="../../ui/widgets.py" line="1529"/>
         <source>Fichiers acceptés ({masks});;Tous les fichiers (*)</source>
         <translation>Hyväksytyt tiedostot ({masks});;Kaikki tiedostot (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1429"/>
+        <location filename="../../ui/widgets.py" line="1531"/>
         <source>Tous les fichiers (*)</source>
         <translation>Kaikki tiedostot (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1430"/>
+        <location filename="../../ui/widgets.py" line="1532"/>
         <source>Choisir des fichiers</source>
         <translation>Valitse tiedostot</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1438"/>
+        <location filename="../../ui/widgets.py" line="1540"/>
         <source>Choisir un dossier</source>
         <translation>Valitse kansio</translation>
     </message>
@@ -1620,10 +1837,6 @@ Palautetaanko?</translation>
         <translation>{count} merkintää</translation>
     </message>
     <message>
-        <source>{count} entrée(s)</source>
-        <translation type="vanished">{count} merkinnät</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="150"/>
         <source>du module « {name} »</source>
         <translation>moduulista &quot;{name}&quot;</translation>
@@ -1642,7 +1855,7 @@ Palautetaanko?</translation>
 <context>
     <name>ImagePreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="3070"/>
+        <location filename="../../ui/widgets.py" line="3189"/>
         <source>Chargement…</source>
         <translation>Ladataan…</translation>
     </message>
@@ -1650,7 +1863,7 @@ Palautetaanko?</translation>
 <context>
     <name>ImportProgress</name>
     <message>
-        <location filename="../../ui/widgets.py" line="758"/>
+        <location filename="../../ui/widgets.py" line="860"/>
         <source>Importation terminée !</source>
         <translation>Tuonti valmis!</translation>
     </message>
@@ -1678,10 +1891,6 @@ Palautetaanko?</translation>
         <translation>{count} viimeistä riviä</translation>
     </message>
     <message>
-        <source>{count} dernière(s) ligne(s)</source>
-        <translation type="vanished">{count} viimeiset rivit</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="200"/>
         <source>(Le journal est vide ou introuvable.)</source>
         <translation>(Loki on tyhjä tai puuttuu.)</translation>
@@ -1690,26 +1899,22 @@ Palautetaanko?</translation>
 <context>
     <name>ModuleCard</name>
     <message>
-        <source>Déposez des fichiers ou un dossier ici pour les ouvrir directement.</source>
-        <translation type="vanished">Pudota tiedostot tai kansio tähän avataksesi ne suoraan.</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="140"/>
+        <location filename="../../launcher/atlas_window.py" line="141"/>
         <source>Ouvrir</source>
         <translation>Avoinna</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="166"/>
+        <location filename="../../launcher/atlas_window.py" line="167"/>
         <source>erreur inconnue</source>
         <translation>tuntematon virhe</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="172"/>
+        <location filename="../../launcher/atlas_window.py" line="173"/>
         <source>✖ indisponible</source>
         <translation>✖ ei saatavilla</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="191"/>
+        <location filename="../../launcher/atlas_window.py" line="192"/>
         <source>Introuvable : voir « Préférences… » ou le dossier bin/.</source>
         <translation>Ei löydy: katso “Asetukset…” tai bin/-kansio.</translation>
     </message>
@@ -1717,226 +1922,222 @@ Palautetaanko?</translation>
 <context>
     <name>ModuleWindow</name>
     <message>
-        <location filename="../../ui/module_window.py" line="203"/>
-        <location filename="../../ui/module_window.py" line="470"/>
-        <location filename="../../ui/module_window.py" line="477"/>
+        <location filename="../../ui/module_window.py" line="207"/>
+        <location filename="../../ui/module_window.py" line="483"/>
+        <location filename="../../ui/module_window.py" line="490"/>
         <source>Journal</source>
         <translation>loki</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="204"/>
+        <location filename="../../ui/module_window.py" line="208"/>
         <source>Afficher ou masquer le journal</source>
         <translation>Näytä tai piilota loki</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="62"/>
-        <location filename="../../ui/module_window.py" line="208"/>
-        <location filename="../../ui/module_window.py" line="384"/>
+        <location filename="../../ui/module_window.py" line="64"/>
+        <location filename="../../ui/module_window.py" line="212"/>
+        <location filename="../../ui/module_window.py" line="397"/>
         <source>Aide</source>
         <translation>Apua</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="59"/>
-        <location filename="../../ui/module_window.py" line="357"/>
+        <location filename="../../ui/module_window.py" line="61"/>
+        <location filename="../../ui/module_window.py" line="370"/>
         <source>Afficher / masquer le journal</source>
         <translation>Näytä/piilota loki</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="60"/>
-        <location filename="../../ui/module_window.py" line="359"/>
+        <location filename="../../ui/module_window.py" line="62"/>
+        <location filename="../../ui/module_window.py" line="372"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Vaihda tumman ja vaalean teeman välillä</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="209"/>
+        <location filename="../../ui/module_window.py" line="213"/>
         <source>Aide et raccourcis</source>
         <translation>Ohjeet ja pikakuvakkeet</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="285"/>
-        <location filename="../../ui/module_window.py" line="371"/>
+        <location filename="../../ui/module_window.py" line="298"/>
+        <location filename="../../ui/module_window.py" line="384"/>
         <source>Démarrer</source>
         <translation>Aloitus</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="57"/>
-        <location filename="../../ui/module_window.py" line="286"/>
+        <location filename="../../ui/module_window.py" line="59"/>
+        <location filename="../../ui/module_window.py" line="299"/>
         <source>Démarrer le traitement</source>
         <translation>Aloita käsittely</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="288"/>
-        <location filename="../../ui/module_window.py" line="345"/>
-        <location filename="../../ui/module_window.py" line="373"/>
+        <location filename="../../ui/module_window.py" line="301"/>
+        <location filename="../../ui/module_window.py" line="358"/>
+        <location filename="../../ui/module_window.py" line="386"/>
         <source>Annuler</source>
         <translation>Peruuta</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="58"/>
-        <location filename="../../ui/module_window.py" line="289"/>
+        <location filename="../../ui/module_window.py" line="60"/>
+        <location filename="../../ui/module_window.py" line="302"/>
         <source>Annuler le traitement en cours</source>
         <translation>Peruuta nykyinen työ</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="295"/>
+        <location filename="../../ui/module_window.py" line="308"/>
         <source>Principale</source>
         <translation>Pää</translation>
     </message>
     <message>
-        <source>Changer de thème</source>
-        <translation type="vanished">Vaihda teemaa</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="61"/>
-        <location filename="../../ui/module_window.py" line="306"/>
+        <location filename="../../ui/module_window.py" line="63"/>
         <location filename="../../ui/module_window.py" line="319"/>
+        <location filename="../../ui/module_window.py" line="332"/>
         <source>Préférences…</source>
         <translation>Asetukset…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="69"/>
+        <location filename="../../ui/module_window.py" line="71"/>
         <source>Date</source>
         <translation>Päivämäärä</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="70"/>
+        <location filename="../../ui/module_window.py" line="72"/>
         <source>Action</source>
         <translation>Toiminta</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="71"/>
+        <location filename="../../ui/module_window.py" line="73"/>
         <source>Résumé</source>
         <translation>Yhteenveto</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="72"/>
+        <location filename="../../ui/module_window.py" line="74"/>
         <source>Réussis</source>
         <translation>Onnistua</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="73"/>
+        <location filename="../../ui/module_window.py" line="75"/>
         <source>Erreurs</source>
         <translation>Virheet</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="307"/>
+        <location filename="../../ui/module_window.py" line="320"/>
         <source>Langue, thème, taille du texte, outils externes</source>
         <translation>Kieli, teema, tekstin koko, ulkoiset työkalut</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="315"/>
+        <location filename="../../ui/module_window.py" line="328"/>
         <source>Azimut</source>
         <translation>Atsimuutti</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="316"/>
-        <location filename="../../ui/module_window.py" line="421"/>
+        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="434"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Tietoja Azimutista</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="323"/>
+        <location filename="../../ui/module_window.py" line="336"/>
         <source>Quitter</source>
         <translation>lähteä</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="328"/>
+        <location filename="../../ui/module_window.py" line="341"/>
         <source>Fichier</source>
         <translation>Tiedosto</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="342"/>
         <source>Ajouter des fichiers…</source>
         <translation>Lisää tiedostoja…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="331"/>
+        <location filename="../../ui/module_window.py" line="344"/>
         <source>Ajouter un dossier…</source>
         <translation>Lisää kansio…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="338"/>
+        <location filename="../../ui/module_window.py" line="351"/>
         <source>Édition</source>
         <translation>Painos</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="339"/>
-        <location filename="../../ui/module_window.py" line="404"/>
+        <location filename="../../ui/module_window.py" line="352"/>
+        <location filename="../../ui/module_window.py" line="417"/>
         <source>Annuler le dernier renommage</source>
         <translation>Kumoa viimeinen uudelleennimeäminen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="346"/>
+        <location filename="../../ui/module_window.py" line="359"/>
         <source>Rétablir</source>
         <translation>Palauttaa</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="360"/>
         <source>Couper</source>
         <translation>Leikata</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="348"/>
+        <location filename="../../ui/module_window.py" line="361"/>
         <source>Copier</source>
         <translation>Kopioida</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="349"/>
+        <location filename="../../ui/module_window.py" line="362"/>
         <source>Coller</source>
         <translation>Tikku</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="350"/>
+        <location filename="../../ui/module_window.py" line="363"/>
         <source>Tout sélectionner</source>
         <translation>Valitse kaikki</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="356"/>
+        <location filename="../../ui/module_window.py" line="369"/>
         <source>Présentation</source>
         <translation>Esittely</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="363"/>
+        <location filename="../../ui/module_window.py" line="376"/>
         <source>Agrandir le texte</source>
         <translation>Suurenna tekstiä</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="366"/>
+        <location filename="../../ui/module_window.py" line="379"/>
         <source>Réduire le texte</source>
         <translation>Pienennä tekstiä</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="370"/>
+        <location filename="../../ui/module_window.py" line="383"/>
         <source>Traitement</source>
         <translation>Hoito</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="376"/>
+        <location filename="../../ui/module_window.py" line="389"/>
         <source>Fenêtre</source>
         <translation>Ikkuna</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="377"/>
+        <location filename="../../ui/module_window.py" line="390"/>
         <source>Réduire</source>
         <translation>Vähentää</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="380"/>
+        <location filename="../../ui/module_window.py" line="393"/>
         <source>Zoom</source>
         <translation>Zoomaa</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="385"/>
+        <location filename="../../ui/module_window.py" line="398"/>
         <source>Raccourcis clavier</source>
         <translation>Pikanäppäimet</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="413"/>
+        <location filename="../../ui/module_window.py" line="426"/>
         <source>Vider la liste</source>
         <translation>Tyhjennä lista</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="414"/>
+        <location filename="../../ui/module_window.py" line="427"/>
         <source>Voulez-vous vraiment vider la liste ?
 
 Les fichiers ne seront pas modifiés.</source>
@@ -1945,99 +2146,83 @@ Les fichiers ne seront pas modifiés.</source>
 Tiedostoja ei muokata.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="471"/>
+        <location filename="../../ui/module_window.py" line="484"/>
         <source>Historique</source>
         <translation>Historia</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="473"/>
+        <location filename="../../ui/module_window.py" line="486"/>
         <source>Effacer le journal</source>
         <translation>Tyhjennä loki</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="603"/>
+        <location filename="../../ui/module_window.py" line="662"/>
         <source>{name} est introuvable.
 Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>{name}:tä ei löytynyt.
 IAsenna se tai määritä sen polku asetuksissa.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="648"/>
+        <location filename="../../ui/module_window.py" line="707"/>
         <source>Un traitement est déjà en cours : nouvelle demande ignorée.</source>
         <translation>Työ on jo käynnissä: uusi pyyntö ohitettu.</translation>
     </message>
     <message>
-        <source>En cours…</source>
-        <translation type="vanished">Juokse…</translation>
-    </message>
-    <message>
-        <source>Annulation en cours…</source>
-        <translation type="vanished">Perutaan…</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="703"/>
+        <location filename="../../ui/module_window.py" line="762"/>
         <source>Annulation demandée…</source>
         <translation>Peruutuspyyntö…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="736"/>
-        <location filename="../../ui/module_window.py" line="845"/>
+        <location filename="../../ui/module_window.py" line="789"/>
+        <location filename="../../ui/module_window.py" line="898"/>
         <source>Traitement terminé.</source>
         <translation>Käsittely valmis.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="741"/>
-        <location filename="../../ui/module_window.py" line="854"/>
+        <location filename="../../ui/module_window.py" line="794"/>
+        <location filename="../../ui/module_window.py" line="907"/>
         <source>Traitement annulé.</source>
         <translation>Käsittely peruutettu.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="746"/>
+        <location filename="../../ui/module_window.py" line="799"/>
         <source>Échec du traitement : {message}</source>
         <translation>Käsittely epäonnistui: {message}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="838"/>
+        <location filename="../../ui/module_window.py" line="891"/>
         <source>Erreur interne : {error}</source>
         <translation>Sisäinen virhe: {error}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="849"/>
-        <location filename="../../ui/module_window.py" line="855"/>
+        <location filename="../../ui/module_window.py" line="902"/>
+        <location filename="../../ui/module_window.py" line="908"/>
         <source>Échec : {reason}</source>
         <translation>Epäonnistui: {reason}</translation>
     </message>
     <message>
-        <source>Clair</source>
-        <translation type="vanished">valo</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">tumma</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="965"/>
+        <location filename="../../ui/module_window.py" line="1042"/>
         <source>Aide — {name}</source>
         <translation>Ohje — {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="986"/>
+        <location filename="../../ui/module_window.py" line="1063"/>
         <source>{app} · version {version}</source>
         <translation>{app} · versio {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="334"/>
-        <location filename="../../ui/module_window.py" line="996"/>
+        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="1073"/>
         <source>Fermer</source>
         <translation>Sulje</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1013"/>
+        <location filename="../../ui/module_window.py" line="1090"/>
         <source>Un traitement est en cours : dépôt ignoré.</source>
         <translation>Työ on käynnissä: pudotus ohitettu.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1038"/>
+        <location filename="../../ui/module_window.py" line="1115"/>
         <source>Fermeture reportée : le traitement doit s&apos;arrêter.</source>
         <translation>Sulkemista lykätty: käsittely on lopetettava.</translation>
     </message>
@@ -2060,10 +2245,6 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
         <translation>Kirjoita sieppauspäivämäärä tiedostojen nimiin</translation>
     </message>
     <message>
-        <source>Comparer deux dossiers : même arborescence, même nombre de fichiers ?</source>
-        <translation type="vanished">Vertaa kahta kansiota: sama puu, sama tiedostomäärä?</translation>
-    </message>
-    <message>
         <location filename="../../modules/tags/__init__.py" line="11"/>
         <source>Lire, modifier et supprimer les métadonnées EXIF, IPTC et XMP</source>
         <translation>Lue, muokkaa ja poista EXIF-, IPTC- ja XMP-metadata</translation>
@@ -2082,32 +2263,32 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
 <context>
     <name>OpenFileButton</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2990"/>
+        <location filename="../../ui/widgets.py" line="3109"/>
         <source>Ouvre le fichier sélectionné dans l&apos;application associée du système (lecteur vidéo, visionneuse d&apos;images, lecteur PDF…).</source>
         <translation>Avaa valitun tiedoston siihen liittyvässä järjestelmäsovelluksessa (videosoitin, kuvankatseluohjelma, PDF-lukija jne.).</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3006"/>
+        <location filename="../../ui/widgets.py" line="3125"/>
         <source>Ouvrir dans une application</source>
         <translation>Avaa sovelluksessa</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3004"/>
+        <location filename="../../ui/widgets.py" line="3123"/>
         <source>Afficher le dossier</source>
         <translation>Näytä kansio</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3020"/>
+        <location filename="../../ui/widgets.py" line="3139"/>
         <source>Impossible d&apos;ouvrir : {target}</source>
         <translation>Ei voida avata: {target}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3022"/>
+        <location filename="../../ui/widgets.py" line="3141"/>
         <source>Ouverture impossible</source>
         <translation>Ei voi avata</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3023"/>
+        <location filename="../../ui/widgets.py" line="3142"/>
         <source>Aucune application n&apos;est associée à ce fichier :
 {name}</source>
         <translation>Tähän tiedostoon ei ole liitetty sovellusta:
@@ -2117,13 +2298,13 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
 <context>
     <name>PathDropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1477"/>
-        <location filename="../../ui/widgets.py" line="1478"/>
+        <location filename="../../ui/widgets.py" line="1579"/>
+        <location filename="../../ui/widgets.py" line="1580"/>
         <source>Effacer le dossier</source>
         <translation>Tyhjennä kansio</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1678"/>
+        <location filename="../../ui/widgets.py" line="1780"/>
         <source>Glissez un dossier ici ou cliquez pour parcourir</source>
         <translation>Vedä kansio tähän tai selaa napsauttamalla</translation>
     </message>
@@ -2182,397 +2363,288 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="40"/>
+        <location filename="../../ui/preferences_dialog.py" line="41"/>
         <source> — traduction à venir</source>
         <translation>- käännös tulossa</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="46"/>
+        <location filename="../../ui/preferences_dialog.py" line="47"/>
         <source>embarqué</source>
         <translation>laivalla</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="47"/>
+        <location filename="../../ui/preferences_dialog.py" line="48"/>
         <source>personnalisé</source>
         <translation>henkilökohtainen</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="48"/>
+        <location filename="../../ui/preferences_dialog.py" line="49"/>
         <source>système</source>
         <translation>järjestelmä</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="49"/>
+        <location filename="../../ui/preferences_dialog.py" line="50"/>
         <source>introuvable</source>
         <translation>ei löytynyt</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="56"/>
+        <location filename="../../ui/preferences_dialog.py" line="57"/>
         <source>✖ introuvable</source>
         <translation>✖ ei löydy</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="57"/>
+        <location filename="../../ui/preferences_dialog.py" line="58"/>
         <source>{name} est introuvable : indiquez son chemin ou installez-le.</source>
         <translation>{name} ei löydy: anna sen polku tai asenna se.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="61"/>
+        <location filename="../../ui/preferences_dialog.py" line="62"/>
         <source>⚠ {source} · {version}</source>
         <translation>⚠ {source} · {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="62"/>
+        <location filename="../../ui/preferences_dialog.py" line="63"/>
         <source>Version {version} antérieure au minimum recommandé ({minimum}) ; mettez-le à jour. Chemin : {path}</source>
         <translation>Versio {version} aikaisempi kuin suositeltu minimi ({minimum}); päivitä se. Polku: {path}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="67"/>
+        <location filename="../../ui/preferences_dialog.py" line="68"/>
         <source>✔ {source}</source>
         <translation>✔ {source}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="625"/>
+        <location filename="../../ui/preferences_dialog.py" line="622"/>
         <source>Préférences</source>
         <translation>Asetukset</translation>
-    </message>
-    <message>
-        <source>Apparence</source>
-        <translation type="vanished">Ulkonäkö</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">tumma</translation>
-    </message>
-    <message>
-        <source>Clair</source>
-        <translation type="vanished">valo</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">teema</translation>
-    </message>
-    <message>
-        <source>Taille du texte</source>
-        <translation type="vanished">Tekstin koko</translation>
-    </message>
-    <message>
-        <source>Langue</source>
-        <translation type="vanished">Kieli</translation>
-    </message>
-    <message>
-        <source>Langue de l&apos;interface</source>
-        <translation type="vanished">Käyttöliittymän kieli</translation>
-    </message>
-    <message>
-        <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
-        <translation type="vanished">&quot;Automaattinen&quot; seuraa järjestelmän kieltä. Tulevaisuuden käännöksillä merkityillä kielillä ei vielä ole luetteloa: käytetään englantia, sitten ranskaa. Muutos tulee voimaan, kun seuraavan kerran käynnistät Azimutin.</translation>
-    </message>
-    <message>
-        <source>Outils externes</source>
-        <translation type="vanished">Ulkoiset työkalut</translation>
-    </message>
-    <message>
-        <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
-        <translation type="vanished">Laitteessa olevaa kopiota käytetään ensisijaisesti; muussa tapauksessa syötetty polku, sitten järjestelmän PATH. Muutokset tallennetaan &quot;Tallenna&quot;-painikkeella.</translation>
-    </message>
-    <message>
-        <source>Tous les fichiers (*)</source>
-        <translation type="vanished">Kaikki tiedostot (*)</translation>
-    </message>
-    <message>
-        <source>Détecter</source>
-        <translation type="vanished">Tunnista</translation>
-    </message>
-    <message>
-        <source>Enregistrer</source>
-        <translation type="vanished">Tallenna</translation>
-    </message>
-    <message>
-        <source>Annuler</source>
-        <translation type="vanished">Peruuta</translation>
-    </message>
-    <message>
-        <source>Enregistrer et relancer</source>
-        <translation type="vanished">Tallenna ja käynnistä uudelleen</translation>
-    </message>
-    <message>
-        <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
-        <translation type="vanished">Tallentaa asetukset ja käynnistää Azimut uudelleen kielen käyttöönottamiseksi.</translation>
-    </message>
-    <message>
-        <source>Automatique (système)</source>
-        <translation type="vanished">Automaattinen (järjestelmä)</translation>
-    </message>
-    <message>
-        <source>Suit la langue de l&apos;interface du système.</source>
-        <translation type="vanished">Noudattaa järjestelmän käyttöliittymän kieltä.</translation>
-    </message>
-    <message>
-        <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
-        <translation type="vanished">{language}: luettelo tulossa, palataan englanniksi ja sitten ranskaksi.</translation>
-    </message>
-    <message>
-        <source>✔ saisi</source>
-        <translation type="vanished">✔ syötetty</translation>
-    </message>
-    <message>
-        <source>Chemin saisi, pas encore enregistré.</source>
-        <translation type="vanished">Syötetty polku, ei vielä tallennettu.</translation>
-    </message>
-    <message>
-        <source>✖ chemin saisi inutilisable</source>
-        <translation type="vanished">✖ syötetty polku käyttökelvoton</translation>
-    </message>
-    <message>
-        <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
-        <translation type="vanished">Syötettyä tiedostoa ei voitu suorittaa.</translation>
-    </message>
-    <message>
-        <source>Apparence, langue et outils externes.</source>
-        <translation type="vanished">Ulkonäkö, kieli ja ulkoiset työkalut.</translation>
     </message>
 </context>
 <context>
     <name>PreferencesPage</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="98"/>
+        <location filename="../../ui/preferences_dialog.py" line="99"/>
         <source>Préférences</source>
         <translation>Asetukset</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="99"/>
+        <location filename="../../ui/preferences_dialog.py" line="100"/>
         <source>Apparence, langue et outils externes.</source>
         <translation>Ulkonäkö, kieli ja ulkoiset työkalut.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="109"/>
+        <location filename="../../ui/preferences_dialog.py" line="110"/>
         <source>Apparence</source>
         <translation>Ulkonäkö</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="114"/>
+        <location filename="../../ui/preferences_dialog.py" line="115"/>
         <source>Système</source>
         <translation>Järjestelmä</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="115"/>
+        <location filename="../../ui/preferences_dialog.py" line="116"/>
         <source>Sombre</source>
         <translation>Tumma</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="116"/>
+        <location filename="../../ui/preferences_dialog.py" line="117"/>
         <source>Clair</source>
         <translation>Selkeä</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="120"/>
-        <source>Le thème suit le système à chaque démarrage ; un choix explicite ne dure que jusqu&apos;à la fermeture d&apos;Azimut.</source>
-        <translation>Teema seuraa järjestelmää joka kerta, kun se käynnistyy; yksiselitteinen valinta kestää vain Azimutin sulkemiseen asti.</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="128"/>
+        <location filename="../../ui/preferences_dialog.py" line="125"/>
         <source>Thème</source>
         <translation>Teema</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="130"/>
+        <location filename="../../ui/preferences_dialog.py" line="127"/>
         <source>Taille du texte</source>
         <translation>Tekstin koko</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="133"/>
+        <location filename="../../ui/preferences_dialog.py" line="130"/>
         <source>Papicons</source>
         <translation>Papicons</translation>
     </message>
     <message>
-        <source>Animées</source>
-        <translation type="vanished">Animoidut</translation>
-    </message>
-    <message>
-        <source>Papicons : icônes pleines historiques. Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
-        <translation type="vanished">Papicons: perinteiset täytetyt kuvakkeet. Animoidut: viivakuvakkeet, animoitu osoittaessa (ei animaatiota, jos animaatiot on vähennetty).</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="134"/>
+        <location filename="../../ui/preferences_dialog.py" line="131"/>
         <source>Lucide Animées</source>
         <translation>Lucide Animoidut</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="137"/>
+        <location filename="../../ui/preferences_dialog.py" line="134"/>
         <source>Papicons : icônes pleines historiques. Lucide Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
         <translation>Papicons: perinteiset täytetyt kuvakkeet. Lucide Animoidut: viivakuvakkeet, animoitu osoittaessa (ei animaatiota, jos animaatiot on vähennetty).</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="139"/>
+        <location filename="../../ui/preferences_dialog.py" line="136"/>
         <source>Icônes</source>
         <translation>Kuvakkeet</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="148"/>
+        <location filename="../../ui/preferences_dialog.py" line="145"/>
         <source>Accessibilité</source>
         <translation>Esteettömyys</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="151"/>
+        <location filename="../../ui/preferences_dialog.py" line="148"/>
         <source>Réduire les animations</source>
         <translation>Vähennä animaatioita</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="153"/>
+        <location filename="../../ui/preferences_dialog.py" line="150"/>
         <source>Coupe les animations de capsule, d&apos;en-tête et les icônes d&apos;onglet animées.</source>
         <translation>Leikkaa kapselianimaatioita, otsikkoanimaatioita ja animoituja välilehtikuvakkeita.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="154"/>
+        <location filename="../../ui/preferences_dialog.py" line="151"/>
         <source>Réduire la transparence</source>
         <translation>Vähennä läpinäkyvyyttä</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="156"/>
+        <location filename="../../ui/preferences_dialog.py" line="153"/>
         <source>Rend opaques les surfaces en verre : barres, cartes et dialogues restent nets.</source>
         <translation>Tekee lasipinnat läpinäkymättömiksi: palkit, kortit ja dialogit pysyvät kirkkaina.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="157"/>
+        <location filename="../../ui/preferences_dialog.py" line="154"/>
         <source>Contraste élevé</source>
         <translation>Korkea kontrasti</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="159"/>
+        <location filename="../../ui/preferences_dialog.py" line="156"/>
         <source>Renforce les liserés et l&apos;anneau de focus pour les personnes à basse vision.</source>
         <translation>Vahvistaa reunuksia ja tarkennusrengasta heikkonäköisille.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="168"/>
+        <location filename="../../ui/preferences_dialog.py" line="165"/>
         <source>Tant qu&apos;une option n&apos;est pas modifiée ici, elle suit le réglage d&apos;accessibilité du système lorsqu&apos;il est disponible.</source>
         <translation>Kunnes vaihtoehtoa muutetaan tässä, se noudattaa järjestelmän esteettömyysasetuksia, jos se on saatavilla.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="177"/>
+        <location filename="../../ui/preferences_dialog.py" line="174"/>
         <source>Langue</source>
         <translation>Kieli</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="183"/>
+        <location filename="../../ui/preferences_dialog.py" line="180"/>
         <source>Langue de l&apos;interface</source>
         <translation>Käyttöliittymän kieli</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="189"/>
+        <location filename="../../ui/preferences_dialog.py" line="186"/>
         <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
         <translation>&quot;Automaattinen&quot; seuraa järjestelmän kieltä. Tulevaisuuden käännöksillä merkityillä kielillä ei vielä ole luetteloa: käytetään englantia, sitten ranskaa. Muutos tulee voimaan, kun seuraavan kerran käynnistät Azimutin.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="198"/>
+        <location filename="../../ui/preferences_dialog.py" line="195"/>
         <source>Outils externes</source>
         <translation>Ulkoiset työkalut</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="200"/>
+        <location filename="../../ui/preferences_dialog.py" line="197"/>
         <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
         <translation>Laitteessa olevaa kopiota käytetään ensisijaisesti; muussa tapauksessa syötetty polku, sitten järjestelmän PATH. Muutokset tallennetaan &quot;Tallenna&quot;-painikkeella.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="209"/>
+        <location filename="../../ui/preferences_dialog.py" line="206"/>
         <source>Tous les fichiers (*)</source>
         <translation>Kaikki tiedostot (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="214"/>
+        <location filename="../../ui/preferences_dialog.py" line="211"/>
         <source>Détecter</source>
         <translation>Havaita</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="265"/>
+        <location filename="../../ui/preferences_dialog.py" line="262"/>
         <source>Préférences enregistrées.</source>
         <translation>Tallennetut asetukset.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="270"/>
+        <location filename="../../ui/preferences_dialog.py" line="267"/>
         <source>Annuler</source>
         <translation>Peruuttaa</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="274"/>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="271"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer</source>
         <translation>Tallentaa</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="314"/>
+        <location filename="../../ui/preferences_dialog.py" line="311"/>
         <source>Automatique (système)</source>
         <translation>Automaattinen (järjestelmä)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="315"/>
+        <location filename="../../ui/preferences_dialog.py" line="312"/>
         <source>Suit la langue de l&apos;interface du système.</source>
         <translation>Noudattaa järjestelmän käyttöliittymän kieltä.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="323"/>
+        <location filename="../../ui/preferences_dialog.py" line="320"/>
         <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
         <translation>{language}: luettelo tulossa, palataan englanniksi ja sitten ranskaksi.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer et relancer</source>
         <translation>Tallenna ja käynnistä uudelleen</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="364"/>
+        <location filename="../../ui/preferences_dialog.py" line="361"/>
         <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
         <translation>Tallenna asetukset ja käynnistä Azimut uudelleen ottaaksesi kielen käyttöön.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="403"/>
-        <location filename="../../ui/preferences_dialog.py" line="472"/>
+        <location filename="../../ui/preferences_dialog.py" line="400"/>
+        <location filename="../../ui/preferences_dialog.py" line="469"/>
         <source>… non vérifié</source>
         <translation>…ei vahvistettu</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="404"/>
-        <location filename="../../ui/preferences_dialog.py" line="473"/>
+        <location filename="../../ui/preferences_dialog.py" line="401"/>
+        <location filename="../../ui/preferences_dialog.py" line="470"/>
         <source>Cliquez sur « Détecter » pour vérifier le chemin saisi.</source>
         <translation>Napsauta &quot;Tunnista&quot; tarkistaaksesi syötetyn polun.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="443"/>
+        <location filename="../../ui/preferences_dialog.py" line="440"/>
         <source>… vérification</source>
         <translation>… varmistus</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="444"/>
+        <location filename="../../ui/preferences_dialog.py" line="441"/>
         <source>Exécution du binaire saisi pour lire sa version.</source>
         <translation>Suoritetaan syötetty binaari sen version lukemiseksi.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="475"/>
+        <location filename="../../ui/preferences_dialog.py" line="472"/>
         <source>✔ saisi</source>
         <translation>✔ sisään</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="476"/>
+        <location filename="../../ui/preferences_dialog.py" line="473"/>
         <source>Chemin saisi, pas encore enregistré.</source>
         <translation>Polku syötetty, ei vielä tallennettu.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="478"/>
+        <location filename="../../ui/preferences_dialog.py" line="475"/>
         <source>✖ chemin saisi inutilisable</source>
         <translation>✖ syötetty polku käyttökelvoton</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="479"/>
+        <location filename="../../ui/preferences_dialog.py" line="476"/>
         <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
         <translation>Syötettyä tiedostoa ei voitu suorittaa.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="524"/>
+        <location filename="../../ui/preferences_dialog.py" line="521"/>
         <source>✖ détection impossible</source>
         <translation>✖ havaitseminen mahdotonta</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="525"/>
+        <location filename="../../ui/preferences_dialog.py" line="522"/>
         <source>La détection a échoué (voir le journal).</source>
         <translation>Tunnistus epäonnistui (katso loki).</translation>
     </message>
@@ -2580,192 +2652,207 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
 <context>
     <name>Profiles</name>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="75"/>
+        <location filename="../../modules/convert/profiles.py" line="76"/>
         <source>Fichier ni image, ni vidéo, ni audio : copié sans modification dans le dossier de sortie.</source>
         <translation>Ei kuva, video eikä ääni: kopioidaan muuttamattomana tulostekansioon.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="82"/>
+        <location filename="../../modules/convert/profiles.py" line="83"/>
         <source>AVIF (AV1) : très compact, excellente qualité visuelle ; encodage assez lent.</source>
         <translation>AVIF (AV1): erittäin kompakti, erinomainen kuvanlaatu; melko hidas koodaus.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="85"/>
+        <location filename="../../modules/convert/profiles.py" line="86"/>
         <source>HEIC : format Apple compact ; nécessite pillow-heif. La qualité se règle de 0 à 100.</source>
         <translation>HEIC: kompakti Applen formaatti; vaatii pillow-heifin. Laatu säädetään välillä 0–100.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="88"/>
+        <location filename="../../modules/convert/profiles.py" line="89"/>
         <source>WebP : bon compromis taille / qualité, largement pris en charge.</source>
         <translation>WebP: hyvä koon ja laadun suhde, laajalti tuettu.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="91"/>
+        <location filename="../../modules/convert/profiles.py" line="92"/>
         <source>JPEG : lisible partout, compression avec perte.</source>
         <translation>JPEG: luettavissa kaikkialla, häviöllinen pakkaus.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="94"/>
+        <location filename="../../modules/convert/profiles.py" line="95"/>
         <source>PNG : sans perte, idéal pour les captures et les aplats ; le niveau règle la compression.</source>
         <translation>PNG: häviötön, ihanteellinen kuvakaappauksiin ja tasaisiin alueisiin; taso säätää pakkausta.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="97"/>
+        <location filename="../../modules/convert/profiles.py" line="98"/>
         <source>JPEG XL : très bonne qualité à taille réduite, sans perte possible (distance 0).</source>
         <translation>JPEG XL: erittäin hyvä laatu pienellä koolla, häviötön mahdollinen (etäisyys 0).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="100"/>
+        <location filename="../../modules/convert/profiles.py" line="101"/>
         <source>JPEG 2000 : sans perte, apprécié en archivage et en imagerie professionnelle.</source>
         <translation>JPEG 2000: häviötön, arvostettu arkistoinnissa ja ammattimaisessa kuvankäsittelyssä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="103"/>
+        <location filename="../../modules/convert/profiles.py" line="104"/>
         <source>TIFF : sans perte, pour l&apos;impression et l&apos;archivage ; la compression se choisit.</source>
         <translation>TIFF: häviötön, tulostukseen ja arkistointiin; pakkaus on valittavissa.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="106"/>
+        <location filename="../../modules/convert/profiles.py" line="107"/>
         <source>BMP : sans compression, universel sous Windows ; fichiers volumineux.</source>
         <translation>BMP: pakkaamaton, universaali Windowsissa; suuria tiedostoja.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="109"/>
+        <location filename="../../modules/convert/profiles.py" line="110"/>
         <source>QOI : sans perte, très rapide à lire et à écrire ; format récent, peu répandu.</source>
         <translation>QOI: häviötön, erittäin nopea lukea ja kirjoittaa; uusi, vähän levinnyt formaatti.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="115"/>
+        <location filename="../../modules/convert/profiles.py" line="116"/>
         <source>Vidéo AV1 dans un WebM : très compact, encodage lent.</source>
         <translation>AV1-video WebM:ssä: erittäin kompakti, hidas koodaus.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="120"/>
+        <location filename="../../modules/convert/profiles.py" line="121"/>
         <source>Vidéo AV1 dans un MP4 : très compact, plus compatible que l&apos;AV1 en WebM sur certains lecteurs.</source>
         <translation>AV1-video MP4:ssä: erittäin kompakti, joillakin soittimilla yhteensopivampi kuin AV1 WebM:ssä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="125"/>
+        <location filename="../../modules/convert/profiles.py" line="126"/>
         <source>Vidéo H.264 dans un MKV : conteneur souple, sous-titres texte copiés et audio varié.</source>
         <translation>H.264-video MKV:ssä: joustava säiliö, tekstitykset kopioidaan ja ääni voi vaihdella.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="129"/>
+        <location filename="../../modules/convert/profiles.py" line="130"/>
         <source>Vidéo H.264 dans un MP4 : lisible partout.</source>
         <translation>H.264-video MP4:ssä: luettavissa kaikkialla.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="134"/>
+        <location filename="../../modules/convert/profiles.py" line="135"/>
         <source>Vidéo H.265 dans un MP4 : meilleure compression que H.264, un peu moins universel.</source>
         <translation>H.265-video MP4:ssä: parempi pakkaus kuin H.264, hieman vähemmän universaali.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="139"/>
+        <location filename="../../modules/convert/profiles.py" line="140"/>
         <source>H.264 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.264 NVIDIA NVENC -kiihdytyksellä. Vaatii yhteensopivan GPU:n ja NVIDIA-ajurin.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="144"/>
+        <location filename="../../modules/convert/profiles.py" line="145"/>
         <source>H.265 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.265 NVIDIA NVENC -kiihdytyksellä. Vaatii yhteensopivan GPU:n ja NVIDIA-ajurin.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="149"/>
+        <location filename="../../modules/convert/profiles.py" line="150"/>
+        <source>AV1 accéléré par NVIDIA NVENC (RTX 40 et plus). Proposé seulement si FFmpeg expose av1_nvenc ; nécessite un GPU et le pilote NVIDIA compatibles.</source>
+        <translation>NVIDIA NVENCin kiihdyttämä AV1 (RTX 40 ja uudemmat). Tarjotaan vain, jos FFmpeg tarjoaa av1_nvenc:n; vaatii yhteensopivan NVIDIA-näytönohjaimen ja ajurin.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="157"/>
         <source>H.264 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.264 Intel Quick Sync Video -kiihdytyksellä. Vaatii yhteensopivan suorittimen ja ajurin.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="154"/>
+        <location filename="../../modules/convert/profiles.py" line="162"/>
         <source>H.265 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.265 Intel Quick Sync Video -kiihdytyksellä. Vaatii yhteensopivan suorittimen ja ajurin.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="159"/>
+        <location filename="../../modules/convert/profiles.py" line="167"/>
+        <source>AV1 accéléré par Intel Quick Sync Video (GPU Intel Arc et suivants). Proposé seulement si FFmpeg expose av1_qsv ; nécessite un pilote compatible.</source>
+        <translation>Intel Quick Sync Videon kiihdyttämä AV1 (Intel Arc -näytönohjaimet ja uudemmat). Tarjotaan vain, jos FFmpeg tarjoaa av1_qsv:n; vaatii yhteensopivan ajurin.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="174"/>
         <source>H.264 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.264 VA-API-kiihdytyksellä (Linux). Vaatii yhteensopivan /dev/dri/renderD*-laitteen.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="164"/>
+        <location filename="../../modules/convert/profiles.py" line="179"/>
         <source>H.265 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.265 VA-API-kiihdytyksellä (Linux). Vaatii yhteensopivan /dev/dri/renderD*-laitteen.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="169"/>
+        <location filename="../../modules/convert/profiles.py" line="184"/>
+        <source>AV1 accéléré par VA-API (Linux, Mesa récent). Proposé seulement si FFmpeg expose av1_vaapi ; nécessite un périphérique /dev/dri/renderD* qui sait encoder l&apos;AV1.</source>
+        <translation>VA-APIn kiihdyttämä AV1 (Linux, tuore Mesa). Tarjotaan vain, jos FFmpeg tarjoaa av1_vaapi:n; vaatii /dev/dri/renderD*-laitteen, joka osaa koodata AV1:tä.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="191"/>
         <source>Vidéo VP9 dans un WebM : bon compromis, bien pris en charge par les navigateurs.</source>
         <translation>VP9-video WebM:ssä: hyvä kompromissi, selaimet tukevat hyvin.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="174"/>
+        <location filename="../../modules/convert/profiles.py" line="196"/>
         <source>Vidéo MPEG-4 partie 2 dans un MP4 : ancien format, très compatible avec les lecteurs logiciels.</source>
         <translation>MPEG-4 osa 2 -video MP4:ssä: vanha formaatti, erittäin yhteensopiva ohjelmasoittimien kanssa.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="179"/>
+        <location filename="../../modules/convert/profiles.py" line="201"/>
         <source>Vidéo MPEG-2 et audio MP2 : pour la télévision, les DVD et les appareils anciens.</source>
         <translation>MPEG-2-video ja MP2-ääni: televisioon, DVD-levyille ja vanhoihin laitteisiin.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="183"/>
+        <location filename="../../modules/convert/profiles.py" line="205"/>
         <source>Vidéo Theora et audio Vorbis dans un OGV : libre, lisible par les lecteurs Ogg.</source>
         <translation>Theora-video ja Vorbis-ääni OGV:ssä: vapaa, Ogg-soittimien luettavissa.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="187"/>
+        <location filename="../../modules/convert/profiles.py" line="209"/>
         <source>ProRes dans un MOV : montage vidéo, audio PCM 24 bits par défaut ; fichiers volumineux mais faciles à décoder.</source>
         <translation>ProRes MOV:ssä: videoleikkaukseen, oletuksena 24-bittinen PCM-ääni; suuria mutta helposti purettavia tiedostoja.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="196"/>
+        <location filename="../../modules/convert/profiles.py" line="218"/>
         <source>MP3 : compatible avec tous les lecteurs.</source>
         <translation>MP3: yhteensopiva kaikkien soittimien kanssa.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="199"/>
+        <location filename="../../modules/convert/profiles.py" line="221"/>
         <source>AAC dans un conteneur M4A.</source>
         <translation>AAC M4A-säiliössä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="202"/>
+        <location filename="../../modules/convert/profiles.py" line="224"/>
         <source>Opus : excellent rapport qualité / taille.</source>
         <translation>Opus: erinomainen laadun ja koon suhde.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="206"/>
+        <location filename="../../modules/convert/profiles.py" line="228"/>
         <source>FLAC : compression sans perte (le curseur ne change que la taille et la vitesse).</source>
         <translation>FLAC: häviötön pakkaus (liukusäädin muuttaa vain kokoa ja nopeutta).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="209"/>
+        <location filename="../../modules/convert/profiles.py" line="231"/>
         <source>Vorbis dans un OGG : libre, bon rapport qualité / taille.</source>
         <translation>Vorbis OGG:ssä: vapaa, hyvä laadun ja koon suhde.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="212"/>
+        <location filename="../../modules/convert/profiles.py" line="234"/>
         <source>ALAC : compression sans perte Apple, dans un conteneur M4A.</source>
         <translation>ALAC: Applen häviötön pakkaus M4A-säiliössä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="215"/>
+        <location filename="../../modules/convert/profiles.py" line="237"/>
         <source>WAV : audio non compressé, fichier volumineux.</source>
         <translation>WAV: pakkaamaton ääni, suuri tiedosto.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="218"/>
+        <location filename="../../modules/convert/profiles.py" line="240"/>
         <source>AC-3 : utilisé par les DVD et la télévision.</source>
         <translation>AC-3: DVD-levyjen ja television käytössä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="221"/>
+        <location filename="../../modules/convert/profiles.py" line="243"/>
         <source>MP2 : audio des flux MPEG-2 (télévision, DVD).</source>
         <translation>MP2: MPEG-2-virtojen ääni (televisio, DVD).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="224"/>
+        <location filename="../../modules/convert/profiles.py" line="246"/>
         <source>AIFF : PCM 16 bits non compressé, pour le montage et l&apos;archivage sur macOS.</source>
         <translation>AIFF: pakkaamaton 16-bittinen PCM leikkaukseen ja arkistointiin macOS:ssä.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="227"/>
+        <location filename="../../modules/convert/profiles.py" line="249"/>
         <source>WAV : PCM 24 bits non compressé, pour le montage et l&apos;archivage audio.</source>
         <translation>WAV: pakkaamaton 24-bittinen PCM äänileikkaukseen ja arkistointiin.</translation>
     </message>
@@ -2883,8 +2970,8 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="76"/>
-        <location filename="../../modules/rename/window.py" line="483"/>
-        <location filename="../../modules/rename/window.py" line="507"/>
+        <location filename="../../modules/rename/window.py" line="485"/>
+        <location filename="../../modules/rename/window.py" line="509"/>
         <source>Annuler le dernier renommage</source>
         <translation>Kumoa viimeinen uudelleennimeäminen</translation>
     </message>
@@ -2930,7 +3017,7 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="120"/>
-        <location filename="../../modules/rename/window.py" line="315"/>
+        <location filename="../../modules/rename/window.py" line="317"/>
         <source>Aucun dossier analysé.</source>
         <translation>Ei tiedostoja analysoitu.</translation>
     </message>
@@ -2960,87 +3047,87 @@ IAsenna se tai määritä sen polku asetuksissa.</translation>
         <translation>VVVV-KK-PP (vain päivä, 2008-06-15)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="143"/>
+        <location filename="../../modules/rename/window.py" line="145"/>
         <source>Conserver le préfixe personnalisé</source>
         <translation>Säilytä mukautettu etuliite</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="144"/>
+        <location filename="../../modules/rename/window.py" line="146"/>
         <source>Ajouter IMG / VID / AUD au début</source>
         <translation>Lisää IMG/VID/AUD alkuun</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="145"/>
+        <location filename="../../modules/rename/window.py" line="147"/>
         <source>Sans métadonnées : utiliser la date de modification</source>
         <translation>Ilman metatietoja: käytä muokkauspäivää</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="146"/>
+        <location filename="../../modules/rename/window.py" line="148"/>
         <source>Inclure les sous-dossiers</source>
         <translation>Sisällytä alikansiot</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="154"/>
+        <location filename="../../modules/rename/window.py" line="156"/>
         <source>Préfixe personnalisé</source>
         <translation>Mukautettu etuliite</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="156"/>
+        <location filename="../../modules/rename/window.py" line="158"/>
         <source>(aucun) — ex. Vacances Corse</source>
         <translation>(ei mitään) - esim. Korsikan lomat</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="158"/>
+        <location filename="../../modules/rename/window.py" line="160"/>
         <source>Appliquer à la sélection</source>
         <translation>Käytä valintaan</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="160"/>
+        <location filename="../../modules/rename/window.py" line="162"/>
         <source>Rétablir le préfixe automatique</source>
         <translation>Palauta automaattinen etuliite</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="166"/>
+        <location filename="../../modules/rename/window.py" line="168"/>
         <source>Sélection</source>
         <translation>Valinta</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="177"/>
+        <location filename="../../modules/rename/window.py" line="179"/>
         <source>Entrée ou double-clic : cocher / décocher la ligne. Le contenu, les métadonnées et la date de modification ne sont jamais touchés.</source>
         <translation>Syötä tai kaksoisnapsauta: tarkista rivi tai poista valinta. Sisältöä, metatietoja ja muokkauspäivää ei koskaan kosketa.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="187"/>
+        <location filename="../../modules/rename/window.py" line="189"/>
         <source>Réglages</source>
         <translation>Asetukset</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="225"/>
+        <location filename="../../modules/rename/window.py" line="227"/>
         <source>Importer des fichiers</source>
         <translation>Tuo tiedostoja</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="233"/>
+        <location filename="../../modules/rename/window.py" line="235"/>
         <source>Importer un dossier</source>
         <translation>Tuo kansio</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="319"/>
+        <location filename="../../modules/rename/window.py" line="321"/>
         <source>{shown} affiché(s) / {total} fichiers · à renommer {rename} · conformes {ok} · décochés {skipped} · sans date {nodate}</source>
         <translation>{shown} näytetään / {total}-tiedostot · nimetään uudelleen {rename} · yhteensopiva {ok} · valitsematon {skipped} · ilman päivämäärää {nodate}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="332"/>
+        <location filename="../../modules/rename/window.py" line="334"/>
         <source>{count} fichiers sélectionnés</source>
         <translation>{count} valittua tiedostoa</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="336"/>
+        <location filename="../../modules/rename/window.py" line="338"/>
         <source>(inchangé)</source>
         <translation>(muuttumaton)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="337"/>
+        <location filename="../../modules/rename/window.py" line="339"/>
         <source>Avant : {before}
 Après : {after}
 Date : {date}
@@ -3053,57 +3140,57 @@ Lähde: {source}
 Tila: {status}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Rien à renommer</source>
         <translation>Ei mitään nimeämistä</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Aucun fichier coché à renommer.</source>
         <translation>Ei tarkistettuja tiedostoja uudelleennimettäväksi.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="436"/>
+        <location filename="../../modules/rename/window.py" line="438"/>
         <source>Confirmer le renommage</source>
         <translation>Vahvista uudelleennimeäminen</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Rien à annuler</source>
         <translation>Ei mitään peruutettavaa</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Aucun renommage à annuler.</source>
         <translation>Ei peruttavaa uudelleennimeämistä.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="508"/>
+        <location filename="../../modules/rename/window.py" line="510"/>
         <source>Rendre leur ancien nom aux {count} fichier(s) renommés le {date} ?</source>
         <translation>Palautetaanko {count} tiedostoa, jotka nimettiin uudelleen {date} vanhaan nimeensä?</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Rien à exporter</source>
         <translation>Ei mitään vietävää</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Aucun résultat d&apos;analyse.</source>
         <translation>Ei analyysituloksia.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>Exporter le plan</source>
         <translation>Vie suunnitelma</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>CSV (*.csv)</source>
         <translation>CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="532"/>
+        <location filename="../../modules/rename/window.py" line="534"/>
         <source>Erreur</source>
         <translation>Virhe</translation>
     </message>
@@ -3111,7 +3198,7 @@ Tila: {status}</translation>
 <context>
     <name>ScanWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="104"/>
+        <location filename="../../modules/convert/workers.py" line="143"/>
         <source>Analyse des fichiers…</source>
         <translation>Analysoidaan tiedostoja…</translation>
     </message>
@@ -4115,7 +4202,7 @@ Lisätäänkö tämä odottava muutos?</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="57"/>
-        <location filename="../../modules/takeout/window.py" line="348"/>
+        <location filename="../../modules/takeout/window.py" line="350"/>
         <source>Annuler la dernière application</source>
         <translation>Kumoa viimeinen sovellus</translation>
     </message>
@@ -4173,13 +4260,13 @@ Lisätäänkö tämä odottava muutos?</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="96"/>
-        <location filename="../../modules/takeout/window.py" line="237"/>
+        <location filename="../../modules/takeout/window.py" line="239"/>
         <source>Aucun fichier : déposez un export Google Photos.</source>
         <translation>Ei tiedostoja: pudota Google Kuvien vienti.</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="100"/>
-        <location filename="../../modules/takeout/window.py" line="243"/>
+        <location filename="../../modules/takeout/window.py" line="245"/>
         <source>Aucun dossier analysé.</source>
         <translation>Ei tiedostoja analysoitu.</translation>
     </message>
@@ -4249,88 +4336,88 @@ Lisätäänkö tämä odottava muutos?</translation>
         <translation>Google kirjaa ajan UTC:ssä. Aikavyöhyke kirjoitetaan myös tiedostoon (OffsetTime), joten päivämäärä pysyy tarkana sitä lukevalle ohjelmistolle. QuickTime-videot kirjoitetaan aina UTC:ssä.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="176"/>
+        <location filename="../../modules/takeout/window.py" line="178"/>
         <source>Importer des fichiers</source>
         <translation>Tuo tiedostoja</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="184"/>
+        <location filename="../../modules/takeout/window.py" line="186"/>
         <source>Importer le dossier de l&apos;export Google Photos</source>
         <translation>Tuo kansio Google Kuvien viennistä</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="233"/>
+        <location filename="../../modules/takeout/window.py" line="235"/>
         <source>Aucun fichier retiré.</source>
         <translation>Ei tiedostoja poistettu.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="235"/>
+        <location filename="../../modules/takeout/window.py" line="237"/>
         <source>Aucun fichier sans JSON.</source>
         <translation>Ei tiedostoja ilman JSONia.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="241"/>
+        <location filename="../../modules/takeout/window.py" line="243"/>
         <source>{n} fichier(s) retiré(s) de la liste.</source>
         <translation>{n} tiedostoa poistettiin luettelosta.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="247"/>
+        <location filename="../../modules/takeout/window.py" line="249"/>
         <source>{total} média(s) · {ready} prêt(s) · {nojson} sans JSON · {nodata} sans date ni position · {orphans} JSON sans média.</source>
         <translation>{total}-media(t) · {ready}-valmis(t) · {nojson} ilman JSONia · {nodata} ilman päivämäärää tai sijaintia · {orphans} JSON ilman tietovälinettä.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>ExifTool introuvable</source>
         <translation>ExifTool ei löydy</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
         <source>Impossible d&apos;appliquer sans ExifTool.</source>
         <translation>Ei voi hakea ilman ExifToolia.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Rien à écrire</source>
         <translation>Ei mitään kirjoitettavaa</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Cochez au moins une option d&apos;écriture.</source>
         <translation>Tarkista ainakin yksi kirjoitusvaihtoehto.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Rien à appliquer</source>
         <translation>Ei mitään sovellettavaa</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Aucun média prêt : ajoutez un dossier d&apos;export.</source>
         <translation>Ei mediaa valmiina: lisää vientikansio.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="309"/>
+        <location filename="../../modules/takeout/window.py" line="311"/>
         <source>Confirmer l&apos;application</source>
         <translation>Vahvista hakemus</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>Impossible d&apos;annuler sans ExifTool.</source>
         <translation>Ei voi kumota ilman ExifToolia.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Rien à annuler</source>
         <translation>Ei mitään peruutettavaa</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Aucune application à annuler.</source>
         <translation>Ei peruutettavia sovelluksia.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="349"/>
+        <location filename="../../modules/takeout/window.py" line="351"/>
         <source>Rétablir l&apos;état d&apos;avant l&apos;application du {date} sur {count} fichier(s) ?</source>
         <translation>Palautetaanko tila ennen {date}:n käyttämistä {count}-tiedostoihin?</translation>
     </message>
@@ -4341,42 +4428,6 @@ Lisätäänkö tämä odottava muutos?</translation>
         <location filename="../../launcher/tips_dialog.py" line="313"/>
         <source>Conseils</source>
         <translation>vinkkejä</translation>
-    </message>
-    <message>
-        <source>De Google Photos à vos dossiers</source>
-        <translation type="vanished">Google Photos:stä kansioihin</translation>
-    </message>
-    <message>
-        <source>L&apos;ordre recommandé pour traiter un export Google Photos :</source>
-        <translation type="vanished">Suositeltu tilaus Google Kuvien viennin käsittelemiseksi:</translation>
-    </message>
-    <message>
-        <source>Demandez l&apos;export à Google (Takeout), décompressez-le, puis réinjectez les dates et les positions GPS dans vos fichiers.</source>
-        <translation type="vanished">Pyydä vientiä Googlelta (Takeout), pura se ja lisää päivämäärät ja GPS-paikat tiedostoihisi.</translation>
-    </message>
-    <message>
-        <source>Écartez d&apos;abord les doublons : les étapes suivantes seront plus rapides et plus sûres.</source>
-        <translation type="vanished">Poista ensin kaksoiskappaleet: seuraavat vaiheet ovat nopeampia ja turvallisempia.</translation>
-    </message>
-    <message>
-        <source>Convertissez ensuite au format et à la qualité souhaités, par lots.</source>
-        <translation type="vanished">Muunna sitten haluttuun muotoon ja laatuun erissä.</translation>
-    </message>
-    <message>
-        <source>Inscrivez la date de prise de vue dans les noms pour classer les fichiers chronologiquement.</source>
-        <translation type="vanished">Kirjoita kaappauspäivämäärä nimiin lajitellaksesi tiedostot kronologisesti.</translation>
-    </message>
-    <message>
-        <source>Comparez les dossiers avant et après pour vérifier que rien ne manque.</source>
-        <translation type="vanished">Vertaa kansioita ennen ja jälkeen tarkistaaksesi, ettei mitään puuttuu.</translation>
-    </message>
-    <message>
-        <source>Terminez par les métadonnées : lecture, complément ou suppression des EXIF, IPTC et XMP.</source>
-        <translation type="vanished">Viimeistele metatiedoilla: lue, täydennä tai poista EXIF, IPTC ja XMP.</translation>
-    </message>
-    <message>
-        <source>Chaque étape correspond à un module : ouvrez-le depuis sa carte dans Azimut.</source>
-        <translation type="vanished">Jokainen vaihe on moduuli: avaa se kortistaan Azimutissa.</translation>
     </message>
     <message>
         <location filename="../../launcher/tips_dialog.py" line="324"/>
@@ -4541,59 +4592,87 @@ Lisätäänkö tämä odottava muutos?</translation>
     </message>
 </context>
 <context>
+    <name>VerifyWorker</name>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="190"/>
+        <source>Dossier de sortie introuvable : {path}</source>
+        <translation>Tulostekansiota ei löytynyt: {path}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="193"/>
+        <source>Aucun dossier de sortie à vérifier.</source>
+        <translation>Ei tarkistettavaa tulostekansiota.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="196"/>
+        <source>Recherche des conversions interrompues…</source>
+        <translation>Etsitään keskeytyneitä muunnoksia…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="208"/>
+        <source>FFprobe introuvable : le contenu des vidéos et des audios n&apos;est pas contrôlé.</source>
+        <translation>FFprobea ei löytynyt: videoiden ja äänitiedostojen sisältöä ei tarkisteta.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="231"/>
+        <source>{checked} fichier(s) contrôlé(s), {bad} suspect(s).</source>
+        <translation>{checked} tiedostoa tarkistettu, {bad} epäilyttävää.</translation>
+    </message>
+</context>
+<context>
     <name>VideoPreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2641"/>
+        <location filename="../../ui/widgets.py" line="2760"/>
         <source>Lire ou mettre en pause</source>
         <translation>Toista tai keskeytä</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2644"/>
+        <location filename="../../ui/widgets.py" line="2763"/>
         <source>Position dans le média</source>
         <translation>Sijainti mediassa</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2669"/>
+        <location filename="../../ui/widgets.py" line="2788"/>
         <source>Couper ou rétablir le son</source>
         <translation>Mykistä tai poista mykistys</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2672"/>
-        <location filename="../../ui/widgets.py" line="2679"/>
+        <location filename="../../ui/widgets.py" line="2791"/>
+        <location filename="../../ui/widgets.py" line="2798"/>
         <source>Volume</source>
         <translation>Äänenvoimakkuus</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2725"/>
+        <location filename="../../ui/widgets.py" line="2844"/>
         <source>Lecture vidéo indisponible
 (installez PySide6-Addons)</source>
         <translation>Videon toisto ei ole käytettävissä
 (asenna PySide6-Addons)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2766"/>
+        <location filename="../../ui/widgets.py" line="2885"/>
         <source>Chargement…</source>
         <translation>Ladataan…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Mettre en pause</source>
         <translation>Tauko</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Lire</source>
         <translation>Lukea</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2961"/>
+        <location filename="../../ui/widgets.py" line="3080"/>
         <source>Lecture impossible
 {reason}</source>
         <translation>Ei osaa lukea
 {reason}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2932"/>
+        <location filename="../../ui/widgets.py" line="3051"/>
         <source>Aperçu vidéo limité (codec non pris en charge)</source>
         <translation>Rajoitettu videon esikatselu (kodekkia ei tueta)</translation>
     </message>
@@ -4631,12 +4710,12 @@ Lisätäänkö tämä odottava muutos?</translation>
         <translation>tuntematon tila</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1989"/>
+        <location filename="../../ui/widgets.py" line="2097"/>
         <source>Aucun élément</source>
         <translation>Ei kohteita</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2257"/>
+        <location filename="../../ui/widgets.py" line="2376"/>
         <source>{label}
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4645,7 +4724,7 @@ Lisätäänkö tämä odottava muutos?</translation>
 (esikatseluun vaaditaan ffmpeg)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2370"/>
+        <location filename="../../ui/widgets.py" line="2489"/>
         <source>PDF
 {name}
 (aperçu indisponible : installez poppler ou Ghostscript)</source>
@@ -4654,14 +4733,14 @@ Lisätäänkö tämä odottava muutos?</translation>
 (esikatselu ei ole käytettävissä: asenna poppler tai Ghostscript)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2387"/>
+        <location filename="../../ui/widgets.py" line="2506"/>
         <source>Audio
 {name}</source>
         <translation>Ääni
 {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2417"/>
+        <location filename="../../ui/widgets.py" line="2536"/>
         <source>Vidéo
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4670,7 +4749,7 @@ Lisätäänkö tämä odottava muutos?</translation>
 (esikatseluun vaaditaan ffmpeg)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2439"/>
+        <location filename="../../ui/widgets.py" line="2558"/>
         <source>Vidéo
 {name}
 ({reason})</source>
@@ -4679,7 +4758,7 @@ Lisätäänkö tämä odottava muutos?</translation>
 ({reason})</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2465"/>
+        <location filename="../../ui/widgets.py" line="2584"/>
         <source>Image</source>
         <translation>Kuva</translation>
     </message>
@@ -4748,35 +4827,36 @@ Lisätäänkö tämä odottava muutos?</translation>
 <context>
     <name>_HdrRow</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="126"/>
+        <location filename="../../modules/convert/codec_tree.py" line="136"/>
         <source>HDR</source>
         <translation>HDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="129"/>
+        <location filename="../../modules/convert/codec_tree.py" line="140"/>
         <source>Tone-mapping vers SDR</source>
         <translation>Sävykartoitus SDR:ään</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="130"/>
+        <location filename="../../modules/convert/codec_tree.py" line="141"/>
         <source>HDR natif (AV1 10 bits)</source>
         <translation>Natiivi HDR (10-bittinen AV1)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="131"/>
+        <location filename="../../modules/convert/codec_tree.py" line="142"/>
         <source>Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR (codec AV1 uniquement ; les autres codecs passent toujours en SDR).</source>
         <translation>HDR-videot: muuntaminen SDR:ksi (yhteensopiva kaikkialla) tai HDR:n säilyttäminen (vain AV1-koodekki; muut koodekit siirtyvät aina SDR:ään).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="134"/>
-        <source>Le HDR natif n&apos;est possible qu&apos;avec le codec vidéo AV1 : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
-        <translation>Alkuperäinen HDR on mahdollista vain AV1-videokoodekilla: valitulla koodekilla HDR-videot muunnetaan SDR-muotoon (tone-mapping).</translation>
+        <location filename="../../modules/convert/codec_tree.py" line="145"/>
+        <source>Le HDR natif n&apos;est possible qu&apos;avec l&apos;AV1 logiciel (SVT-AV1 ou libaom) : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
+        <translation>Natiivi HDR on mahdollinen vain ohjelmisto-AV1:llä (SVT-AV1 tai libaom): valitulla koodekilla HDR-videot muunnetaan SDR:ään (tone mapping).
+</translation>
     </message>
 </context>
 <context>
     <name>_TabCloseButton</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1045"/>
+        <location filename="../../launcher/atlas_window.py" line="1071"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Sulje välilehti</translation>
     </message>

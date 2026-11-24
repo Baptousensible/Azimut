@@ -40,220 +40,208 @@
 <context>
     <name>AtlasWindow</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1218"/>
-        <location filename="../../launcher/atlas_window.py" line="1410"/>
-        <location filename="../../launcher/atlas_window.py" line="1466"/>
+        <location filename="../../launcher/atlas_window.py" line="1260"/>
+        <location filename="../../launcher/atlas_window.py" line="1463"/>
+        <location filename="../../launcher/atlas_window.py" line="1519"/>
         <source>Azimut</source>
         <translation>Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1291"/>
+        <location filename="../../launcher/atlas_window.py" line="1344"/>
         <source>Ouvrez un module, ou déposez-y des fichiers ou des dossiers.</source>
         <translation>Open een module of zet er bestanden of mappen neer.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1345"/>
-        <location filename="../../launcher/atlas_window.py" line="1486"/>
+        <location filename="../../launcher/atlas_window.py" line="1398"/>
+        <location filename="../../launcher/atlas_window.py" line="1539"/>
         <source>Tous les outils</source>
         <translation>Alle gereedschappen</translation>
     </message>
     <message>
-        <source>Le recueil des utilitaires Azimut</source>
-        <translation type="vanished">De Azimut-gereedschapskist</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1421"/>
+        <location filename="../../launcher/atlas_window.py" line="1474"/>
         <source>Version {version}</source>
         <translation>Versie {version}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1669"/>
+        <location filename="../../launcher/atlas_window.py" line="1729"/>
         <source>Conseils</source>
         <translation>Tips</translation>
     </message>
     <message>
-        <source>L&apos;ordre conseillé pour traiter un export Google Photos.</source>
-        <translation type="vanished">De aanbevolen volgorde voor het verwerken van een Google Foto&apos;s-export.</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">Thema</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1470"/>
-        <location filename="../../launcher/atlas_window.py" line="1664"/>
+        <location filename="../../launcher/atlas_window.py" line="1523"/>
+        <location filename="../../launcher/atlas_window.py" line="1724"/>
         <source>Préférences…</source>
         <translation>Voorkeuren…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Outils</source>
         <translation>Gereedschap</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Afficher les outils Azimut</source>
         <translation>Toon de Azimut-tools</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1488"/>
-        <location filename="../../launcher/atlas_window.py" line="1667"/>
+        <location filename="../../launcher/atlas_window.py" line="1541"/>
+        <location filename="../../launcher/atlas_window.py" line="1727"/>
         <source>Journaux et historique</source>
         <translation>Logboeken en geschiedenis</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1074"/>
+        <location filename="../../launcher/atlas_window.py" line="1100"/>
         <source>Ce module n&apos;a pas pu être chargé.</source>
         <translation>Deze module kan niet worden geladen.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1341"/>
+        <location filename="../../launcher/atlas_window.py" line="1394"/>
         <source>Maj+clic ou Maj+flèches : sélectionner plusieurs onglets. Suppr : fermer l&apos;onglet actif ou la sélection. Glissez un onglet sélectionné pour déplacer le groupe.</source>
         <translation>Shift+klik of Shift+pijlen: selecteer meerdere tabbladen. Verwijderen: sluit het actieve tabblad of de selectie. Versleep een geselecteerd tabblad om de groep te verplaatsen.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1419"/>
+        <location filename="../../launcher/atlas_window.py" line="1472"/>
         <source>Le couteau suisse pour convertir, dédoublonner et ranger vos médias</source>
         <translation>Het Zwitserse zakmes voor het converteren, ontdubbelen en opslaan van uw media</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1467"/>
-        <location filename="../../launcher/atlas_window.py" line="1529"/>
+        <location filename="../../launcher/atlas_window.py" line="1520"/>
+        <location filename="../../launcher/atlas_window.py" line="1582"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Over Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1475"/>
+        <location filename="../../launcher/atlas_window.py" line="1528"/>
         <source>Quitter</source>
         <translation>Om te vertrekken</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1480"/>
+        <location filename="../../launcher/atlas_window.py" line="1533"/>
         <source>Fichier</source>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1481"/>
+        <location filename="../../launcher/atlas_window.py" line="1534"/>
         <source>Fermer la fenêtre</source>
         <translation>Sluit venster</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1485"/>
+        <location filename="../../launcher/atlas_window.py" line="1538"/>
         <source>Présentation</source>
         <translation>Presentatie</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1491"/>
+        <location filename="../../launcher/atlas_window.py" line="1544"/>
         <source>Navigation dans l&apos;en-tête</source>
         <translation>Kopnavigatie</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1495"/>
+        <location filename="../../launcher/atlas_window.py" line="1548"/>
         <source>Regroupe « Outils » et « Journaux et historique » dans la barre supérieure. Décochez pour revenir à l&apos;agencement précédent.</source>
         <translation>Groepen “Extra” en “Logboeken en geschiedenis” in de bovenste balk. Haal het vinkje weg om terug te keren naar de vorige lay-out.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1500"/>
+        <location filename="../../launcher/atlas_window.py" line="1553"/>
         <source>Conseils de démarrage…</source>
         <translation>Tips om aan de slag te gaan...</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1502"/>
+        <location filename="../../launcher/atlas_window.py" line="1555"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Schakel tussen donker en licht thema</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1506"/>
+        <location filename="../../launcher/atlas_window.py" line="1559"/>
         <source>Agrandir le texte</source>
         <translation>Vergroot tekst</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1509"/>
+        <location filename="../../launcher/atlas_window.py" line="1562"/>
         <source>Réduire le texte</source>
         <translation>Tekst verkleinen</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1513"/>
+        <location filename="../../launcher/atlas_window.py" line="1566"/>
         <source>Fenêtre</source>
         <translation>Raam</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1514"/>
+        <location filename="../../launcher/atlas_window.py" line="1567"/>
         <source>Réduire</source>
         <translation>Verminderen</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1517"/>
+        <location filename="../../launcher/atlas_window.py" line="1570"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1521"/>
+        <location filename="../../launcher/atlas_window.py" line="1574"/>
         <source>Aide</source>
         <translation>Hulp</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1522"/>
+        <location filename="../../launcher/atlas_window.py" line="1575"/>
         <source>Conseils de démarrage</source>
         <translation>Aan de slag-tips</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1527"/>
+        <location filename="../../launcher/atlas_window.py" line="1580"/>
         <source>Le couteau suisse de vos médias.</source>
         <translation>Het Zwitserse zakmes voor uw media</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1655"/>
+        <location filename="../../launcher/atlas_window.py" line="1715"/>
         <source>Navigation d&apos;Azimut</source>
         <translation>Azimut-navigatie</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1668"/>
+        <location filename="../../launcher/atlas_window.py" line="1728"/>
         <source>Afficher l&apos;historique, le journal et les binaires</source>
         <translation>Toon geschiedenis, log en binaire bestanden</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1670"/>
+        <location filename="../../launcher/atlas_window.py" line="1730"/>
         <source>Afficher l&apos;ordre conseillé pour traiter un export Google Photos</source>
         <translation>Toon de aanbevolen volgorde voor het verwerken van een Google Foto&apos;s-export</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1672"/>
+        <location filename="../../launcher/atlas_window.py" line="1732"/>
         <source>Apparence, langue et outils externes</source>
         <translation>Uiterlijk, taal en externe hulpmiddelen</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1863"/>
+        <location filename="../../launcher/atlas_window.py" line="1923"/>
         <source>Aucun module disponible.</source>
         <translation>Geen modules beschikbaar.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2081"/>
+        <location filename="../../launcher/atlas_window.py" line="2157"/>
         <source>Binaire(s) requis introuvable(s) : {list}. Indiquez leur chemin dans « Préférences… » ou déposez-les dans le dossier bin/.</source>
         <translation>Vereiste binaire bestanden niet gevonden: {list}. Geef hun pad aan in &quot;Voorkeuren...&quot; of plaats ze in de prullenbak/map.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2104"/>
+        <location filename="../../launcher/atlas_window.py" line="2180"/>
         <source>Merci !</source>
         <translation>BEDANKT !</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2273"/>
+        <location filename="../../launcher/atlas_window.py" line="2361"/>
         <source>Fermer les {count} onglets sélectionnés</source>
         <translation>Sluit geselecteerde {count} tabbladen</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2275"/>
+        <location filename="../../launcher/atlas_window.py" line="2363"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Tabblad sluiten</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2285"/>
+        <location filename="../../launcher/atlas_window.py" line="2373"/>
         <source>{count} onglets sélectionnés — glissez pour les déplacer, Suppr pour les fermer.</source>
         <translation>{count} geselecteerde tabbladen: sleep om ze te verplaatsen, verwijder ze om ze te sluiten.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2407"/>
+        <location filename="../../launcher/atlas_window.py" line="2495"/>
         <source>Impossible d&apos;ouvrir {name}.
 
 {message}</source>
@@ -262,54 +250,54 @@
 {message}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2442"/>
+        <location filename="../../launcher/atlas_window.py" line="2530"/>
         <source>Les fichiers n&apos;ont pas pu être transmis au module.</source>
         <translation>De bestanden konden niet naar de module worden verzonden.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2548"/>
+        <location filename="../../launcher/atlas_window.py" line="2636"/>
         <source>Relance impossible</source>
         <translation>Opnieuw opstarten mislukt</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2549"/>
+        <location filename="../../launcher/atlas_window.py" line="2637"/>
         <source>Azimut n&apos;a pas pu être relancé automatiquement. Fermez puis rouvrez l&apos;application.</source>
         <translation>Azimut kon niet automatisch opnieuw worden opgestart. Sluit de applicatie en open deze opnieuw.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2569"/>
+        <location filename="../../launcher/atlas_window.py" line="2657"/>
         <source>Traitements en cours</source>
         <translation>Taken in uitvoering</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2570"/>
+        <location filename="../../launcher/atlas_window.py" line="2658"/>
         <source>Traitement en cours dans :
 {modules}</source>
         <translation>Binnenlopend: 
 {modules}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2573"/>
+        <location filename="../../launcher/atlas_window.py" line="2661"/>
         <source>Fermer ces onglets interrompra les traitements en cours.</source>
         <translation>Als u deze tabbladen sluit, wordt de huidige verwerking onderbroken.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2575"/>
+        <location filename="../../launcher/atlas_window.py" line="2663"/>
         <source>Fermer cet onglet interrompra le traitement en cours.</source>
         <translation>Als u dit tabblad sluit, wordt de actieve taak gestopt.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2577"/>
+        <location filename="../../launcher/atlas_window.py" line="2665"/>
         <source>Fermer Azimut interrompra les traitements en cours.</source>
         <translation>Als u Azimut afsluit, worden de actieve taken stopgezet.</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2579"/>
+        <location filename="../../launcher/atlas_window.py" line="2667"/>
         <source>Fermer quand même</source>
         <translation>Toch sluiten</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2580"/>
+        <location filename="../../launcher/atlas_window.py" line="2668"/>
         <source>Annuler</source>
         <translation>Annuleren</translation>
     </message>
@@ -368,34 +356,79 @@
 <context>
     <name>CodecPanel</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="265"/>
+        <location filename="../../modules/convert/codec_tree.py" line="264"/>
+        <source>GPU : plus rapide et libère le processeur, mais à qualité égale le fichier est souvent plus gros. CPU : plus lent, fichiers plus compacts.</source>
+        <translation>GPU: sneller en houdt de processor vrij, maar bij gelijke kwaliteit is het bestand vaak groter. CPU: langzamer, compactere bestanden.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="311"/>
         <source>Rétablir</source>
         <translation>Herstellen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="267"/>
+        <location filename="../../modules/convert/codec_tree.py" line="313"/>
         <source>Remet les curseurs de ce codec à leurs valeurs de départ.</source>
         <translation>Zet de schuifregelaars van deze codec terug naar hun startwaarden.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="353"/>
+        <location filename="../../modules/convert/codec_tree.py" line="396"/>
+        <source>Parallélisme automatique (recommandé)</source>
+        <translation>Automatisch parallellisme (aanbevolen)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="398"/>
+        <source>Répartit les fichiers selon les cœurs disponibles et le réglage Threads : les copies et les images avancent ensemble ; deux vidéos peuvent avancer si le codec choisi est accéléré par le GPU (NVENC, QSV, VA-API), une seule avec un encodeur processeur, qui utilise déjà tous les cœurs et beaucoup de mémoire. Décochez pour régler chaque famille à la main.</source>
+        <translation>Verdeelt de bestanden over de beschikbare kernen en de instelling Threads: kopieën en afbeeldingen lopen samen; twee video&apos;s kunnen tegelijk lopen als de gekozen codec GPU-versneld is (NVENC, QSV, VA-API), slechts één met een CPU-encoder, die al alle kernen en veel geheugen gebruikt. Vink uit om elke familie handmatig in te stellen.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="403"/>
+        <source>Fichiers image convertis en même temps. Chaque encodage utilise le nombre de threads choisi ci-dessus.</source>
+        <translation>Gelijktijdig geconverteerde afbeeldingsbestanden. Elke codering gebruikt het hierboven gekozen aantal threads.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="405"/>
+        <source>Fichiers audio convertis en même temps : les encodeurs audio sont presque mono-thread, un peu de parallélisme aide.</source>
+        <translation>Gelijktijdig geconverteerde audiobestanden: audio-encoders zijn bijna singlethread, wat parallellisme helpt.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="407"/>
+        <source>Vidéos encodées en même temps. Au-delà de 1, chaque encodeur doit partager les threads et la mémoire : à réserver aux machines puissantes.</source>
+        <translation>Gelijktijdig gecodeerde video&apos;s. Boven 1 moeten de encoders threads en geheugen delen: voorbehouden aan krachtige machines.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="410"/>
+        <source>Fichiers copiés en même temps (déjà au bon format, documents, JSON…). Cette étape est limitée par le disque, pas par le processeur.</source>
+        <translation>Gelijktijdig gekopieerde bestanden (al in het juiste formaat, documenten, JSON…). Deze stap wordt beperkt door de schijf, niet door de processor.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="414"/>
         <source>Priorité basse (garde l&apos;ordinateur réactif)</source>
         <translation>Lage prioriteit (zorgt ervoor dat de computer reageert)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="355"/>
+        <location filename="../../modules/convert/codec_tree.py" line="416"/>
         <source>Les processus FFmpeg sont alors lancés avec une priorité réduite : la conversion peut être un peu plus lente, mais les autres applications restent réactives.</source>
         <translation>De FFmpeg-processen worden dan met verminderde prioriteit gestart: de conversie kan iets langzamer zijn, maar de andere applicaties blijven responsief.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="357"/>
+        <location filename="../../modules/convert/codec_tree.py" line="418"/>
         <source>Attendre si la mémoire est saturée</source>
         <translation>Wacht als het geheugen vol is</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="359"/>
+        <location filename="../../modules/convert/codec_tree.py" line="420"/>
         <source>Avant chaque fichier, la conversion attend si la RAM utilisée atteint 75 % ou si la mémoire disponible tombe sous 20 %. Elle réessaie toutes les 2 secondes et s&apos;interrompt si vous annulez. Sans cette case, les fichiers s&apos;enchaînent même sous pression : ralentissement général, swap et risque d&apos;échec par manque de mémoire.</source>
         <translation>Vóór elk bestand wacht de conversie als het gebruikte RAM-geheugen 75% bereikt of het beschikbare geheugen onder de 20% daalt. Het probeert elke 2 seconden opnieuw en pauzeert als u annuleert. Zonder deze box volgen de bestanden elkaar, zelfs onder druk: algemene vertraging, swap en risico op mislukking door gebrek aan geheugen.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="436"/>
+        <source>Chaque fichier utilise le réglage Threads ci-dessus : en manuel, gardez « fichiers simultanés × threads » dans la limite des cœurs de la machine.</source>
+        <translation>Elk bestand gebruikt de instelling Threads hierboven: houd in handmatige modus &quot;gelijktijdige bestanden × threads&quot; binnen het aantal kernen van de machine.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="526"/>
+        <source>Conversion GPU : plus rapide, mais à qualité visuelle égale le fichier est souvent plus gros qu&apos;avec un encodeur CPU.</source>
+        <translation>GPU-conversie: sneller, maar bij gelijke visuele kwaliteit is het bestand vaak groter dan met een CPU-encoder.</translation>
     </message>
 </context>
 <context>
@@ -419,27 +452,27 @@
 <context>
     <name>ConvertNotification</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="52"/>
+        <location filename="../../modules/convert/workers.py" line="60"/>
         <source>{count} fichier(s) traité(s)</source>
         <translation>{count} bestand(en) verwerkt</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="53"/>
+        <location filename="../../modules/convert/workers.py" line="61"/>
         <source>{count} erreur(s)</source>
         <translation>{count} fout(en)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="57"/>
+        <location filename="../../modules/convert/workers.py" line="65"/>
         <source>{count} ignoré(s)</source>
         <translation>{count} overgeslagen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="60"/>
+        <location filename="../../modules/convert/workers.py" line="68"/>
         <source>{count} sortie(s) manquante(s)</source>
         <translation>{count} ontbrekende uitvoer</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="63"/>
+        <location filename="../../modules/convert/workers.py" line="71"/>
         <source>gain {size}</source>
         <translation>winst {size}</translation>
     </message>
@@ -447,275 +480,320 @@
 <context>
     <name>ConvertWindow</name>
     <message>
-        <location filename="../../modules/convert/window.py" line="40"/>
+        <location filename="../../modules/convert/window.py" line="43"/>
         <source>Fichier</source>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="41"/>
+        <location filename="../../modules/convert/window.py" line="44"/>
         <source>Type</source>
         <translation>Vriendelijk</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="42"/>
+        <location filename="../../modules/convert/window.py" line="45"/>
         <source>Taille</source>
         <translation>Maat</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="43"/>
+        <location filename="../../modules/convert/window.py" line="46"/>
         <source>Format et qualité</source>
         <translation>Formaat en kwaliteit</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="44"/>
+        <location filename="../../modules/convert/window.py" line="47"/>
         <source>État</source>
         <translation>Staat</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="45"/>
+        <location filename="../../modules/convert/window.py" line="48"/>
         <source>Progression</source>
         <translation>Voortgang</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="49"/>
+        <location filename="../../modules/convert/window.py" line="52"/>
         <source>Tous</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="50"/>
+        <location filename="../../modules/convert/window.py" line="53"/>
         <source>Images</source>
         <translation>Afbeeldingen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="51"/>
+        <location filename="../../modules/convert/window.py" line="54"/>
         <source>Vidéos</source>
         <translation>Video&apos;s</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="52"/>
+        <location filename="../../modules/convert/window.py" line="55"/>
         <source>Audios</source>
-        <translation>Audio</translation>
+        <translation>Audios</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="53"/>
+        <location filename="../../modules/convert/window.py" line="56"/>
         <source>Fichiers volumineux</source>
         <translation>Grote bestanden</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="69"/>
+        <location filename="../../modules/convert/window.py" line="74"/>
         <source>Image</source>
         <translation>Afbeelding</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="70"/>
+        <location filename="../../modules/convert/window.py" line="75"/>
         <source>Vidéo</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="71"/>
+        <location filename="../../modules/convert/window.py" line="76"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="72"/>
+        <location filename="../../modules/convert/window.py" line="77"/>
         <source>Autre</source>
         <translation>Ander</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="75"/>
+        <location filename="../../modules/convert/window.py" line="80"/>
         <source>En attente</source>
         <translation>In de wacht</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="76"/>
+        <location filename="../../modules/convert/window.py" line="81"/>
         <source>En cours</source>
         <translation>In uitvoering</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="77"/>
+        <location filename="../../modules/convert/window.py" line="82"/>
         <source>Terminé</source>
         <translation>Afgerond</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="78"/>
+        <location filename="../../modules/convert/window.py" line="83"/>
         <source>Déjà converti</source>
         <translation>Al omgezet</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="79"/>
+        <location filename="../../modules/convert/window.py" line="84"/>
         <source>Encodeur manquant</source>
         <translation>Ontbrekende coderingsprogramma</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="80"/>
+        <location filename="../../modules/convert/window.py" line="85"/>
         <source>Non pris en charge</source>
         <translation>Niet ondersteund</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="81"/>
+        <location filename="../../modules/convert/window.py" line="86"/>
         <source>Erreur</source>
         <translation>Fout</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="82"/>
+        <location filename="../../modules/convert/window.py" line="87"/>
         <source>Annulé</source>
         <translation>Geannuleerd</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="83"/>
+        <location filename="../../modules/convert/window.py" line="88"/>
         <source>Source conservée</source>
         <translation>Bron bewaard gebleven</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="84"/>
+        <location filename="../../modules/convert/window.py" line="89"/>
         <source>Copié</source>
         <translation>Kopiëren</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="108"/>
+        <location filename="../../modules/convert/window.py" line="114"/>
         <source>Démarrer la conversion</source>
         <translation>Conversie starten</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="119"/>
+        <location filename="../../modules/convert/window.py" line="131"/>
         <source>Glissez ici des fichiers ou des dossiers à convertir
 (ou cliquez pour parcourir)</source>
         <translation>Sleep bestanden of mappen om hierheen te converteren
 (of klik om te bladeren)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="126"/>
+        <location filename="../../modules/convert/window.py" line="138"/>
         <source>Afficher :</source>
         <translation>Weergave :</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="142"/>
+        <location filename="../../modules/convert/window.py" line="154"/>
         <source>Taille minimale des fichiers affichés</source>
         <translation>Minimale grootte van weergegeven bestanden</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="151"/>
+        <location filename="../../modules/convert/window.py" line="163"/>
         <source>Taille personnalisée…</source>
         <translation>Aangepast formaat…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="156"/>
+        <location filename="../../modules/convert/window.py" line="168"/>
         <source>Retirer la sélection</source>
         <translation>Selectie verwijderen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="157"/>
+        <location filename="../../modules/convert/window.py" line="169"/>
         <source>Vider la liste</source>
         <translation>Duidelijke lijst</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="166"/>
+        <location filename="../../modules/convert/window.py" line="178"/>
         <source>La file est vide : déposez des fichiers ou un dossier ci-dessus.</source>
         <translation>De wachtrij is leeg: zet bestanden of een map erboven neer.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="176"/>
+        <location filename="../../modules/convert/window.py" line="195"/>
         <source>Sortie</source>
         <translation>Uitgang</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="177"/>
+        <location filename="../../modules/convert/window.py" line="196"/>
         <source>Sous-dossiers</source>
         <translation>Submappen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="181"/>
-        <location filename="../../modules/convert/window.py" line="663"/>
+        <location filename="../../modules/convert/window.py" line="200"/>
+        <location filename="../../modules/convert/window.py" line="761"/>
         <source>Sortie…</source>
         <translation>Uitgang…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="185"/>
+        <location filename="../../modules/convert/window.py" line="204"/>
         <source>Dossier de sortie</source>
         <translation>Uitvoermap</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="192"/>
+        <location filename="../../modules/convert/window.py" line="211"/>
+        <source>Vérifier la sortie…</source>
+        <translation>Uitvoer controleren…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="212"/>
+        <source>Après un arrêt forcé ou un plantage : cherche les fichiers incomplets ou corrompus du dossier de sortie et propose de les supprimer pour les reconvertir.</source>
+        <translation>Na een gedwongen stop of crash: zoekt onvolledige of beschadigde bestanden in de uitvoermap en stelt voor ze te verwijderen zodat ze opnieuw worden geconverteerd.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="216"/>
         <source>Garder l&apos;extension d&apos;origine dans le nom</source>
         <translation>Behoud de originele extensie van de naam</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="193"/>
+        <location filename="../../modules/convert/window.py" line="217"/>
         <source>« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions photo.jpg / photo.png et permet de retrouver le JSON Takeout.</source>
         <translation>“photo_jpg.avif” in plaats van “photo.avif”: vermijdt botsingen tussen photo.jpg en photo.png en stelt u in staat de JSON Takeout te vinden.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="197"/>
+        <location filename="../../modules/convert/window.py" line="221"/>
         <source>Réinjecter date et GPS des JSON Google Takeout</source>
         <translation>Datum en GPS opnieuw injecteren vanuit JSON Google Takeout</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="198"/>
+        <location filename="../../modules/convert/window.py" line="222"/>
         <source>Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et sa position sont écrites dans le fichier converti (ExifTool).</source>
         <translation>Als naast het bestand een begeleidende JSON wordt gevonden, worden de opnamedatum en -positie naar het geconverteerde bestand (ExifTool) geschreven.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="204"/>
+        <location filename="../../modules/convert/window.py" line="228"/>
         <source>Copier aussi les autres fichiers (PDF, documents…)</source>
         <translation>Kopieer ook andere bestanden (PDF, documenten, etc.)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="205"/>
+        <location filename="../../modules/convert/window.py" line="229"/>
         <source>Les fichiers qui ne sont ni des images, ni des audios, ni des vidéos sont copiés tels quels dans le dossier de sortie, à la même place que dans la source. Sans cette case, ils sont ignorés.</source>
         <translation>Bestanden die geen afbeeldingen, audio of video&apos;s zijn, worden zoals ze zijn gekopieerd naar de uitvoermap, op dezelfde plaats als in de bron. Zonder dit vak worden ze genegeerd.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="210"/>
+        <location filename="../../modules/convert/window.py" line="234"/>
         <source>Ne pas recopier les JSON Takeout déjà réinjectés</source>
         <translation>Kopieer de JSON Takeout die al opnieuw is geïnjecteerd niet</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="211"/>
+        <location filename="../../modules/convert/window.py" line="235"/>
         <source>Les JSON dont la date et la position sont écrites dans le fichier converti ne sont pas copiés dans le dossier de sortie. Rien n&apos;est supprimé : les JSON restent dans le dossier source. Les autres JSON sont copiés.</source>
         <translation>JSON&apos;s waarvan de datum en positie naar het geconverteerde bestand zijn geschreven, worden niet naar de uitvoermap gekopieerd. Er wordt niets verwijderd: de JSON blijft in de bronmap staan. De andere JSON wordt gekopieerd.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="229"/>
+        <location filename="../../modules/convert/window.py" line="253"/>
         <source>Réglages</source>
         <translation>Instellingen</translation>
     </message>
     <message>
+        <location filename="../../modules/convert/window.py" line="485"/>
+        <source>FFmpeg introuvable : matériel GPU indéterminable.</source>
+        <translation>FFmpeg niet gevonden: GPU-hardware niet vast te stellen.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="498"/>
+        <source>Matériel : détection en cours…</source>
+        <translation>Hardware: detectie bezig…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="499"/>
+        <source>Matériel : indéterminé (FFmpeg n&apos;a pas listé ses encodeurs).</source>
+        <translation>Hardware: onbekend (FFmpeg heeft zijn encoders niet vermeld).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="509"/>
+        <source>GPU : {backends} · pilote ou GPU ne répond pas : {failed}</source>
+        <translation>GPU: {backends} · stuurprogramma of GPU reageert niet: {failed}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="511"/>
+        <source>GPU détecté mais le pilote ou le GPU ne répond pas : {failed} ; les profils marqués GPU resteront indisponibles.</source>
+        <translation>GPU gedetecteerd, maar stuurprogramma of GPU reageert niet: {failed}; profielen met het label GPU blijven onbeschikbaar.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="514"/>
+        <source>Aucune accélération GPU détectée : les profils marqués GPU resteront indisponibles, la conversion se fait par le processeur.</source>
+        <translation>Geen GPU-versnelling gedetecteerd: profielen met het label GPU blijven onbeschikbaar; de conversie gebeurt op de processor.</translation>
+    </message>
+    <message>
         <location filename="../../modules/convert/window.py" line="516"/>
+        <source>GPU : {backends}</source>
+        <translation>GPU: {backends}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="614"/>
         <source>≥ {size}</source>
         <translation>≥{size}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="518"/>
+        <location filename="../../modules/convert/window.py" line="616"/>
         <source>Afficher les fichiers d&apos;au moins {size}. Cliquez pour choisir un autre seuil.</source>
         <translation>Toon bestanden minimaal {size}. Klik om een ​​andere drempel te kiezen.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Taille minimale</source>
         <translation>Minimale maat</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Afficher les fichiers d&apos;au moins (en Mo) :</source>
         <translation>Toon bestanden van minimaal (in MB):</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="636"/>
+        <location filename="../../modules/convert/window.py" line="734"/>
         <source>Choisir le dossier de sortie</source>
         <translation>Kies de uitvoermap</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="647"/>
+        <location filename="../../modules/convert/window.py" line="745"/>
         <source>Laisser vide : « &lt;source&gt;_Converted » à côté de chaque dossier ajouté. Obligatoire pour les fichiers ajoutés isolément.</source>
         <translation>Laat leeg: “&lt;source&gt;_Converted” naast elke toegevoegde map. Vereist voor afzonderlijk toegevoegde bestanden.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="649"/>
+        <location filename="../../modules/convert/window.py" line="747"/>
         <source>dossier par défaut</source>
         <translation>standaard map</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="650"/>
+        <location filename="../../modules/convert/window.py" line="748"/>
         <source>{hint}
 
 Dossier de sortie : {path}
@@ -728,75 +806,214 @@ Uitvoermap: {path}
 Klik om een map te kiezen; Klik met de rechtermuisknop om terug te keren naar de standaardmap.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="654"/>
+        <location filename="../../modules/convert/window.py" line="752"/>
         <source>Dossier de sortie : {path}</source>
         <translation>Uitvoermap: {path}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="661"/>
+        <location filename="../../modules/convert/window.py" line="759"/>
         <source>Sortie : {folder}</source>
         <translation>Uitgang: {folder}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="674"/>
+        <location filename="../../modules/convert/window.py" line="772"/>
         <source>Choisir un dossier…</source>
         <translation>Kies een map...</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="676"/>
+        <location filename="../../modules/convert/window.py" line="774"/>
         <source>Utiliser le dossier par défaut</source>
         <translation>Gebruik standaardmap</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="686"/>
+        <location filename="../../modules/convert/window.py" line="784"/>
         <source>Importer des fichiers</source>
         <translation>Bestanden importeren</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="695"/>
+        <location filename="../../modules/convert/window.py" line="793"/>
         <source>Importer un dossier</source>
         <translation>Een map importeren</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="836"/>
+        <source>Préparation de la conversion…</source>
+        <translation>Conversie wordt voorbereid…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="891"/>
+        <source>{parts}
+
+Chaque segment est proportionnel au nombre de fichiers à traiter.</source>
+        <translation>{parts}
+
+Elk segment is evenredig met het aantal te verwerken bestanden.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="920"/>
+        <source>Dossier de sortie à vérifier</source>
+        <translation>Te controleren uitvoermap</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="928"/>
+        <source>Vérification de la sortie : {paths}</source>
+        <translation>Uitvoer wordt gecontroleerd: {paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="946"/>
+        <source>Vérification : {count} fichier(s) contrôlé(s), aucun fichier incomplet ou illisible.</source>
+        <translation>Controle: {count} bestand(en) gecontroleerd, geen onvolledig of onleesbaar bestand.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="949"/>
+        <source>Vérifier la sortie</source>
+        <translation>Uitvoer controleren</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="950"/>
+        <source>Aucun fichier incomplet ou corrompu n&apos;a été trouvé.
+
+{count} fichier(s) contrôlé(s) dans :
+{paths}</source>
+        <translation>Geen onvolledig of beschadigd bestand gevonden.
+
+{count} bestand(en) gecontroleerd in:
+{paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="955"/>
+        <source>Vérification : {bad} fichier(s) suspect(s) sur {count} contrôlé(s) ; ne supprimez pas vos originaux.</source>
+        <translation>Controle: {bad} verdacht bestand(en) van {count} gecontroleerd; verwijder uw origineelen niet.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="957"/>
+        <source>conversion interrompue (fichier temporaire)</source>
+        <translation>onderbroken conversie (tijdelijk bestand)</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="958"/>
+        <source>taille inattendue : fichier tronqué ?</source>
+        <translation>onverwachte grootte: afgekapt bestand?</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="959"/>
+        <source>illisible pour FFprobe</source>
+        <translation>onleesbaar voor FFprobe</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="964"/>
+        <source>… et {count} autre(s) fichier(s) suspect(s).</source>
+        <translation>… en {count} ander verdacht bestand(en).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="967"/>
+        <source>Fichiers à vérifier</source>
+        <translation>Te controleren bestanden</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="968"/>
+        <source>{bad} fichier(s) de la sortie peuvent être incomplets ou corrompus.
+
+Les supprimer ? Ils seront recréés à la prochaine conversion ; aucun autre fichier n&apos;est touché et les originaux ne sont jamais concernés.</source>
+        <translation>{bad} bestand(en) in de uitvoer kunnen onvolledig of beschadigd zijn.
+
+Verwijderen? Ze worden bij de volgende conversie opnieuw gemaakt; geen ander bestand wordt aangeraakt en de origineelen zijn nooit betrokken.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="990"/>
+        <source>{path} : suppression impossible ({error}).</source>
+        <translation>{path}: verwijderen niet mogelijk ({error}).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="993"/>
+        <source>{count} fichier(s) supprimé(s) ; relancez la conversion pour les recréer.</source>
+        <translation>{count} bestand(en) verwijderd; start de conversie opnieuw om ze opnieuw te maken.</translation>
     </message>
 </context>
 <context>
     <name>ConvertWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="260"/>
-        <source>{done} / {total} — {name}</source>
-        <translation>{done} / {total} — {name}</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Copies</source>
+        <translation>Kopieën</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="289"/>
-        <source>{done} / {total} terminé(s)</source>
-        <translation>{done} / {total} voltooid</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Images</source>
+        <translation>Afbeeldingen</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="304"/>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Audios</source>
+        <translation>Audios</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Vidéos</source>
+        <translation>Video&apos;s</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="425"/>
+        <source>Étape {number}/{steps} · {label}</source>
+        <translation>Stap {number}/{steps} · {label}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="430"/>
+        <source>reste ~{time}</source>
+        <translation>nog ~{time}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="511"/>
+        <source>Parallélisme : copies {copy} · images {image} · audios {audio} · vidéos {video} fichier(s) à la fois.</source>
+        <translation>Parallellisme: kopieën {copy} · afbeeldingen {image} · audio {audio} · video&apos;s {video} bestand(en) tegelijk.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>vidéo</source>
+        <translation>video</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>image</source>
+        <translation>afbeelding</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="519"/>
+        <source>Parallélisme {kind} : {count} × {threads} threads pour {cpus} cœur(s) ; réduisez le nombre de fichiers simultanés ou le réglage Threads pour éviter la surcharge.</source>
+        <translation>Parallellisme {kind}: {count} × {threads} threads voor {cpus} kern(en); verlaag het aantal gelijktijdige bestanden of de instelling Threads om overbelasting te voorkomen.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="530"/>
+        <source>Étape {number}/{steps} : {label} ({count} fichier(s), {parallel} en parallèle).</source>
+        <translation>Stap {number}/{steps}: {label} ({count} bestand(en), {parallel} parallel).</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="547"/>
         <source>{ok} converti(s), {copied} copié(s), {kept} source(s) conservée(s), {skipped} déjà converti(s), {unsupported} non pris en charge, {errors} erreur(s) ; gain : {gain}</source>
         <translation>{ok} geconverteerd, {copied} gekopieerd, {kept} bron(nen) behouden, {skipped} al geconverteerd, {unsupported} niet ondersteund, {errors} fout(en); winst: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="310"/>
+        <location filename="../../modules/convert/workers.py" line="553"/>
         <source> ; métadonnées Takeout : {ok}, sans JSON : {missing}</source>
         <translation> ; Takeout-metagegevens: {ok}, zonder JSON: {missing}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="313"/>
+        <location filename="../../modules/convert/workers.py" line="556"/>
         <source> ; JSON Takeout non recopiés : {count}</source>
         <translation> ; niet gekopieerde Takeout-JSON: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="315"/>
+        <location filename="../../modules/convert/workers.py" line="558"/>
         <source> ; métadonnées d&apos;origine recopiées : {count}</source>
         <translation> ; oorspronkelijke metagegevens gekopieerd: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="318"/>
+        <location filename="../../modules/convert/workers.py" line="561"/>
         <source> ; métadonnées non recopiées : {count}</source>
         <translation> ; metagegevens niet gekopieerd: {count}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="321"/>
+        <location filename="../../modules/convert/workers.py" line="564"/>
         <source> ; champs Takeout non inscriptibles : {count}</source>
         <translation> ; niet-schrijfbare Takeout-velden: {count}</translation>
     </message>
@@ -804,7 +1021,7 @@ Klik om een map te kiezen; Klik met de rechtermuisknop om terug te keren naar de
 <context>
     <name>CopyFeedbackButton</name>
     <message>
-        <location filename="../../ui/controls.py" line="1034"/>
+        <location filename="../../ui/controls.py" line="1049"/>
         <source>Copié</source>
         <translation>Kopiëren</translation>
     </message>
@@ -878,17 +1095,17 @@ Klik om een map te kiezen; Klik met de rechtermuisknop om terug te keren naar de
 <context>
     <name>DedupWindow</name>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1392"/>
+        <location filename="../../modules/dedup/window.py" line="1403"/>
         <source>Choisir le journal d&apos;une quarantaine</source>
         <translation>Het dagboek van een quarantaine kiezen</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1393"/>
+        <location filename="../../modules/dedup/window.py" line="1404"/>
         <source>Journal (journal.csv);;Fichiers CSV (*.csv)</source>
         <translation>Logboek (journal.csv);;CSV-bestanden (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="847"/>
+        <location filename="../../modules/dedup/window.py" line="858"/>
         <source>Importer un dossier</source>
         <translation>Een map importeren</translation>
     </message>
@@ -960,7 +1177,7 @@ Klik om een map te kiezen; Klik met de rechtermuisknop om terug te keren naar de
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="105"/>
-        <location filename="../../modules/dedup/window.py" line="582"/>
+        <location filename="../../modules/dedup/window.py" line="583"/>
         <source>Live Photos</source>
         <translation>Live-foto&apos;s</translation>
     </message>
@@ -996,13 +1213,13 @@ Klik om een map te kiezen; Klik met de rechtermuisknop om terug te keren naar de
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="115"/>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder</source>
         <translation>Houden</translation>
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="116"/>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Supprimer</source>
         <translation>VERWIJDEREN</translation>
     </message>
@@ -1073,7 +1290,7 @@ Klik om een map te kiezen; Klik met de rechtermuisknop om terug te keren naar de
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="465"/>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Appliquer les modifications</source>
         <translation>Wijzigingen toepassen</translation>
     </message>
@@ -1212,152 +1429,152 @@ Klik om het hangslot te openen of te sluiten.</translation>
         <translation>Detecteer visueel nabije afbeeldingen (dHash); de tolerantie regelt de geaccepteerde afwijking.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="577"/>
+        <location filename="../../modules/dedup/window.py" line="578"/>
         <source>Tolérance :</source>
         <translation>Tolerantie:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="583"/>
+        <location filename="../../modules/dedup/window.py" line="584"/>
         <source>Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, sauf si vous demandez d&apos;écarter la vidéo.</source>
         <translation>Vindt de paren IMG_1234.HEIC + IMG_1234.MOV (of de geconverteerde namen IMG_1234_heic.avif + IMG_1234_mov.webm). Ze worden alleen gemarkeerd, tenzij je vraagt ​​om de video te sluiten.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="591"/>
+        <location filename="../../modules/dedup/window.py" line="593"/>
         <source>Écarter la vidéo</source>
         <translation>Video weggooien</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="593"/>
+        <location filename="../../modules/dedup/window.py" line="595"/>
         <source>Proposer la vidéo à la suppression ; la photo est conservée.</source>
         <translation>De video voorstellen voor verwijdering; de foto blijft behouden.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="599"/>
+        <location filename="../../modules/dedup/window.py" line="601"/>
         <source>Durée max :</source>
         <translation>Maximale duur:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="602"/>
+        <location filename="../../modules/dedup/window.py" line="604"/>
         <source>Détection</source>
         <translation>Detectie</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="605"/>
+        <location filename="../../modules/dedup/window.py" line="607"/>
         <source>Proposition automatique :</source>
         <translation>Automatisch voorstel:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="612"/>
+        <location filename="../../modules/dedup/window.py" line="615"/>
         <source>Mode de suppression :</source>
         <translation>Verwijderingsmodus:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="620"/>
+        <location filename="../../modules/dedup/window.py" line="624"/>
         <source>Dossiers vides</source>
         <translation>Lege mappen</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="621"/>
+        <location filename="../../modules/dedup/window.py" line="625"/>
         <source>Supprimer les dossiers devenus vides après les suppressions.</source>
         <translation>Verwijder mappen die leeg zijn geworden na het verwijderen.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="624"/>
+        <location filename="../../modules/dedup/window.py" line="628"/>
         <source>Dossier de quarantaine :</source>
         <translation>Quarantainemap:</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="627"/>
+        <location filename="../../modules/dedup/window.py" line="631"/>
         <source>Traitement</source>
         <translation>Behandeling</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="646"/>
+        <location filename="../../modules/dedup/window.py" line="650"/>
         <source>Afficher :</source>
         <translation>Weergave :</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="766"/>
+        <location filename="../../modules/dedup/window.py" line="770"/>
         <source>Corrections manuelles</source>
         <translation>Handmatige correcties</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder la sélection</source>
         <translation>Houd selectie</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Proposer la sélection à la suppression (Suppr)</source>
         <translation>Selectie voor verwijdering voorstellen (Verwijderen)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="773"/>
+        <location filename="../../modules/dedup/window.py" line="777"/>
         <source>Tout supprimer</source>
         <translation>Alles verwijderen</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="774"/>
+        <location filename="../../modules/dedup/window.py" line="778"/>
         <source>Proposer tous les fichiers du groupe sélectionné à la suppression (les fichiers protégés sont conservés)</source>
         <translation>Stel alle bestanden in de geselecteerde groep voor om te verwijderen (beveiligde bestanden blijven behouden)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder uniquement celui-ci</source>
         <translation>Bewaar alleen deze</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder ce fichier, proposer les autres du groupe</source>
         <translation>Bewaar dit bestand en stel de anderen uit de groep voor</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Proposition auto pour la sélection</source>
         <translation>Automatisch voorstel voor selectie</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Appliquer la stratégie choisie à la sélection</source>
         <translation>Pas de gekozen strategie toe op de selectie</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="783"/>
+        <location filename="../../modules/dedup/window.py" line="787"/>
         <source>Espace : bascule Garder / Supprimer · Suppr : Supprimer · Double-clic : lire (audio, vidéo) ou ouvrir le fichier</source>
         <translation>Spatie: schakelaar Behouden/Verwijderen · Verwijderen: Verwijderen · Dubbelklikken: bestand afspelen (audio, video) of openen</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="788"/>
+        <location filename="../../modules/dedup/window.py" line="799"/>
         <source>Aperçu et corrections</source>
         <translation>Overzicht en oplossingen</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1061"/>
+        <location filename="../../modules/dedup/window.py" line="1072"/>
         <source>Groupe {id} · {kind} · {count} fichiers · gain : {gain}</source>
         <translation>Groep {id} · {kind} · {count}-bestanden · winst: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1069"/>
+        <location filename="../../modules/dedup/window.py" line="1080"/>
         <source> · protégé</source>
         <translation>· beschermd</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1082"/>
+        <location filename="../../modules/dedup/window.py" line="1093"/>
         <source>Aucune analyse effectuée.</source>
         <translation>Geen analyse uitgevoerd.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1085"/>
+        <location filename="../../modules/dedup/window.py" line="1096"/>
         <source>{scanned} fichier(s) analysé(s) · {count} groupe(s) · {files} fichier(s) concerné(s) · gain libérable : {gain}</source>
         <translation>{scanned} bestand(en) geanalyseerd · {count} groep(en) · {files} betrokken bestand(en) · vrij te geven winst: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1165"/>
+        <location filename="../../modules/dedup/window.py" line="1176"/>
         <source>Groupe {id}</source>
         <translation>Groep {id}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1166"/>
+        <location filename="../../modules/dedup/window.py" line="1177"/>
         <source>{count} fichiers · {kind}
 Taille totale : {size}
 Gain libérable : {gain}</source>
@@ -1366,27 +1583,27 @@ Totale maat: {size}
 Vrij te geven winst: {gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1172"/>
+        <location filename="../../modules/dedup/window.py" line="1183"/>
         <source>Sélectionnez un fichier, ou deux fichiers du même groupe pour les comparer.</source>
         <translation>Selecteer een bestand of twee bestanden uit dezelfde groep om ze te vergelijken.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1173"/>
+        <location filename="../../modules/dedup/window.py" line="1184"/>
         <source>{count} fichier(s) sélectionné(s)</source>
         <translation>{count} geselecteerde bestand(en)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1250"/>
+        <location filename="../../modules/dedup/window.py" line="1261"/>
         <source>{count} fichier(s) proposé(s) à la suppression dans {groups} groupe(s).</source>
         <translation>{count} bestand(en) voorgesteld voor verwijdering in {groups} groep(en).</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1254"/>
+        <location filename="../../modules/dedup/window.py" line="1265"/>
         <source>{count} fichier(s) protégé(s) conservé(s).</source>
         <translation>{count} beschermde bestand(en) bewaard.</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1318"/>
+        <location filename="../../modules/dedup/window.py" line="1329"/>
         <source>Aucun fichier ne sera conservé dans {groups} groupe(s) ({files} fichier(s)).
 Tous les fichiers de ces groupes seront supprimés.
 
@@ -1397,17 +1614,17 @@ Alle bestanden in deze groepen worden verwijderd.
 </translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Aucun fichier conservé</source>
         <translation>Geen bestanden bewaard</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1401"/>
+        <location filename="../../modules/dedup/window.py" line="1412"/>
         <source>Journal non vérifiable</source>
         <translation>Onverifieerbaar logboek</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1402"/>
+        <location filename="../../modules/dedup/window.py" line="1413"/>
         <source>Ce journal ne contient pas la liste des dossiers analysés (journal importé ou antérieur).
 
 La restauration déplacera des fichiers vers les emplacements qu&apos;il indique. Ne continuez que si vous faites entièrement confiance à ce journal.
@@ -1420,12 +1637,12 @@ Het herstellen verplaatst bestanden naar de opgegeven locaties. Ga alleen verder
 Herstellen?</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1430"/>
+        <location filename="../../modules/dedup/window.py" line="1441"/>
         <source>Exporter le rapport</source>
         <translation>Rapport exporteren</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1431"/>
+        <location filename="../../modules/dedup/window.py" line="1442"/>
         <source>Fichiers CSV (*.csv)</source>
         <translation>CSV-bestanden (*.csv)</translation>
     </message>
@@ -1433,32 +1650,32 @@ Herstellen?</translation>
 <context>
     <name>DropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1410"/>
+        <location filename="../../ui/widgets.py" line="1512"/>
         <source>Choisir des fichiers…</source>
         <translation>Bestanden kiezen…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1411"/>
+        <location filename="../../ui/widgets.py" line="1513"/>
         <source>Choisir un dossier…</source>
         <translation>Kies een map…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1427"/>
+        <location filename="../../ui/widgets.py" line="1529"/>
         <source>Fichiers acceptés ({masks});;Tous les fichiers (*)</source>
         <translation>Geaccepteerde bestanden ({masks});;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1429"/>
+        <location filename="../../ui/widgets.py" line="1531"/>
         <source>Tous les fichiers (*)</source>
         <translation>Alle bestanden (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1430"/>
+        <location filename="../../ui/widgets.py" line="1532"/>
         <source>Choisir des fichiers</source>
         <translation>Kies bestanden</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1438"/>
+        <location filename="../../ui/widgets.py" line="1540"/>
         <source>Choisir un dossier</source>
         <translation>Kies een map</translation>
     </message>
@@ -1620,10 +1837,6 @@ Herstellen?</translation>
         <translation>{count} inzendingen</translation>
     </message>
     <message>
-        <source>{count} entrée(s)</source>
-        <translation type="vanished">{count}-invoer</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="150"/>
         <source>du module « {name} »</source>
         <translation>voor module “{name}”</translation>
@@ -1642,7 +1855,7 @@ Herstellen?</translation>
 <context>
     <name>ImagePreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="3070"/>
+        <location filename="../../ui/widgets.py" line="3189"/>
         <source>Chargement…</source>
         <translation>Laden…</translation>
     </message>
@@ -1650,7 +1863,7 @@ Herstellen?</translation>
 <context>
     <name>ImportProgress</name>
     <message>
-        <location filename="../../ui/widgets.py" line="758"/>
+        <location filename="../../ui/widgets.py" line="860"/>
         <source>Importation terminée !</source>
         <translation>Import voltooid!</translation>
     </message>
@@ -1678,10 +1891,6 @@ Herstellen?</translation>
         <translation>{count} laatste regels</translation>
     </message>
     <message>
-        <source>{count} dernière(s) ligne(s)</source>
-        <translation type="vanished">{count} laatste regels</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="200"/>
         <source>(Le journal est vide ou introuvable.)</source>
         <translation>(Het logboek is leeg of ontbreekt.)</translation>
@@ -1690,26 +1899,22 @@ Herstellen?</translation>
 <context>
     <name>ModuleCard</name>
     <message>
-        <source>Déposez des fichiers ou un dossier ici pour les ouvrir directement.</source>
-        <translation type="vanished">Zet hier bestanden of een map neer om ze direct te openen.</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="140"/>
+        <location filename="../../launcher/atlas_window.py" line="141"/>
         <source>Ouvrir</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="166"/>
+        <location filename="../../launcher/atlas_window.py" line="167"/>
         <source>erreur inconnue</source>
         <translation>onbekende fout</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="172"/>
+        <location filename="../../launcher/atlas_window.py" line="173"/>
         <source>✖ indisponible</source>
         <translation>✖ niet beschikbaar</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="191"/>
+        <location filename="../../launcher/atlas_window.py" line="192"/>
         <source>Introuvable : voir « Préférences… » ou le dossier bin/.</source>
         <translation>Niet gevonden: zie “Voorkeuren...” of de bin/map.</translation>
     </message>
@@ -1717,226 +1922,222 @@ Herstellen?</translation>
 <context>
     <name>ModuleWindow</name>
     <message>
-        <location filename="../../ui/module_window.py" line="203"/>
-        <location filename="../../ui/module_window.py" line="470"/>
-        <location filename="../../ui/module_window.py" line="477"/>
+        <location filename="../../ui/module_window.py" line="207"/>
+        <location filename="../../ui/module_window.py" line="483"/>
+        <location filename="../../ui/module_window.py" line="490"/>
         <source>Journal</source>
         <translation>Logboek</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="204"/>
+        <location filename="../../ui/module_window.py" line="208"/>
         <source>Afficher ou masquer le journal</source>
         <translation>Log weergeven of verbergen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="62"/>
-        <location filename="../../ui/module_window.py" line="208"/>
-        <location filename="../../ui/module_window.py" line="384"/>
+        <location filename="../../ui/module_window.py" line="64"/>
+        <location filename="../../ui/module_window.py" line="212"/>
+        <location filename="../../ui/module_window.py" line="397"/>
         <source>Aide</source>
         <translation>help</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="59"/>
-        <location filename="../../ui/module_window.py" line="357"/>
+        <location filename="../../ui/module_window.py" line="61"/>
+        <location filename="../../ui/module_window.py" line="370"/>
         <source>Afficher / masquer le journal</source>
         <translation>Toon/verberg logboek</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="60"/>
-        <location filename="../../ui/module_window.py" line="359"/>
+        <location filename="../../ui/module_window.py" line="62"/>
+        <location filename="../../ui/module_window.py" line="372"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>Schakel tussen donker en licht thema</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="209"/>
+        <location filename="../../ui/module_window.py" line="213"/>
         <source>Aide et raccourcis</source>
         <translation>Help en sneltoetsen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="285"/>
-        <location filename="../../ui/module_window.py" line="371"/>
+        <location filename="../../ui/module_window.py" line="298"/>
+        <location filename="../../ui/module_window.py" line="384"/>
         <source>Démarrer</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="57"/>
-        <location filename="../../ui/module_window.py" line="286"/>
+        <location filename="../../ui/module_window.py" line="59"/>
+        <location filename="../../ui/module_window.py" line="299"/>
         <source>Démarrer le traitement</source>
         <translation>Begin met verwerken</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="288"/>
-        <location filename="../../ui/module_window.py" line="345"/>
-        <location filename="../../ui/module_window.py" line="373"/>
+        <location filename="../../ui/module_window.py" line="301"/>
+        <location filename="../../ui/module_window.py" line="358"/>
+        <location filename="../../ui/module_window.py" line="386"/>
         <source>Annuler</source>
         <translation>Annuleren</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="58"/>
-        <location filename="../../ui/module_window.py" line="289"/>
+        <location filename="../../ui/module_window.py" line="60"/>
+        <location filename="../../ui/module_window.py" line="302"/>
         <source>Annuler le traitement en cours</source>
         <translation>Annuleer de huidige taak</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="295"/>
+        <location filename="../../ui/module_window.py" line="308"/>
         <source>Principale</source>
         <translation>main</translation>
     </message>
     <message>
-        <source>Changer de thème</source>
-        <translation type="vanished">Thema wijzigen</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="61"/>
-        <location filename="../../ui/module_window.py" line="306"/>
+        <location filename="../../ui/module_window.py" line="63"/>
         <location filename="../../ui/module_window.py" line="319"/>
+        <location filename="../../ui/module_window.py" line="332"/>
         <source>Préférences…</source>
         <translation>Voorkeuren…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="69"/>
+        <location filename="../../ui/module_window.py" line="71"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="70"/>
+        <location filename="../../ui/module_window.py" line="72"/>
         <source>Action</source>
         <translation>Actie</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="71"/>
+        <location filename="../../ui/module_window.py" line="73"/>
         <source>Résumé</source>
         <translation>Samenvatting</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="72"/>
+        <location filename="../../ui/module_window.py" line="74"/>
         <source>Réussis</source>
         <translation>Slagen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="73"/>
+        <location filename="../../ui/module_window.py" line="75"/>
         <source>Erreurs</source>
         <translation>Fouten</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="307"/>
+        <location filename="../../ui/module_window.py" line="320"/>
         <source>Langue, thème, taille du texte, outils externes</source>
         <translation>Taal, thema, tekstgrootte, externe hulpmiddelen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="315"/>
+        <location filename="../../ui/module_window.py" line="328"/>
         <source>Azimut</source>
         <translation>Azimut</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="316"/>
-        <location filename="../../ui/module_window.py" line="421"/>
+        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="434"/>
         <source>À propos d&apos;Azimut</source>
         <translation>Over Azimut</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="323"/>
+        <location filename="../../ui/module_window.py" line="336"/>
         <source>Quitter</source>
         <translation>Om te vertrekken</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="328"/>
+        <location filename="../../ui/module_window.py" line="341"/>
         <source>Fichier</source>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="342"/>
         <source>Ajouter des fichiers…</source>
         <translation>Bestanden toevoegen…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="331"/>
+        <location filename="../../ui/module_window.py" line="344"/>
         <source>Ajouter un dossier…</source>
         <translation>Een map toevoegen…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="338"/>
+        <location filename="../../ui/module_window.py" line="351"/>
         <source>Édition</source>
         <translation>Editie</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="339"/>
-        <location filename="../../ui/module_window.py" line="404"/>
+        <location filename="../../ui/module_window.py" line="352"/>
+        <location filename="../../ui/module_window.py" line="417"/>
         <source>Annuler le dernier renommage</source>
         <translation>Laatste hernoeming ongedaan maken</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="346"/>
+        <location filename="../../ui/module_window.py" line="359"/>
         <source>Rétablir</source>
         <translation>Herstellen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="360"/>
         <source>Couper</source>
         <translation>Snee</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="348"/>
+        <location filename="../../ui/module_window.py" line="361"/>
         <source>Copier</source>
         <translation>Kopiëren</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="349"/>
+        <location filename="../../ui/module_window.py" line="362"/>
         <source>Coller</source>
         <translation>Stok</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="350"/>
+        <location filename="../../ui/module_window.py" line="363"/>
         <source>Tout sélectionner</source>
         <translation>Selecteer alles</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="356"/>
+        <location filename="../../ui/module_window.py" line="369"/>
         <source>Présentation</source>
         <translation>Presentatie</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="363"/>
+        <location filename="../../ui/module_window.py" line="376"/>
         <source>Agrandir le texte</source>
         <translation>Vergroot tekst</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="366"/>
+        <location filename="../../ui/module_window.py" line="379"/>
         <source>Réduire le texte</source>
         <translation>Tekst verkleinen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="370"/>
+        <location filename="../../ui/module_window.py" line="383"/>
         <source>Traitement</source>
         <translation>Behandeling</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="376"/>
+        <location filename="../../ui/module_window.py" line="389"/>
         <source>Fenêtre</source>
         <translation>Raam</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="377"/>
+        <location filename="../../ui/module_window.py" line="390"/>
         <source>Réduire</source>
         <translation>Verminderen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="380"/>
+        <location filename="../../ui/module_window.py" line="393"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="385"/>
+        <location filename="../../ui/module_window.py" line="398"/>
         <source>Raccourcis clavier</source>
         <translation>Sneltoetsen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="413"/>
+        <location filename="../../ui/module_window.py" line="426"/>
         <source>Vider la liste</source>
         <translation>Duidelijke lijst</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="414"/>
+        <location filename="../../ui/module_window.py" line="427"/>
         <source>Voulez-vous vraiment vider la liste ?
 
 Les fichiers ne seront pas modifiés.</source>
@@ -1945,99 +2146,83 @@ Les fichiers ne seront pas modifiés.</source>
 De bestanden worden niet gewijzigd.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="471"/>
+        <location filename="../../ui/module_window.py" line="484"/>
         <source>Historique</source>
         <translation>Geschiedenis</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="473"/>
+        <location filename="../../ui/module_window.py" line="486"/>
         <source>Effacer le journal</source>
         <translation>Log wissen</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="603"/>
+        <location filename="../../ui/module_window.py" line="662"/>
         <source>{name} est introuvable.
 Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>{name} is niet gevonden. 
  Installeer het of stel het pad in bij Voorkeuren.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="648"/>
+        <location filename="../../ui/module_window.py" line="707"/>
         <source>Un traitement est déjà en cours : nouvelle demande ignorée.</source>
         <translation>Er is al een taak bezig: nieuw verzoek genegeerd.</translation>
     </message>
     <message>
-        <source>En cours…</source>
-        <translation type="vanished">Rennen…</translation>
-    </message>
-    <message>
-        <source>Annulation en cours…</source>
-        <translation type="vanished">Annuleren…</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="703"/>
+        <location filename="../../ui/module_window.py" line="762"/>
         <source>Annulation demandée…</source>
         <translation>Annulering aangevraagd…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="736"/>
-        <location filename="../../ui/module_window.py" line="845"/>
+        <location filename="../../ui/module_window.py" line="789"/>
+        <location filename="../../ui/module_window.py" line="898"/>
         <source>Traitement terminé.</source>
         <translation>Verwerking voltooid.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="741"/>
-        <location filename="../../ui/module_window.py" line="854"/>
+        <location filename="../../ui/module_window.py" line="794"/>
+        <location filename="../../ui/module_window.py" line="907"/>
         <source>Traitement annulé.</source>
         <translation>Verwerking geannuleerd.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="746"/>
+        <location filename="../../ui/module_window.py" line="799"/>
         <source>Échec du traitement : {message}</source>
         <translation>Verwerking mislukt: {message}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="838"/>
+        <location filename="../../ui/module_window.py" line="891"/>
         <source>Erreur interne : {error}</source>
         <translation>Interne fout: {error}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="849"/>
-        <location filename="../../ui/module_window.py" line="855"/>
+        <location filename="../../ui/module_window.py" line="902"/>
+        <location filename="../../ui/module_window.py" line="908"/>
         <source>Échec : {reason}</source>
         <translation>Mislukt: {reason}</translation>
     </message>
     <message>
-        <source>Clair</source>
-        <translation type="vanished">Licht</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">Donker</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="965"/>
+        <location filename="../../ui/module_window.py" line="1042"/>
         <source>Aide — {name}</source>
         <translation>Help — {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="986"/>
+        <location filename="../../ui/module_window.py" line="1063"/>
         <source>{app} · version {version}</source>
         <translation>{app} · versie {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="334"/>
-        <location filename="../../ui/module_window.py" line="996"/>
+        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="1073"/>
         <source>Fermer</source>
         <translation>Sluit</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1013"/>
+        <location filename="../../ui/module_window.py" line="1090"/>
         <source>Un traitement est en cours : dépôt ignoré.</source>
         <translation>Een taak wordt uitgevoerd: negeren van verwijderen.</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1038"/>
+        <location filename="../../ui/module_window.py" line="1115"/>
         <source>Fermeture reportée : le traitement doit s&apos;arrêter.</source>
         <translation>Sluiting uitgesteld: verwerking moet stoppen.</translation>
     </message>
@@ -2060,10 +2245,6 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>Schrijf de opname datum in je bestandsnamen</translation>
     </message>
     <message>
-        <source>Comparer deux dossiers : même arborescence, même nombre de fichiers ?</source>
-        <translation type="vanished">Vergelijk twee mappen: dezelfde structuur, hetzelfde aantal bestanden?</translation>
-    </message>
-    <message>
         <location filename="../../modules/tags/__init__.py" line="11"/>
         <source>Lire, modifier et supprimer les métadonnées EXIF, IPTC et XMP</source>
         <translation>Lees, bewerk en verwijder EXIF-, IPTC- en XMP-metadata</translation>
@@ -2082,32 +2263,32 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>OpenFileButton</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2990"/>
+        <location filename="../../ui/widgets.py" line="3109"/>
         <source>Ouvre le fichier sélectionné dans l&apos;application associée du système (lecteur vidéo, visionneuse d&apos;images, lecteur PDF…).</source>
         <translation>Opent het geselecteerde bestand in de bijbehorende systeemtoepassing (videospeler, afbeeldingsviewer, PDF-lezer, enz.).</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3006"/>
+        <location filename="../../ui/widgets.py" line="3125"/>
         <source>Ouvrir dans une application</source>
         <translation>Openen in een toepassing</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3004"/>
+        <location filename="../../ui/widgets.py" line="3123"/>
         <source>Afficher le dossier</source>
         <translation>Map tonen</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3020"/>
+        <location filename="../../ui/widgets.py" line="3139"/>
         <source>Impossible d&apos;ouvrir : {target}</source>
         <translation>Kan niet openen: {target}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3022"/>
+        <location filename="../../ui/widgets.py" line="3141"/>
         <source>Ouverture impossible</source>
         <translation>Kan niet openen</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3023"/>
+        <location filename="../../ui/widgets.py" line="3142"/>
         <source>Aucune application n&apos;est associée à ce fichier :
 {name}</source>
         <translation>Er is geen applicatie aan dit bestand gekoppeld:
@@ -2117,13 +2298,13 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PathDropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1477"/>
-        <location filename="../../ui/widgets.py" line="1478"/>
+        <location filename="../../ui/widgets.py" line="1579"/>
+        <location filename="../../ui/widgets.py" line="1580"/>
         <source>Effacer le dossier</source>
         <translation>Map leegmaken</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1678"/>
+        <location filename="../../ui/widgets.py" line="1780"/>
         <source>Glissez un dossier ici ou cliquez pour parcourir</source>
         <translation>Sleep een map hierheen of klik om te bladeren</translation>
     </message>
@@ -2182,397 +2363,288 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="40"/>
+        <location filename="../../ui/preferences_dialog.py" line="41"/>
         <source> — traduction à venir</source>
         <translation>- vertaling komt eraan</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="46"/>
+        <location filename="../../ui/preferences_dialog.py" line="47"/>
         <source>embarqué</source>
         <translation>aan boord</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="47"/>
+        <location filename="../../ui/preferences_dialog.py" line="48"/>
         <source>personnalisé</source>
         <translation>gepersonaliseerd</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="48"/>
+        <location filename="../../ui/preferences_dialog.py" line="49"/>
         <source>système</source>
         <translation>systeem</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="49"/>
+        <location filename="../../ui/preferences_dialog.py" line="50"/>
         <source>introuvable</source>
         <translation>niet gevonden</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="56"/>
+        <location filename="../../ui/preferences_dialog.py" line="57"/>
         <source>✖ introuvable</source>
         <translation>✖ niet gevonden</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="57"/>
+        <location filename="../../ui/preferences_dialog.py" line="58"/>
         <source>{name} est introuvable : indiquez son chemin ou installez-le.</source>
         <translation>{name} kan niet worden gevonden: geef het pad op of installeer het.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="61"/>
+        <location filename="../../ui/preferences_dialog.py" line="62"/>
         <source>⚠ {source} · {version}</source>
         <translation>⚠ {source} · {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="62"/>
+        <location filename="../../ui/preferences_dialog.py" line="63"/>
         <source>Version {version} antérieure au minimum recommandé ({minimum}) ; mettez-le à jour. Chemin : {path}</source>
         <translation>Versie {version} eerder dan het aanbevolen minimum ({minimum}); update het. Pad: {path}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="67"/>
+        <location filename="../../ui/preferences_dialog.py" line="68"/>
         <source>✔ {source}</source>
         <translation>✔ {source}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="625"/>
+        <location filename="../../ui/preferences_dialog.py" line="622"/>
         <source>Préférences</source>
         <translation>Voorkeuren</translation>
-    </message>
-    <message>
-        <source>Apparence</source>
-        <translation type="vanished">Uiterlijk</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">Donker</translation>
-    </message>
-    <message>
-        <source>Clair</source>
-        <translation type="vanished">Licht</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">Thema</translation>
-    </message>
-    <message>
-        <source>Taille du texte</source>
-        <translation type="vanished">Tekstgrootte</translation>
-    </message>
-    <message>
-        <source>Langue</source>
-        <translation type="vanished">Taal</translation>
-    </message>
-    <message>
-        <source>Langue de l&apos;interface</source>
-        <translation type="vanished">Interfacetaal</translation>
-    </message>
-    <message>
-        <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
-        <translation type="vanished">“Automatisch” volgt de systeemtaal. Talen gemarkeerd met “toekomstige vertaling” hebben nog geen catalogus: Engels en vervolgens Frans worden gebruikt. De wijziging wordt van kracht de volgende keer dat u Azimut start.</translation>
-    </message>
-    <message>
-        <source>Outils externes</source>
-        <translation type="vanished">Externe hulpmiddelen</translation>
-    </message>
-    <message>
-        <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
-        <translation type="vanished">Een gebundelde kopie wordt eerst gebruikt; anders het ingevoerde pad, daarna het systeem PATH. Wijzigingen worden opgeslagen met “Opslaan”.</translation>
-    </message>
-    <message>
-        <source>Tous les fichiers (*)</source>
-        <translation type="vanished">Alle bestanden (*)</translation>
-    </message>
-    <message>
-        <source>Détecter</source>
-        <translation type="vanished">Detecteren</translation>
-    </message>
-    <message>
-        <source>Enregistrer</source>
-        <translation type="vanished">Opslaan</translation>
-    </message>
-    <message>
-        <source>Annuler</source>
-        <translation type="vanished">Annuleren</translation>
-    </message>
-    <message>
-        <source>Enregistrer et relancer</source>
-        <translation type="vanished">Opslaan en opnieuw starten</translation>
-    </message>
-    <message>
-        <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
-        <translation type="vanished">Slaat de voorkeuren op en start Azimut opnieuw om de taal toe te passen.</translation>
-    </message>
-    <message>
-        <source>Automatique (système)</source>
-        <translation type="vanished">Automatisch (systeem)</translation>
-    </message>
-    <message>
-        <source>Suit la langue de l&apos;interface du système.</source>
-        <translation type="vanished">Volgt de taal van de systeeminterface.</translation>
-    </message>
-    <message>
-        <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
-        <translation type="vanished">{language}: catalogus volgt, terugvallen op Engels en vervolgens Frans.</translation>
-    </message>
-    <message>
-        <source>✔ saisi</source>
-        <translation type="vanished">✔ ingevoerd</translation>
-    </message>
-    <message>
-        <source>Chemin saisi, pas encore enregistré.</source>
-        <translation type="vanished">Ingevoerde pad, nog niet opgeslagen.</translation>
-    </message>
-    <message>
-        <source>✖ chemin saisi inutilisable</source>
-        <translation type="vanished">✖ ingevoerde pad niet bruikbaar</translation>
-    </message>
-    <message>
-        <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
-        <translation type="vanished">Het ingevoerde bestand kon niet worden uitgevoerd.</translation>
-    </message>
-    <message>
-        <source>Apparence, langue et outils externes.</source>
-        <translation type="vanished">Uiterlijk, taal en externe hulpmiddelen.</translation>
     </message>
 </context>
 <context>
     <name>PreferencesPage</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="98"/>
+        <location filename="../../ui/preferences_dialog.py" line="99"/>
         <source>Préférences</source>
         <translation>Voorkeuren</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="99"/>
+        <location filename="../../ui/preferences_dialog.py" line="100"/>
         <source>Apparence, langue et outils externes.</source>
         <translation>Uiterlijk, taal en externe hulpmiddelen.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="109"/>
+        <location filename="../../ui/preferences_dialog.py" line="110"/>
         <source>Apparence</source>
         <translation>Verschijning</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="114"/>
+        <location filename="../../ui/preferences_dialog.py" line="115"/>
         <source>Système</source>
         <translation>Systeem</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="115"/>
+        <location filename="../../ui/preferences_dialog.py" line="116"/>
         <source>Sombre</source>
         <translation>Donker</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="116"/>
+        <location filename="../../ui/preferences_dialog.py" line="117"/>
         <source>Clair</source>
         <translation>Duidelijk</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="120"/>
-        <source>Le thème suit le système à chaque démarrage ; un choix explicite ne dure que jusqu&apos;à la fermeture d&apos;Azimut.</source>
-        <translation>Het thema volgt het systeem elke keer dat het start; een expliciete keuze duurt slechts totdat Azimut sluit.</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="128"/>
+        <location filename="../../ui/preferences_dialog.py" line="125"/>
         <source>Thème</source>
         <translation>Thema</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="130"/>
+        <location filename="../../ui/preferences_dialog.py" line="127"/>
         <source>Taille du texte</source>
         <translation>Tekstgrootte</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="133"/>
+        <location filename="../../ui/preferences_dialog.py" line="130"/>
         <source>Papicons</source>
         <translation>Papicons</translation>
     </message>
     <message>
-        <source>Animées</source>
-        <translation type="vanished">Geanimeerd</translation>
-    </message>
-    <message>
-        <source>Papicons : icônes pleines historiques. Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
-        <translation type="vanished">Papicons: klassieke gevulde pictogrammen. Geanimeerd: lijnpictogrammen, geanimeerd bij aanwijzen (geen animatie als animaties zijn beperkt).</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="134"/>
+        <location filename="../../ui/preferences_dialog.py" line="131"/>
         <source>Lucide Animées</source>
         <translation>Lucide Geanimeerd</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="137"/>
+        <location filename="../../ui/preferences_dialog.py" line="134"/>
         <source>Papicons : icônes pleines historiques. Lucide Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
         <translation>Papicons: klassieke gevulde pictogrammen. Lucide Geanimeerd: lijnpictogrammen, geanimeerd bij aanwijzen (geen animatie als animaties zijn beperkt).</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="139"/>
+        <location filename="../../ui/preferences_dialog.py" line="136"/>
         <source>Icônes</source>
         <translation>Pictogrammen</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="148"/>
+        <location filename="../../ui/preferences_dialog.py" line="145"/>
         <source>Accessibilité</source>
         <translation>Toegankelijkheid</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="151"/>
+        <location filename="../../ui/preferences_dialog.py" line="148"/>
         <source>Réduire les animations</source>
         <translation>Verminder animaties</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="153"/>
+        <location filename="../../ui/preferences_dialog.py" line="150"/>
         <source>Coupe les animations de capsule, d&apos;en-tête et les icônes d&apos;onglet animées.</source>
         <translation>Snijdt capsule-animaties, header-animaties en geanimeerde tabbladpictogrammen.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="154"/>
+        <location filename="../../ui/preferences_dialog.py" line="151"/>
         <source>Réduire la transparence</source>
         <translation>Verminder de transparantie</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="156"/>
+        <location filename="../../ui/preferences_dialog.py" line="153"/>
         <source>Rend opaques les surfaces en verre : barres, cartes et dialogues restent nets.</source>
         <translation>Maakt glazen oppervlakken ondoorzichtig: balken, kaarten en dialogen blijven helder.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="157"/>
+        <location filename="../../ui/preferences_dialog.py" line="154"/>
         <source>Contraste élevé</source>
         <translation>Hoog contrast</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="159"/>
+        <location filename="../../ui/preferences_dialog.py" line="156"/>
         <source>Renforce les liserés et l&apos;anneau de focus pour les personnes à basse vision.</source>
         <translation>Versterkt de grenzen en de scherpstelring voor slechtzienden.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="168"/>
+        <location filename="../../ui/preferences_dialog.py" line="165"/>
         <source>Tant qu&apos;une option n&apos;est pas modifiée ici, elle suit le réglage d&apos;accessibilité du système lorsqu&apos;il est disponible.</source>
         <translation>Totdat hier een optie wordt gewijzigd, volgt deze de toegankelijkheidsinstelling van het systeem, indien beschikbaar.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="177"/>
+        <location filename="../../ui/preferences_dialog.py" line="174"/>
         <source>Langue</source>
         <translation>Taal</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="183"/>
+        <location filename="../../ui/preferences_dialog.py" line="180"/>
         <source>Langue de l&apos;interface</source>
         <translation>Interfacetaal</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="189"/>
+        <location filename="../../ui/preferences_dialog.py" line="186"/>
         <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
         <translation>“Automatisch” volgt de systeemtaal. Talen gemarkeerd met “toekomstige vertaling” hebben nog geen catalogus: Engels en vervolgens Frans worden gebruikt. De wijziging wordt van kracht de volgende keer dat u Azimut start.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="198"/>
+        <location filename="../../ui/preferences_dialog.py" line="195"/>
         <source>Outils externes</source>
         <translation>Externe hulpmiddelen</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="200"/>
+        <location filename="../../ui/preferences_dialog.py" line="197"/>
         <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
         <translation>Een kopie aan boord wordt als prioriteit gebruikt; anders het ingevoerde pad en vervolgens het systeemPATH. Wijzigingen worden opgeslagen met “Opslaan”.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="209"/>
+        <location filename="../../ui/preferences_dialog.py" line="206"/>
         <source>Tous les fichiers (*)</source>
         <translation>Alle bestanden (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="214"/>
+        <location filename="../../ui/preferences_dialog.py" line="211"/>
         <source>Détecter</source>
         <translation>Detecteer</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="265"/>
+        <location filename="../../ui/preferences_dialog.py" line="262"/>
         <source>Préférences enregistrées.</source>
         <translation>Opgeslagen voorkeuren.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="270"/>
+        <location filename="../../ui/preferences_dialog.py" line="267"/>
         <source>Annuler</source>
         <translation>Annuleren</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="274"/>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="271"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer</source>
         <translation>Redden</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="314"/>
+        <location filename="../../ui/preferences_dialog.py" line="311"/>
         <source>Automatique (système)</source>
         <translation>Automatisch (systeem)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="315"/>
+        <location filename="../../ui/preferences_dialog.py" line="312"/>
         <source>Suit la langue de l&apos;interface du système.</source>
         <translation>Volgt de taal van de systeeminterface.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="323"/>
+        <location filename="../../ui/preferences_dialog.py" line="320"/>
         <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
         <translation>{language}: catalogus volgt, terugvallen op Engels en vervolgens Frans.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer et relancer</source>
         <translation>Opslaan en opnieuw opstarten</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="364"/>
+        <location filename="../../ui/preferences_dialog.py" line="361"/>
         <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
         <translation>Sla de voorkeuren op en start Azimut opnieuw op om de taal toe te passen.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="403"/>
-        <location filename="../../ui/preferences_dialog.py" line="472"/>
+        <location filename="../../ui/preferences_dialog.py" line="400"/>
+        <location filename="../../ui/preferences_dialog.py" line="469"/>
         <source>… non vérifié</source>
         <translation>…niet geverifieerd</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="404"/>
-        <location filename="../../ui/preferences_dialog.py" line="473"/>
+        <location filename="../../ui/preferences_dialog.py" line="401"/>
+        <location filename="../../ui/preferences_dialog.py" line="470"/>
         <source>Cliquez sur « Détecter » pour vérifier le chemin saisi.</source>
         <translation>Klik op “Detecteren” om het ingevoerde pad te controleren.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="443"/>
+        <location filename="../../ui/preferences_dialog.py" line="440"/>
         <source>… vérification</source>
         <translation>… verificatie</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="444"/>
+        <location filename="../../ui/preferences_dialog.py" line="441"/>
         <source>Exécution du binaire saisi pour lire sa version.</source>
         <translation>Het ingevoerde binaire bestand uitvoeren om de versie ervan te lezen.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="475"/>
+        <location filename="../../ui/preferences_dialog.py" line="472"/>
         <source>✔ saisi</source>
         <translation>✔ ingevoerd</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="476"/>
+        <location filename="../../ui/preferences_dialog.py" line="473"/>
         <source>Chemin saisi, pas encore enregistré.</source>
         <translation>Pad ingevoerd, nog niet opgeslagen.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="478"/>
+        <location filename="../../ui/preferences_dialog.py" line="475"/>
         <source>✖ chemin saisi inutilisable</source>
         <translation>✖ ingevoerd pad onbruikbaar</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="479"/>
+        <location filename="../../ui/preferences_dialog.py" line="476"/>
         <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
         <translation>Het ingevoerde bestand kon niet worden uitgevoerd.</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="524"/>
+        <location filename="../../ui/preferences_dialog.py" line="521"/>
         <source>✖ détection impossible</source>
         <translation>✖ detectie onmogelijk</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="525"/>
+        <location filename="../../ui/preferences_dialog.py" line="522"/>
         <source>La détection a échoué (voir le journal).</source>
         <translation>Detectie mislukt (zie log).</translation>
     </message>
@@ -2580,192 +2652,207 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>Profiles</name>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="75"/>
+        <location filename="../../modules/convert/profiles.py" line="76"/>
         <source>Fichier ni image, ni vidéo, ni audio : copié sans modification dans le dossier de sortie.</source>
         <translation>Geen afbeelding, video of audio: ongewijzigd naar de uitvoermap gekopieerd.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="82"/>
+        <location filename="../../modules/convert/profiles.py" line="83"/>
         <source>AVIF (AV1) : très compact, excellente qualité visuelle ; encodage assez lent.</source>
         <translation>AVIF (AV1): zeer compact, uitstekende beeldkwaliteit; vrij langzame codering.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="85"/>
+        <location filename="../../modules/convert/profiles.py" line="86"/>
         <source>HEIC : format Apple compact ; nécessite pillow-heif. La qualité se règle de 0 à 100.</source>
         <translation>HEIC: compact Apple-formaat; vereist pillow-heif. De kwaliteit wordt van 0 tot 100 ingesteld.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="88"/>
+        <location filename="../../modules/convert/profiles.py" line="89"/>
         <source>WebP : bon compromis taille / qualité, largement pris en charge.</source>
         <translation>WebP: goede verhouding tussen grootte en kwaliteit, breed ondersteund.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="91"/>
+        <location filename="../../modules/convert/profiles.py" line="92"/>
         <source>JPEG : lisible partout, compression avec perte.</source>
         <translation>JPEG: overal leesbaar, compressie met verlies.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="94"/>
+        <location filename="../../modules/convert/profiles.py" line="95"/>
         <source>PNG : sans perte, idéal pour les captures et les aplats ; le niveau règle la compression.</source>
         <translation>PNG: verliesvrij, ideaal voor schermafbeeldingen en vlakke kleuren; het niveau regelt de compressie.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="97"/>
+        <location filename="../../modules/convert/profiles.py" line="98"/>
         <source>JPEG XL : très bonne qualité à taille réduite, sans perte possible (distance 0).</source>
         <translation>JPEG XL: zeer goede kwaliteit bij kleine bestanden, verliesvrij mogelijk (afstand 0).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="100"/>
+        <location filename="../../modules/convert/profiles.py" line="101"/>
         <source>JPEG 2000 : sans perte, apprécié en archivage et en imagerie professionnelle.</source>
         <translation>JPEG 2000: verliesvrij, gewaardeerd bij archivering en professionele beeldverwerking.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="103"/>
+        <location filename="../../modules/convert/profiles.py" line="104"/>
         <source>TIFF : sans perte, pour l&apos;impression et l&apos;archivage ; la compression se choisit.</source>
         <translation>TIFF: verliesvrij, voor drukwerk en archivering; de compressie is kiesbaar.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="106"/>
+        <location filename="../../modules/convert/profiles.py" line="107"/>
         <source>BMP : sans compression, universel sous Windows ; fichiers volumineux.</source>
         <translation>BMP: ongecomprimeerd, universeel onder Windows; grote bestanden.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="109"/>
+        <location filename="../../modules/convert/profiles.py" line="110"/>
         <source>QOI : sans perte, très rapide à lire et à écrire ; format récent, peu répandu.</source>
         <translation>QOI: verliesvrij, zeer snel te lezen en te schrijven; recent, weinig gebruikt formaat.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="115"/>
+        <location filename="../../modules/convert/profiles.py" line="116"/>
         <source>Vidéo AV1 dans un WebM : très compact, encodage lent.</source>
         <translation>AV1-video in een WebM: zeer compact, langzame codering.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="120"/>
+        <location filename="../../modules/convert/profiles.py" line="121"/>
         <source>Vidéo AV1 dans un MP4 : très compact, plus compatible que l&apos;AV1 en WebM sur certains lecteurs.</source>
         <translation>AV1-video in een MP4: zeer compact, op sommige spelers compatibeler dan AV1 in WebM.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="125"/>
+        <location filename="../../modules/convert/profiles.py" line="126"/>
         <source>Vidéo H.264 dans un MKV : conteneur souple, sous-titres texte copiés et audio varié.</source>
         <translation>H.264-video in een MKV: flexibele container, tekstondertitels gekopieerd en gevarieerde audio.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="129"/>
+        <location filename="../../modules/convert/profiles.py" line="130"/>
         <source>Vidéo H.264 dans un MP4 : lisible partout.</source>
         <translation>H.264-video in een MP4: overal leesbaar.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="134"/>
+        <location filename="../../modules/convert/profiles.py" line="135"/>
         <source>Vidéo H.265 dans un MP4 : meilleure compression que H.264, un peu moins universel.</source>
         <translation>H.265-video in een MP4: betere compressie dan H.264, iets minder universeel.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="139"/>
+        <location filename="../../modules/convert/profiles.py" line="140"/>
         <source>H.264 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.264 versneld door NVIDIA NVENC. Vereist een compatibele GPU en NVIDIA-stuurprogramma.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="144"/>
+        <location filename="../../modules/convert/profiles.py" line="145"/>
         <source>H.265 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>H.265 versneld door NVIDIA NVENC. Vereist een compatibele GPU en NVIDIA-stuurprogramma.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="149"/>
+        <location filename="../../modules/convert/profiles.py" line="150"/>
+        <source>AV1 accéléré par NVIDIA NVENC (RTX 40 et plus). Proposé seulement si FFmpeg expose av1_nvenc ; nécessite un GPU et le pilote NVIDIA compatibles.</source>
+        <translation>AV1 versneld door NVIDIA NVENC (RTX 40 en nieuwer). Alleen aangeboden als FFmpeg av1_nvenc aanbiedt; vereist een compatibele NVIDIA-GPU en stuurprogramma.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="157"/>
         <source>H.264 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.264 versneld door Intel Quick Sync Video. Vereist een compatibele processor en stuurprogramma.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="154"/>
+        <location filename="../../modules/convert/profiles.py" line="162"/>
         <source>H.265 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>H.265 versneld door Intel Quick Sync Video. Vereist een compatibele processor en stuurprogramma.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="159"/>
+        <location filename="../../modules/convert/profiles.py" line="167"/>
+        <source>AV1 accéléré par Intel Quick Sync Video (GPU Intel Arc et suivants). Proposé seulement si FFmpeg expose av1_qsv ; nécessite un pilote compatible.</source>
+        <translation>AV1 versneld door Intel Quick Sync Video (Intel Arc-GPU&apos;s en nieuwer). Alleen aangeboden als FFmpeg av1_qsv aanbiedt; vereist een compatibel stuurprogramma.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="174"/>
         <source>H.264 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.264 versneld door VA-API (Linux). Vereist een compatibel /dev/dri/renderD*-apparaat.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="164"/>
+        <location filename="../../modules/convert/profiles.py" line="179"/>
         <source>H.265 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>H.265 versneld door VA-API (Linux). Vereist een compatibel /dev/dri/renderD*-apparaat.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="169"/>
+        <location filename="../../modules/convert/profiles.py" line="184"/>
+        <source>AV1 accéléré par VA-API (Linux, Mesa récent). Proposé seulement si FFmpeg expose av1_vaapi ; nécessite un périphérique /dev/dri/renderD* qui sait encoder l&apos;AV1.</source>
+        <translation>AV1 versneld door VA-API (Linux, recente Mesa). Alleen aangeboden als FFmpeg av1_vaapi aanbiedt; vereist een /dev/dri/renderD*-apparaat dat AV1 kan coderen.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="191"/>
         <source>Vidéo VP9 dans un WebM : bon compromis, bien pris en charge par les navigateurs.</source>
         <translation>VP9-video in een WebM: goede verhouding, goed ondersteund door browsers.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="174"/>
+        <location filename="../../modules/convert/profiles.py" line="196"/>
         <source>Vidéo MPEG-4 partie 2 dans un MP4 : ancien format, très compatible avec les lecteurs logiciels.</source>
         <translation>MPEG-4 deel 2-video in een MP4: oud formaat, zeer compatibel met softwarespelers.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="179"/>
+        <location filename="../../modules/convert/profiles.py" line="201"/>
         <source>Vidéo MPEG-2 et audio MP2 : pour la télévision, les DVD et les appareils anciens.</source>
         <translation>MPEG-2-video en MP2-audio: voor televisie, dvd&apos;s en oudere apparaten.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="183"/>
+        <location filename="../../modules/convert/profiles.py" line="205"/>
         <source>Vidéo Theora et audio Vorbis dans un OGV : libre, lisible par les lecteurs Ogg.</source>
         <translation>Theora-video en Vorbis-audio in een OGV: vrij, leesbaar door Ogg-spelers.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="187"/>
+        <location filename="../../modules/convert/profiles.py" line="209"/>
         <source>ProRes dans un MOV : montage vidéo, audio PCM 24 bits par défaut ; fichiers volumineux mais faciles à décoder.</source>
         <translation>ProRes in een MOV: videomontage, standaard 24-bits PCM-audio; grote maar eenvoudig te decoderen bestanden.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="196"/>
+        <location filename="../../modules/convert/profiles.py" line="218"/>
         <source>MP3 : compatible avec tous les lecteurs.</source>
         <translation>MP3: compatibel met elke speler.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="199"/>
+        <location filename="../../modules/convert/profiles.py" line="221"/>
         <source>AAC dans un conteneur M4A.</source>
         <translation>AAC in een M4A-container.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="202"/>
+        <location filename="../../modules/convert/profiles.py" line="224"/>
         <source>Opus : excellent rapport qualité / taille.</source>
         <translation>Opus: uitstekende verhouding kwaliteit/grootte.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="206"/>
+        <location filename="../../modules/convert/profiles.py" line="228"/>
         <source>FLAC : compression sans perte (le curseur ne change que la taille et la vitesse).</source>
         <translation>FLAC: verliesvrije compressie (de schuifregelaar wijzigt alleen grootte en snelheid).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="209"/>
+        <location filename="../../modules/convert/profiles.py" line="231"/>
         <source>Vorbis dans un OGG : libre, bon rapport qualité / taille.</source>
         <translation>Vorbis in een OGG: vrij, goede verhouding kwaliteit/grootte.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="212"/>
+        <location filename="../../modules/convert/profiles.py" line="234"/>
         <source>ALAC : compression sans perte Apple, dans un conteneur M4A.</source>
         <translation>ALAC: verliesvrije Apple-compressie, in een M4A-container.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="215"/>
+        <location filename="../../modules/convert/profiles.py" line="237"/>
         <source>WAV : audio non compressé, fichier volumineux.</source>
         <translation>WAV: ongecomprimeerde audio, groot bestand.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="218"/>
+        <location filename="../../modules/convert/profiles.py" line="240"/>
         <source>AC-3 : utilisé par les DVD et la télévision.</source>
         <translation>AC-3: gebruikt door dvd&apos;s en televisie.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="221"/>
+        <location filename="../../modules/convert/profiles.py" line="243"/>
         <source>MP2 : audio des flux MPEG-2 (télévision, DVD).</source>
         <translation>MP2: audio voor MPEG-2-streams (televisie, dvd).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="224"/>
+        <location filename="../../modules/convert/profiles.py" line="246"/>
         <source>AIFF : PCM 16 bits non compressé, pour le montage et l&apos;archivage sur macOS.</source>
         <translation>AIFF: ongecomprimeerde 16-bits PCM, voor montage en archivering op macOS.</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="227"/>
+        <location filename="../../modules/convert/profiles.py" line="249"/>
         <source>WAV : PCM 24 bits non compressé, pour le montage et l&apos;archivage audio.</source>
         <translation>WAV: ongecomprimeerde 24-bits PCM, voor audiomontage en archivering.</translation>
     </message>
@@ -2883,8 +2970,8 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="76"/>
-        <location filename="../../modules/rename/window.py" line="483"/>
-        <location filename="../../modules/rename/window.py" line="507"/>
+        <location filename="../../modules/rename/window.py" line="485"/>
+        <location filename="../../modules/rename/window.py" line="509"/>
         <source>Annuler le dernier renommage</source>
         <translation>Laatste hernoeming ongedaan maken</translation>
     </message>
@@ -2930,7 +3017,7 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="120"/>
-        <location filename="../../modules/rename/window.py" line="315"/>
+        <location filename="../../modules/rename/window.py" line="317"/>
         <source>Aucun dossier analysé.</source>
         <translation>Geen bestanden geanalyseerd.</translation>
     </message>
@@ -2960,87 +3047,87 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>JJJJ-MM-DD (alleen dag, 15-06-2008)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="143"/>
+        <location filename="../../modules/rename/window.py" line="145"/>
         <source>Conserver le préfixe personnalisé</source>
         <translation>Behoud het aangepaste voorvoegsel</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="144"/>
+        <location filename="../../modules/rename/window.py" line="146"/>
         <source>Ajouter IMG / VID / AUD au début</source>
         <translation>Voeg aan het begin IMG/VID/AUD toe</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="145"/>
+        <location filename="../../modules/rename/window.py" line="147"/>
         <source>Sans métadonnées : utiliser la date de modification</source>
         <translation>Zonder metadata: gebruik wijzigingsdatum</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="146"/>
+        <location filename="../../modules/rename/window.py" line="148"/>
         <source>Inclure les sous-dossiers</source>
         <translation>Inclusief submappen</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="154"/>
+        <location filename="../../modules/rename/window.py" line="156"/>
         <source>Préfixe personnalisé</source>
         <translation>Aangepast voorvoegsel</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="156"/>
+        <location filename="../../modules/rename/window.py" line="158"/>
         <source>(aucun) — ex. Vacances Corse</source>
         <translation>(geen) — bijv. Corsica vakantie</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="158"/>
+        <location filename="../../modules/rename/window.py" line="160"/>
         <source>Appliquer à la sélection</source>
         <translation>Toepassen op selectie</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="160"/>
+        <location filename="../../modules/rename/window.py" line="162"/>
         <source>Rétablir le préfixe automatique</source>
         <translation>Automatisch voorvoegsel herstellen</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="166"/>
+        <location filename="../../modules/rename/window.py" line="168"/>
         <source>Sélection</source>
         <translation>Selectie</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="177"/>
+        <location filename="../../modules/rename/window.py" line="179"/>
         <source>Entrée ou double-clic : cocher / décocher la ligne. Le contenu, les métadonnées et la date de modification ne sont jamais touchés.</source>
         <translation>Enter of dubbelklik: vink de regel aan/uit. Inhoud, metadata en wijzigingsdatum worden nooit gewijzigd.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="187"/>
+        <location filename="../../modules/rename/window.py" line="189"/>
         <source>Réglages</source>
         <translation>Instellingen</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="225"/>
+        <location filename="../../modules/rename/window.py" line="227"/>
         <source>Importer des fichiers</source>
         <translation>Bestanden importeren</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="233"/>
+        <location filename="../../modules/rename/window.py" line="235"/>
         <source>Importer un dossier</source>
         <translation>Een map importeren</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="319"/>
+        <location filename="../../modules/rename/window.py" line="321"/>
         <source>{shown} affiché(s) / {total} fichiers · à renommer {rename} · conformes {ok} · décochés {skipped} · sans date {nodate}</source>
         <translation>{shown} weergegeven / {total}-bestanden · te hernoemen {rename} · compatibel {ok} · uitgeschakeld {skipped} · zonder datum {nodate}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="332"/>
+        <location filename="../../modules/rename/window.py" line="334"/>
         <source>{count} fichiers sélectionnés</source>
         <translation>{count} geselecteerde bestanden</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="336"/>
+        <location filename="../../modules/rename/window.py" line="338"/>
         <source>(inchangé)</source>
         <translation>(ongewijzigd)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="337"/>
+        <location filename="../../modules/rename/window.py" line="339"/>
         <source>Avant : {before}
 Après : {after}
 Date : {date}
@@ -3053,57 +3140,57 @@ Bron: {source}
 Status: {status}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Rien à renommer</source>
         <translation>Niets om te hernoemen</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Aucun fichier coché à renommer.</source>
         <translation>Geen aangevinkte bestanden om te hernoemen.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="436"/>
+        <location filename="../../modules/rename/window.py" line="438"/>
         <source>Confirmer le renommage</source>
         <translation>Bevestig het hernoemen</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Rien à annuler</source>
         <translation>Niets om te annuleren</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Aucun renommage à annuler.</source>
         <translation>Geen hernoeming om ongedaan te maken.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="508"/>
+        <location filename="../../modules/rename/window.py" line="510"/>
         <source>Rendre leur ancien nom aux {count} fichier(s) renommés le {date} ?</source>
         <translation>De {count} bestanden waarvan de naam op {date} is hernoemd, terugzetten naar hun oude naam?</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Rien à exporter</source>
         <translation>Niets om te exporteren</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Aucun résultat d&apos;analyse.</source>
         <translation>Geen analyseresultaten.</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>Exporter le plan</source>
         <translation>Plan exporteren</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>CSV (*.csv)</source>
         <translation>CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="532"/>
+        <location filename="../../modules/rename/window.py" line="534"/>
         <source>Erreur</source>
         <translation>Fout</translation>
     </message>
@@ -3111,7 +3198,7 @@ Status: {status}</translation>
 <context>
     <name>ScanWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="104"/>
+        <location filename="../../modules/convert/workers.py" line="143"/>
         <source>Analyse des fichiers…</source>
         <translation>Bestanden analyseren…</translation>
     </message>
@@ -4115,7 +4202,7 @@ Deze openstaande wijziging toevoegen?</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="57"/>
-        <location filename="../../modules/takeout/window.py" line="348"/>
+        <location filename="../../modules/takeout/window.py" line="350"/>
         <source>Annuler la dernière application</source>
         <translation>Laatste app ongedaan maken</translation>
     </message>
@@ -4173,13 +4260,13 @@ Deze openstaande wijziging toevoegen?</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="96"/>
-        <location filename="../../modules/takeout/window.py" line="237"/>
+        <location filename="../../modules/takeout/window.py" line="239"/>
         <source>Aucun fichier : déposez un export Google Photos.</source>
         <translation>Geen bestanden: verwijder een Google Foto&apos;s-export.</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="100"/>
-        <location filename="../../modules/takeout/window.py" line="243"/>
+        <location filename="../../modules/takeout/window.py" line="245"/>
         <source>Aucun dossier analysé.</source>
         <translation>Geen bestanden geanalyseerd.</translation>
     </message>
@@ -4249,88 +4336,88 @@ Deze openstaande wijziging toevoegen?</translation>
         <translation>Google registreert de tijd in UTC. De tijdzone wordt ook in het bestand geschreven (OffsetTime), zodat de datum accuraat blijft voor de software die deze leest. QuickTime-video&apos;s zijn altijd geschreven in UTC.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="176"/>
+        <location filename="../../modules/takeout/window.py" line="178"/>
         <source>Importer des fichiers</source>
         <translation>Bestanden importeren</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="184"/>
+        <location filename="../../modules/takeout/window.py" line="186"/>
         <source>Importer le dossier de l&apos;export Google Photos</source>
         <translation>Map importeren uit Google Foto&apos;s-export</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="233"/>
+        <location filename="../../modules/takeout/window.py" line="235"/>
         <source>Aucun fichier retiré.</source>
         <translation>Geen bestanden verwijderd.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="235"/>
+        <location filename="../../modules/takeout/window.py" line="237"/>
         <source>Aucun fichier sans JSON.</source>
         <translation>Geen bestanden zonder JSON.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="241"/>
+        <location filename="../../modules/takeout/window.py" line="243"/>
         <source>{n} fichier(s) retiré(s) de la liste.</source>
         <translation>{n} bestand(en) verwijderd uit de lijst.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="247"/>
+        <location filename="../../modules/takeout/window.py" line="249"/>
         <source>{total} média(s) · {ready} prêt(s) · {nojson} sans JSON · {nodata} sans date ni position · {orphans} JSON sans média.</source>
         <translation>{total} media(s) · {ready} gereed(s) · {nojson} zonder JSON · {nodata} zonder datum of positie · {orphans} JSON zonder media.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>ExifTool introuvable</source>
         <translation>ExifTool niet gevonden</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
         <source>Impossible d&apos;appliquer sans ExifTool.</source>
         <translation>Kan niet worden toegepast zonder ExifTool.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Rien à écrire</source>
         <translation>Niets te schrijven</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Cochez au moins une option d&apos;écriture.</source>
         <translation>Vink ten minste één schrijfoptie aan.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Rien à appliquer</source>
         <translation>Niets om toe te passen</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Aucun média prêt : ajoutez un dossier d&apos;export.</source>
         <translation>Geen media gereed: voeg een exportmap toe.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="309"/>
+        <location filename="../../modules/takeout/window.py" line="311"/>
         <source>Confirmer l&apos;application</source>
         <translation>Bevestig de aanvraag</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>Impossible d&apos;annuler sans ExifTool.</source>
         <translation>Kan niet ongedaan maken zonder ExifTool.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Rien à annuler</source>
         <translation>Niets om te annuleren</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Aucune application à annuler.</source>
         <translation>Geen apps om te annuleren.</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="349"/>
+        <location filename="../../modules/takeout/window.py" line="351"/>
         <source>Rétablir l&apos;état d&apos;avant l&apos;application du {date} sur {count} fichier(s) ?</source>
         <translation>De status herstellen voordat {date} wordt toegepast op {count}-bestand(en)?</translation>
     </message>
@@ -4341,42 +4428,6 @@ Deze openstaande wijziging toevoegen?</translation>
         <location filename="../../launcher/tips_dialog.py" line="313"/>
         <source>Conseils</source>
         <translation>Tips</translation>
-    </message>
-    <message>
-        <source>De Google Photos à vos dossiers</source>
-        <translation type="vanished">Van Google Photos naar je mappen</translation>
-    </message>
-    <message>
-        <source>L&apos;ordre recommandé pour traiter un export Google Photos :</source>
-        <translation type="vanished">De aanbevolen volgorde voor het verwerken van een Google Foto&apos;s-export:</translation>
-    </message>
-    <message>
-        <source>Demandez l&apos;export à Google (Takeout), décompressez-le, puis réinjectez les dates et les positions GPS dans vos fichiers.</source>
-        <translation type="vanished">Vraag de export aan bij Google (Takeout), pak deze uit en injecteer de datums en GPS-posities opnieuw in uw bestanden.</translation>
-    </message>
-    <message>
-        <source>Écartez d&apos;abord les doublons : les étapes suivantes seront plus rapides et plus sûres.</source>
-        <translation type="vanished">Verwijder eerst duplicaten: de volgende stappen zullen sneller en veiliger zijn.</translation>
-    </message>
-    <message>
-        <source>Convertissez ensuite au format et à la qualité souhaités, par lots.</source>
-        <translation type="vanished">Converteer daarna naar het gewenste formaat en kwaliteit, in batches.</translation>
-    </message>
-    <message>
-        <source>Inscrivez la date de prise de vue dans les noms pour classer les fichiers chronologiquement.</source>
-        <translation type="vanished">Schrijf de opnamedatum in de namen om je bestanden chronologisch te sorteren.</translation>
-    </message>
-    <message>
-        <source>Comparez les dossiers avant et après pour vérifier que rien ne manque.</source>
-        <translation type="vanished">Vergelijk de mappen voor en na om te controleren of er niets ontbreekt.</translation>
-    </message>
-    <message>
-        <source>Terminez par les métadonnées : lecture, complément ou suppression des EXIF, IPTC et XMP.</source>
-        <translation type="vanished">Afronden met metadata: lees, voltooi of verwijder EXIF, IPTC en XMP.</translation>
-    </message>
-    <message>
-        <source>Chaque étape correspond à un module : ouvrez-le depuis sa carte dans Azimut.</source>
-        <translation type="vanished">Elke stap is een module: open deze vanuit de kaart in Azimut.</translation>
     </message>
     <message>
         <location filename="../../launcher/tips_dialog.py" line="324"/>
@@ -4541,59 +4592,87 @@ Deze openstaande wijziging toevoegen?</translation>
     </message>
 </context>
 <context>
+    <name>VerifyWorker</name>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="190"/>
+        <source>Dossier de sortie introuvable : {path}</source>
+        <translation>Uitvoermap niet gevonden: {path}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="193"/>
+        <source>Aucun dossier de sortie à vérifier.</source>
+        <translation>Geen uitvoermap te controleren.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="196"/>
+        <source>Recherche des conversions interrompues…</source>
+        <translation>Zoeken naar onderbroken conversies…</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="208"/>
+        <source>FFprobe introuvable : le contenu des vidéos et des audios n&apos;est pas contrôlé.</source>
+        <translation>FFprobe niet gevonden: de inhoud van video&apos;s en audiobestanden wordt niet gecontroleerd.</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="231"/>
+        <source>{checked} fichier(s) contrôlé(s), {bad} suspect(s).</source>
+        <translation>{checked} bestand(en) gecontroleerd, {bad} verdacht.</translation>
+    </message>
+</context>
+<context>
     <name>VideoPreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2641"/>
+        <location filename="../../ui/widgets.py" line="2760"/>
         <source>Lire ou mettre en pause</source>
         <translation>Afspelen of pauzeren</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2644"/>
+        <location filename="../../ui/widgets.py" line="2763"/>
         <source>Position dans le média</source>
         <translation>Positie in de media</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2669"/>
+        <location filename="../../ui/widgets.py" line="2788"/>
         <source>Couper ou rétablir le son</source>
         <translation>Dempen of dempen opheffen</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2672"/>
-        <location filename="../../ui/widgets.py" line="2679"/>
+        <location filename="../../ui/widgets.py" line="2791"/>
+        <location filename="../../ui/widgets.py" line="2798"/>
         <source>Volume</source>
         <translation>Volume</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2725"/>
+        <location filename="../../ui/widgets.py" line="2844"/>
         <source>Lecture vidéo indisponible
 (installez PySide6-Addons)</source>
         <translation>Video afspelen niet beschikbaar
 (installeer PySide6-Addons)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2766"/>
+        <location filename="../../ui/widgets.py" line="2885"/>
         <source>Chargement…</source>
         <translation>Laden…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Mettre en pause</source>
         <translation>Pauze</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Lire</source>
         <translation>Lezen</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2961"/>
+        <location filename="../../ui/widgets.py" line="3080"/>
         <source>Lecture impossible
 {reason}</source>
         <translation>Kan niet lezen
 {reason}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2932"/>
+        <location filename="../../ui/widgets.py" line="3051"/>
         <source>Aperçu vidéo limité (codec non pris en charge)</source>
         <translation>Beperkte videovoorbeeld (niet-ondersteunde codec)</translation>
     </message>
@@ -4631,12 +4710,12 @@ Deze openstaande wijziging toevoegen?</translation>
         <translation>onbekende staat</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1989"/>
+        <location filename="../../ui/widgets.py" line="2097"/>
         <source>Aucun élément</source>
         <translation>Geen artikelen</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2257"/>
+        <location filename="../../ui/widgets.py" line="2376"/>
         <source>{label}
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4645,7 +4724,7 @@ Deze openstaande wijziging toevoegen?</translation>
 (ffmpeg vereist voor voorbeeld)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2370"/>
+        <location filename="../../ui/widgets.py" line="2489"/>
         <source>PDF
 {name}
 (aperçu indisponible : installez poppler ou Ghostscript)</source>
@@ -4654,14 +4733,14 @@ Deze openstaande wijziging toevoegen?</translation>
 (preview niet beschikbaar: installeer poppler of Ghostscript)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2387"/>
+        <location filename="../../ui/widgets.py" line="2506"/>
         <source>Audio
 {name}</source>
         <translation>Audio
 {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2417"/>
+        <location filename="../../ui/widgets.py" line="2536"/>
         <source>Vidéo
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4670,7 +4749,7 @@ Deze openstaande wijziging toevoegen?</translation>
 (ffmpeg vereist voor voorbeeld)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2439"/>
+        <location filename="../../ui/widgets.py" line="2558"/>
         <source>Vidéo
 {name}
 ({reason})</source>
@@ -4679,7 +4758,7 @@ Deze openstaande wijziging toevoegen?</translation>
 ({reason})</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2465"/>
+        <location filename="../../ui/widgets.py" line="2584"/>
         <source>Image</source>
         <translation>Afbeelding</translation>
     </message>
@@ -4748,35 +4827,35 @@ Deze openstaande wijziging toevoegen?</translation>
 <context>
     <name>_HdrRow</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="126"/>
+        <location filename="../../modules/convert/codec_tree.py" line="136"/>
         <source>HDR</source>
         <translation>HDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="129"/>
+        <location filename="../../modules/convert/codec_tree.py" line="140"/>
         <source>Tone-mapping vers SDR</source>
         <translation>Tone-mapping naar SDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="130"/>
+        <location filename="../../modules/convert/codec_tree.py" line="141"/>
         <source>HDR natif (AV1 10 bits)</source>
         <translation>Native HDR (10-bit AV1)</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="131"/>
+        <location filename="../../modules/convert/codec_tree.py" line="142"/>
         <source>Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR (codec AV1 uniquement ; les autres codecs passent toujours en SDR).</source>
         <translation>HDR-video&apos;s: conversie naar SDR (overal compatibel) of behoud van HDR (alleen AV1-codec; andere codecs schakelen altijd over naar SDR).</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="134"/>
-        <source>Le HDR natif n&apos;est possible qu&apos;avec le codec vidéo AV1 : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
-        <translation>Native HDR is alleen mogelijk met de AV1 videocodec: met de gekozen codec worden HDR-video’s omgezet naar SDR (tone-mapping).</translation>
+        <location filename="../../modules/convert/codec_tree.py" line="145"/>
+        <source>Le HDR natif n&apos;est possible qu&apos;avec l&apos;AV1 logiciel (SVT-AV1 ou libaom) : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
+        <translation>Native HDR is alleen mogelijk met software-AV1 (SVT-AV1 of libaom): met de gekozen codec worden HDR-video&apos;s naar SDR geconverteerd (tone-mapping).</translation>
     </message>
 </context>
 <context>
     <name>_TabCloseButton</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1045"/>
+        <location filename="../../launcher/atlas_window.py" line="1071"/>
         <source>Fermer l&apos;onglet</source>
         <translation>Tabblad sluiten</translation>
     </message>

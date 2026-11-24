@@ -40,216 +40,208 @@
 <context>
     <name>AtlasWindow</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1218"/>
-        <location filename="../../launcher/atlas_window.py" line="1410"/>
-        <location filename="../../launcher/atlas_window.py" line="1466"/>
+        <location filename="../../launcher/atlas_window.py" line="1260"/>
+        <location filename="../../launcher/atlas_window.py" line="1463"/>
+        <location filename="../../launcher/atlas_window.py" line="1519"/>
         <source>Azimut</source>
         <translation>Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1291"/>
+        <location filename="../../launcher/atlas_window.py" line="1344"/>
         <source>Ouvrez un module, ou déposez-y des fichiers ou des dossiers.</source>
         <translation>打开模块，或将文件或文件夹拖放到其中。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1345"/>
-        <location filename="../../launcher/atlas_window.py" line="1486"/>
+        <location filename="../../launcher/atlas_window.py" line="1398"/>
+        <location filename="../../launcher/atlas_window.py" line="1539"/>
         <source>Tous les outils</source>
         <translation>所有工具</translation>
     </message>
     <message>
-        <source>Le recueil des utilitaires Azimut</source>
-        <translation type="vanished">Azimut 工具箱</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1421"/>
+        <location filename="../../launcher/atlas_window.py" line="1474"/>
         <source>Version {version}</source>
         <translation>版本 {version}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1669"/>
+        <location filename="../../launcher/atlas_window.py" line="1729"/>
         <source>Conseils</source>
         <translation>小贴士</translation>
     </message>
     <message>
-        <source>Thème</source>
-        <translation type="vanished">主题</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="1470"/>
-        <location filename="../../launcher/atlas_window.py" line="1664"/>
+        <location filename="../../launcher/atlas_window.py" line="1523"/>
+        <location filename="../../launcher/atlas_window.py" line="1724"/>
         <source>Préférences…</source>
         <translation>偏好…</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Outils</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1666"/>
+        <location filename="../../launcher/atlas_window.py" line="1726"/>
         <source>Afficher les outils Azimut</source>
         <translation>显示 Azimut 工具</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1488"/>
-        <location filename="../../launcher/atlas_window.py" line="1667"/>
+        <location filename="../../launcher/atlas_window.py" line="1541"/>
+        <location filename="../../launcher/atlas_window.py" line="1727"/>
         <source>Journaux et historique</source>
         <translation>日志和历史</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1074"/>
+        <location filename="../../launcher/atlas_window.py" line="1100"/>
         <source>Ce module n&apos;a pas pu être chargé.</source>
         <translation>无法加载此模块。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1341"/>
+        <location filename="../../launcher/atlas_window.py" line="1394"/>
         <source>Maj+clic ou Maj+flèches : sélectionner plusieurs onglets. Suppr : fermer l&apos;onglet actif ou la sélection. Glissez un onglet sélectionné pour déplacer le groupe.</source>
         <translation>Shift+单击或 Shift+方向键：选择多个标签页。Del：关闭当前标签页或所选标签页。拖动已选标签页可移动整组。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1419"/>
+        <location filename="../../launcher/atlas_window.py" line="1472"/>
         <source>Le couteau suisse pour convertir, dédoublonner et ranger vos médias</source>
         <translation>用于转换、重复数据删除和存储媒体的瑞士军刀</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1467"/>
-        <location filename="../../launcher/atlas_window.py" line="1529"/>
+        <location filename="../../launcher/atlas_window.py" line="1520"/>
+        <location filename="../../launcher/atlas_window.py" line="1582"/>
         <source>À propos d&apos;Azimut</source>
         <translation>关于 Azimut</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1475"/>
+        <location filename="../../launcher/atlas_window.py" line="1528"/>
         <source>Quitter</source>
         <translation>离开</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1480"/>
+        <location filename="../../launcher/atlas_window.py" line="1533"/>
         <source>Fichier</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1481"/>
+        <location filename="../../launcher/atlas_window.py" line="1534"/>
         <source>Fermer la fenêtre</source>
         <translation>关闭窗口</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1485"/>
+        <location filename="../../launcher/atlas_window.py" line="1538"/>
         <source>Présentation</source>
         <translation>推介会</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1491"/>
+        <location filename="../../launcher/atlas_window.py" line="1544"/>
         <source>Navigation dans l&apos;en-tête</source>
         <translation>标题栏导航</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1495"/>
+        <location filename="../../launcher/atlas_window.py" line="1548"/>
         <source>Regroupe « Outils » et « Journaux et historique » dans la barre supérieure. Décochez pour revenir à l&apos;agencement précédent.</source>
         <translation>将「工具」和「日志与历史」合并到顶部栏。取消勾选可恢复之前的布局。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1500"/>
+        <location filename="../../launcher/atlas_window.py" line="1553"/>
         <source>Conseils de démarrage…</source>
         <translation>入门提示...</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1502"/>
+        <location filename="../../launcher/atlas_window.py" line="1555"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>在深色和浅色主题之间切换</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1506"/>
+        <location filename="../../launcher/atlas_window.py" line="1559"/>
         <source>Agrandir le texte</source>
         <translation>放大文字</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1509"/>
+        <location filename="../../launcher/atlas_window.py" line="1562"/>
         <source>Réduire le texte</source>
         <translation>减少文字</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1513"/>
+        <location filename="../../launcher/atlas_window.py" line="1566"/>
         <source>Fenêtre</source>
         <translation>窗户</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1514"/>
+        <location filename="../../launcher/atlas_window.py" line="1567"/>
         <source>Réduire</source>
         <translation>减少</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1517"/>
+        <location filename="../../launcher/atlas_window.py" line="1570"/>
         <source>Zoom</source>
         <translation>飞涨</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1521"/>
+        <location filename="../../launcher/atlas_window.py" line="1574"/>
         <source>Aide</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1522"/>
+        <location filename="../../launcher/atlas_window.py" line="1575"/>
         <source>Conseils de démarrage</source>
         <translation>入门提示</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1527"/>
+        <location filename="../../launcher/atlas_window.py" line="1580"/>
         <source>Le couteau suisse de vos médias.</source>
         <translation>您媒体文件的瑞士军刀</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1655"/>
+        <location filename="../../launcher/atlas_window.py" line="1715"/>
         <source>Navigation d&apos;Azimut</source>
         <translation>Azimut 导航</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1668"/>
+        <location filename="../../launcher/atlas_window.py" line="1728"/>
         <source>Afficher l&apos;historique, le journal et les binaires</source>
         <translation>显示历史、日志和二进制文件</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1670"/>
+        <location filename="../../launcher/atlas_window.py" line="1730"/>
         <source>Afficher l&apos;ordre conseillé pour traiter un export Google Photos</source>
         <translation>显示处理 Google 相册导出的建议顺序</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1672"/>
+        <location filename="../../launcher/atlas_window.py" line="1732"/>
         <source>Apparence, langue et outils externes</source>
         <translation>外观、语言和外部工具</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1863"/>
+        <location filename="../../launcher/atlas_window.py" line="1923"/>
         <source>Aucun module disponible.</source>
         <translation>没有可用的模块。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2081"/>
+        <location filename="../../launcher/atlas_window.py" line="2157"/>
         <source>Binaire(s) requis introuvable(s) : {list}. Indiquez leur chemin dans « Préférences… » ou déposez-les dans le dossier bin/.</source>
         <translation>未找到所需的二进制文件：{list}。在“偏好设置…”中设置它们的路径，或将它们拖入 bin/ 文件夹。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2104"/>
+        <location filename="../../launcher/atlas_window.py" line="2180"/>
         <source>Merci !</source>
         <translation>谢谢 ！</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2273"/>
+        <location filename="../../launcher/atlas_window.py" line="2361"/>
         <source>Fermer les {count} onglets sélectionnés</source>
         <translation>关闭选定的 {count} 个标签</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2275"/>
+        <location filename="../../launcher/atlas_window.py" line="2363"/>
         <source>Fermer l&apos;onglet</source>
         <translation>关闭标签页</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2285"/>
+        <location filename="../../launcher/atlas_window.py" line="2373"/>
         <source>{count} onglets sélectionnés — glissez pour les déplacer, Suppr pour les fermer.</source>
         <translation>{count} 个选定的选项卡 — 拖动以移动它们，删除以关闭它们。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2407"/>
+        <location filename="../../launcher/atlas_window.py" line="2495"/>
         <source>Impossible d&apos;ouvrir {name}.
 
 {message}</source>
@@ -258,54 +250,54 @@
 {message}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2442"/>
+        <location filename="../../launcher/atlas_window.py" line="2530"/>
         <source>Les fichiers n&apos;ont pas pu être transmis au module.</source>
         <translation>无法将文件传递给模块。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2548"/>
+        <location filename="../../launcher/atlas_window.py" line="2636"/>
         <source>Relance impossible</source>
         <translation>重启失败</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2549"/>
+        <location filename="../../launcher/atlas_window.py" line="2637"/>
         <source>Azimut n&apos;a pas pu être relancé automatiquement. Fermez puis rouvrez l&apos;application.</source>
         <translation>Azimut 无法自动重启。请关闭并重新打开应用。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2569"/>
+        <location filename="../../launcher/atlas_window.py" line="2657"/>
         <source>Traitements en cours</source>
         <translation>进行中的任务</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2570"/>
+        <location filename="../../launcher/atlas_window.py" line="2658"/>
         <source>Traitement en cours dans :
 {modules}</source>
         <translation>运行在:
 {modules}</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2573"/>
+        <location filename="../../launcher/atlas_window.py" line="2661"/>
         <source>Fermer ces onglets interrompra les traitements en cours.</source>
         <translation>关闭这些选项卡将中断当前处理。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2575"/>
+        <location filename="../../launcher/atlas_window.py" line="2663"/>
         <source>Fermer cet onglet interrompra le traitement en cours.</source>
         <translation>关闭此标签页将停止正在运行的任务。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2577"/>
+        <location filename="../../launcher/atlas_window.py" line="2665"/>
         <source>Fermer Azimut interrompra les traitements en cours.</source>
         <translation>关闭 Azimut 将停止正在运行的任务。</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2579"/>
+        <location filename="../../launcher/atlas_window.py" line="2667"/>
         <source>Fermer quand même</source>
         <translation>无论如何关闭</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="2580"/>
+        <location filename="../../launcher/atlas_window.py" line="2668"/>
         <source>Annuler</source>
         <translation>取消</translation>
     </message>
@@ -364,34 +356,79 @@
 <context>
     <name>CodecPanel</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="265"/>
+        <location filename="../../modules/convert/codec_tree.py" line="264"/>
+        <source>GPU : plus rapide et libère le processeur, mais à qualité égale le fichier est souvent plus gros. CPU : plus lent, fichiers plus compacts.</source>
+        <translation>GPU：更快且释放处理器，但在相同质量下文件通常更大。CPU：更慢，文件更小。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="311"/>
         <source>Rétablir</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="267"/>
+        <location filename="../../modules/convert/codec_tree.py" line="313"/>
         <source>Remet les curseurs de ce codec à leurs valeurs de départ.</source>
         <translation>将此编解码器的滑块返回到其起始值。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="353"/>
+        <location filename="../../modules/convert/codec_tree.py" line="396"/>
+        <source>Parallélisme automatique (recommandé)</source>
+        <translation>自动并行（推荐）</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="398"/>
+        <source>Répartit les fichiers selon les cœurs disponibles et le réglage Threads : les copies et les images avancent ensemble ; deux vidéos peuvent avancer si le codec choisi est accéléré par le GPU (NVENC, QSV, VA-API), une seule avec un encodeur processeur, qui utilise déjà tous les cœurs et beaucoup de mémoire. Décochez pour régler chaque famille à la main.</source>
+        <translation>根据可用核心数和线程设置分配文件：复制和图像同时进行；如果所选编解码器支持 GPU 加速（NVENC、QSV、VA-API），两个视频可以同时进行，使用 CPU 编码器时只能一个，因为它已经占用所有核心和大量内存。取消勾选可手动设置每个类别。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="403"/>
+        <source>Fichiers image convertis en même temps. Chaque encodage utilise le nombre de threads choisi ci-dessus.</source>
+        <translation>同时转换的图像文件。每次编码使用上方选择的线程数。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="405"/>
+        <source>Fichiers audio convertis en même temps : les encodeurs audio sont presque mono-thread, un peu de parallélisme aide.</source>
+        <translation>同时转换的音频文件：音频编码器几乎都是单线程，少量并行会有帮助。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="407"/>
+        <source>Vidéos encodées en même temps. Au-delà de 1, chaque encodeur doit partager les threads et la mémoire : à réserver aux machines puissantes.</source>
+        <translation>同时编码的视频。大于 1 时，每个编码器都要共享线程和内存：仅适合性能强劲的机器。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="410"/>
+        <source>Fichiers copiés en même temps (déjà au bon format, documents, JSON…). Cette étape est limitée par le disque, pas par le processeur.</source>
+        <translation>同时复制的文件（已是正确格式、文档、JSON……）。这一步受磁盘限制，而不是处理器。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="414"/>
         <source>Priorité basse (garde l&apos;ordinateur réactif)</source>
         <translation>低优先级（保持电脑响应）</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="355"/>
+        <location filename="../../modules/convert/codec_tree.py" line="416"/>
         <source>Les processus FFmpeg sont alors lancés avec une priorité réduite : la conversion peut être un peu plus lente, mais les autres applications restent réactives.</source>
         <translation>然后，FFmpeg 进程会以降低的优先级启动：转换可能会慢一些，但其他应用程序仍保持响应。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="357"/>
+        <location filename="../../modules/convert/codec_tree.py" line="418"/>
         <source>Attendre si la mémoire est saturée</source>
         <translation>内存紧张时等待</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="359"/>
+        <location filename="../../modules/convert/codec_tree.py" line="420"/>
         <source>Avant chaque fichier, la conversion attend si la RAM utilisée atteint 75 % ou si la mémoire disponible tombe sous 20 %. Elle réessaie toutes les 2 secondes et s&apos;interrompt si vous annulez. Sans cette case, les fichiers s&apos;enchaînent même sous pression : ralentissement général, swap et risque d&apos;échec par manque de mémoire.</source>
         <translation>处理每个文件前，如果已用内存达到 75% 或可用内存低于 20%，转换会等待。每 2 秒重试一次，取消则中止。不勾选此项时，文件会在内存压力下继续处理：整体变慢、使用交换空间，并可能因内存不足而失败。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="436"/>
+        <source>Chaque fichier utilise le réglage Threads ci-dessus : en manuel, gardez « fichiers simultanés × threads » dans la limite des cœurs de la machine.</source>
+        <translation>每个文件都使用上方的「线程」设置：手动模式下，请让「同时文件数 × 线程数」不超过机器的核心数。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/codec_tree.py" line="526"/>
+        <source>Conversion GPU : plus rapide, mais à qualité visuelle égale le fichier est souvent plus gros qu&apos;avec un encodeur CPU.</source>
+        <translation>GPU 转换：更快，但在相同画质下文件通常比 CPU 编码器更大。</translation>
     </message>
 </context>
 <context>
@@ -415,27 +452,27 @@
 <context>
     <name>ConvertNotification</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="52"/>
+        <location filename="../../modules/convert/workers.py" line="60"/>
         <source>{count} fichier(s) traité(s)</source>
         <translation>已处理 {count} 个文件</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="53"/>
+        <location filename="../../modules/convert/workers.py" line="61"/>
         <source>{count} erreur(s)</source>
         <translation>{count} 个错误</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="57"/>
+        <location filename="../../modules/convert/workers.py" line="65"/>
         <source>{count} ignoré(s)</source>
         <translation>已跳过 {count} 个</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="60"/>
+        <location filename="../../modules/convert/workers.py" line="68"/>
         <source>{count} sortie(s) manquante(s)</source>
         <translation>{count} 个缺失输出</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="63"/>
+        <location filename="../../modules/convert/workers.py" line="71"/>
         <source>gain {size}</source>
         <translation>节省 {size}</translation>
     </message>
@@ -443,275 +480,320 @@
 <context>
     <name>ConvertWindow</name>
     <message>
-        <location filename="../../modules/convert/window.py" line="40"/>
+        <location filename="../../modules/convert/window.py" line="43"/>
         <source>Fichier</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="41"/>
+        <location filename="../../modules/convert/window.py" line="44"/>
         <source>Type</source>
         <translation>种类</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="42"/>
+        <location filename="../../modules/convert/window.py" line="45"/>
         <source>Taille</source>
         <translation>尺寸</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="43"/>
+        <location filename="../../modules/convert/window.py" line="46"/>
         <source>Format et qualité</source>
         <translation>格式和质量</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="44"/>
+        <location filename="../../modules/convert/window.py" line="47"/>
         <source>État</source>
         <translation>状态</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="45"/>
+        <location filename="../../modules/convert/window.py" line="48"/>
         <source>Progression</source>
         <translation>进步</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="49"/>
+        <location filename="../../modules/convert/window.py" line="52"/>
         <source>Tous</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="50"/>
+        <location filename="../../modules/convert/window.py" line="53"/>
         <source>Images</source>
-        <translation>图片</translation>
+        <translation>图像</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="51"/>
+        <location filename="../../modules/convert/window.py" line="54"/>
         <source>Vidéos</source>
         <translation>视频</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="52"/>
+        <location filename="../../modules/convert/window.py" line="55"/>
         <source>Audios</source>
         <translation>音频</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="53"/>
+        <location filename="../../modules/convert/window.py" line="56"/>
         <source>Fichiers volumineux</source>
         <translation>大文件</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="69"/>
+        <location filename="../../modules/convert/window.py" line="74"/>
         <source>Image</source>
         <translation>图片</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="70"/>
+        <location filename="../../modules/convert/window.py" line="75"/>
         <source>Vidéo</source>
         <translation>视频</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="71"/>
+        <location filename="../../modules/convert/window.py" line="76"/>
         <source>Audio</source>
         <translation>声音的</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="72"/>
+        <location filename="../../modules/convert/window.py" line="77"/>
         <source>Autre</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="75"/>
+        <location filename="../../modules/convert/window.py" line="80"/>
         <source>En attente</source>
         <translation>等候接听</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="76"/>
+        <location filename="../../modules/convert/window.py" line="81"/>
         <source>En cours</source>
         <translation>进行中</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="77"/>
+        <location filename="../../modules/convert/window.py" line="82"/>
         <source>Terminé</source>
         <translation>完成的</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="78"/>
+        <location filename="../../modules/convert/window.py" line="83"/>
         <source>Déjà converti</source>
         <translation>已经转换</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="79"/>
+        <location filename="../../modules/convert/window.py" line="84"/>
         <source>Encodeur manquant</source>
         <translation>缺少编码器</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="80"/>
+        <location filename="../../modules/convert/window.py" line="85"/>
         <source>Non pris en charge</source>
         <translation>不支持</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="81"/>
+        <location filename="../../modules/convert/window.py" line="86"/>
         <source>Erreur</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="82"/>
+        <location filename="../../modules/convert/window.py" line="87"/>
         <source>Annulé</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="83"/>
+        <location filename="../../modules/convert/window.py" line="88"/>
         <source>Source conservée</source>
         <translation>保留来源</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="84"/>
+        <location filename="../../modules/convert/window.py" line="89"/>
         <source>Copié</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="108"/>
+        <location filename="../../modules/convert/window.py" line="114"/>
         <source>Démarrer la conversion</source>
         <translation>开始转换</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="119"/>
+        <location filename="../../modules/convert/window.py" line="131"/>
         <source>Glissez ici des fichiers ou des dossiers à convertir
 (ou cliquez pour parcourir)</source>
         <translation>将要转换的文件或文件夹拖到此处
 （或点击浏览）</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="126"/>
+        <location filename="../../modules/convert/window.py" line="138"/>
         <source>Afficher :</source>
         <translation>展示 ：</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="142"/>
+        <location filename="../../modules/convert/window.py" line="154"/>
         <source>Taille minimale des fichiers affichés</source>
         <translation>显示文件的最小大小</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="151"/>
+        <location filename="../../modules/convert/window.py" line="163"/>
         <source>Taille personnalisée…</source>
         <translation>定制尺寸...</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="156"/>
+        <location filename="../../modules/convert/window.py" line="168"/>
         <source>Retirer la sélection</source>
         <translation>删除选择</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="157"/>
+        <location filename="../../modules/convert/window.py" line="169"/>
         <source>Vider la liste</source>
         <translation>清除列表</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="166"/>
+        <location filename="../../modules/convert/window.py" line="178"/>
         <source>La file est vide : déposez des fichiers ou un dossier ci-dessus.</source>
         <translation>队列为空：删除上面的文件或文件夹。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="176"/>
+        <location filename="../../modules/convert/window.py" line="195"/>
         <source>Sortie</source>
         <translation>出口</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="177"/>
+        <location filename="../../modules/convert/window.py" line="196"/>
         <source>Sous-dossiers</source>
         <translation>子文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="181"/>
-        <location filename="../../modules/convert/window.py" line="663"/>
+        <location filename="../../modules/convert/window.py" line="200"/>
+        <location filename="../../modules/convert/window.py" line="761"/>
         <source>Sortie…</source>
         <translation>出口…</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="185"/>
+        <location filename="../../modules/convert/window.py" line="204"/>
         <source>Dossier de sortie</source>
         <translation>输出文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="192"/>
+        <location filename="../../modules/convert/window.py" line="211"/>
+        <source>Vérifier la sortie…</source>
+        <translation>正在检查输出……</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="212"/>
+        <source>Après un arrêt forcé ou un plantage : cherche les fichiers incomplets ou corrompus du dossier de sortie et propose de les supprimer pour les reconvertir.</source>
+        <translation>强制停止或崩溃后：查找输出文件夹中不完整或损坏的文件，并建议删除以便重新转换。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="216"/>
         <source>Garder l&apos;extension d&apos;origine dans le nom</source>
         <translation>在名称中保留原扩展名</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="193"/>
+        <location filename="../../modules/convert/window.py" line="217"/>
         <source>« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions photo.jpg / photo.png et permet de retrouver le JSON Takeout.</source>
         <translation>“photo_jpg.avif”而不是“photo.avif”：避免 photo.jpg / photo.png 冲突并允许您找到 JSON Takeout。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="197"/>
+        <location filename="../../modules/convert/window.py" line="221"/>
         <source>Réinjecter date et GPS des JSON Google Takeout</source>
         <translation>从 JSON Google Takeout 重新注入日期和 GPS</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="198"/>
+        <location filename="../../modules/convert/window.py" line="222"/>
         <source>Si un JSON compagnon est trouvé à côté du fichier, sa date de prise de vue et sa position sont écrites dans le fichier converti (ExifTool).</source>
         <translation>如果在文件旁边找到配套 JSON，则其拍摄日期和位置将写入转换后的文件 (ExifTool)。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="204"/>
+        <location filename="../../modules/convert/window.py" line="228"/>
         <source>Copier aussi les autres fichiers (PDF, documents…)</source>
         <translation>还可以复制其他文件（PDF、文档等）</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="205"/>
+        <location filename="../../modules/convert/window.py" line="229"/>
         <source>Les fichiers qui ne sont ni des images, ni des audios, ni des vidéos sont copiés tels quels dans le dossier de sortie, à la même place que dans la source. Sans cette case, ils sont ignorés.</source>
         <translation>非图像、音频或视频的文件将按原样复制到输出文件夹中，位置与源中的位置相同。如果没有这个框，它们将被忽略。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="210"/>
+        <location filename="../../modules/convert/window.py" line="234"/>
         <source>Ne pas recopier les JSON Takeout déjà réinjectés</source>
         <translation>不要复制已经重新注入的 JSON Takeout</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="211"/>
+        <location filename="../../modules/convert/window.py" line="235"/>
         <source>Les JSON dont la date et la position sont écrites dans le fichier converti ne sont pas copiés dans le dossier de sortie. Rien n&apos;est supprimé : les JSON restent dans le dossier source. Les autres JSON sont copiés.</source>
         <translation>日期和位置已写入转换后文件的 JSON 不会复制到输出文件夹。不会删除任何内容：JSON 仍留在源文件夹。其他 JSON 会被复制。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="229"/>
+        <location filename="../../modules/convert/window.py" line="253"/>
         <source>Réglages</source>
         <translation>设置</translation>
     </message>
     <message>
+        <location filename="../../modules/convert/window.py" line="485"/>
+        <source>FFmpeg introuvable : matériel GPU indéterminable.</source>
+        <translation>找不到 FFmpeg：无法确定 GPU 硬件。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="498"/>
+        <source>Matériel : détection en cours…</source>
+        <translation>硬件：检测中……</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="499"/>
+        <source>Matériel : indéterminé (FFmpeg n&apos;a pas listé ses encodeurs).</source>
+        <translation>硬件：未知（FFmpeg 未列出其编码器）。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="509"/>
+        <source>GPU : {backends} · pilote ou GPU ne répond pas : {failed}</source>
+        <translation>GPU: {backends} · 驱动或 GPU 无响应: {failed}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="511"/>
+        <source>GPU détecté mais le pilote ou le GPU ne répond pas : {failed} ; les profils marqués GPU resteront indisponibles.</source>
+        <translation>检测到 GPU，但驱动或 GPU 无响应：{failed}；标记为 GPU 的配置将不可用。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="514"/>
+        <source>Aucune accélération GPU détectée : les profils marqués GPU resteront indisponibles, la conversion se fait par le processeur.</source>
+        <translation>未检测到 GPU 加速：标记为 GPU 的配置将不可用，转换由处理器完成。</translation>
+    </message>
+    <message>
         <location filename="../../modules/convert/window.py" line="516"/>
+        <source>GPU : {backends}</source>
+        <translation>GPU: {backends}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="614"/>
         <source>≥ {size}</source>
         <translation>≥ {size}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="518"/>
+        <location filename="../../modules/convert/window.py" line="616"/>
         <source>Afficher les fichiers d&apos;au moins {size}. Cliquez pour choisir un autre seuil.</source>
         <translation>显示至少 {size} 的文件。点击选择其他阈值。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Taille minimale</source>
         <translation>最小尺寸</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="531"/>
+        <location filename="../../modules/convert/window.py" line="629"/>
         <source>Afficher les fichiers d&apos;au moins (en Mo) :</source>
         <translation>显示至少（MB）的文件：</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="636"/>
+        <location filename="../../modules/convert/window.py" line="734"/>
         <source>Choisir le dossier de sortie</source>
         <translation>选择输出文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="647"/>
+        <location filename="../../modules/convert/window.py" line="745"/>
         <source>Laisser vide : « &lt;source&gt;_Converted » à côté de chaque dossier ajouté. Obligatoire pour les fichiers ajoutés isolément.</source>
         <translation>将每个添加的文件夹旁边的“&lt;source&gt;_Converted”留空。单独添加的文件是必需的。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="649"/>
+        <location filename="../../modules/convert/window.py" line="747"/>
         <source>dossier par défaut</source>
         <translation>默认文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="650"/>
+        <location filename="../../modules/convert/window.py" line="748"/>
         <source>{hint}
 
 Dossier de sortie : {path}
@@ -724,75 +806,214 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
 点击选择文件夹；右键恢复默认文件夹。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="654"/>
+        <location filename="../../modules/convert/window.py" line="752"/>
         <source>Dossier de sortie : {path}</source>
         <translation>输出文件夹：{path}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="661"/>
+        <location filename="../../modules/convert/window.py" line="759"/>
         <source>Sortie : {folder}</source>
         <translation>输出：{folder}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="674"/>
+        <location filename="../../modules/convert/window.py" line="772"/>
         <source>Choisir un dossier…</source>
         <translation>选择一个文件夹...</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="676"/>
+        <location filename="../../modules/convert/window.py" line="774"/>
         <source>Utiliser le dossier par défaut</source>
         <translation>使用默认文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="686"/>
+        <location filename="../../modules/convert/window.py" line="784"/>
         <source>Importer des fichiers</source>
         <translation>导入文件</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/window.py" line="695"/>
+        <location filename="../../modules/convert/window.py" line="793"/>
         <source>Importer un dossier</source>
         <translation>导入文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="836"/>
+        <source>Préparation de la conversion…</source>
+        <translation>正在准备转换……</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="891"/>
+        <source>{parts}
+
+Chaque segment est proportionnel au nombre de fichiers à traiter.</source>
+        <translation>{parts}
+
+每个区段与要处理的文件数成正比。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="920"/>
+        <source>Dossier de sortie à vérifier</source>
+        <translation>要检查的输出文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="928"/>
+        <source>Vérification de la sortie : {paths}</source>
+        <translation>检查输出：{paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="946"/>
+        <source>Vérification : {count} fichier(s) contrôlé(s), aucun fichier incomplet ou illisible.</source>
+        <translation>检查：已检查 {count} 个文件，无不完整或无法读取的文件。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="949"/>
+        <source>Vérifier la sortie</source>
+        <translation>检查输出</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="950"/>
+        <source>Aucun fichier incomplet ou corrompu n&apos;a été trouvé.
+
+{count} fichier(s) contrôlé(s) dans :
+{paths}</source>
+        <translation>未找到不完整或损坏的文件。
+
+已检查 {count} 个文件，位于：
+{paths}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="955"/>
+        <source>Vérification : {bad} fichier(s) suspect(s) sur {count} contrôlé(s) ; ne supprimez pas vos originaux.</source>
+        <translation>检查：{count} 个文件中 {bad} 个可疑；请勿删除原始文件。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="957"/>
+        <source>conversion interrompue (fichier temporaire)</source>
+        <translation>转换中断（临时文件）</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="958"/>
+        <source>taille inattendue : fichier tronqué ?</source>
+        <translation>大小异常：文件被截断？</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="959"/>
+        <source>illisible pour FFprobe</source>
+        <translation>FFprobe 无法读取</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="964"/>
+        <source>… et {count} autre(s) fichier(s) suspect(s).</source>
+        <translation>…… 以及另外 {count} 个可疑文件。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="967"/>
+        <source>Fichiers à vérifier</source>
+        <translation>要检查的文件</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="968"/>
+        <source>{bad} fichier(s) de la sortie peuvent être incomplets ou corrompus.
+
+Les supprimer ? Ils seront recréés à la prochaine conversion ; aucun autre fichier n&apos;est touché et les originaux ne sont jamais concernés.</source>
+        <translation>输出中有 {bad} 个文件可能不完整或损坏。
+
+要删除吗？它们将在下次转换时重新创建；不会触碰其他文件，原始文件也绝不受影响。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="990"/>
+        <source>{path} : suppression impossible ({error}).</source>
+        <translation>{path}：无法删除（{error}）。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/window.py" line="993"/>
+        <source>{count} fichier(s) supprimé(s) ; relancez la conversion pour les recréer.</source>
+        <translation>已删除 {count} 个文件；请重新运行转换以重新创建它们。</translation>
     </message>
 </context>
 <context>
     <name>ConvertWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="260"/>
-        <source>{done} / {total} — {name}</source>
-        <translation>{done} / {total} — {name}</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Copies</source>
+        <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="289"/>
-        <source>{done} / {total} terminé(s)</source>
-        <translation>{done} / {total} 已完成</translation>
+        <location filename="../../modules/convert/workers.py" line="372"/>
+        <source>Images</source>
+        <translation>图像</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="304"/>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Audios</source>
+        <translation>音频</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="373"/>
+        <source>Vidéos</source>
+        <translation>视频</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="425"/>
+        <source>Étape {number}/{steps} · {label}</source>
+        <translation>步骤 {number}/{steps} · {label}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="430"/>
+        <source>reste ~{time}</source>
+        <translation>剩余 ~{time}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="511"/>
+        <source>Parallélisme : copies {copy} · images {image} · audios {audio} · vidéos {video} fichier(s) à la fois.</source>
+        <translation>并行：复制 {copy} · 图像 {image} · 音频 {audio} · 视频 {video} 个文件同时处理。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>vidéo</source>
+        <translation>视频</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="514"/>
+        <source>image</source>
+        <translation>图像</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="519"/>
+        <source>Parallélisme {kind} : {count} × {threads} threads pour {cpus} cœur(s) ; réduisez le nombre de fichiers simultanés ou le réglage Threads pour éviter la surcharge.</source>
+        <translation>{kind} 并行：{cpus} 个核心使用 {count} × {threads} 线程；请减少同时文件数或「线程」设置以避免过载。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="530"/>
+        <source>Étape {number}/{steps} : {label} ({count} fichier(s), {parallel} en parallèle).</source>
+        <translation>步骤 {number}/{steps}：{label}（{count} 个文件，{parallel} 个并行）。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="547"/>
         <source>{ok} converti(s), {copied} copié(s), {kept} source(s) conservée(s), {skipped} déjà converti(s), {unsupported} non pris en charge, {errors} erreur(s) ; gain : {gain}</source>
         <translation>已转换 {ok} 个，已复制 {copied} 个，保留源文件 {kept} 个，已转换过 {skipped} 个，不支持 {unsupported} 个，错误 {errors} 个；节省：{gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="310"/>
+        <location filename="../../modules/convert/workers.py" line="553"/>
         <source> ; métadonnées Takeout : {ok}, sans JSON : {missing}</source>
         <translation> ; Takeout 元数据：{ok} 个，无 JSON：{missing} 个</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="313"/>
+        <location filename="../../modules/convert/workers.py" line="556"/>
         <source> ; JSON Takeout non recopiés : {count}</source>
         <translation> ; 未复制的 Takeout JSON：{count} 个</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="315"/>
+        <location filename="../../modules/convert/workers.py" line="558"/>
         <source> ; métadonnées d&apos;origine recopiées : {count}</source>
         <translation> ; 已复制的原始元数据：{count} 个</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="318"/>
+        <location filename="../../modules/convert/workers.py" line="561"/>
         <source> ; métadonnées non recopiées : {count}</source>
         <translation> ; 未复制的元数据：{count} 个</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/workers.py" line="321"/>
+        <location filename="../../modules/convert/workers.py" line="564"/>
         <source> ; champs Takeout non inscriptibles : {count}</source>
         <translation> ; 无法写入的 Takeout 字段：{count} 个</translation>
     </message>
@@ -800,7 +1021,7 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
 <context>
     <name>CopyFeedbackButton</name>
     <message>
-        <location filename="../../ui/controls.py" line="1034"/>
+        <location filename="../../ui/controls.py" line="1049"/>
         <source>Copié</source>
         <translation>复制</translation>
     </message>
@@ -874,17 +1095,17 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
 <context>
     <name>DedupWindow</name>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1392"/>
+        <location filename="../../modules/dedup/window.py" line="1403"/>
         <source>Choisir le journal d&apos;une quarantaine</source>
         <translation>选择隔离区的日志</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1393"/>
+        <location filename="../../modules/dedup/window.py" line="1404"/>
         <source>Journal (journal.csv);;Fichiers CSV (*.csv)</source>
         <translation>日志 (journal.csv);;CSV 文件 (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="847"/>
+        <location filename="../../modules/dedup/window.py" line="858"/>
         <source>Importer un dossier</source>
         <translation>导入文件夹</translation>
     </message>
@@ -956,7 +1177,7 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="105"/>
-        <location filename="../../modules/dedup/window.py" line="582"/>
+        <location filename="../../modules/dedup/window.py" line="583"/>
         <source>Live Photos</source>
         <translation>现场照片</translation>
     </message>
@@ -992,13 +1213,13 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="115"/>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder</source>
         <translation>保持</translation>
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="116"/>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Supprimer</source>
         <translation>删除</translation>
     </message>
@@ -1069,7 +1290,7 @@ Cliquez pour choisir un dossier ; clic droit pour revenir au dossier par défaut
     </message>
     <message>
         <location filename="../../modules/dedup/window.py" line="465"/>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Appliquer les modifications</source>
         <translation>应用更改</translation>
     </message>
@@ -1208,152 +1429,152 @@ Cliquez pour ouvrir ou fermer le cadenas.</source>
         <translation>检测视觉上相近的图片（dHash）；容差决定允许的差异。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="577"/>
+        <location filename="../../modules/dedup/window.py" line="578"/>
         <source>Tolérance :</source>
         <translation>宽容 ：</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="583"/>
+        <location filename="../../modules/dedup/window.py" line="584"/>
         <source>Repère les paires IMG_1234.HEIC + IMG_1234.MOV (ou les noms convertis IMG_1234_heic.avif + IMG_1234_mov.webm). Elles sont seulement signalées, sauf si vous demandez d&apos;écarter la vidéo.</source>
         <translation>识别 IMG_1234.HEIC + IMG_1234.MOV 配对（或转换后的名称 IMG_1234_heic.avif + IMG_1234_mov.webm）。仅作提示，除非您要求舍弃视频。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="591"/>
+        <location filename="../../modules/dedup/window.py" line="593"/>
         <source>Écarter la vidéo</source>
         <translation>丢弃视频</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="593"/>
+        <location filename="../../modules/dedup/window.py" line="595"/>
         <source>Proposer la vidéo à la suppression ; la photo est conservée.</source>
         <translation>建议删除该视频；照片被保留。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="599"/>
+        <location filename="../../modules/dedup/window.py" line="601"/>
         <source>Durée max :</source>
         <translation>最长持续时间：</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="602"/>
+        <location filename="../../modules/dedup/window.py" line="604"/>
         <source>Détection</source>
         <translation>检测</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="605"/>
+        <location filename="../../modules/dedup/window.py" line="607"/>
         <source>Proposition automatique :</source>
         <translation>自动提案：</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="612"/>
+        <location filename="../../modules/dedup/window.py" line="615"/>
         <source>Mode de suppression :</source>
         <translation>删除方式：</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="620"/>
+        <location filename="../../modules/dedup/window.py" line="624"/>
         <source>Dossiers vides</source>
         <translation>空文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="621"/>
+        <location filename="../../modules/dedup/window.py" line="625"/>
         <source>Supprimer les dossiers devenus vides après les suppressions.</source>
         <translation>删除删除后变空的文件夹。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="624"/>
+        <location filename="../../modules/dedup/window.py" line="628"/>
         <source>Dossier de quarantaine :</source>
         <translation>隔离文件夹：</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="627"/>
+        <location filename="../../modules/dedup/window.py" line="631"/>
         <source>Traitement</source>
         <translation>治疗</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="646"/>
+        <location filename="../../modules/dedup/window.py" line="650"/>
         <source>Afficher :</source>
         <translation>展示 ：</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="766"/>
+        <location filename="../../modules/dedup/window.py" line="770"/>
         <source>Corrections manuelles</source>
         <translation>手动更正</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="771"/>
+        <location filename="../../modules/dedup/window.py" line="775"/>
         <source>Garder la sélection</source>
         <translation>保留选择</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="772"/>
+        <location filename="../../modules/dedup/window.py" line="776"/>
         <source>Proposer la sélection à la suppression (Suppr)</source>
         <translation>建议选择删除（删除）</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="773"/>
+        <location filename="../../modules/dedup/window.py" line="777"/>
         <source>Tout supprimer</source>
         <translation>全部删除</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="774"/>
+        <location filename="../../modules/dedup/window.py" line="778"/>
         <source>Proposer tous les fichiers du groupe sélectionné à la suppression (les fichiers protégés sont conservés)</source>
         <translation>建议删除所选组中的所有文件（保留受保护的文件）</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder uniquement celui-ci</source>
         <translation>只保留这个</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="775"/>
+        <location filename="../../modules/dedup/window.py" line="779"/>
         <source>Garder ce fichier, proposer les autres du groupe</source>
         <translation>保留此文件，建议小组中的其他文件</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Proposition auto pour la sélection</source>
         <translation>自动建议选择</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="776"/>
+        <location filename="../../modules/dedup/window.py" line="780"/>
         <source>Appliquer la stratégie choisie à la sélection</source>
         <translation>将所选策略应用于选择</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="783"/>
+        <location filename="../../modules/dedup/window.py" line="787"/>
         <source>Espace : bascule Garder / Supprimer · Suppr : Supprimer · Double-clic : lire (audio, vidéo) ou ouvrir le fichier</source>
         <translation>空格键：保留/删除切换·删除：删除·双击：播放（音频、视频）或打开文件</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="788"/>
+        <location filename="../../modules/dedup/window.py" line="799"/>
         <source>Aperçu et corrections</source>
         <translation>概述和修复</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1061"/>
+        <location filename="../../modules/dedup/window.py" line="1072"/>
         <source>Groupe {id} · {kind} · {count} fichiers · gain : {gain}</source>
         <translation>群组 {id} · {kind} · {count} 个文件 · 增益：{gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1069"/>
+        <location filename="../../modules/dedup/window.py" line="1080"/>
         <source> · protégé</source>
         <translation>· 受保护</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1082"/>
+        <location filename="../../modules/dedup/window.py" line="1093"/>
         <source>Aucune analyse effectuée.</source>
         <translation>未进行任何分析。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1085"/>
+        <location filename="../../modules/dedup/window.py" line="1096"/>
         <source>{scanned} fichier(s) analysé(s) · {count} groupe(s) · {files} fichier(s) concerné(s) · gain libérable : {gain}</source>
         <translation>已扫描 {scanned} 个文件 · {count} 个组 · 涉及 {files} 个文件 · 可释放增益：{gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1165"/>
+        <location filename="../../modules/dedup/window.py" line="1176"/>
         <source>Groupe {id}</source>
         <translation>组{id}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1166"/>
+        <location filename="../../modules/dedup/window.py" line="1177"/>
         <source>{count} fichiers · {kind}
 Taille totale : {size}
 Gain libérable : {gain}</source>
@@ -1362,27 +1583,27 @@ Gain libérable : {gain}</source>
 可释放空间：{gain}</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1172"/>
+        <location filename="../../modules/dedup/window.py" line="1183"/>
         <source>Sélectionnez un fichier, ou deux fichiers du même groupe pour les comparer.</source>
         <translation>选择一个文件或同一组中的两个文件进行比较。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1173"/>
+        <location filename="../../modules/dedup/window.py" line="1184"/>
         <source>{count} fichier(s) sélectionné(s)</source>
         <translation>{count} 个选定的文件</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1250"/>
+        <location filename="../../modules/dedup/window.py" line="1261"/>
         <source>{count} fichier(s) proposé(s) à la suppression dans {groups} groupe(s).</source>
         <translation>建议删除 {groups} 个组中的 {count} 个文件。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1254"/>
+        <location filename="../../modules/dedup/window.py" line="1265"/>
         <source>{count} fichier(s) protégé(s) conservé(s).</source>
         <translation>保留了 {count} 个受保护的文件。</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1318"/>
+        <location filename="../../modules/dedup/window.py" line="1329"/>
         <source>Aucun fichier ne sera conservé dans {groups} groupe(s) ({files} fichier(s)).
 Tous les fichiers de ces groupes seront supprimés.
 
@@ -1393,17 +1614,17 @@ Tous les fichiers de ces groupes seront supprimés.
 </translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1339"/>
+        <location filename="../../modules/dedup/window.py" line="1350"/>
         <source>Aucun fichier conservé</source>
         <translation>没有保留文件</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1401"/>
+        <location filename="../../modules/dedup/window.py" line="1412"/>
         <source>Journal non vérifiable</source>
         <translation>无法验证的日志</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1402"/>
+        <location filename="../../modules/dedup/window.py" line="1413"/>
         <source>Ce journal ne contient pas la liste des dossiers analysés (journal importé ou antérieur).
 
 La restauration déplacera des fichiers vers les emplacements qu&apos;il indique. Ne continuez que si vous faites entièrement confiance à ce journal.
@@ -1416,12 +1637,12 @@ Restaurer ?</source>
 恢复吗？</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1430"/>
+        <location filename="../../modules/dedup/window.py" line="1441"/>
         <source>Exporter le rapport</source>
         <translation>导出报告</translation>
     </message>
     <message>
-        <location filename="../../modules/dedup/window.py" line="1431"/>
+        <location filename="../../modules/dedup/window.py" line="1442"/>
         <source>Fichiers CSV (*.csv)</source>
         <translation>CSV 文件 (*.csv)</translation>
     </message>
@@ -1429,32 +1650,32 @@ Restaurer ?</source>
 <context>
     <name>DropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1410"/>
+        <location filename="../../ui/widgets.py" line="1512"/>
         <source>Choisir des fichiers…</source>
         <translation>选择文件…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1411"/>
+        <location filename="../../ui/widgets.py" line="1513"/>
         <source>Choisir un dossier…</source>
         <translation>选择一个文件夹…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1427"/>
+        <location filename="../../ui/widgets.py" line="1529"/>
         <source>Fichiers acceptés ({masks});;Tous les fichiers (*)</source>
         <translation>接受的文件 ({masks});;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1429"/>
+        <location filename="../../ui/widgets.py" line="1531"/>
         <source>Tous les fichiers (*)</source>
         <translation>所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1430"/>
+        <location filename="../../ui/widgets.py" line="1532"/>
         <source>Choisir des fichiers</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1438"/>
+        <location filename="../../ui/widgets.py" line="1540"/>
         <source>Choisir un dossier</source>
         <translation>选择一个文件夹</translation>
     </message>
@@ -1616,10 +1837,6 @@ Restaurer ?</source>
         <translation>{count} 条记录</translation>
     </message>
     <message>
-        <source>{count} entrée(s)</source>
-        <translation type="vanished">{count} 条目</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="150"/>
         <source>du module « {name} »</source>
         <translation>用于模块 “{name}”</translation>
@@ -1638,7 +1855,7 @@ Restaurer ?</source>
 <context>
     <name>ImagePreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="3070"/>
+        <location filename="../../ui/widgets.py" line="3189"/>
         <source>Chargement…</source>
         <translation>加载中…</translation>
     </message>
@@ -1646,7 +1863,7 @@ Restaurer ?</source>
 <context>
     <name>ImportProgress</name>
     <message>
-        <location filename="../../ui/widgets.py" line="758"/>
+        <location filename="../../ui/widgets.py" line="860"/>
         <source>Importation terminée !</source>
         <translation>导入完成！</translation>
     </message>
@@ -1674,10 +1891,6 @@ Restaurer ?</source>
         <translation>最后一行 {count}</translation>
     </message>
     <message>
-        <source>{count} dernière(s) ligne(s)</source>
-        <translation type="vanished">{count} 最后一行</translation>
-    </message>
-    <message>
         <location filename="../../launcher/dashboard.py" line="200"/>
         <source>(Le journal est vide ou introuvable.)</source>
         <translation>（日志为空或缺失。）</translation>
@@ -1686,26 +1899,22 @@ Restaurer ?</source>
 <context>
     <name>ModuleCard</name>
     <message>
-        <source>Déposez des fichiers ou un dossier ici pour les ouvrir directement.</source>
-        <translation type="vanished">将文件或文件夹拖到此处以直接打开它们。</translation>
-    </message>
-    <message>
-        <location filename="../../launcher/atlas_window.py" line="140"/>
+        <location filename="../../launcher/atlas_window.py" line="141"/>
         <source>Ouvrir</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="166"/>
+        <location filename="../../launcher/atlas_window.py" line="167"/>
         <source>erreur inconnue</source>
         <translation>未知错误</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="172"/>
+        <location filename="../../launcher/atlas_window.py" line="173"/>
         <source>✖ indisponible</source>
         <translation>✖ 不可用</translation>
     </message>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="191"/>
+        <location filename="../../launcher/atlas_window.py" line="192"/>
         <source>Introuvable : voir « Préférences… » ou le dossier bin/.</source>
         <translation>未找到：请查看“偏好设置...”或 bin/ 文件夹。</translation>
     </message>
@@ -1713,226 +1922,222 @@ Restaurer ?</source>
 <context>
     <name>ModuleWindow</name>
     <message>
-        <location filename="../../ui/module_window.py" line="203"/>
-        <location filename="../../ui/module_window.py" line="470"/>
-        <location filename="../../ui/module_window.py" line="477"/>
+        <location filename="../../ui/module_window.py" line="207"/>
+        <location filename="../../ui/module_window.py" line="483"/>
+        <location filename="../../ui/module_window.py" line="490"/>
         <source>Journal</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="204"/>
+        <location filename="../../ui/module_window.py" line="208"/>
         <source>Afficher ou masquer le journal</source>
         <translation>显示或隐藏日志</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="62"/>
-        <location filename="../../ui/module_window.py" line="208"/>
-        <location filename="../../ui/module_window.py" line="384"/>
+        <location filename="../../ui/module_window.py" line="64"/>
+        <location filename="../../ui/module_window.py" line="212"/>
+        <location filename="../../ui/module_window.py" line="397"/>
         <source>Aide</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="59"/>
-        <location filename="../../ui/module_window.py" line="357"/>
+        <location filename="../../ui/module_window.py" line="61"/>
+        <location filename="../../ui/module_window.py" line="370"/>
         <source>Afficher / masquer le journal</source>
         <translation>显示/隐藏日志</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="60"/>
-        <location filename="../../ui/module_window.py" line="359"/>
+        <location filename="../../ui/module_window.py" line="62"/>
+        <location filename="../../ui/module_window.py" line="372"/>
         <source>Basculer entre thème sombre et clair</source>
         <translation>在深色和浅色主题之间切换</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="209"/>
+        <location filename="../../ui/module_window.py" line="213"/>
         <source>Aide et raccourcis</source>
         <translation>帮助与快捷方式</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="285"/>
-        <location filename="../../ui/module_window.py" line="371"/>
+        <location filename="../../ui/module_window.py" line="298"/>
+        <location filename="../../ui/module_window.py" line="384"/>
         <source>Démarrer</source>
         <translation>开始</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="57"/>
-        <location filename="../../ui/module_window.py" line="286"/>
+        <location filename="../../ui/module_window.py" line="59"/>
+        <location filename="../../ui/module_window.py" line="299"/>
         <source>Démarrer le traitement</source>
         <translation>开始处理</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="288"/>
-        <location filename="../../ui/module_window.py" line="345"/>
-        <location filename="../../ui/module_window.py" line="373"/>
+        <location filename="../../ui/module_window.py" line="301"/>
+        <location filename="../../ui/module_window.py" line="358"/>
+        <location filename="../../ui/module_window.py" line="386"/>
         <source>Annuler</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="58"/>
-        <location filename="../../ui/module_window.py" line="289"/>
+        <location filename="../../ui/module_window.py" line="60"/>
+        <location filename="../../ui/module_window.py" line="302"/>
         <source>Annuler le traitement en cours</source>
         <translation>取消当前任务</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="295"/>
+        <location filename="../../ui/module_window.py" line="308"/>
         <source>Principale</source>
         <translation>主要</translation>
     </message>
     <message>
-        <source>Changer de thème</source>
-        <translation type="vanished">切换主题</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="61"/>
-        <location filename="../../ui/module_window.py" line="306"/>
+        <location filename="../../ui/module_window.py" line="63"/>
         <location filename="../../ui/module_window.py" line="319"/>
+        <location filename="../../ui/module_window.py" line="332"/>
         <source>Préférences…</source>
         <translation>偏好…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="69"/>
+        <location filename="../../ui/module_window.py" line="71"/>
         <source>Date</source>
         <translation>日期</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="70"/>
+        <location filename="../../ui/module_window.py" line="72"/>
         <source>Action</source>
         <translation>行动</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="71"/>
+        <location filename="../../ui/module_window.py" line="73"/>
         <source>Résumé</source>
         <translation>概括</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="72"/>
+        <location filename="../../ui/module_window.py" line="74"/>
         <source>Réussis</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="73"/>
+        <location filename="../../ui/module_window.py" line="75"/>
         <source>Erreurs</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="307"/>
+        <location filename="../../ui/module_window.py" line="320"/>
         <source>Langue, thème, taille du texte, outils externes</source>
         <translation>语言，主题，文本大小，外部工具</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="315"/>
+        <location filename="../../ui/module_window.py" line="328"/>
         <source>Azimut</source>
         <translation>方位角</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="316"/>
-        <location filename="../../ui/module_window.py" line="421"/>
+        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="434"/>
         <source>À propos d&apos;Azimut</source>
         <translation>关于 Azimut</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="323"/>
+        <location filename="../../ui/module_window.py" line="336"/>
         <source>Quitter</source>
         <translation>离开</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="328"/>
+        <location filename="../../ui/module_window.py" line="341"/>
         <source>Fichier</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="329"/>
+        <location filename="../../ui/module_window.py" line="342"/>
         <source>Ajouter des fichiers…</source>
         <translation>添加文件...</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="331"/>
+        <location filename="../../ui/module_window.py" line="344"/>
         <source>Ajouter un dossier…</source>
         <translation>添加文件夹...</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="338"/>
+        <location filename="../../ui/module_window.py" line="351"/>
         <source>Édition</source>
         <translation>版</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="339"/>
-        <location filename="../../ui/module_window.py" line="404"/>
+        <location filename="../../ui/module_window.py" line="352"/>
+        <location filename="../../ui/module_window.py" line="417"/>
         <source>Annuler le dernier renommage</source>
         <translation>撤消上次重命名</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="346"/>
+        <location filename="../../ui/module_window.py" line="359"/>
         <source>Rétablir</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="360"/>
         <source>Couper</source>
         <translation>切</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="348"/>
+        <location filename="../../ui/module_window.py" line="361"/>
         <source>Copier</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="349"/>
+        <location filename="../../ui/module_window.py" line="362"/>
         <source>Coller</source>
         <translation>戳</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="350"/>
+        <location filename="../../ui/module_window.py" line="363"/>
         <source>Tout sélectionner</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="356"/>
+        <location filename="../../ui/module_window.py" line="369"/>
         <source>Présentation</source>
         <translation>推介会</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="363"/>
+        <location filename="../../ui/module_window.py" line="376"/>
         <source>Agrandir le texte</source>
         <translation>放大文字</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="366"/>
+        <location filename="../../ui/module_window.py" line="379"/>
         <source>Réduire le texte</source>
         <translation>减少文字</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="370"/>
+        <location filename="../../ui/module_window.py" line="383"/>
         <source>Traitement</source>
         <translation>治疗</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="376"/>
+        <location filename="../../ui/module_window.py" line="389"/>
         <source>Fenêtre</source>
         <translation>窗户</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="377"/>
+        <location filename="../../ui/module_window.py" line="390"/>
         <source>Réduire</source>
         <translation>减少</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="380"/>
+        <location filename="../../ui/module_window.py" line="393"/>
         <source>Zoom</source>
         <translation>飞涨</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="385"/>
+        <location filename="../../ui/module_window.py" line="398"/>
         <source>Raccourcis clavier</source>
         <translation>键盘快捷键</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="413"/>
+        <location filename="../../ui/module_window.py" line="426"/>
         <source>Vider la liste</source>
         <translation>清除列表</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="414"/>
+        <location filename="../../ui/module_window.py" line="427"/>
         <source>Voulez-vous vraiment vider la liste ?
 
 Les fichiers ne seront pas modifiés.</source>
@@ -1941,99 +2146,83 @@ Les fichiers ne seront pas modifiés.</source>
 文件不会被修改。</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="471"/>
+        <location filename="../../ui/module_window.py" line="484"/>
         <source>Historique</source>
         <translation>历史</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="473"/>
+        <location filename="../../ui/module_window.py" line="486"/>
         <source>Effacer le journal</source>
         <translation>清除日志</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="603"/>
+        <location filename="../../ui/module_window.py" line="662"/>
         <source>{name} est introuvable.
 Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>未找到 {name}。请安装 
  或在偏好设置中设置其路径。</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="648"/>
+        <location filename="../../ui/module_window.py" line="707"/>
         <source>Un traitement est déjà en cours : nouvelle demande ignorée.</source>
         <translation>任务已经在运行：新请求被忽略。</translation>
     </message>
     <message>
-        <source>En cours…</source>
-        <translation type="vanished">运行中…</translation>
-    </message>
-    <message>
-        <source>Annulation en cours…</source>
-        <translation type="vanished">正在取消…</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="703"/>
+        <location filename="../../ui/module_window.py" line="762"/>
         <source>Annulation demandée…</source>
         <translation>已请求取消…</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="736"/>
-        <location filename="../../ui/module_window.py" line="845"/>
+        <location filename="../../ui/module_window.py" line="789"/>
+        <location filename="../../ui/module_window.py" line="898"/>
         <source>Traitement terminé.</source>
         <translation>处理完成。</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="741"/>
-        <location filename="../../ui/module_window.py" line="854"/>
+        <location filename="../../ui/module_window.py" line="794"/>
+        <location filename="../../ui/module_window.py" line="907"/>
         <source>Traitement annulé.</source>
         <translation>处理已取消。</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="746"/>
+        <location filename="../../ui/module_window.py" line="799"/>
         <source>Échec du traitement : {message}</source>
         <translation>处理失败：{message}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="838"/>
+        <location filename="../../ui/module_window.py" line="891"/>
         <source>Erreur interne : {error}</source>
         <translation>内部错误：{error}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="849"/>
-        <location filename="../../ui/module_window.py" line="855"/>
+        <location filename="../../ui/module_window.py" line="902"/>
+        <location filename="../../ui/module_window.py" line="908"/>
         <source>Échec : {reason}</source>
         <translation>失败：{reason}</translation>
     </message>
     <message>
-        <source>Clair</source>
-        <translation type="vanished">光</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">黑暗</translation>
-    </message>
-    <message>
-        <location filename="../../ui/module_window.py" line="965"/>
+        <location filename="../../ui/module_window.py" line="1042"/>
         <source>Aide — {name}</source>
         <translation>帮助 — {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="986"/>
+        <location filename="../../ui/module_window.py" line="1063"/>
         <source>{app} · version {version}</source>
         <translation>{app} · 版本 {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="334"/>
-        <location filename="../../ui/module_window.py" line="996"/>
+        <location filename="../../ui/module_window.py" line="347"/>
+        <location filename="../../ui/module_window.py" line="1073"/>
         <source>Fermer</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1013"/>
+        <location filename="../../ui/module_window.py" line="1090"/>
         <source>Un traitement est en cours : dépôt ignoré.</source>
         <translation>一个作业正在运行：忽略删除。</translation>
     </message>
     <message>
-        <location filename="../../ui/module_window.py" line="1038"/>
+        <location filename="../../ui/module_window.py" line="1115"/>
         <source>Fermeture reportée : le traitement doit s&apos;arrêter.</source>
         <translation>已推迟关闭：处理必须停止。</translation>
     </message>
@@ -2056,10 +2245,6 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>将拍摄日期写入你的文件名中</translation>
     </message>
     <message>
-        <source>Comparer deux dossiers : même arborescence, même nombre de fichiers ?</source>
-        <translation type="vanished">比较两个文件夹：相同的目录结构，相同的文件数量？</translation>
-    </message>
-    <message>
         <location filename="../../modules/tags/__init__.py" line="11"/>
         <source>Lire, modifier et supprimer les métadonnées EXIF, IPTC et XMP</source>
         <translation>读取、编辑和移除 EXIF、IPTC 和 XMP 元数据</translation>
@@ -2078,32 +2263,32 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>OpenFileButton</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2990"/>
+        <location filename="../../ui/widgets.py" line="3109"/>
         <source>Ouvre le fichier sélectionné dans l&apos;application associée du système (lecteur vidéo, visionneuse d&apos;images, lecteur PDF…).</source>
         <translation>用系统关联的应用打开所选文件（视频播放器、图片查看器、PDF 阅读器…）。</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3006"/>
+        <location filename="../../ui/widgets.py" line="3125"/>
         <source>Ouvrir dans une application</source>
         <translation>在应用中打开</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3004"/>
+        <location filename="../../ui/widgets.py" line="3123"/>
         <source>Afficher le dossier</source>
         <translation>显示文件夹</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3020"/>
+        <location filename="../../ui/widgets.py" line="3139"/>
         <source>Impossible d&apos;ouvrir : {target}</source>
         <translation>无法打开：{target}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3022"/>
+        <location filename="../../ui/widgets.py" line="3141"/>
         <source>Ouverture impossible</source>
         <translation>无法打开</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="3023"/>
+        <location filename="../../ui/widgets.py" line="3142"/>
         <source>Aucune application n&apos;est associée à ce fichier :
 {name}</source>
         <translation>没有应用与此文件关联：
@@ -2113,13 +2298,13 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PathDropZone</name>
     <message>
-        <location filename="../../ui/widgets.py" line="1477"/>
-        <location filename="../../ui/widgets.py" line="1478"/>
+        <location filename="../../ui/widgets.py" line="1579"/>
+        <location filename="../../ui/widgets.py" line="1580"/>
         <source>Effacer le dossier</source>
         <translation>清除文件夹</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1678"/>
+        <location filename="../../ui/widgets.py" line="1780"/>
         <source>Glissez un dossier ici ou cliquez pour parcourir</source>
         <translation>将文件夹拖至此处或单击浏览</translation>
     </message>
@@ -2178,377 +2363,288 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="40"/>
+        <location filename="../../ui/preferences_dialog.py" line="41"/>
         <source> — traduction à venir</source>
         <translation>——翻译即将到来</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="46"/>
+        <location filename="../../ui/preferences_dialog.py" line="47"/>
         <source>embarqué</source>
         <translation>船上</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="47"/>
+        <location filename="../../ui/preferences_dialog.py" line="48"/>
         <source>personnalisé</source>
         <translation>个性化</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="48"/>
+        <location filename="../../ui/preferences_dialog.py" line="49"/>
         <source>système</source>
         <translation>系统</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="49"/>
+        <location filename="../../ui/preferences_dialog.py" line="50"/>
         <source>introuvable</source>
         <translation>未找到</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="56"/>
+        <location filename="../../ui/preferences_dialog.py" line="57"/>
         <source>✖ introuvable</source>
         <translation>✖ 未找到</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="57"/>
+        <location filename="../../ui/preferences_dialog.py" line="58"/>
         <source>{name} est introuvable : indiquez son chemin ou installez-le.</source>
         <translation>找不到 {name}：提供其路径或安装它。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="61"/>
+        <location filename="../../ui/preferences_dialog.py" line="62"/>
         <source>⚠ {source} · {version}</source>
         <translation>⚠ {source} · {version}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="62"/>
+        <location filename="../../ui/preferences_dialog.py" line="63"/>
         <source>Version {version} antérieure au minimum recommandé ({minimum}) ; mettez-le à jour. Chemin : {path}</source>
         <translation>版本 {version} 低于建议的最低版本（{minimum}）；请更新。路径：{path}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="67"/>
+        <location filename="../../ui/preferences_dialog.py" line="68"/>
         <source>✔ {source}</source>
         <translation>✔ {source}</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="625"/>
+        <location filename="../../ui/preferences_dialog.py" line="622"/>
         <source>Préférences</source>
         <translation>偏好</translation>
-    </message>
-    <message>
-        <source>Apparence</source>
-        <translation type="vanished">外观</translation>
-    </message>
-    <message>
-        <source>Sombre</source>
-        <translation type="vanished">黑暗</translation>
-    </message>
-    <message>
-        <source>Clair</source>
-        <translation type="vanished">光</translation>
-    </message>
-    <message>
-        <source>Thème</source>
-        <translation type="vanished">主题</translation>
-    </message>
-    <message>
-        <source>Taille du texte</source>
-        <translation type="vanished">文字大小</translation>
-    </message>
-    <message>
-        <source>Langue</source>
-        <translation type="vanished">语言</translation>
-    </message>
-    <message>
-        <source>Outils externes</source>
-        <translation type="vanished">外部工具</translation>
-    </message>
-    <message>
-        <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
-        <translation type="vanished">首先使用捆绑版本；否则使用输入的路径，然后是系统 PATH。更改使用“保存”保存。</translation>
-    </message>
-    <message>
-        <source>Tous les fichiers (*)</source>
-        <translation type="vanished">所有文件 (*)</translation>
-    </message>
-    <message>
-        <source>Détecter</source>
-        <translation type="vanished">检测</translation>
-    </message>
-    <message>
-        <source>Enregistrer</source>
-        <translation type="vanished">保存</translation>
-    </message>
-    <message>
-        <source>Annuler</source>
-        <translation type="vanished">取消</translation>
-    </message>
-    <message>
-        <source>Enregistrer et relancer</source>
-        <translation type="vanished">保存并重启</translation>
-    </message>
-    <message>
-        <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
-        <translation type="vanished">保存偏好设置并重新启动 Azimut 以应用语言。</translation>
-    </message>
-    <message>
-        <source>Automatique (système)</source>
-        <translation type="vanished">自动（系统）</translation>
-    </message>
-    <message>
-        <source>✔ saisi</source>
-        <translation type="vanished">✔ 已输入</translation>
-    </message>
-    <message>
-        <source>Chemin saisi, pas encore enregistré.</source>
-        <translation type="vanished">已输入路径，尚未保存。</translation>
-    </message>
-    <message>
-        <source>✖ chemin saisi inutilisable</source>
-        <translation type="vanished">✖ 输入的路径不可用</translation>
-    </message>
-    <message>
-        <source>Apparence, langue et outils externes.</source>
-        <translation type="vanished">外观、语言和外部工具。</translation>
     </message>
 </context>
 <context>
     <name>PreferencesPage</name>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="98"/>
+        <location filename="../../ui/preferences_dialog.py" line="99"/>
         <source>Préférences</source>
         <translation>偏好</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="99"/>
+        <location filename="../../ui/preferences_dialog.py" line="100"/>
         <source>Apparence, langue et outils externes.</source>
         <translation>外观、语言和外部工具。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="109"/>
+        <location filename="../../ui/preferences_dialog.py" line="110"/>
         <source>Apparence</source>
         <translation>外貌</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="114"/>
+        <location filename="../../ui/preferences_dialog.py" line="115"/>
         <source>Système</source>
         <translation>系统</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="115"/>
+        <location filename="../../ui/preferences_dialog.py" line="116"/>
         <source>Sombre</source>
         <translation>黑暗的</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="116"/>
+        <location filename="../../ui/preferences_dialog.py" line="117"/>
         <source>Clair</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="120"/>
-        <source>Le thème suit le système à chaque démarrage ; un choix explicite ne dure que jusqu&apos;à la fermeture d&apos;Azimut.</source>
-        <translation>主题在每次启动时跟随系统；明确选择仅在关闭 Azimut 前有效。</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="128"/>
+        <location filename="../../ui/preferences_dialog.py" line="125"/>
         <source>Thème</source>
         <translation>主题</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="130"/>
+        <location filename="../../ui/preferences_dialog.py" line="127"/>
         <source>Taille du texte</source>
         <translation>文字大小</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="133"/>
+        <location filename="../../ui/preferences_dialog.py" line="130"/>
         <source>Papicons</source>
         <translation>Papicons</translation>
     </message>
     <message>
-        <source>Animées</source>
-        <translation type="vanished">动画</translation>
-    </message>
-    <message>
-        <source>Papicons : icônes pleines historiques. Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
-        <translation type="vanished">Papicons：经典实心图标。动画：线条图标，悬停时播放动画（若已开启减少动画则不动）。</translation>
-    </message>
-    <message>
-        <location filename="../../ui/preferences_dialog.py" line="134"/>
+        <location filename="../../ui/preferences_dialog.py" line="131"/>
         <source>Lucide Animées</source>
         <translation>Lucide 动画</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="137"/>
+        <location filename="../../ui/preferences_dialog.py" line="134"/>
         <source>Papicons : icônes pleines historiques. Lucide Animées : icônes au trait, animées au survol (sans animation si « Réduire les animations » est actif).</source>
         <translation>Papicons：经典实心图标。Lucide 动画：线条图标，悬停时播放动画（若已开启减少动画则不动）。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="139"/>
+        <location filename="../../ui/preferences_dialog.py" line="136"/>
         <source>Icônes</source>
         <translation>图标</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="148"/>
+        <location filename="../../ui/preferences_dialog.py" line="145"/>
         <source>Accessibilité</source>
         <translation>无障碍</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="151"/>
+        <location filename="../../ui/preferences_dialog.py" line="148"/>
         <source>Réduire les animations</source>
         <translation>减少动画</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="153"/>
+        <location filename="../../ui/preferences_dialog.py" line="150"/>
         <source>Coupe les animations de capsule, d&apos;en-tête et les icônes d&apos;onglet animées.</source>
         <translation>关闭胶囊、标题栏动画和标签页动画图标。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="154"/>
+        <location filename="../../ui/preferences_dialog.py" line="151"/>
         <source>Réduire la transparence</source>
         <translation>降低透明度</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="156"/>
+        <location filename="../../ui/preferences_dialog.py" line="153"/>
         <source>Rend opaques les surfaces en verre : barres, cartes et dialogues restent nets.</source>
         <translation>使玻璃表面不透明：条形、卡片和对话保持清晰。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="157"/>
+        <location filename="../../ui/preferences_dialog.py" line="154"/>
         <source>Contraste élevé</source>
         <translation>高对比度</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="159"/>
+        <location filename="../../ui/preferences_dialog.py" line="156"/>
         <source>Renforce les liserés et l&apos;anneau de focus pour les personnes à basse vision.</source>
         <translation>为低视力用户增强描边和焦点环。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="168"/>
+        <location filename="../../ui/preferences_dialog.py" line="165"/>
         <source>Tant qu&apos;une option n&apos;est pas modifiée ici, elle suit le réglage d&apos;accessibilité du système lorsqu&apos;il est disponible.</source>
         <translation>某项设置在此处未修改时，会在系统提供辅助功能设置时跟随它。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="177"/>
+        <location filename="../../ui/preferences_dialog.py" line="174"/>
         <source>Langue</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="183"/>
+        <location filename="../../ui/preferences_dialog.py" line="180"/>
         <source>Langue de l&apos;interface</source>
         <translation>界面语言</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="189"/>
+        <location filename="../../ui/preferences_dialog.py" line="186"/>
         <source>« Automatique » suit la langue du système. Les langues marquées « traduction à venir » n&apos;ont pas encore de catalogue : l&apos;anglais, puis le français, sont utilisés. Le changement prend effet au prochain démarrage d&apos;Azimut.</source>
         <translation>「自动」跟随系统语言。标有「翻译即将推出」的语言尚无语言包：将使用英语，然后法语。更改在下次启动 Azimut 时生效。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="198"/>
+        <location filename="../../ui/preferences_dialog.py" line="195"/>
         <source>Outils externes</source>
         <translation>外部工具</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="200"/>
+        <location filename="../../ui/preferences_dialog.py" line="197"/>
         <source>Un exemplaire embarqué est utilisé en priorité ; sinon le chemin saisi, puis le PATH du système. Les changements sont enregistrés avec « Enregistrer ».</source>
         <translation>优先使用机载副本；否则输入的路径，然后是系统路径。通过“保存”保存更改。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="209"/>
+        <location filename="../../ui/preferences_dialog.py" line="206"/>
         <source>Tous les fichiers (*)</source>
         <translation>所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="214"/>
+        <location filename="../../ui/preferences_dialog.py" line="211"/>
         <source>Détecter</source>
         <translation>探测</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="265"/>
+        <location filename="../../ui/preferences_dialog.py" line="262"/>
         <source>Préférences enregistrées.</source>
         <translation>已保存的首选项。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="270"/>
+        <location filename="../../ui/preferences_dialog.py" line="267"/>
         <source>Annuler</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="274"/>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="271"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer</source>
         <translation>节省</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="314"/>
+        <location filename="../../ui/preferences_dialog.py" line="311"/>
         <source>Automatique (système)</source>
         <translation>自动（系统）</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="315"/>
+        <location filename="../../ui/preferences_dialog.py" line="312"/>
         <source>Suit la langue de l&apos;interface du système.</source>
         <translation>跟随系统的界面语言。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="323"/>
+        <location filename="../../ui/preferences_dialog.py" line="320"/>
         <source>{language} : catalogue à venir, repli sur l&apos;anglais puis le français.</source>
         <translation>{language}：语言包即将推出，回退到英语，然后法语。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="361"/>
+        <location filename="../../ui/preferences_dialog.py" line="358"/>
         <source>Enregistrer et relancer</source>
         <translation>保存并重新启动</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="364"/>
+        <location filename="../../ui/preferences_dialog.py" line="361"/>
         <source>Enregistre les préférences et redémarre Azimut pour appliquer la langue.</source>
         <translation>保存首选项并重新启动 Azimut 以应用该语言。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="403"/>
-        <location filename="../../ui/preferences_dialog.py" line="472"/>
+        <location filename="../../ui/preferences_dialog.py" line="400"/>
+        <location filename="../../ui/preferences_dialog.py" line="469"/>
         <source>… non vérifié</source>
         <translation>…未验证</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="404"/>
-        <location filename="../../ui/preferences_dialog.py" line="473"/>
+        <location filename="../../ui/preferences_dialog.py" line="401"/>
+        <location filename="../../ui/preferences_dialog.py" line="470"/>
         <source>Cliquez sur « Détecter » pour vérifier le chemin saisi.</source>
         <translation>点击“检测”即可检查输入的路径。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="443"/>
+        <location filename="../../ui/preferences_dialog.py" line="440"/>
         <source>… vérification</source>
         <translation>… 确认</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="444"/>
+        <location filename="../../ui/preferences_dialog.py" line="441"/>
         <source>Exécution du binaire saisi pour lire sa version.</source>
         <translation>执行输入的二进制文件以读取其版本。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="475"/>
+        <location filename="../../ui/preferences_dialog.py" line="472"/>
         <source>✔ saisi</source>
         <translation>✔ 输入</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="476"/>
+        <location filename="../../ui/preferences_dialog.py" line="473"/>
         <source>Chemin saisi, pas encore enregistré.</source>
         <translation>输入的路径，尚未保存。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="478"/>
+        <location filename="../../ui/preferences_dialog.py" line="475"/>
         <source>✖ chemin saisi inutilisable</source>
         <translation>✖ 输入的路径不可用</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="479"/>
+        <location filename="../../ui/preferences_dialog.py" line="476"/>
         <source>Le fichier saisi n&apos;a pas pu être exécuté.</source>
         <translation>无法执行所输入的文件。</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="524"/>
+        <location filename="../../ui/preferences_dialog.py" line="521"/>
         <source>✖ détection impossible</source>
         <translation>✖ 无法检测</translation>
     </message>
     <message>
-        <location filename="../../ui/preferences_dialog.py" line="525"/>
+        <location filename="../../ui/preferences_dialog.py" line="522"/>
         <source>La détection a échoué (voir le journal).</source>
         <translation>检测失败（参见日志）。</translation>
     </message>
@@ -2556,192 +2652,207 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
 <context>
     <name>Profiles</name>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="75"/>
+        <location filename="../../modules/convert/profiles.py" line="76"/>
         <source>Fichier ni image, ni vidéo, ni audio : copié sans modification dans le dossier de sortie.</source>
         <translation>既不是图片、视频，也不是音频：原样复制到输出文件夹。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="82"/>
+        <location filename="../../modules/convert/profiles.py" line="83"/>
         <source>AVIF (AV1) : très compact, excellente qualité visuelle ; encodage assez lent.</source>
         <translation>AVIF (AV1)：体积很小，视觉质量出色；编码较慢。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="85"/>
+        <location filename="../../modules/convert/profiles.py" line="86"/>
         <source>HEIC : format Apple compact ; nécessite pillow-heif. La qualité se règle de 0 à 100.</source>
         <translation>HEIC：Apple 紧凑格式；需要 pillow-heif。质量可在 0 到 100 之间设置。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="88"/>
+        <location filename="../../modules/convert/profiles.py" line="89"/>
         <source>WebP : bon compromis taille / qualité, largement pris en charge.</source>
         <translation>WebP：体积与质量平衡良好，兼容性广泛。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="91"/>
+        <location filename="../../modules/convert/profiles.py" line="92"/>
         <source>JPEG : lisible partout, compression avec perte.</source>
         <translation>JPEG：随处可读，有损压缩。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="94"/>
+        <location filename="../../modules/convert/profiles.py" line="95"/>
         <source>PNG : sans perte, idéal pour les captures et les aplats ; le niveau règle la compression.</source>
         <translation>PNG：无损，适合截图和纯色区域；级别控制压缩。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="97"/>
+        <location filename="../../modules/convert/profiles.py" line="98"/>
         <source>JPEG XL : très bonne qualité à taille réduite, sans perte possible (distance 0).</source>
         <translation>JPEG XL：小体积下质量极佳，也可无损（距离 0）。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="100"/>
+        <location filename="../../modules/convert/profiles.py" line="101"/>
         <source>JPEG 2000 : sans perte, apprécié en archivage et en imagerie professionnelle.</source>
         <translation>JPEG 2000：无损，适合归档和专业影像。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="103"/>
+        <location filename="../../modules/convert/profiles.py" line="104"/>
         <source>TIFF : sans perte, pour l&apos;impression et l&apos;archivage ; la compression se choisit.</source>
         <translation>TIFF：无损，适合印刷和归档；可选择压缩方式。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="106"/>
+        <location filename="../../modules/convert/profiles.py" line="107"/>
         <source>BMP : sans compression, universel sous Windows ; fichiers volumineux.</source>
         <translation>BMP：不压缩，Windows 通用；文件较大。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="109"/>
+        <location filename="../../modules/convert/profiles.py" line="110"/>
         <source>QOI : sans perte, très rapide à lire et à écrire ; format récent, peu répandu.</source>
         <translation>QOI：无损，读写极快；较新，使用较少。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="115"/>
+        <location filename="../../modules/convert/profiles.py" line="116"/>
         <source>Vidéo AV1 dans un WebM : très compact, encodage lent.</source>
         <translation>WebM 中的 AV1 视频：体积很小，编码较慢。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="120"/>
+        <location filename="../../modules/convert/profiles.py" line="121"/>
         <source>Vidéo AV1 dans un MP4 : très compact, plus compatible que l&apos;AV1 en WebM sur certains lecteurs.</source>
         <translation>MP4 中的 AV1 视频：体积很小，在部分播放器上比 WebM 中的 AV1 更兼容。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="125"/>
+        <location filename="../../modules/convert/profiles.py" line="126"/>
         <source>Vidéo H.264 dans un MKV : conteneur souple, sous-titres texte copiés et audio varié.</source>
         <translation>MKV 中的 H.264 视频：容器灵活，复制文本字幕，音频多样。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="129"/>
+        <location filename="../../modules/convert/profiles.py" line="130"/>
         <source>Vidéo H.264 dans un MP4 : lisible partout.</source>
         <translation>MP4 中的 H.264 视频：随处可播放。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="134"/>
+        <location filename="../../modules/convert/profiles.py" line="135"/>
         <source>Vidéo H.265 dans un MP4 : meilleure compression que H.264, un peu moins universel.</source>
         <translation>MP4 中的 H.265 视频：压缩率优于 H.264，通用性稍差。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="139"/>
+        <location filename="../../modules/convert/profiles.py" line="140"/>
         <source>H.264 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>NVIDIA NVENC 加速的 H.264。需要兼容的 GPU 和 NVIDIA 驱动。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="144"/>
+        <location filename="../../modules/convert/profiles.py" line="145"/>
         <source>H.265 accéléré par NVIDIA NVENC. Nécessite un GPU et le pilote NVIDIA compatibles.</source>
         <translation>NVIDIA NVENC 加速的 H.265。需要兼容的 GPU 和 NVIDIA 驱动。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="149"/>
+        <location filename="../../modules/convert/profiles.py" line="150"/>
+        <source>AV1 accéléré par NVIDIA NVENC (RTX 40 et plus). Proposé seulement si FFmpeg expose av1_nvenc ; nécessite un GPU et le pilote NVIDIA compatibles.</source>
+        <translation>由 NVIDIA NVENC 加速的 AV1（RTX 40 及更新）。仅在 FFmpeg 提供 av1_nvenc 时显示；需要兼容的 NVIDIA GPU 和驱动。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="157"/>
         <source>H.264 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>Intel Quick Sync Video 加速的 H.264。需要兼容的处理器和驱动。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="154"/>
+        <location filename="../../modules/convert/profiles.py" line="162"/>
         <source>H.265 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles.</source>
         <translation>Intel Quick Sync Video 加速的 H.265。需要兼容的处理器和驱动。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="159"/>
+        <location filename="../../modules/convert/profiles.py" line="167"/>
+        <source>AV1 accéléré par Intel Quick Sync Video (GPU Intel Arc et suivants). Proposé seulement si FFmpeg expose av1_qsv ; nécessite un pilote compatible.</source>
+        <translation>由 Intel Quick Sync Video 加速的 AV1（Intel Arc 及更新 GPU）。仅在 FFmpeg 提供 av1_qsv 时显示；需要兼容的驱动。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="174"/>
         <source>H.264 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>VA-API（Linux）加速的 H.264。需要兼容的 /dev/dri/renderD* 设备。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="164"/>
+        <location filename="../../modules/convert/profiles.py" line="179"/>
         <source>H.265 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible.</source>
         <translation>VA-API（Linux）加速的 H.265。需要兼容的 /dev/dri/renderD* 设备。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="169"/>
+        <location filename="../../modules/convert/profiles.py" line="184"/>
+        <source>AV1 accéléré par VA-API (Linux, Mesa récent). Proposé seulement si FFmpeg expose av1_vaapi ; nécessite un périphérique /dev/dri/renderD* qui sait encoder l&apos;AV1.</source>
+        <translation>由 VA-API 加速的 AV1（Linux，较新的 Mesa）。仅在 FFmpeg 提供 av1_vaapi 时显示；需要能编码 AV1 的 /dev/dri/renderD* 设备。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/profiles.py" line="191"/>
         <source>Vidéo VP9 dans un WebM : bon compromis, bien pris en charge par les navigateurs.</source>
         <translation>WebM 中的 VP9 视频：平衡良好，浏览器支持度高。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="174"/>
+        <location filename="../../modules/convert/profiles.py" line="196"/>
         <source>Vidéo MPEG-4 partie 2 dans un MP4 : ancien format, très compatible avec les lecteurs logiciels.</source>
         <translation>MP4 中的 MPEG-4 第 2 部分视频：旧格式，与软件播放器兼容性很好。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="179"/>
+        <location filename="../../modules/convert/profiles.py" line="201"/>
         <source>Vidéo MPEG-2 et audio MP2 : pour la télévision, les DVD et les appareils anciens.</source>
         <translation>MPEG-2 视频和 MP2 音频：适用于电视、DVD 和老式设备。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="183"/>
+        <location filename="../../modules/convert/profiles.py" line="205"/>
         <source>Vidéo Theora et audio Vorbis dans un OGV : libre, lisible par les lecteurs Ogg.</source>
         <translation>OGV 中的 Theora 视频和 Vorbis 音频：自由格式，Ogg 播放器可读。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="187"/>
+        <location filename="../../modules/convert/profiles.py" line="209"/>
         <source>ProRes dans un MOV : montage vidéo, audio PCM 24 bits par défaut ; fichiers volumineux mais faciles à décoder.</source>
         <translation>MOV 中的 ProRes：视频剪辑用，默认 24 位 PCM 音频；文件较大但易于解码。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="196"/>
+        <location filename="../../modules/convert/profiles.py" line="218"/>
         <source>MP3 : compatible avec tous les lecteurs.</source>
         <translation>MP3：兼容所有播放器。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="199"/>
+        <location filename="../../modules/convert/profiles.py" line="221"/>
         <source>AAC dans un conteneur M4A.</source>
         <translation>M4A 容器中的 AAC。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="202"/>
+        <location filename="../../modules/convert/profiles.py" line="224"/>
         <source>Opus : excellent rapport qualité / taille.</source>
         <translation>Opus：质量与体积比极佳。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="206"/>
+        <location filename="../../modules/convert/profiles.py" line="228"/>
         <source>FLAC : compression sans perte (le curseur ne change que la taille et la vitesse).</source>
         <translation>FLAC：无损压缩（滑块只改变体积和速度）。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="209"/>
+        <location filename="../../modules/convert/profiles.py" line="231"/>
         <source>Vorbis dans un OGG : libre, bon rapport qualité / taille.</source>
         <translation>OGG 中的 Vorbis：自由格式，质量与体积比良好。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="212"/>
+        <location filename="../../modules/convert/profiles.py" line="234"/>
         <source>ALAC : compression sans perte Apple, dans un conteneur M4A.</source>
         <translation>ALAC：M4A 容器中的 Apple 无损压缩。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="215"/>
+        <location filename="../../modules/convert/profiles.py" line="237"/>
         <source>WAV : audio non compressé, fichier volumineux.</source>
         <translation>WAV：未压缩音频，文件较大。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="218"/>
+        <location filename="../../modules/convert/profiles.py" line="240"/>
         <source>AC-3 : utilisé par les DVD et la télévision.</source>
         <translation>AC-3：DVD 和电视使用。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="221"/>
+        <location filename="../../modules/convert/profiles.py" line="243"/>
         <source>MP2 : audio des flux MPEG-2 (télévision, DVD).</source>
         <translation>MP2：MPEG-2 流的音频（电视、DVD）。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="224"/>
+        <location filename="../../modules/convert/profiles.py" line="246"/>
         <source>AIFF : PCM 16 bits non compressé, pour le montage et l&apos;archivage sur macOS.</source>
         <translation>AIFF：未压缩 16 位 PCM，适合在 macOS 上剪辑和归档。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/profiles.py" line="227"/>
+        <location filename="../../modules/convert/profiles.py" line="249"/>
         <source>WAV : PCM 24 bits non compressé, pour le montage et l&apos;archivage audio.</source>
         <translation>WAV：未压缩 24 位 PCM，适合音频剪辑和归档。</translation>
     </message>
@@ -2859,8 +2970,8 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="76"/>
-        <location filename="../../modules/rename/window.py" line="483"/>
-        <location filename="../../modules/rename/window.py" line="507"/>
+        <location filename="../../modules/rename/window.py" line="485"/>
+        <location filename="../../modules/rename/window.py" line="509"/>
         <source>Annuler le dernier renommage</source>
         <translation>撤消上次重命名</translation>
     </message>
@@ -2906,7 +3017,7 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
     </message>
     <message>
         <location filename="../../modules/rename/window.py" line="120"/>
-        <location filename="../../modules/rename/window.py" line="315"/>
+        <location filename="../../modules/rename/window.py" line="317"/>
         <source>Aucun dossier analysé.</source>
         <translation>没有分析任何文件。</translation>
     </message>
@@ -2936,87 +3047,87 @@ Installez-le ou indiquez son chemin dans les Préférences.</source>
         <translation>YYYY-MM-DD（仅限白天，2008-06-15）</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="143"/>
+        <location filename="../../modules/rename/window.py" line="145"/>
         <source>Conserver le préfixe personnalisé</source>
         <translation>保留自定义前缀</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="144"/>
+        <location filename="../../modules/rename/window.py" line="146"/>
         <source>Ajouter IMG / VID / AUD au début</source>
         <translation>在开头添加IMG/VID/AUD</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="145"/>
+        <location filename="../../modules/rename/window.py" line="147"/>
         <source>Sans métadonnées : utiliser la date de modification</source>
         <translation>没有元数据：使用修改日期</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="146"/>
+        <location filename="../../modules/rename/window.py" line="148"/>
         <source>Inclure les sous-dossiers</source>
         <translation>包括子文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="154"/>
+        <location filename="../../modules/rename/window.py" line="156"/>
         <source>Préfixe personnalisé</source>
         <translation>自定义前缀</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="156"/>
+        <location filename="../../modules/rename/window.py" line="158"/>
         <source>(aucun) — ex. Vacances Corse</source>
         <translation>（无）——例如科西嘉岛度假</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="158"/>
+        <location filename="../../modules/rename/window.py" line="160"/>
         <source>Appliquer à la sélection</source>
         <translation>适用于选择</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="160"/>
+        <location filename="../../modules/rename/window.py" line="162"/>
         <source>Rétablir le préfixe automatique</source>
         <translation>恢复自动前缀</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="166"/>
+        <location filename="../../modules/rename/window.py" line="168"/>
         <source>Sélection</source>
         <translation>选择</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="177"/>
+        <location filename="../../modules/rename/window.py" line="179"/>
         <source>Entrée ou double-clic : cocher / décocher la ligne. Le contenu, les métadonnées et la date de modification ne sont jamais touchés.</source>
         <translation>输入或双击：选中/取消选中该行。内容、元数据和修改日期永远不会被触及。</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="187"/>
+        <location filename="../../modules/rename/window.py" line="189"/>
         <source>Réglages</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="225"/>
+        <location filename="../../modules/rename/window.py" line="227"/>
         <source>Importer des fichiers</source>
         <translation>导入文件</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="233"/>
+        <location filename="../../modules/rename/window.py" line="235"/>
         <source>Importer un dossier</source>
         <translation>导入文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="319"/>
+        <location filename="../../modules/rename/window.py" line="321"/>
         <source>{shown} affiché(s) / {total} fichiers · à renommer {rename} · conformes {ok} · décochés {skipped} · sans date {nodate}</source>
         <translation>显示 {shown} / {total} 个文件 · 待重命名 {rename} · 符合 {ok} · 取消勾选 {skipped} · 无日期 {nodate}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="332"/>
+        <location filename="../../modules/rename/window.py" line="334"/>
         <source>{count} fichiers sélectionnés</source>
         <translation>{count} 个选定的文件</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="336"/>
+        <location filename="../../modules/rename/window.py" line="338"/>
         <source>(inchangé)</source>
         <translation>（不变）</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="337"/>
+        <location filename="../../modules/rename/window.py" line="339"/>
         <source>Avant : {before}
 Après : {after}
 Date : {date}
@@ -3029,57 +3140,57 @@ Statut : {status}</source>
 状态：{status}</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Rien à renommer</source>
         <translation>没有什么可以重命名的</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="422"/>
+        <location filename="../../modules/rename/window.py" line="424"/>
         <source>Aucun fichier coché à renommer.</source>
         <translation>没有选中的文件要重命名。</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="436"/>
+        <location filename="../../modules/rename/window.py" line="438"/>
         <source>Confirmer le renommage</source>
         <translation>确认重命名</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Rien à annuler</source>
         <translation>没有什么可以取消的</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="502"/>
+        <location filename="../../modules/rename/window.py" line="504"/>
         <source>Aucun renommage à annuler.</source>
         <translation>无需撤消重命名。</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="508"/>
+        <location filename="../../modules/rename/window.py" line="510"/>
         <source>Rendre leur ancien nom aux {count} fichier(s) renommés le {date} ?</source>
         <translation>将 {date} 重命名的 {count} 个文件恢复为其旧名称？</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Rien à exporter</source>
         <translation>没有什么可导出的</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="522"/>
+        <location filename="../../modules/rename/window.py" line="524"/>
         <source>Aucun résultat d&apos;analyse.</source>
         <translation>没有分析结果。</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>Exporter le plan</source>
         <translation>导出计划</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="525"/>
+        <location filename="../../modules/rename/window.py" line="527"/>
         <source>CSV (*.csv)</source>
         <translation>CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../modules/rename/window.py" line="532"/>
+        <location filename="../../modules/rename/window.py" line="534"/>
         <source>Erreur</source>
         <translation>错误</translation>
     </message>
@@ -3087,7 +3198,7 @@ Statut : {status}</source>
 <context>
     <name>ScanWorker</name>
     <message>
-        <location filename="../../modules/convert/workers.py" line="104"/>
+        <location filename="../../modules/convert/workers.py" line="143"/>
         <source>Analyse des fichiers…</source>
         <translation>正在分析文件…</translation>
     </message>
@@ -4091,7 +4202,7 @@ Ajouter cette modification en attente ?</source>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="57"/>
-        <location filename="../../modules/takeout/window.py" line="348"/>
+        <location filename="../../modules/takeout/window.py" line="350"/>
         <source>Annuler la dernière application</source>
         <translation>撤消上一个应用程序</translation>
     </message>
@@ -4149,13 +4260,13 @@ Ajouter cette modification en attente ?</source>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="96"/>
-        <location filename="../../modules/takeout/window.py" line="237"/>
+        <location filename="../../modules/takeout/window.py" line="239"/>
         <source>Aucun fichier : déposez un export Google Photos.</source>
         <translation>没有文件：删除 Google Photos 导出。</translation>
     </message>
     <message>
         <location filename="../../modules/takeout/window.py" line="100"/>
-        <location filename="../../modules/takeout/window.py" line="243"/>
+        <location filename="../../modules/takeout/window.py" line="245"/>
         <source>Aucun dossier analysé.</source>
         <translation>没有分析任何文件。</translation>
     </message>
@@ -4225,88 +4336,88 @@ Ajouter cette modification en attente ?</source>
         <translation>Google 以 UTC 记录时间。时区也会写入文件（OffsetTime），因此读取它的软件仍能获得准确日期。QuickTime 视频始终以 UTC 写入。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="176"/>
+        <location filename="../../modules/takeout/window.py" line="178"/>
         <source>Importer des fichiers</source>
         <translation>导入文件</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="184"/>
+        <location filename="../../modules/takeout/window.py" line="186"/>
         <source>Importer le dossier de l&apos;export Google Photos</source>
         <translation>导入 Google 相册导出文件夹</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="233"/>
+        <location filename="../../modules/takeout/window.py" line="235"/>
         <source>Aucun fichier retiré.</source>
         <translation>没有删除任何文件。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="235"/>
+        <location filename="../../modules/takeout/window.py" line="237"/>
         <source>Aucun fichier sans JSON.</source>
         <translation>没有 JSON 的文件。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="241"/>
+        <location filename="../../modules/takeout/window.py" line="243"/>
         <source>{n} fichier(s) retiré(s) de la liste.</source>
         <translation>从列表中删除了 {n} 个文件。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="247"/>
+        <location filename="../../modules/takeout/window.py" line="249"/>
         <source>{total} média(s) · {ready} prêt(s) · {nojson} sans JSON · {nodata} sans date ni position · {orphans} JSON sans média.</source>
         <translation>{total} 个媒体 · {ready} 个就绪 · {nojson} 个无 JSON · {nodata} 个无日期和位置 · {orphans} 个无媒体的 JSON。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>ExifTool introuvable</source>
         <translation>未找到 Exif 工具</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="295"/>
+        <location filename="../../modules/takeout/window.py" line="297"/>
         <source>Impossible d&apos;appliquer sans ExifTool.</source>
         <translation>没有 ExifTool 无法应用。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Rien à écrire</source>
         <translation>没什么可写的</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="299"/>
+        <location filename="../../modules/takeout/window.py" line="301"/>
         <source>Cochez au moins une option d&apos;écriture.</source>
         <translation>请至少勾选一个写入选项。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Rien à appliquer</source>
         <translation>没有什么可申请的</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="303"/>
+        <location filename="../../modules/takeout/window.py" line="305"/>
         <source>Aucun média prêt : ajoutez un dossier d&apos;export.</source>
         <translation>没有就绪的媒体：请添加导出文件夹。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="309"/>
+        <location filename="../../modules/takeout/window.py" line="311"/>
         <source>Confirmer l&apos;application</source>
         <translation>确认应用</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="337"/>
+        <location filename="../../modules/takeout/window.py" line="339"/>
         <source>Impossible d&apos;annuler sans ExifTool.</source>
         <translation>没有 ExifTool 无法撤销。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Rien à annuler</source>
         <translation>没有什么可以取消的</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="343"/>
+        <location filename="../../modules/takeout/window.py" line="345"/>
         <source>Aucune application à annuler.</source>
         <translation>没有可取消的应用程序。</translation>
     </message>
     <message>
-        <location filename="../../modules/takeout/window.py" line="349"/>
+        <location filename="../../modules/takeout/window.py" line="351"/>
         <source>Rétablir l&apos;état d&apos;avant l&apos;application du {date} sur {count} fichier(s) ?</source>
         <translation>将 {count} 个文件恢复到 {date} 应用之前的状态吗？</translation>
     </message>
@@ -4317,30 +4428,6 @@ Ajouter cette modification en attente ?</source>
         <location filename="../../launcher/tips_dialog.py" line="313"/>
         <source>Conseils</source>
         <translation>提示</translation>
-    </message>
-    <message>
-        <source>De Google Photos à vos dossiers</source>
-        <translation type="vanished">从 Google Photos 到你的文件夹</translation>
-    </message>
-    <message>
-        <source>Convertissez ensuite au format et à la qualité souhaités, par lots.</source>
-        <translation type="vanished">然后将其批量转换为所需的格式和质量。</translation>
-    </message>
-    <message>
-        <source>Inscrivez la date de prise de vue dans les noms pour classer les fichiers chronologiquement.</source>
-        <translation type="vanished">将拍摄日期写入名称，以按时间顺序整理您的文件。</translation>
-    </message>
-    <message>
-        <source>Comparez les dossiers avant et après pour vérifier que rien ne manque.</source>
-        <translation type="vanished">比较前后的文件夹，以检查是否有缺失。</translation>
-    </message>
-    <message>
-        <source>Terminez par les métadonnées : lecture, complément ou suppression des EXIF, IPTC et XMP.</source>
-        <translation type="vanished">完成元数据：读取、完成或移除 EXIF、IPTC 和 XMP。</translation>
-    </message>
-    <message>
-        <source>Chaque étape correspond à un module : ouvrez-le depuis sa carte dans Azimut.</source>
-        <translation type="vanished">每个步骤都是一个模块：在 Azimut 中从它的卡片打开它。</translation>
     </message>
     <message>
         <location filename="../../launcher/tips_dialog.py" line="324"/>
@@ -4505,59 +4592,87 @@ Ajouter cette modification en attente ?</source>
     </message>
 </context>
 <context>
+    <name>VerifyWorker</name>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="190"/>
+        <source>Dossier de sortie introuvable : {path}</source>
+        <translation>找不到输出文件夹：{path}</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="193"/>
+        <source>Aucun dossier de sortie à vérifier.</source>
+        <translation>没有要检查的输出文件夹。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="196"/>
+        <source>Recherche des conversions interrompues…</source>
+        <translation>正在查找中断的转换……</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="208"/>
+        <source>FFprobe introuvable : le contenu des vidéos et des audios n&apos;est pas contrôlé.</source>
+        <translation>找不到 FFprobe：不检查视频和音频的内容。</translation>
+    </message>
+    <message>
+        <location filename="../../modules/convert/workers.py" line="231"/>
+        <source>{checked} fichier(s) contrôlé(s), {bad} suspect(s).</source>
+        <translation>已检查 {checked} 个文件，{bad} 个可疑。</translation>
+    </message>
+</context>
+<context>
     <name>VideoPreview</name>
     <message>
-        <location filename="../../ui/widgets.py" line="2641"/>
+        <location filename="../../ui/widgets.py" line="2760"/>
         <source>Lire ou mettre en pause</source>
         <translation>播放或暂停</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2644"/>
+        <location filename="../../ui/widgets.py" line="2763"/>
         <source>Position dans le média</source>
         <translation>媒体中的位置</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2669"/>
+        <location filename="../../ui/widgets.py" line="2788"/>
         <source>Couper ou rétablir le son</source>
         <translation>静音或取消静音</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2672"/>
-        <location filename="../../ui/widgets.py" line="2679"/>
+        <location filename="../../ui/widgets.py" line="2791"/>
+        <location filename="../../ui/widgets.py" line="2798"/>
         <source>Volume</source>
         <translation>体积</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2725"/>
+        <location filename="../../ui/widgets.py" line="2844"/>
         <source>Lecture vidéo indisponible
 (installez PySide6-Addons)</source>
         <translation>视频无法播放
 （安装 PySide6-Addons）</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2766"/>
+        <location filename="../../ui/widgets.py" line="2885"/>
         <source>Chargement…</source>
         <translation>加载中…</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Mettre en pause</source>
         <translation>暂停</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2951"/>
+        <location filename="../../ui/widgets.py" line="3070"/>
         <source>Lire</source>
         <translation>读</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2961"/>
+        <location filename="../../ui/widgets.py" line="3080"/>
         <source>Lecture impossible
 {reason}</source>
         <translation>无法播放
 {reason}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2932"/>
+        <location filename="../../ui/widgets.py" line="3051"/>
         <source>Aperçu vidéo limité (codec non pris en charge)</source>
         <translation>受限视频预览（编解码器不受支持）</translation>
     </message>
@@ -4595,12 +4710,12 @@ Ajouter cette modification en attente ?</source>
         <translation>未知状态</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="1989"/>
+        <location filename="../../ui/widgets.py" line="2097"/>
         <source>Aucun élément</source>
         <translation>没有商品</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2257"/>
+        <location filename="../../ui/widgets.py" line="2376"/>
         <source>{label}
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4609,7 +4724,7 @@ Ajouter cette modification en attente ?</source>
 （预览需要 ffmpeg）</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2370"/>
+        <location filename="../../ui/widgets.py" line="2489"/>
         <source>PDF
 {name}
 (aperçu indisponible : installez poppler ou Ghostscript)</source>
@@ -4618,14 +4733,14 @@ Ajouter cette modification en attente ?</source>
 （预览不可用：请安装 poppler 或 Ghostscript）</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2387"/>
+        <location filename="../../ui/widgets.py" line="2506"/>
         <source>Audio
 {name}</source>
         <translation>音频
 {name}</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2417"/>
+        <location filename="../../ui/widgets.py" line="2536"/>
         <source>Vidéo
 {name}
 (ffmpeg requis pour l&apos;aperçu)</source>
@@ -4634,7 +4749,7 @@ Ajouter cette modification en attente ?</source>
 （预览需要 ffmpeg）</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2439"/>
+        <location filename="../../ui/widgets.py" line="2558"/>
         <source>Vidéo
 {name}
 ({reason})</source>
@@ -4643,7 +4758,7 @@ Ajouter cette modification en attente ?</source>
 （{reason}）</translation>
     </message>
     <message>
-        <location filename="../../ui/widgets.py" line="2465"/>
+        <location filename="../../ui/widgets.py" line="2584"/>
         <source>Image</source>
         <translation>图片</translation>
     </message>
@@ -4712,35 +4827,35 @@ Ajouter cette modification en attente ?</source>
 <context>
     <name>_HdrRow</name>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="126"/>
+        <location filename="../../modules/convert/codec_tree.py" line="136"/>
         <source>HDR</source>
         <translation>高动态范围</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="129"/>
+        <location filename="../../modules/convert/codec_tree.py" line="140"/>
         <source>Tone-mapping vers SDR</source>
         <translation>色调映射到 SDR</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="130"/>
+        <location filename="../../modules/convert/codec_tree.py" line="141"/>
         <source>HDR natif (AV1 10 bits)</source>
         <translation>原生 HDR（10 位 AV1）</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="131"/>
+        <location filename="../../modules/convert/codec_tree.py" line="142"/>
         <source>Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR (codec AV1 uniquement ; les autres codecs passent toujours en SDR).</source>
         <translation>HDR 视频：转换为 SDR（到处兼容）或保留 HDR（仅限 AV1 编解码器；其他编解码器始终切换到 SDR）。</translation>
     </message>
     <message>
-        <location filename="../../modules/convert/codec_tree.py" line="134"/>
-        <source>Le HDR natif n&apos;est possible qu&apos;avec le codec vidéo AV1 : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
-        <translation>原生 HDR 仅在视频编解码器为 AV1 时可用：使用所选编解码器时，HDR 视频会转换为 SDR（色调映射）。</translation>
+        <location filename="../../modules/convert/codec_tree.py" line="145"/>
+        <source>Le HDR natif n&apos;est possible qu&apos;avec l&apos;AV1 logiciel (SVT-AV1 ou libaom) : avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).</source>
+        <translation>原生 HDR 仅在使用软件 AV1（SVT-AV1 或 libaom）时可行：使用所选编解码器时，HDR 视频会转换为 SDR（色调映射）。</translation>
     </message>
 </context>
 <context>
     <name>_TabCloseButton</name>
     <message>
-        <location filename="../../launcher/atlas_window.py" line="1045"/>
+        <location filename="../../launcher/atlas_window.py" line="1071"/>
         <source>Fermer l&apos;onglet</source>
         <translation>关闭标签页</translation>
     </message>

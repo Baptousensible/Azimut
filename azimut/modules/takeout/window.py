@@ -15,7 +15,7 @@ from azimut.core.storage import get_storage
 from azimut.modules.tags import engine as tags
 from azimut.modules.takeout import MODULE, engine as eng
 from azimut.modules.takeout.workers import AnalyzeWorker, ApplyWorker, TakeoutUndoWorker
-from azimut.ui.controls import CheckBox, set_action_available
+from azimut.ui.controls import CheckBox, fit_combo_to_panel, set_action_available
 from azimut.ui.file_dialog import choose_directory, choose_files, media_filter
 from azimut.ui.module_window import ModuleWindow
 from azimut.ui.widgets import Card, Column, DataTable, DropZone
@@ -133,7 +133,14 @@ class TakeoutWindow(ModuleWindow):
                                "Les vidéos QuickTime sont toujours écrites en UTC."))
         idx = self.cmb_tz.findData(p.get("tz", eng.TZ_UTC))
         self.cmb_tz.setCurrentIndex(max(0, idx))
+        # Le libellé du fuseau est long : la liste ne doit pas élargir le panneau.
+        fit_combo_to_panel(self.cmb_tz)
+        self.cmb_tz.setToolTip(self.cmb_tz.currentText())
+        self.cmb_tz.setAccessibleDescription(self.cmb_tz.currentText())
         self.cmb_tz.currentIndexChanged.connect(lambda _i: self._on_option_changed("tz", self.cmb_tz.currentData()))
+        self.cmb_tz.currentIndexChanged.connect(
+            lambda _i: (self.cmb_tz.setToolTip(self.cmb_tz.currentText()),
+                        self.cmb_tz.setAccessibleDescription(self.cmb_tz.currentText())))
         card.body_layout.addWidget(self.cmb_tz)
         sl.addWidget(card)
         sl.addStretch(1)
@@ -308,7 +315,7 @@ class TakeoutWindow(ModuleWindow):
                f"L'état précédent est enregistré pour permettre l'annulation.{copie}\n\nContinuer ?")
         if QMessageBox.question(self, self.tr("Confirmer l'application"), msg, _Yes | _No, _No) != _Yes:
             return
-        worker = ApplyWorker(exiftool, self._items, opts)
+        worker = ApplyWorker(exiftool, self._items, opts, roots=self._roots)
         self.run_worker(worker, on_completed=self._on_applied,
                         on_cancelled=lambda: self._on_applied(worker.result),
                         lock_widgets=self._lockables, history_action="Réinjection Takeout")

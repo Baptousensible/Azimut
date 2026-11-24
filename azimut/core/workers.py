@@ -18,6 +18,7 @@ from typing import Callable, Sequence, TypeVar
 from PySide6.QtCore import QObject, QThread, Signal
 
 from azimut.core.logs import get_logger
+from azimut.core.power import keep_awake
 
 _log = get_logger("workers")
 
@@ -193,7 +194,8 @@ class BaseWorker(QThread):
     # ── Cycle de vie ─────────────────────────────────────────────────────
     def run(self) -> None:
         try:
-            result = self.do_work()
+            with keep_awake():
+                result = self.do_work()
         except CancelledError:
             self.cancelled.emit()
         except Exception as e:
@@ -397,18 +399,21 @@ class BaseWorker(QThread):
 
     # ── Parallélisme ─────────────────────────────────────────────────────
     def map_parallel(self, fn: Callable[[T], R], items: Sequence[T], *, workers: int = 4,
-                     label: str = "") -> list[R | None]:
+                     label: str = "", report_progress: bool = True) -> list[R | None]:
         """Applique ``fn`` à chaque élément sur ``workers`` threads ; résultats dans l'ordre de ``items``.
 
         Une exception dans ``fn`` donne ``None`` + un WARN. L'annulation lève ``CancelledError`` :
         les tâches non démarrées sont abandonnées, celles en cours se terminent.
+        ``report_progress=False`` : le pool n'émet pas son propre compteur (une tâche qui publie déjà
+        une progression globale, comme Convert, ne doit pas voir la barre repartir de zéro).
         """
         total = len(items)
         results: list = [None] * total
         if total == 0:
             return results
         self.check_cancelled()
-        self.emit_progress(0, total, label)
+        if report_progress:
+            self.emit_progress(0, total, label)
         executor = ThreadPoolExecutor(max_workers=max(1, min(int(workers), total)))
         done_count = 0
         try:
@@ -428,7 +433,8 @@ class BaseWorker(QThread):
                         self.emit_log("WARN", f"{prefix}élément {i + 1}/{total} en échec "
                                               f"({type(e).__name__} : {e})")
                     done_count += 1
-                    self.emit_progress(done_count, total, label)
+                    if report_progress:
+                        self.emit_progress(done_count, total, label)
         finally:
             executor.shutdown(wait=True, cancel_futures=True)
         return results

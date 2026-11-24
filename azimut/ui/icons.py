@@ -20,7 +20,7 @@ import re
 from functools import lru_cache
 
 from PySide6.QtCore import QByteArray, QRectF, Qt
-from PySide6.QtGui import QColor, QGuiApplication, QIcon, QImage, QPainter, QPixmap
+from PySide6.QtGui import QColor, QGuiApplication, QIcon, QImage, QPainter, QPixmap, QScreen
 from PySide6.QtSvg import QSvgRenderer
 
 from azimut.core.logs import get_logger
@@ -266,9 +266,119 @@ def _layers_for(name: str, pixmap: QPixmap) -> dict[str, QPixmap]:
     return layers
 
 
+def _screen_alive(screen: QScreen | None) -> bool:
+    """Vrai si le QScreen est encore utilisable (AZ-C09).
+
+    macOS détruit et recrée ses objets QScreen à l'affichage d'une fenêtre et à chaque
+    reconfiguration d'écran : le pointeur rendu par ``QWindow.screen()`` désigne alors
+    parfois un objet C++ déjà détruit, dont le wrapper shiboken lève RuntimeError. Lire
+    cet écran faisait retomber ``_device_pixel_ratio()`` à 1 et l'emblème était rendu à
+    demi-résolution sur le Retina, à tous les crans de zoom.
+    """
+    return _screen_pixel_ratio(screen) is not None
+
+
+def _screen_pixel_ratio(screen: QScreen | None) -> float | None:
+    """Densité d'un écran, None si Qt a détruit l'objet entre-temps."""
+    if screen is None:
+        return None
+    try:
+        return float(screen.devicePixelRatio())
+    except RuntimeError:                     # wrapper d'un objet C++ déjà détruit
+        return None
+
+
+def _live_screen(window) -> QScreen | None:
+    """Écran vivant d'une fenêtre, même si Qt a remplacé l'objet depuis ``screen()``."""
+    try:
+        screen = window.screen()
+    except RuntimeError:                     # fenêtre détruite entre-temps (shiboken)
+        return None
+    if _screen_alive(screen):
+        return screen
+    if screen is None:
+        return None
+    # L'écran de la fenêtre a été recréé par Qt : on le retrouve par sa géométrie, puis
+    # par la liste des écrans vivants. C'est la sélection qu'on corrige, pas le rendu.
+    try:
+        candidate = QGuiApplication.screenAt(window.geometry().center())
+    except RuntimeError:                     # fenêtre détruite pendant la lecture
+        return None
+    if _screen_alive(candidate):
+        return candidate
+    primary = QGuiApplication.primaryScreen()
+    if _screen_alive(primary):
+        return primary
+    for live in QGuiApplication.screens():
+        if _screen_alive(live):
+            return live
+    return None
+
+
+def _active_screen() -> QScreen | None:
+    """Écran de la fenêtre active : jamais seulement l'écran principal (AZ-C08).
+
+    Une fenêtre affichée sur un second moniteur de densité différente doit être dessinée à
+    la densité de *cet* écran : lire la primaire y donnait des icônes floues ou trop
+    grandes. La primaire ne reste qu'un repli quand aucune fenêtre n'est affichée.
+    """
+    for window in _active_windows():
+        screen = _live_screen(window)
+        if screen is not None:
+            return screen
+    primary = QGuiApplication.primaryScreen()
+    if _screen_alive(primary):
+        return primary
+    for screen in QGuiApplication.screens():
+        if _screen_alive(screen):
+            return screen
+    return None
+
+
+def _active_windows() -> list:
+    """Fenêtres affichées, la fenêtre au focus d'abord."""
+    try:
+        focus = QGuiApplication.focusWindow()
+        windows = [focus] if focus is not None else []
+        windows.extend(QGuiApplication.topLevelWindows())
+    except RuntimeError:                     # fenêtre détruite entre-temps (shiboken)
+        return []
+    active = []
+    for window in windows:
+        try:
+            if window is not focus and not window.isVisible():
+                continue
+        except RuntimeError:                 # objet C++ déjà supprimé : on passe au suivant
+            continue
+        active.append(window)
+    return active
+
+
+def _window_pixel_ratio() -> float | None:
+    """Densité à laquelle Qt peint la fenêtre active, None si aucune fenêtre."""
+    for window in _active_windows():
+        try:
+            ratio = float(window.devicePixelRatio())
+        except RuntimeError:                 # fenêtre détruite pendant la lecture
+            continue
+        if ratio > 0:
+            return ratio
+    return None
+
+
 def _device_pixel_ratio() -> float:
-    screen = QGuiApplication.primaryScreen()
-    return max(1.0, float(screen.devicePixelRatio())) if screen is not None else 1.0
+    """Facteur HiDPI de l'écran où les icônes sont réellement affichées.
+
+    On garde le plus grand des deux facteurs connus, celui de l'écran et celui de la
+    fenêtre. macOS recrée ses objets QScreen pendant un changement de style ou d'écran :
+    l'écran annonce alors brièvement 1.0 alors que la fenêtre est déjà peinte en 2×, et
+    l'emblème restait rastérisé en 1× jusqu'au changement de zoom suivant (AZ-C09).
+    """
+    ratios = [1.0]
+    for ratio in (_window_pixel_ratio(), _screen_pixel_ratio(_active_screen())):
+        if ratio is not None:
+            ratios.append(ratio)
+    return max(ratios)
 
 
 def _render_scale() -> float:
@@ -468,13 +578,17 @@ def app_icon() -> QIcon:
     return tile_icon("globe")
 
 
-@lru_cache(maxsize=8)
 def brand_pixmap(name: str, height: int, variant: str = "") -> QPixmap:
-    """Image de marque PNG (logo Azimut), variante de thème et échelle pour l'interface.
+    """Logo PNG pour une hauteur logique, rendu à la densité de l'écran.
 
-    ``variant`` vaut « dark » ou « light » : le fichier ``<name>_<variant>.png`` est
-    utilisé s'il existe, sinon l'asset d'origine sert de repli.
+    ``variant`` choisit ``<name>_<variant>.png``, avec repli sur l'asset d'origine.
     """
+    return _brand_pixmap(name, max(1, int(height)), variant, _device_pixel_ratio())
+
+
+@lru_cache(maxsize=32)
+def _brand_pixmap(name: str, height: int, variant: str, dpr: float) -> QPixmap:
+    """Rendu mémorisé par taille logique et densité d'écran."""
     path = resource_path(f"{name}_{variant}.png") if variant else None
     if path is None or not path.is_file():
         path = resource_path(f"{name}.png")
@@ -483,7 +597,6 @@ def brand_pixmap(name: str, height: int, variant: str = "") -> QPixmap:
     source = QPixmap(str(path))
     if source.isNull():
         return source
-    dpr = _device_pixel_ratio()
     target = max(1, round(height * dpr))
     pixmap = source.scaled(target, target, Qt.AspectRatioMode.KeepAspectRatio,
                            Qt.TransformationMode.SmoothTransformation)
@@ -505,4 +618,4 @@ def clear_cache() -> None:
     _LAYER_CACHE.clear()
     _INK_CACHE.clear()
     app_icon.cache_clear()
-    brand_pixmap.cache_clear()
+    _brand_pixmap.cache_clear()

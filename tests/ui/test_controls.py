@@ -62,6 +62,21 @@ def test_switch_row_keeps_its_switch_next_to_the_label(qapp) -> None:
     host.close()
 
 
+def test_switch_row_aligned_right_keeps_its_label_on_one_line(qapp) -> None:
+    """Le libellé reçoit la largeur libre, même quand la police est petite."""
+    host = QWidget()
+    layout = QVBoxLayout(host)
+    row = SwitchRow("Réduire les animations", align_right=True)
+    layout.addWidget(row)
+    host.resize(750, 80)
+    host.show()
+    qapp.processEvents()
+    needed = row.label.fontMetrics().horizontalAdvance(row.text())
+    assert row.label.width() >= needed
+    assert row.switch.x() > row.width() // 2
+    host.close()
+
+
 def test_switch_dark_track_has_a_visible_gradient(qapp) -> None:
     manager = ThemeManager.instance()
     previous = manager.theme()

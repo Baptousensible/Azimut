@@ -17,6 +17,36 @@ ALL_ENC = frozenset({"libsvtav1", "libaom-av1", "libx264", "mjpeg", "libwebp",
                      "libmp3lame", "aac", "libopus", "flac", "pcm_s16be", "pcm_s24le"})
 
 
+@pytest.fixture(autouse=True)
+def _dispose_convert_windows():
+    """Détruit les fenêtres Convert après chaque test.
+
+    Les widgets se connectent au ThemeManager, un singleton : une fenêtre seulement
+    fermée reste retenue et les tests de thème suivants restylent des fenêtres fantômes.
+    """
+    yield
+    from PySide6.QtCore import QCoreApplication, QEvent
+    from PySide6.QtWidgets import QApplication
+
+    from azimut.modules.convert.window import ConvertWindow
+
+    app = QApplication.instance()
+    if app is None:
+        return
+    for widget in app.topLevelWidgets():
+        if isinstance(widget, ConvertWindow):
+            widget.close()
+            widget.deleteLater()
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    app.processEvents()
+
+
+def probe_result(encoders, failed=frozenset()):
+    """Résultat de détection simulé, sans lancer FFmpeg ni toucher au matériel."""
+    from azimut.modules.convert.workers import EncoderProbe
+    return EncoderProbe(frozenset(encoders), frozenset(failed))
+
+
 def cmd_for(profile, enc=ALL_ENC):
     return engine.build_command(profile, Path("/in/a.src"), Path("/out/.a.part" + profile.out_ext),
                                 ffmpeg="ffmpeg", encoders=enc)
@@ -151,7 +181,9 @@ def test_every_codec_gets_the_right_sliders(window):
     assert names["video_mkv_h264"] == {"crf", "preset"}
     assert names["video_mp4_h264_nvenc"] == names["video_mp4_h265_nvenc"] == {"crf", "preset"}
     assert names["video_mp4_h264_qsv"] == names["video_mp4_h265_qsv"] == {"crf", "preset"}
+    assert names["video_mp4_av1_nvenc"] == names["video_mp4_av1_qsv"] == {"crf", "preset"}
     assert names["video_mp4_h264_vaapi"] == names["video_mp4_h265_vaapi"] == {"crf"}
+    assert names["video_mp4_av1_vaapi"] == {"crf"}
     assert names["video_webm_vp9"] == {"crf", "preset"}
     assert names["video_mp4_mpeg4"] == names["video_mpg_mpeg2"] == names["video_ogv_theora"] == {"quality"}
     assert names["video_mov_prores"] == {"preset"}
@@ -258,12 +290,216 @@ def test_window_reload_uses_saved_values(qapp):
     w = ConvertWindow()
     crf = w.codec_tree.rows("image_avif")["crf"]
     crf.slider.setValue(crf._values.index(31))
-    w.codec_tree.slider_parallel.slider.setValue(2)               # 3 = index 2
+    w.codec_tree.chk_parallel_auto.setChecked(False)              # réglage manuel par famille
+    w.codec_tree.parallel_rows["image"].slider.setValue(2)        # 3 = index 2
     w.close()
     w2 = ConvertWindow()
-    assert w2._profile("image").crf == 31 and w2.codec_tree.slider_parallel.value() == 3
+    assert w2._profile("image").crf == 31
+    assert w2.codec_tree.parallel_mode() == "manual"
+    assert w2.codec_tree.parallel_values()["image"] == 3
     assert w2.codec_tree.rows("image_avif")["crf"].value() == 31
     w2.close()
+
+
+def test_video_list_marks_gpu_profiles_and_names_detected_hardware(qapp, monkeypatch):
+    from azimut.modules.convert import engine
+    from azimut.modules.convert.window import ConvertWindow
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: None)
+    w = ConvertWindow()
+    combo = w.codec_tree._combos["video"]
+    gpu_item = combo.itemText(combo.findData("video_mp4_h264_nvenc"))
+    cpu_item = combo.itemText(combo.findData("video_mp4_h264"))
+    assert "GPU" in gpu_item and "GPU" not in cpu_item
+    w._on_encoders(probe_result({"h264_nvenc", "hevc_nvenc", "libx264", "aac", "libopus", "libsvtav1"}))
+    text = w.codec_tree.hardware_label.text()
+    assert "NVIDIA NVENC" in text and "H.264" in text and "H.265" in text
+    w.close()
+
+
+def test_no_gpu_is_reported_plainly(qapp, monkeypatch):
+    from azimut.modules.convert import engine
+    from azimut.modules.convert.window import ConvertWindow
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: None)
+    w = ConvertWindow()
+    w._on_encoders(probe_result({"libx264", "libx265", "aac", "libopus", "libsvtav1"}))
+    assert "Aucune accélération" in w.codec_tree.hardware_label.text()
+    w.close()
+
+
+def test_av1_hardware_profiles_use_backend_presets_and_quality_flags(monkeypatch):
+    nvenc = profiles.get_profile("video_mp4_av1_nvenc")
+    qsv = profiles.get_profile("video_mp4_av1_qsv")
+    vaapi = profiles.get_profile("video_mp4_av1_vaapi")
+    assert advanced.family(nvenc) == advanced.family(qsv) == advanced.family(vaapi) == "av1"
+    assert advanced.preset_choices(nvenc) == advanced.NVENC_PRESETS
+    assert advanced.preset_choices(qsv) == advanced.QSV_PRESETS
+    assert advanced.preset_choices(vaapi) == ()
+    assert advanced.crf_range(nvenc) == (0, 63)
+    enc = frozenset({"av1_nvenc", "av1_qsv", "av1_vaapi", "aac"})
+    nv = cmd_for(nvenc, enc)
+    assert val(nv, "-c:v") == "av1_nvenc" and val(nv, "-rc") == "vbr"
+    assert val(nv, "-cq") == "32" and val(nv, "-preset") == "p4" and val(nv, "-tag:v") == "av01"
+    qs = cmd_for(qsv, enc)
+    assert val(qs, "-c:v") == "av1_qsv" and val(qs, "-global_quality") == "32"
+    assert val(qs, "-preset") == "medium" and "qsv=hw" in qs
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: "/dev/dri/renderD128")
+    va = cmd_for(vaapi, enc)
+    assert val(va, "-c:v") == "av1_vaapi" and val(va, "-qp") == "32"
+    assert val(va, "-vaapi_device") == "/dev/dri/renderD128"
+
+
+def test_cpu_vs_gpu_quality_hint_appears_with_hardware(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    assert not w.codec_tree.quality_hint.isVisibleTo(w)
+    w._on_encoders(probe_result({"h264_nvenc", "libx264", "aac"}))
+    hint = w.codec_tree.quality_hint
+    assert hint.isVisibleTo(w) and "CPU" in hint.text() and "plus gros" in hint.text()
+    w._on_encoders(probe_result({"libx264", "aac"}))
+    assert not hint.isVisibleTo(w)
+    w.close()
+
+
+def test_probe_failure_reports_unknown_hardware(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    w._on_probe_failed("échec simulé")
+    assert "indéterminé" in w.codec_tree.hardware_label.text()
+    assert not w.codec_tree.quality_hint.isVisibleTo(w)
+    w.close()
+
+
+def test_gpu_profiles_explain_the_quality_tradeoff(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    tree = w.codec_tree
+    gpu = tree._description(profiles.get_profile("video_mp4_av1_nvenc"))
+    cpu = tree._description(profiles.get_profile("video_mp4_av1"))
+    assert "plus rapide" in gpu and "encodeur CPU" in gpu
+    assert "Conversion GPU" not in cpu
+    w.close()
+
+
+def test_encoder_refresh_keeps_the_video_choice(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    tree = w.codec_tree
+    encoders = frozenset({"av1_nvenc", "libx264", "aac"})
+    w._on_encoders(probe_result(encoders))
+    tree.choose("video", "video_mp4_av1_nvenc")
+    w._on_encoders(probe_result(encoders))            # même liste : le choix ne bouge pas
+    assert tree.selected("video") == "video_mp4_av1_nvenc"
+    w._on_encoders(probe_result({"libx264", "aac"}))    # l'encodeur disparaît : repli sur un profil visible
+    assert tree.selected("video") != "video_mp4_av1_nvenc"
+    w.close()
+
+
+def test_av1_hardware_profiles_are_listed_only_when_ffmpeg_exposes_them(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    combo = w.codec_tree._combos["video"]
+    assert combo.findData("video_mp4_av1_nvenc") == -1
+    w._on_encoders(probe_result({"av1_nvenc", "av1_qsv", "libx264", "aac", "libopus"}))
+    assert combo.findData("video_mp4_av1_nvenc") >= 0 and combo.findData("video_mp4_av1_qsv") >= 0
+    assert combo.findData("video_mp4_av1_vaapi") == -1
+    label = combo.itemText(combo.findData("video_mp4_av1_nvenc"))
+    assert "GPU" in label and "AV1" in label
+    w._on_encoders(probe_result({"libx264", "aac", "libopus"}))
+    assert combo.findData("video_mp4_av1_nvenc") == -1
+    w.close()
+
+
+def test_probe_hardware_only_tests_listed_hardware_encoders(qapp, monkeypatch):
+    from azimut.core.workers import BaseWorker, ProcessResult
+    from azimut.modules.convert import workers
+
+    class FakeWorker(BaseWorker):
+        pass
+
+    w = FakeWorker()
+    calls: list[list[str]] = []
+
+    def fake_run(cmd, **_kwargs):
+        calls.append(cmd)
+        encoder = cmd[cmd.index("-c:v") + 1]
+        return ProcessResult(0 if encoder == "h264_nvenc" else -1, "", "no device")
+
+    monkeypatch.setattr(w, "run_process", fake_run)
+    monkeypatch.setattr(w, "emit_log", lambda *_args, **_kwargs: None)
+    failed = workers.probe_hardware(w, Path("ffmpeg"), {"h264_nvenc", "hevc_nvenc", "h264_qsv", "libx264"})
+    assert failed == frozenset({"hevc_nvenc", "h264_qsv"})
+    assert len(calls) == 3 and all(cmd[0] == "ffmpeg" for cmd in calls)
+
+
+def test_closing_window_cancels_the_pending_encoder_probe(qapp):
+    """Une fenêtre fermée ne doit pas lancer sa sonde FFmpeg pendant un autre test."""
+    from azimut.modules.convert.window import ConvertWindow
+
+    w = ConvertWindow()
+    assert w._probe_timer.isActive()
+    w.close()
+    assert not w._probe_timer.isActive()
+
+
+def test_probe_worker_returns_encoders_and_driver_failures(monkeypatch):
+    from azimut.modules.convert import workers
+    monkeypatch.setattr(workers, "detect_encoders", lambda _w, _f: frozenset({"h264_nvenc"}))
+    monkeypatch.setattr(workers, "probe_hardware", lambda _w, _f, _e: frozenset({"h264_nvenc"}))
+    result = workers.ProbeWorker(Path("ffmpeg")).do_work()
+    assert result == workers.EncoderProbe(frozenset({"h264_nvenc"}), frozenset({"h264_nvenc"}))
+
+
+def test_driver_failure_marks_video_profiles_unavailable(qapp, monkeypatch):
+    from azimut.modules.convert.window import ConvertWindow
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: None)
+    w = ConvertWindow()
+    w._on_encoders(probe_result({"h264_nvenc", "hevc_nvenc", "libx264", "aac"}, {"hevc_nvenc"}))
+    combo = w.codec_tree._combos["video"]
+    working = combo.itemText(combo.findData("video_mp4_h264_nvenc"))
+    broken = combo.itemText(combo.findData("video_mp4_h265_nvenc"))
+    assert "pilote ou GPU ne répond pas" in broken
+    assert "pilote ou GPU ne répond pas" not in working
+    assert "ne répond pas" in w.codec_tree.hardware_label.text()
+    tree = w.codec_tree
+    tree.choose("video", "video_mp4_h264_nvenc")
+    assert tree.parallel_values()["video"] == 2          # encodeur testé et fonctionnel
+    tree.choose("video", "video_mp4_h265_nvenc")
+    assert tree.parallel_values()["video"] == 1          # pilote muet : profil indisponible
+    w.close()
+
+
+def test_window_auto_parallel_tracks_hardware_video_profile(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    tree = w.codec_tree
+    assert tree.parallel_mode() == "auto"
+    tree.choose("video", "video_mp4_h264_nvenc")
+    assert tree.parallel_values()["video"] == 2 and tree.parallel_rows["video"].value() == 2
+    tree.choose("video", "video_mp4_h264")
+    assert tree.parallel_values()["video"] == 1 and tree.parallel_rows["video"].value() == 1
+    tree.chk_parallel_auto.setChecked(False)
+    tree.choose("video", "video_mp4_h265_nvenc")
+    assert tree.parallel_values()["video"] == 1          # en manuel, le choix reste respecté
+    w.close()
+
+
+def test_window_defaults_to_automatic_parallelism(qapp):
+    from azimut.modules.convert.window import ConvertWindow
+    w = ConvertWindow()
+    assert w.codec_tree.parallel_mode() == "auto"
+    assert w.codec_tree.parallel_values()["video"] == 1
+    assert not w.codec_tree.parallel_rows["image"].slider.isEnabled()   # valeurs calculées
+    w.close()
+
+
+def test_window_migrates_the_old_single_parallel_setting(qapp):
+    from azimut.core.prefs import Preferences
+    from azimut.modules.convert.window import ConvertWindow
+    Preferences.instance().module("convert").set("parallel", 4)
+    w = ConvertWindow()
+    assert w.codec_tree.parallel_mode() == "manual"
+    assert w.codec_tree.parallel_values() == {"copy": 4, "image": 4, "audio": 4, "video": 4}
+    w.close()
 
 
 def test_window_migrates_legacy_profiles(qapp):
@@ -485,6 +721,51 @@ def test_migrate_legacy_keeps_choice_and_custom_values():
     assert sel == {"image": "image_avif"} and store == {"image_avif": {"crf": 25}}      # valeur implicite du HQ
     sel, store = advanced.migrate_legacy({"image": "image_webp"}, {"image_webp": {"quality": 90}})
     assert sel == {"image": "image_webp"} and store == {"image_webp": {"quality": 90}}   # rien à migrer
+
+
+def test_auto_parallel_follows_cores_and_threads():
+    assert advanced.auto_parallel("video", 0, cpu_count=32) == 1        # l'encodeur vidéo utilise déjà tout
+    assert advanced.auto_parallel("copy", 0, cpu_count=8) == 4
+    assert advanced.auto_parallel("copy", 0, cpu_count=2) == 2
+    assert advanced.auto_parallel("audio", 0, cpu_count=8) == 4
+    assert advanced.auto_parallel("audio", 0, cpu_count=2) == 1
+    assert advanced.auto_parallel("image", 0, cpu_count=8) == 4
+    assert advanced.auto_parallel("image", 0, cpu_count=4) == 2
+    assert advanced.auto_parallel("image", 4, cpu_count=8) == 2         # threads manuels : cœurs partagés
+    assert advanced.auto_parallel("image", 8, cpu_count=8) == 1
+    assert advanced.auto_parallel("image", 64, cpu_count=8) == 1
+    assert advanced.auto_parallel("image", 0, cpu_count=1) == 1
+    assert advanced.clamp_parallel(9, "video") == advanced.MAX_PARALLEL_VIDEO
+    assert advanced.clamp_parallel(9) == 9                              # hors vidéo : plafond global
+
+
+def test_auto_parallel_allows_two_videos_only_with_hardware_encoder():
+    assert advanced.auto_parallel("video", 0, cpu_count=32) == 1
+    assert advanced.auto_parallel("video", 0, cpu_count=32, hardware_video=True) == 2
+    assert advanced.parallel_counts("auto", None, threads=0, cpu_count=8)["video"] == 1
+    assert advanced.parallel_counts("auto", None, threads=0, cpu_count=8,
+                                    hardware_video=True)["video"] == 2
+    # Le mode manuel garde le choix de l'utilisateur, même avec un encodeur matériel.
+    assert advanced.parallel_counts("manual", {"video": 1}, cpu_count=8,
+                                    hardware_video=True)["video"] == 1
+
+
+def test_parallel_counts_auto_and_manual():
+    assert advanced.parallel_counts("auto", None, threads=2, cpu_count=8) == {
+        "copy": 4, "image": 4, "audio": 4, "video": 1}
+    manual = advanced.parallel_counts("manual", {"image": 3, "video": 99}, cpu_count=8)
+    assert manual == {"copy": 1, "image": 3, "audio": 1, "video": advanced.MAX_PARALLEL_VIDEO}
+
+
+def test_worker_shares_cores_per_family():
+    from azimut.modules.convert.workers import ConvertWorker
+    profs = {k: profiles.default_profile(k) for k in profiles.KINDS}
+    w = ConvertWorker([], profs, None, Path("ffmpeg"), Path("ffprobe"), ALL_ENC,
+                      parallel_by_kind={"image": 4, "video": 1})
+    assert w._parallel_by_kind == {"copy": 1, "image": 4, "audio": 1, "video": 1}
+    assert w._profiles["image"].threads == advanced.auto_threads(4)
+    assert w._profiles["video"].threads == advanced.default_video_threads()
+    assert w._profiles["audio"].threads == 0
 
 
 def test_worker_shares_cores_when_parallel():

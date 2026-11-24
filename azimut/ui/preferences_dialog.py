@@ -23,12 +23,13 @@ from azimut.core.logs import get_logger
 from azimut.core.prefs import Preferences
 from azimut.ui.controls import SegmentedControl, SwitchRow
 from azimut.ui.glass import GlassDialog
-from azimut.ui.theme import ThemeManager
+from azimut.ui.theme import ZOOM_STEPS, ThemeManager, scaled
 from azimut.ui.widgets import Card, DialogHeader, PathField, StatusChip, plain_tooltip
 
 log = get_logger(__name__)
 
-ZOOM_CHOICES: tuple[float, ...] = (0.9, 1.0, 1.1, 1.25, 1.5)
+# Crans partagés avec le calibrage du premier lancement (theme.ZOOM_STEPS).
+ZOOM_CHOICES: tuple[float, ...] = ZOOM_STEPS
 _DETECT_TIMEOUT_MS = 35_000        # 3 sondes de 10 s au pire, plus la vérification du chemin saisi
 
 # Clés stables des origines de binaires ; les libellés sont traduits à l'affichage.
@@ -115,10 +116,6 @@ class PreferencesPage(QWidget):
         self.theme_combo.addItem(self.tr("Sombre"), "dark")
         self.theme_combo.addItem(self.tr("Clair"), "light")
         self.theme_combo.setCurrentIndex(max(0, self.theme_combo.findData(self._theme.appearance())))
-        # Le thème n'est pas mémorisé : le dire évite de croire à un réglage perdu.
-        self.theme_combo.setToolTip(self.tr(
-            "Le thème suit le système à chaque démarrage ; un choix explicite ne dure "
-            "que jusqu'à la fermeture d'Azimut."))
         self.zoom_combo = QComboBox()
         for z in ZOOM_CHOICES:
             self.zoom_combo.addItem(f"{round(z * 100)} %", z)
@@ -207,10 +204,10 @@ class PreferencesPage(QWidget):
         self.detect_buttons: dict[str, QPushButton] = {}
         for name in binaries.KNOWN_BINARIES:
             field = PathField(name, mode="file", filter=self.tr("Tous les fichiers (*)"))
-            field.label_widget.setMinimumWidth(70)
+            field.label_widget.setMinimumWidth(scaled(70))
             field.set_path(str(self._prefs.get(f"binaries.{name}", "") or ""))
             chip = StatusChip("…", "neutre")
-            chip.setMinimumWidth(190)
+            chip.setMinimumWidth(scaled(190))
             btn = QPushButton(self.tr("Détecter"))
             btn.setProperty("kind", "secondary")
             btn.clicked.connect(lambda _checked=False, n=name: self._detect(n))
@@ -355,13 +352,13 @@ class PreferencesPage(QWidget):
                    for name, field in self.fields.items())
 
     def _update_save_button(self) -> None:
-        """« Enregistrer » n'est actif qu'avec une modification ; « et relancer » si la langue change."""
+        """« Enregistrer et relancer » seulement quand la langue change."""
         restart = self._restart_allowed and self._language_changed()
         self.save_button.setText(
             self.tr("Enregistrer et relancer") if restart else self.tr("Enregistrer"))
         self.save_button.setEnabled(self._has_changes())
         self.save_button.setToolTip(
-            self.tr("Enregistre les préférences et redémarre Azimut pour appliquer la langue.")
+            self.tr("Enregistre les préférences et redémarre Azimut pour les appliquer.")
             if restart else "")
 
     # ── Détection ────────────────────────────────────────────────────────────
@@ -553,11 +550,36 @@ class PreferencesPage(QWidget):
         self._update_save_button()
 
     def refresh(self) -> None:
-        """Relit l'état des outils externes quand la page redevient visible."""
+        """Relit l'état appliqué et les outils externes quand la page redevient visible."""
+        self._sync_controls()
         self._refresh_chips(None)
         self._update_save_button()
         if binaries.refresh_in_progress() and not self._detect_timer.isActive():
             self._detect_timer.start()
+
+    def _sync_controls(self) -> None:
+        """Recale les réglages sur l'état appliqué, sauf modification en cours (AZ-C11).
+
+        La taille du texte et l'apparence changent aussi hors de cette page : menu
+        Présentation, Ctrl+T, zoom propre à chaque écran. Sans ce recalage, la page
+        affichait — puis réenregistrait — la valeur figée à sa construction : ouvrir les
+        Préférences après un changement de taille ramenait l'application à l'ancienne
+        valeur dès « Enregistrer », et le bouton restait actif sans rien à changer.
+        """
+        if self._has_changes():
+            return                       # modifications non enregistrées : on les conserve
+        self.theme_combo.setCurrentIndex(
+            max(0, self.theme_combo.findData(self._theme.appearance())))
+        zoom = float(self._theme.zoom())
+        self.zoom_combo.setCurrentIndex(
+            min(range(self.zoom_combo.count()),
+                key=lambda i: abs(float(self.zoom_combo.itemData(i)) - zoom)))
+        self.icon_combo.setCurrentIndex(max(0, self.icon_combo.findData(self._theme.icon_theme())))
+        for check, current in ((self.reduce_motion, self._theme.reduce_motion),
+                               (self.reduce_transparency, self._theme.reduce_transparency),
+                               (self.high_contrast, self._theme.high_contrast)):
+            check.setChecked(bool(current()))
+        self._remember_current()
 
     def _remember_current(self) -> None:
         """Fige les valeurs enregistrées : une annulation ultérieure revient à cet état."""
@@ -572,7 +594,7 @@ class PreferencesPage(QWidget):
         self._initial_paths = {name: field.path() for name, field in self.fields.items()}
 
     def _save_clicked(self) -> None:
-        """Enregistre, en relançant Azimut si la langue de l'interface a changé."""
+        """Enregistre les préférences ; relance seulement si la langue a changé."""
         restart = self._restart_allowed and self._language_changed()
         self._save()
         self._remember_current()

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import shutil
+from collections.abc import Collection
 import threading
 import time
 from dataclasses import dataclass, replace
@@ -11,7 +12,7 @@ from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, QObject, Signal
 
-from azimut.core.fsutil import atomic_write_text, format_duration, format_size, publish_no_replace
+from azimut.core.fsutil import atomic_write_text, format_duration, format_size, iter_files, publish_no_replace
 from azimut.core.logs import get_logger
 from azimut.core.workers import BaseWorker, CancelledError
 from azimut.modules.convert import advanced, engine, imaging, probe as probing
@@ -20,7 +21,7 @@ from azimut.modules.convert.engine import (
     STATE_PENDING, STATE_RUNNING, STATE_SKIPPED, STATE_UNSUPPORTED, Job, SourceItem,
 )
 
-from azimut.modules.convert.profiles import OTHER_KIND, Profile
+from azimut.modules.convert.profiles import AUDIO_EXTS, OTHER_KIND, VIDEO_EXTS, Profile
 from azimut.modules.tags import engine as tags
 from azimut.modules.takeout import engine as tk
 
@@ -32,6 +33,16 @@ RESOLUTION_ERRORS = ("resolution", "8k", "could not open encoder")
 STALL_FLOOR_MIN = 5                                # minutes sans signe de vie avant d'arrêter un encodage
 SLOW_PRESET_FLOOR = {0: 30, 1: 20, 2: 15}          # presets SVT-AV1 lents : blocage toléré plus longtemps (min)
 IMAGE_STALL_FLOOR = 180                            # secondes sans signe de vie avant d'arrêter une image
+HARDWARE_PROBE_TIMEOUT = 15.0                       # un pilote qui n'ouvre pas un encodeur en 15 s est considéré muet
+
+# Progression globale : une seule barre de 0 à 100 % pour tout le lot. La file est regroupée par étape
+# (copies, images, audios, vidéos) et chaque fichier compte pour la même part : la barre est ainsi
+# découpée exactement comme le nombre de fichiers de chaque famille, sans dépendre de leur taille.
+STEP_ORDER = ("copy", "image", "audio", "video")
+# Poids servant uniquement au temps restant : une grosse vidéo dure bien plus qu'une copie ou une photo.
+# Il ne pilote jamais la barre, qui reste proportionnelle aux effectifs.
+STEP_WEIGHT = {"copy": 0.2, "image": 1.0, "audio": 1.0, "video": 3.0}
+STATUS_INTERVAL = 1.0                              # secondes entre deux mises à jour du libellé d'étape
 
 
 @dataclass(frozen=True)
@@ -75,8 +86,38 @@ def detect_encoders(worker: BaseWorker, ffmpeg: Path) -> frozenset[str] | None:
     return names or None
 
 
+def probe_hardware(worker: BaseWorker, ffmpeg: Path, encoders: Collection[str]) -> frozenset[str]:
+    """Encodeurs matériels listés par FFmpeg dont le pilote ou le GPU ne répond pas réellement.
+
+    Un encodeur présent dans `ffmpeg -encoders` peut échouer au lancement (pilote absent, GPU occupé ou
+    trop ancien). On encode ici une unique image de 64×64 à vide : le code retour prouve que le pilote
+    s'est ouvert. Les profils concernés sont ensuite marqués indisponibles avant le démarrage.
+    """
+    failed: set[str] = set()
+    for encoder in engine.HARDWARE_PROBE_ENCODERS:
+        if encoder not in encoders:
+            continue
+        worker.check_cancelled()
+        res = worker.run_process(engine.build_hardware_probe_command(ffmpeg, encoder),
+                                 timeout=HARDWARE_PROBE_TIMEOUT, capture_stdout=False)
+        if res.cancelled or worker.is_cancelled():
+            raise CancelledError()
+        if res.returncode != 0:
+            failed.add(encoder)
+            detail = engine.stderr_digest(res.stderr, 200) or "échec sans message"
+            worker.emit_log("WARN", f"Test matériel : {encoder} ne répond pas — {detail}")
+    return frozenset(failed)
+
+
+@dataclass(frozen=True)
+class EncoderProbe:
+    """Détection terminée : encodeurs listés, et encodeurs matériels dont le test a échoué."""
+    encoders: frozenset[str] | None
+    hardware_failed: frozenset[str] = frozenset()
+
+
 class ProbeWorker(BaseWorker):
-    """Détecte les encodeurs disponibles (résultat : frozenset[str] ou None)."""
+    """Détecte les encodeurs et teste les pilotes matériels (résultat : EncoderProbe)."""
 
     def __init__(self, ffmpeg: Path, parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -85,7 +126,8 @@ class ProbeWorker(BaseWorker):
         self.summary = ""
 
     def do_work(self) -> object:
-        return detect_encoders(self, self._ffmpeg)
+        encoders = detect_encoders(self, self._ffmpeg)
+        return EncoderProbe(encoders, probe_hardware(self, self._ffmpeg, encoders or ()))
 
 
 class ScanWorker(BaseWorker):
@@ -114,19 +156,107 @@ class ScanWorker(BaseWorker):
         return result.items
 
 
+# Contrôle d'ouverture après un arrêt forcé : FFprobe ne lit pas les images (HEIC, AVIF…), qui sont
+# toujours publiées atomiquement ; les vidéos et les audios sont les sorties qu'il sait vraiment vérifier.
+VERIFY_PROBE_EXTS = frozenset(VIDEO_EXTS | AUDIO_EXTS)
+
+
+@dataclass
+class VerifyResult:
+    """Résultat d'une vérification de sortie : dossiers contrôlés, fichiers lus et fichiers suspects."""
+    bases: list[Path]
+    checked: int
+    damaged: list[engine.DamagedFile]
+
+
+class VerifyWorker(BaseWorker):
+    """Cherche les fichiers incomplets ou corrompus d'un dossier de sortie, sans rien modifier.
+
+    Trois contrôles : temporaires `.part` laissés par une conversion interrompue (ou par une écriture de
+    manifeste interrompue), sorties dont la taille ne correspond plus au manifeste de reprise, et vidéos ou
+    audios que FFprobe n'arrive pas à ouvrir. Le manifeste n'est écrit qu'en fin de lot : après un plantage,
+    les sorties du lot n'y figurent pas, d'où la vérification de tous les médias de la sortie et pas
+    seulement des entrées enregistrées.
+    """
+
+    def __init__(self, bases: list[Path], ffprobe: Path | None, parent: QObject | None = None) -> None:
+        super().__init__(parent)
+        self._bases = [Path(b) for b in bases]
+        self._ffprobe = ffprobe
+
+    def do_work(self) -> object:
+        existing: list[Path] = []
+        for base in self._bases:
+            if base.is_dir():
+                existing.append(base)
+            else:
+                self.emit_log("WARN", self.tr("Dossier de sortie introuvable : {path}").format(path=base))
+        damaged: list[engine.DamagedFile] = []
+        if not existing:
+            self.summary = self.tr("Aucun dossier de sortie à vérifier.")
+            return VerifyResult(self._bases, 0, damaged)
+
+        self.emit_status(self.tr("Recherche des conversions interrompues…"))
+        for base in existing:
+            self.check_cancelled()
+            for path in engine.find_incomplete_files(base, cancel=self.is_cancelled):
+                damaged.append(engine.DamagedFile(path, "partiel"))
+            damaged.extend(engine.manifest_size_problems(base))
+
+        media: list[Path] = []
+        if self._ffprobe is not None:
+            for base in existing:
+                media.extend(iter_files(base, extensions=VERIFY_PROBE_EXTS, cancel=self.is_cancelled))
+        else:
+            self.emit_log("WARN", self.tr("FFprobe introuvable : le contenu des vidéos et des audios n'est "
+                                          "pas contrôlé."))
+
+        checked = 0
+        unreadable = 0
+        total = len(media)
+        for n, path in enumerate(media, 1):
+            self.check_cancelled()
+            self.emit_progress(n, total, path.name)
+            res = self.run_process(engine.build_probe_command(self._ffprobe, path), timeout=60)
+            if res.cancelled or self.is_cancelled():
+                raise CancelledError()
+            checked += 1
+            if res.returncode != 0:
+                unreadable += 1
+                damaged.append(engine.DamagedFile(path, "illisible"))
+
+        unique: dict[str, engine.DamagedFile] = {}
+        for item in damaged:                                # un fichier tronqué et illisible ne compte qu'une fois
+            unique.setdefault(engine.path_key(item.path), item)
+        damaged = list(unique.values())
+        self.ok_count = checked
+        self.error_count = len(damaged)
+        self.summary = self.tr("{checked} fichier(s) contrôlé(s), {bad} suspect(s).").format(
+            checked=checked, bad=len(damaged))
+        self.emit_progress(total, total, "")
+        return VerifyResult(existing, checked, damaged)
+
+
 class ConvertWorker(BaseWorker):
     """Convertit la file. `job_updated(indice, {"state"?, "progress"?})` alimente le tableau."""
 
     job_updated = Signal(int, object)
+    steps_planned = Signal(object)                 # [(clé, libellé, nombre de fichiers), …]
 
     def __init__(self, items: list[SourceItem], profiles: dict[str, Profile], out_dir: Path | None,
                  ffmpeg: Path, ffprobe: Path, encoders: frozenset[str] | None = None,
                  parent: QObject | None = None, *, parallel: int = 1,
-                 options: ConvertOptions | None = None, exiftool: Path | None = None) -> None:
+                 parallel_by_kind: dict[str, int] | None = None,
+                 options: ConvertOptions | None = None, exiftool: Path | None = None,
+                 hardware_failed: Collection[str] | None = None) -> None:
         super().__init__(parent)
         self._items = list(items)
-        self._parallel = advanced.clamp_parallel(parallel)
-        self._profiles = self._share_cores(dict(profiles), self._parallel)
+        self._parallel = advanced.clamp_parallel(parallel)          # valeur de repli pour les familles non réglées
+        self._parallel_by_kind = {
+            kind: advanced.clamp_parallel((parallel_by_kind or {}).get(kind, self._parallel), kind)
+            for kind in advanced.PARALLEL_KINDS
+        }
+        self._profiles = self._share_cores(dict(profiles), self._parallel_by_kind)
         self._options = options or ConvertOptions()
         self._exiftool = exiftool
         self._lock = threading.Lock()
@@ -134,6 +264,7 @@ class ConvertWorker(BaseWorker):
         self._ffmpeg = ffmpeg
         self._ffprobe = ffprobe
         self._encoders = encoders
+        self._hardware_failed = frozenset(hardware_failed or ())
         self._filters: frozenset[str] | None = None
         self._filters_loaded = False
         self._lp_ok = True
@@ -151,16 +282,32 @@ class ConvertWorker(BaseWorker):
         self.error_count = 0
         self.summary = ""
         self.notification_summary = ""
+        self._track_lock = threading.Lock()
+        self._fractions: dict[int, float] = {}
+        self._done_units = 0.0                    # avancement de la barre : un fichier = une part
+        self._total_jobs = 1
+        self._weights: dict[int, float] = {}       # coût estimé, pour le temps restant uniquement
+        self._weighted = 0.0
+        self._total_weight = 0.0
+        self._last_pct = 0
+        self._started = 0.0
+        self._last_status = float("-inf")
+        self._step: tuple[str, int, int, int, dict] = ("", 0, 0, 0, {"done": 0})
 
     # ── Utilitaires ──
     @staticmethod
-    def _share_cores(profiles: dict[str, Profile], parallel: int) -> dict[str, Profile]:
-        """Threads « Auto » : vidéo bornée (RAM) ; en parallèle, les cœurs sont partagés entre les encodages."""
+    def _share_cores(profiles: dict[str, Profile], parallel_by_kind: dict[str, int]) -> dict[str, Profile]:
+        """Threads « Auto » : cœurs partagés entre les fichiers simultanés d'une même famille.
+
+        Le partage est fait par famille (les étapes sont traitées l'une après l'autre) ; une vidéo seule garde
+        des threads bornés pour limiter sa mémoire, même quand les images ou les copies sont en parallèle.
+        """
         out: dict[str, Profile] = {}
         for k, p in profiles.items():
             if p.kind in ("image", "video") and p.threads == 0:
-                if parallel > 1:
-                    p = replace(p, threads=advanced.auto_threads(parallel))
+                count = parallel_by_kind.get(p.kind, 1)
+                if count > 1:
+                    p = replace(p, threads=advanced.auto_threads(count))
                 elif p.kind == "video":
                     p = replace(p, threads=advanced.default_video_threads())
             out[k] = p
@@ -169,6 +316,11 @@ class ConvertWorker(BaseWorker):
     def _set_state(self, job: Job, state: str, progress: int | None = None) -> None:
         job.state = state
         self.job_updated.emit(job.index, {"state": state, "progress": progress})
+
+    def _missing_encoder_message(self, profile: Profile) -> str:
+        """Message quand aucun encodeur ne peut être choisi (encodeur absent ou pilote muet)."""
+        return (engine.missing_encoder_message(profile, self._encoders or (), self._hardware_failed)
+                or f"Encodeur manquant pour « {profile.label} ».")
 
     @staticmethod
     def _discard(path: Path) -> None:
@@ -208,17 +360,94 @@ class ConvertWorker(BaseWorker):
                 self._filters, self._filters_loaded = names or None, True
         return self._filters
 
+    # ── Progression globale et étapes ──
+    @staticmethod
+    def _step_key(job: Job) -> str:
+        """Étape d'un fichier : copie, ou famille de son profil d'encodage."""
+        if job.passthrough or job.item.kind == OTHER_KIND:
+            return "copy"
+        return job.profile.kind
+
+    def _plan_steps(self, jobs: list[Job]) -> list[tuple[str, str, list[Job]]]:
+        """Répartit la file en étapes (clé, libellé, fichiers) et initialise les deux progressions.
+
+        La barre compte les fichiers à parts égales : ses segments suivent exactement les effectifs.
+        Le temps restant utilise en plus un coût pondéré par la taille et la famille (STEP_WEIGHT),
+        pour qu'une longue vidéo ne soit pas estimée comme une copie instantanée.
+        """
+        labels = {"copy": self.tr("Copies"), "image": self.tr("Images"),
+                  "audio": self.tr("Audios"), "video": self.tr("Vidéos")}
+        grouped: dict[str, list[Job]] = {key: [] for key in STEP_ORDER}
+        for job in jobs:
+            grouped[self._step_key(job)].append(job)
+        with self._track_lock:
+            self._fractions = {job.index: 0.0 for job in jobs}
+            self._done_units = 0.0
+            self._total_jobs = len(jobs) or 1
+            self._weights = {job.index: max(1.0, float(job.item.size)) * STEP_WEIGHT[self._step_key(job)]
+                             for job in jobs}
+            self._weighted = 0.0
+            self._total_weight = sum(self._weights.values()) or 1.0
+            self._last_pct = 0
+        self._started = time.monotonic()
+        self._last_status = float("-inf")
+        steps = [(key, labels[key], grouped[key]) for key in STEP_ORDER if grouped[key]]
+        self.steps_planned.emit([(key, label, len(group)) for key, label, group in steps])
+        return steps
+
+    def _publish_progress(self, job: Job, fraction: float, *, final: bool = False) -> None:
+        """Avance la barre globale ; elle ne recule jamais et ne dépasse 99 % qu'à la toute fin."""
+        fraction = max(0.0, min(1.0, float(fraction)))
+        with self._track_lock:
+            old = self._fractions.get(job.index, 0.0)
+            if fraction <= old:
+                return
+            self._fractions[job.index] = fraction
+            self._done_units += fraction - old
+            self._weighted += (fraction - old) * self._weights.get(job.index, 0.0)
+            pct = max(self._last_pct, min(99, int(self._done_units / self._total_jobs * 100)))
+            self._last_pct = pct
+        self.emit_progress(pct, 100, "")
+        self._publish_status(force=final)
+
+    def _finish_job(self, job: Job) -> None:
+        """Fichier terminé (réussi ou non) : sa part compte entièrement dans la barre."""
+        self._publish_progress(job, 1.0, final=True)
+
+    def _publish_status(self, force: bool = False) -> None:
+        """Libellé d'étape sous le tableau : « Étape 2/4 · Images — 12/340 · reste ~1 min 20 s »."""
+        now = time.monotonic()
+        if not force and now - self._last_status < STATUS_INTERVAL:
+            return
+        self._last_status = now
+        label, number, steps, count, counter = self._step
+        if not label:
+            return
+        with self._track_lock:
+            # Le temps restant est pondéré par le coût des fichiers, pas par leur simple nombre.
+            fraction = self._weighted / self._total_weight
+        elapsed = max(0.0, now - self._started)
+        parts = [self.tr("Étape {number}/{steps} · {label}").format(number=number, steps=steps, label=label),
+                 f"{counter['done']}/{count}"]
+        if fraction > 0.02 and elapsed > 2:
+            remaining = elapsed * (1.0 - fraction) / fraction
+            if remaining >= 1:
+                parts.append(self.tr("reste ~{time}").format(time=format_duration(remaining)))
+        self.emit_status(" — ".join(parts))
+
     # ── Traitement ──
     def do_work(self) -> object:
         if self._encoders is None:
             self._encoders = detect_encoders(self, self._ffmpeg)
+            self._hardware_failed = probe_hardware(self, self._ffmpeg, self._encoders or frozenset())
         self.check_cancelled()
         multi = len({str(i.root) for i in self._items if i.root is not None}) > 1
         bases = {engine._output_base(i, self._out_dir, multi) for i in self._items}
         bases.discard(None)
         manifests = {base: engine.load_manifest(base) for base in bases}
         jobs = engine.plan_jobs(self._items, self._profiles, self._out_dir, self._encoders,
-                                name_ext=self._options.name_ext, manifests=manifests)
+                                name_ext=self._options.name_ext, manifests=manifests,
+                                hardware_failed=self._hardware_failed)
         todo: list[Job] = []
         warned: set[str] = set()
         stats = {"skipped": 0, "unsupported": 0, "kept": 0, "copied": 0}
@@ -246,19 +475,16 @@ class ConvertWorker(BaseWorker):
         if self._options.takeout and self._exiftool is None:
             self.emit_log("WARN", "ExifTool introuvable : les dates et positions Takeout ne seront pas écrites "
                                   "dans les fichiers (seule la date du fichier est réalignée).")
-        self.emit_progress(0, total, "")
+        steps = self._plan_steps(todo)
+        self.emit_progress(0, 100, "")
+        self.emit_status("")                           # chaque étape publiera son libellé
         stats_lock = threading.Lock()
-        counter = {"done": 0}
 
         def process(job: Job) -> None:
             self.check_cancelled()
             if self._options.memory_guard:
                 self.wait_for_memory()
             name = job.item.path.name
-            if self._parallel <= 1:
-                self.emit_progress(counter["done"], total, name)
-                self.emit_status(self.tr("{done} / {total} — {name}")
-                                 .format(done=counter['done'] + 1, total=total, name=name))
             self._set_state(job, STATE_RUNNING, 0)
             try:
                 outcome = self._convert_one(job)
@@ -282,22 +508,44 @@ class ConvertWorker(BaseWorker):
                 else:
                     self.error_count += 1
                     self._problem("ERREUR", job.item)
-                counter["done"] += 1
-                done = counter["done"]
-            self.emit_progress(done, total, name)
-            if self._parallel > 1:
-                self.emit_status(self.tr("{done} / {total} terminé(s)").format(done=done, total=total))
+                self._step[4]["done"] += 1
+            self._finish_job(job)
 
+        if todo:
+            self.emit_log("INFO", self.tr(
+                "Parallélisme : copies {copy} · images {image} · audios {audio} · vidéos {video} "
+                "fichier(s) à la fois.").format(**self._parallel_by_kind))
+            cpus = os.cpu_count() or 1
+            for kind, name in (("video", self.tr("vidéo")), ("image", self.tr("image"))):
+                count = self._parallel_by_kind.get(kind, 1)
+                per_file = getattr(self._profiles.get(kind), "threads", 0)
+                if count > 1 and per_file and count * per_file > cpus:
+                    self.emit_log("WARN", self.tr(
+                        "Parallélisme {kind} : {count} × {threads} threads pour {cpus} cœur(s) ; réduisez le "
+                        "nombre de fichiers simultanés ou le réglage Threads pour éviter la surcharge.")
+                        .format(kind=name, count=count, threads=per_file, cpus=cpus))
         try:
-            if self._parallel <= 1:
-                for job in todo:
-                    process(job)
-            else:
-                self.emit_log("INFO", f"Conversion en parallèle : {self._parallel} fichier(s) à la fois.")
-                self.map_parallel(process, todo, workers=self._parallel)
+            if todo:
+                for number, (key, label, step_jobs) in enumerate(steps, 1):
+                    self.check_cancelled()
+                    workers = self._parallel_by_kind.get(key, 1)
+                    self._step = (label, number, len(steps), len(step_jobs), {"done": 0})
+                    self._publish_status(force=True)
+                    self.emit_log("INFO", self.tr(
+                        "Étape {number}/{steps} : {label} ({count} fichier(s), {parallel} en parallèle).")
+                        .format(number=number, steps=len(steps), label=label, count=len(step_jobs),
+                                parallel=workers))
+                    if workers <= 1:
+                        for job in step_jobs:
+                            process(job)
+                    else:
+                        # Le pool ne publie pas son propre compteur : la barre reste celle du lot entier.
+                        self.map_parallel(process, step_jobs, workers=workers, report_progress=False)
         finally:
             self._write_problems(jobs)
             self._save_manifests(jobs, manifests)
+        if todo:
+            self.emit_progress(100, 100, "")           # une seule traversée de 0 à 100 % pour tout le lot
         missing = self._verify(jobs)
         gain = self._bytes_in - self._bytes_out
         self.summary = self.tr(
@@ -562,8 +810,7 @@ class ConvertWorker(BaseWorker):
                     cmd = engine.build_command(replace(profile, preset=preset), inp, out_arg, ffmpeg=self._ffmpeg,
                                                encoders=self._encoders, lp_ok=self._lp_ok)
                 except engine.EncoderMissingError:
-                    self.emit_log("ERR", engine.missing_encoder_message(profile, self._encoders or ()) or
-                                  f"Encodeur manquant pour « {profile.label} ».")
+                    self.emit_log("ERR", self._missing_encoder_message(profile))
                     self._set_state(job, STATE_NO_ENCODER)
                     return "error"
                 t0 = time.monotonic()
@@ -608,8 +855,8 @@ class ConvertWorker(BaseWorker):
         if dest is None:
             raise RuntimeError(f"{src.name} : dossier de sortie non défini.")
         if not imaging.heif_available():
-            self.emit_log("ERR", engine.missing_encoder_message(profile, self._encoders or ()) or
-                          f"{src.name} : pillow-heif non installé.")
+            message = engine.missing_encoder_message(profile, self._encoders or (), self._hardware_failed)
+            self.emit_log("ERR", message or f"{src.name} : pillow-heif non installé.")
             self._set_state(job, STATE_NO_ENCODER)
             return "error"
         tmp = engine.part_path(dest)
@@ -691,6 +938,7 @@ class ConvertWorker(BaseWorker):
             if pct is not None and pct != last_pct["v"]:
                 last_pct["v"] = pct
                 self.job_updated.emit(job.index, {"progress": pct})
+                self._publish_progress(job, pct / 100)
 
         def activity() -> object:
             try:
@@ -709,8 +957,7 @@ class ConvertWorker(BaseWorker):
                                                creation_time=creation, lp_ok=self._lp_ok,
                                                first_audio_only=first_audio_only, plain_audio=plain_audio)
                 except engine.EncoderMissingError:
-                    self.emit_log("ERR", engine.missing_encoder_message(profile, self._encoders or ()) or
-                                  f"Encodeur manquant pour « {profile.label} ».")
+                    self.emit_log("ERR", self._missing_encoder_message(profile))
                     self._set_state(job, STATE_NO_ENCODER)
                     return "error"
                 if is_video:

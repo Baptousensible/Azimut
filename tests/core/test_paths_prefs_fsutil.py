@@ -67,6 +67,8 @@ def test_prefs_defaults(tmp_prefs):
     tmp_prefs.set("language", "fr")
     assert tmp_prefs.contains("language")
     assert tmp_prefs.get("zoom") == 1.0
+    assert tmp_prefs.get("theme") == "system"          # l'apparence suit le bureau par défaut
+    assert not tmp_prefs.contains("theme")
     assert tmp_prefs.get("icon_theme") == "papicons"
     assert not tmp_prefs.contains("icon_theme")       # rien n'est écrit avant le choix
     assert tmp_prefs.get("binaries.ffmpeg") == ""
@@ -95,6 +97,10 @@ def test_prefs_validation(tmp_prefs):
     assert tmp_prefs.get("zoom") == 1.0
     tmp_prefs.set("binaries.ffmpeg", 12)
     assert tmp_prefs.get("binaries.ffmpeg") == ""
+    tmp_prefs.set("theme", "sepia")
+    assert tmp_prefs.get("theme") == "system"
+    tmp_prefs.set("theme", "Light")
+    assert tmp_prefs.get("theme") == "light"
 
 
 def test_prefs_corrupt_file_tolerated(qapp, tmp_path):

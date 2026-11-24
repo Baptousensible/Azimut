@@ -1,9 +1,11 @@
 """Utilitaires fichiers : formats d'affichage, écriture atomique, parcours."""
 from __future__ import annotations
 
+import hashlib
 import os
 import sys
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable, Iterable, Iterator
 
@@ -234,3 +236,65 @@ def iter_files(root: Path, *, recursive: bool = True, extensions: Iterable[str] 
                 continue
             yield Path(entry.path)
         stack.extend(reversed(subdirs))
+
+
+class FolderLockError(RuntimeError):
+    """Le dossier est déjà en cours de traitement par une autre instance d'Azimut."""
+
+
+def _lock_path(folder: Path) -> Path:
+    """Fichier de verrou stable pour un dossier, hors de l'export (dossier temporaire système)."""
+    try:
+        real = os.path.realpath(folder)
+    except OSError:
+        real = os.path.abspath(str(folder))
+    digest = hashlib.sha1(os.fsencode(real)).hexdigest()
+    return Path(tempfile.gettempdir()) / "azimut-locks" / f"{digest}.lock"
+
+
+@contextmanager
+def folder_lock(folder: Path) -> Iterator[None]:
+    """Verrou exclusif inter-processus sur un dossier, libéré par le noyau.
+
+    ``flock`` (POSIX) et ``msvcrt.locking`` (Windows) sont rendus à la fermeture du fichier ou à la
+    mort du processus : un plantage ne laisse donc jamais de verrou définitif. Le fichier vit dans
+    le dossier temporaire — aucun fichier n'est déposé dans l'export, qui peut être en lecture seule.
+    """
+    path = _lock_path(Path(folder))
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        handle = open(path, "a+b")
+    except OSError as exc:
+        _log.debug("Verrou de dossier indisponible (%s) : %s", path, exc)
+        yield
+        return
+    try:
+        if os.fstat(handle.fileno()).st_size == 0:
+            handle.write(b"\0")
+            handle.flush()
+        try:
+            if sys.platform == "win32":
+                import msvcrt
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            raise FolderLockError(
+                f"Le dossier « {folder} » est déjà en cours de traitement par une autre instance d'Azimut."
+            ) from exc
+        yield
+    finally:
+        try:
+            if sys.platform == "win32":
+                import msvcrt
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        except OSError as exc:
+            _log.debug("Verrou non libéré explicitement (%s) : %s", path, exc)
+        finally:
+            handle.close()

@@ -18,7 +18,8 @@ from azimut.modules.convert.workers import conversion_notification
 ALL_ENC = frozenset({"libsvtav1", "libaom-av1", "libx264", "libx265", "libvpx-vp9", "mpeg4",
                      "mpeg2video", "libtheora", "prores_ks", "mjpeg", "libwebp", "png", "libjxl",
                      "libopenjpeg", "tiff", "bmp", "qoi", "h264_nvenc", "hevc_nvenc", "h264_qsv",
-                     "hevc_qsv", "h264_vaapi", "hevc_vaapi", "libmp3lame", "aac", "libopus", "flac",
+                     "hevc_qsv", "h264_vaapi", "hevc_vaapi", "av1_nvenc", "av1_qsv", "av1_vaapi",
+                     "libmp3lame", "aac", "libopus", "flac",
                      "libvorbis", "alac", "pcm_s16le", "pcm_s16be", "pcm_s24le", "ac3", "mp2"})
 
 ENCODERS_TEXT = """Encoders:
@@ -398,6 +399,60 @@ def test_unsupported_raw_and_failure_classification(monkeypatch):
     assert engine.classify_failure("anything", ".HEIC") == engine.STATE_UNSUPPORTED
     assert engine.classify_failure("Unknown encoder 'libsvtav1'", ".jpg") == engine.STATE_NO_ENCODER
     assert engine.classify_failure("Conversion failed!", ".mp4") == engine.STATE_ERROR
+
+
+# ── Encodeurs matériels ─────────────────────────────────────────────────────
+def test_hardware_backends_lists_only_available_encoders(monkeypatch):
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: "/dev/dri/renderD128")
+    enc = {"h264_nvenc", "hevc_nvenc", "h264_qsv", "hevc_qsv", "h264_vaapi", "libx264"}
+    assert engine.hardware_backends(enc) == [
+        ("nvenc", ["H.264", "H.265"]), ("qsv", ["H.264", "H.265"]), ("vaapi", ["H.264"])]
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: None)
+    assert [backend for backend, _codecs in engine.hardware_backends(enc)] == ["nvenc", "qsv"]
+    assert engine.hardware_backends(frozenset()) == [] and engine.hardware_backends(None) == []
+
+
+def test_hardware_backends_reports_av1_when_exposed(monkeypatch):
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: None)
+    assert engine.hardware_backends({"av1_nvenc"}) == [("nvenc", ["AV1"])]
+    assert engine.hardware_backends({"av1_qsv", "av1_vaapi"}) == [("qsv", ["AV1"])]
+
+
+def test_fingerprint_ignores_display_only_flags():
+    from dataclasses import replace
+    profile = profiles.get_profile("video_mp4_av1")
+    tagged = replace(profile, only_if_encoder=True)
+    assert engine.profile_fingerprint(tagged) == engine.profile_fingerprint(profile)
+    assert engine.profile_fingerprint(profile) != engine.profile_fingerprint(
+        replace(profile, crf=(profile.crf or 0) + 1))
+
+
+def test_av1_hardware_profiles_only_when_exposed():
+    nvenc = profiles.get_profile("video_mp4_av1_nvenc")
+    assert nvenc.only_if_encoder and advanced.family(nvenc) == "av1"
+    assert "av1_nvenc" in nvenc.video_encoders
+    assert not profiles.get_profile("video_mp4_av1").only_if_encoder
+
+
+def test_hardware_probe_command_really_encodes_a_frame():
+    cmd = engine.build_hardware_probe_command("ffmpeg", "h264_nvenc")
+    assert cmd[0] == "ffmpeg" and "lavfi" in cmd and "h264_nvenc" in cmd
+    assert cmd[-2:] == ["null", "-"] and "hwupload" not in cmd      # aucun fichier, aucune conversion GPU requise
+    qsv = engine.build_hardware_probe_command("ffmpeg", "hevc_qsv")
+    assert "qsv=hw" in qsv and "format=nv12,hwupload=extra_hw_frames=64" in qsv
+
+
+def test_driver_failure_marks_profile_unavailable_before_start():
+    profile = profiles.get_profile("video_mp4_h265_nvenc")
+    encoders = {"h264_nvenc", "hevc_nvenc", "libx264", "aac"}
+    assert engine.profile_unavailable_reason(profile, encoders) is None
+    assert engine.profile_unavailable_reason(profile, encoders, {"hevc_nvenc"}) == \
+        "pilote ou GPU ne répond pas"
+    message = engine.missing_encoder_message(profile, encoders, {"hevc_nvenc"}) or ""
+    assert "pilote graphique ou le GPU ne répond pas" in message and "hevc_nvenc" in message
+    item = SourceItem(Path("film.mkv"), None, "video", 10)
+    assert engine.initial_state(item, profile, encoders, {"hevc_nvenc"}) == engine.STATE_NO_ENCODER
+    assert engine.initial_state(item, profile, encoders, {"h264_nvenc"}) == engine.STATE_PENDING
 
 
 # ── Encodeurs ───────────────────────────────────────────────────────────────

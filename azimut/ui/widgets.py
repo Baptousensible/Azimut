@@ -572,6 +572,7 @@ class LiquidProgressBar(QProgressBar):
         self.setFormat("%p %")
         self.setFixedHeight(self.HEIGHT)
         self._phase = 0.0
+        self._segments: list[tuple[float, str]] = []
         self._timer = QTimer(self)
         self._timer.setInterval(self.FRAME_MS)
         self._timer.timeout.connect(self._advance)
@@ -581,6 +582,31 @@ class LiquidProgressBar(QProgressBar):
 
     def _indeterminate(self) -> bool:
         return self.maximum() == self.minimum()
+
+    def set_segments(self, segments: Iterable[tuple[float, str]]) -> None:
+        """Découpe la piste en segments proportionnels ``(part, jeton de couleur)``.
+
+        Les parts sont normalisées : ``[(3, "seg_image"), (7, "seg_video")]`` donne
+        30 % puis 70 % de la largeur. Un appel sans part positive revient à une piste uniforme.
+        """
+        parts = [(float(fraction), color) for fraction, color in segments]
+        total = sum(part for part, _color in parts)
+        self._segments = ([(part / total, color) for part, color in parts] if total > 0.0 else [])
+        self.update()
+
+    def clear_segments(self) -> None:
+        """Revient à une piste uniforme (hors conversion)."""
+        if self._segments:
+            self._segments = []
+            self.update()
+
+    def _segment_pieces(self, rect: QRectF) -> Iterable[tuple[QRectF, str]]:
+        """Rectangles des segments, dans l'ordre de la piste."""
+        start = 0.0
+        for fraction, color in self._segments:
+            left = rect.left() + rect.width() * start
+            yield QRectF(left, rect.top(), rect.width() * fraction, rect.height()), color
+            start += fraction
 
     def _sync_motion(self, *_args: object) -> None:
         moving = (self.isVisible() and not ThemeManager.instance().reduce_motion()
@@ -618,7 +644,7 @@ class LiquidProgressBar(QProgressBar):
         radius = min(6.0, rect.height() / 2.0)
         track = QPainterPath()
         track.addRoundedRect(rect, radius, radius)
-        painter.fillPath(track, QColor(token("surface_alt")))
+        self._paint_track(painter, track, rect)
         painter.setPen(QPen(QColor(token("border")), 1.0))
         painter.drawPath(track)
         painter.save()
@@ -631,11 +657,46 @@ class LiquidProgressBar(QProgressBar):
             if ratio > 0.0:
                 self._paint_fill(painter, rect, max(0.0, min(1.0, ratio)))
         painter.restore()
-        if self.isTextVisible():
-            painter.setPen(QColor(token("text")))
-            painter.setFont(self.font())
-            painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self.text())
+        self._paint_text(painter, rect)
         painter.end()
+
+    def _paint_track(self, painter: QPainter, track: QPainterPath, rect: QRectF) -> None:
+        painter.fillPath(track, QColor(token("surface_alt")))
+        if not self._segments:
+            return
+        painter.save()
+        painter.setClipPath(track)
+        for piece, color in self._segment_pieces(rect):
+            tint = QColor(token(color))
+            tint.setAlpha(52)                           # repère la famille sans concurrencer le remplissage
+            painter.fillRect(piece, tint)
+        painter.setPen(QPen(QColor(token("border")), 1.0))
+        edge = rect.left()
+        for fraction, _color in self._segments[:-1]:
+            edge += rect.width() * fraction
+            painter.drawLine(QPointF(edge, rect.top()), QPointF(edge, rect.bottom()))
+        painter.restore()
+
+    def _paint_text(self, painter: QPainter, rect: QRectF) -> None:
+        if not self.isTextVisible():
+            return
+        text = self.text()
+        painter.save()
+        painter.setFont(self.font())
+        metrics = painter.fontMetrics()
+        width = metrics.horizontalAdvance(text)
+        height = metrics.height()
+        box = QRectF(rect.center().x() - width / 2.0 - 7.0, rect.center().y() - height / 2.0 - 1.0,
+                     width + 14.0, height + 2.0)
+        if self._segments:
+            background = QColor(token("bg"))            # pastille discrète : le pourcentage reste lisible
+            background.setAlpha(205)
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.setBrush(background)
+            painter.drawRoundedRect(box, 5.0, 5.0)
+        painter.setPen(QColor(token("text")))
+        painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, text)
+        painter.restore()
 
     def _fill_brush(self, rect: QRectF) -> QBrush:
         gradient = QLinearGradient(0.0, rect.top(), 0.0, rect.bottom())
@@ -643,11 +704,15 @@ class LiquidProgressBar(QProgressBar):
         gradient.setColorAt(1.0, QColor(token("primary_hover")))
         return QBrush(gradient)
 
-    def _paint_fill(self, painter: QPainter, rect: QRectF, ratio: float) -> None:
-        brush = self._fill_brush(rect)
-        if ratio >= 0.999:
-            painter.fillRect(rect, brush)               # 100 % : plus aucun coin vide
-            return
+    def _segment_brush(self, rect: QRectF, color: str) -> QBrush:
+        base = QColor(token(color))
+        gradient = QLinearGradient(0.0, rect.top(), 0.0, rect.bottom())
+        gradient.setColorAt(0.0, base.lighter(112))
+        gradient.setColorAt(1.0, base.darker(108))
+        return QBrush(gradient)
+
+    def _liquid_edge(self, rect: QRectF, ratio: float) -> tuple[QPainterPath, float, float]:
+        """Front liquide diagonal ; renvoie aussi ses abscisses haute et basse pour le reflet."""
         height = rect.height()
         front = rect.left() + rect.width() * ratio
         slant = min(8.0, height * 0.8)
@@ -662,9 +727,39 @@ class LiquidProgressBar(QProgressBar):
         edge.quadTo((top_x + bottom_x) / 2.0 + 1.2, rect.center().y(), bottom_x, rect.bottom())
         edge.lineTo(rect.left(), rect.bottom())
         edge.closeSubpath()
+        return edge, top_x, bottom_x
+
+    def _paint_fill(self, painter: QPainter, rect: QRectF, ratio: float) -> None:
+        if self._segments:
+            self._paint_segmented_fill(painter, rect, ratio)
+            return
+        brush = self._fill_brush(rect)
+        if ratio >= 0.999:
+            painter.fillRect(rect, brush)               # 100 % : plus aucun coin vide
+            return
+        edge, top_x, bottom_x = self._liquid_edge(rect, ratio)
         painter.fillPath(edge, brush)
 
         # Reflet qui suit le front diagonal, à l'intérieur du liquide.
+        highlight = QPainterPath()
+        highlight.moveTo(top_x - 1.0, rect.top())
+        highlight.quadTo((top_x + bottom_x) / 2.0 + 0.2, rect.center().y(), bottom_x - 1.0, rect.bottom())
+        painter.setPen(QPen(QColor(255, 255, 255, 85), 1.0))
+        painter.drawPath(highlight)
+
+    def _paint_segmented_fill(self, painter: QPainter, rect: QRectF, ratio: float) -> None:
+        """Remplit chaque famille avec sa couleur, dans l'ordre de la piste."""
+        if ratio >= 0.999:
+            for piece, color in self._segment_pieces(rect):
+                painter.fillRect(piece, self._segment_brush(rect, color))
+            return
+        edge, top_x, bottom_x = self._liquid_edge(rect, ratio)
+        painter.save()
+        painter.setClipPath(edge)
+        for piece, color in self._segment_pieces(rect):
+            painter.fillRect(piece, self._segment_brush(rect, color))
+        painter.restore()
+
         highlight = QPainterPath()
         highlight.moveTo(top_x - 1.0, rect.top())
         highlight.quadTo((top_x + bottom_x) / 2.0 + 0.2, rect.center().y(), bottom_x - 1.0, rect.bottom())
@@ -1465,8 +1560,9 @@ class PathDropZone(DropZone):
         super().__init__(f"{title}\n{self.tr('Glissez un dossier ici…')}",
                          accept_dirs=True, accept_files=True, icon="folder", parent=parent)
         self.setAccessibleName(title)
-        self._label.setWordWrap(False)
-        self._label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        # Le chemin reste sur une ligne (il est élidé au milieu), mais l'invite peut
+        # se replier : à 150 %, deux zones côte à côte ne font plus que ~160 px.
+        self._label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.pathsDropped.connect(self._on_paths_dropped)
 
         self._clear = QToolButton(self)
@@ -1667,6 +1763,7 @@ class PathDropZone(DropZone):
 
     def _refresh_label(self) -> None:
         if self._path:
+            self._label.setWordWrap(False)
             width = max(80, self.width() - 2 * scaled(16))
             shown = self._label.fontMetrics().elidedText(
                 self._path, Qt.TextElideMode.ElideMiddle, width)
@@ -1674,6 +1771,7 @@ class PathDropZone(DropZone):
             self.setToolTip(plain_tooltip(f"{self._title}\n{self._path}"))
             self.setAccessibleName(f"{self._title} — {self._path}")
         else:
+            self._label.setWordWrap(True)
             self._label.setText(f"{self._title}\n{self.tr('Glissez un dossier ici…')}")
             self.setToolTip(self.tr("Glissez un dossier ici ou cliquez pour parcourir"))
             self.setAccessibleName(self._title)
@@ -1897,10 +1995,13 @@ class RowTableModel(QAbstractTableModel):
 
     def headerData(self, section: int, orientation: Qt.Orientation,
                    role: int = Qt.ItemDataRole.DisplayRole) -> Any:
-        if role == Qt.ItemDataRole.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole or (
+                role == Qt.ItemDataRole.ToolTipRole and orientation == Qt.Orientation.Horizontal):
             if orientation == Qt.Orientation.Horizontal and 0 <= section < len(self._columns):
+                # Le titre complet reste lisible en infobulle quand la colonne est
+                # resserrée et que son en-tête est ellipsé.
                 return self._columns[section].title
-            if orientation == Qt.Orientation.Vertical:
+            if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Vertical:
                 return section + 1
         return None
 
@@ -1968,17 +2069,22 @@ class DataTable(QTableView):
         self.setWordWrap(False)
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self.verticalHeader().setVisible(False)
-        self.verticalHeader().setDefaultSectionSize(28)
+        self.verticalHeader().setDefaultSectionSize(scaled(28))
 
         header = self.horizontalHeader()
         header.setStretchLastSection(False)
-        header.setMinimumSectionSize(48)                            # une colonne peut rétrécir
+        # Une colonne peut descendre jusqu'à 28 px : de quoi faire tenir toutes les
+        # colonnes d'un tableau étroit sans barre de défilement horizontale. Cette
+        # largeur et la hauteur des lignes suivent le zoom, sinon le texte de 150 %
+        # restait tassé dans une grille de 100 %.
+        header.setMinimumSectionSize(max(28, scaled(28)))
+        header.setTextElideMode(Qt.TextElideMode.ElideRight)        # en-tête tronqué avec « … »
         header.setSortIndicator(-1, Qt.SortOrder.AscendingOrder)   # pas de tri initial
         # Toutes les colonnes sont pilotées par `_fit_columns` : le mode Stretch de Qt
         # ignorait les largeurs calculées et laissait la 1re colonne s'effondrer.
         for i, col in enumerate(columns):
             header.setSectionResizeMode(i, QHeaderView.ResizeMode.Interactive)
-            self.setColumnWidth(i, col.width)
+            self.setColumnWidth(i, scaled(col.width))
         self.setSortingEnabled(True)
 
         self.selectionModel().selectionChanged.connect(
@@ -2034,10 +2140,12 @@ class DataTable(QTableView):
             self._empty_label.raise_()
 
     def _fit_columns(self) -> None:
-        """Répartit la largeur disponible : plus de barre horizontale inutile.
+        """Répartit la largeur disponible sans jamais réduire les en-têtes à « … ».
 
         Les largeurs déclarées servent de proportions ; la colonne marquée `stretch`
-        absorbe le surplus, et tout rétrécit ensemble quand la fenêtre est étroite.
+        absorbe le surplus. Quand la largeur manque, les colonnes se resserrent tant que
+        leurs en-têtes entiers tiennent ; au-delà, elles gardent une largeur lisible et
+        une barre horizontale apparaît dans le tableau.
         """
         model = self.model()
         if model is None or model.columnCount() == 0:
@@ -2045,12 +2153,27 @@ class DataTable(QTableView):
         available = self.viewport().width()
         if available <= 0:
             return
-        minimum = max(28, self.horizontalHeader().minimumSectionSize())
+        header = self.horizontalHeader()
+        minimum = max(1, header.minimumSectionSize())
         count = model.columnCount()
-        bases = [max(minimum, self._columns[i].width) for i in range(count)]
-        total = sum(bases)
+        # Les largeurs déclarées sont des largeurs de référence à 100 % : elles suivent
+        # le zoom comme le reste de la grille. Les en-têtes, eux, ont aussi besoin de
+        # leur padding horizontal ($p8 de chaque côté) pour ne pas finir en « Réus… ».
+        bases = [max(minimum, scaled(self._columns[i].width)) for i in range(count)]
+        metrics = header.fontMetrics()
+        # QHeaderView ne reprend pas toujours la police QSS agrandie dans son
+        # fontMetrics : on applique explicitement le zoom au texte mesuré.
+        text_scale = ThemeManager.instance().zoom()
+        floors = []
+        for i in range(count):
+            text = self._proxy.headerData(i, Qt.Orientation.Horizontal,
+                                          Qt.ItemDataRole.DisplayRole)
+            needed = math.ceil(metrics.horizontalAdvance(str(text)) * text_scale) if text else 0
+            floors.append(max(minimum, needed + 2 * scaled(8) + scaled(2)))
+        preferred = [max(base, floor) for base, floor in zip(bases, floors, strict=False)]
+        total = sum(preferred)
         if total <= available:
-            widths = list(bases)
+            widths = preferred
             target = next((i for i in range(count - 1, -1, -1) if self._columns[i].stretch), count - 1)
             widths[target] += available - total
         else:
@@ -2058,21 +2181,16 @@ class DataTable(QTableView):
             # le reste est réparti au prorata des largeurs déclarées. Si les en-têtes
             # ne tiennent plus, un défilement horizontal apparaît plutôt que de les
             # couper au milieu d'un mot.
-            header = self.horizontalHeader()
-            metrics = header.fontMetrics()
-            floors = []
-            for i in range(count):
-                text = self._proxy.headerData(i, Qt.Orientation.Horizontal,
-                                              Qt.ItemDataRole.DisplayRole)
-                needed = metrics.horizontalAdvance(str(text)) if text else 0
-                floors.append(max(minimum, needed + scaled(20)))
             extra = available - sum(floors)
-            if extra <= 0:
-                widths = floors
-            else:
+            if extra > 0:
                 widths = [floor + int(extra * base / total)
                           for floor, base in zip(floors, bases, strict=False)]
                 widths[-1] += available - sum(widths)
+            else:
+                # Même les en-têtes entiers ne tiennent pas : ils gardent leur largeur
+                # lisible et la vue ajoute une barre horizontale. Les réduire encore
+                # transformait chaque titre en « … » (Tags et Rename à 150 %).
+                widths = floors
         for i, width in enumerate(widths):
             if self.columnWidth(i) != width:
                 self.setColumnWidth(i, width)
@@ -2093,6 +2211,8 @@ class DataTable(QTableView):
 
     def _on_theme_changed(self, _theme: str) -> None:
         self.data_model.refresh_colors()
+        self.verticalHeader().setDefaultSectionSize(scaled(28))
+        self.horizontalHeader().setMinimumSectionSize(max(28, scaled(28)))
         self._fit_columns()
         self.viewport().update()
 
@@ -2637,7 +2757,7 @@ class VideoPreview(QWidget):
         bar.setContentsMargins(4, 2, 6, 2)
         bar.setSpacing(6)
         self.play_btn = QPushButton("▶")
-        self.play_btn.setFixedWidth(32)
+        self.play_btn.setFixedWidth(scaled(32))
         self.play_btn.setToolTip(self.tr("Lire ou mettre en pause"))
         self.slider = SeekSlider(Qt.Orientation.Horizontal)
         self.slider.setRange(0, 0)

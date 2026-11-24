@@ -8,14 +8,18 @@ import re
 from types import SimpleNamespace
 
 import pytest
-from PySide6.QtGui import QColor
-from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QColor, QFont
+from PySide6.QtWidgets import QApplication, QLabel, QPushButton, QTabBar, QVBoxLayout, QWidget
 
 from azimut.core import binaries, system_accessibility
 from azimut.core.module_spec import ModuleSpec
 from azimut.core.prefs import Preferences
 from azimut.ui import app as app_module
-from azimut.ui.theme import TOKEN_NAMES, ThemeManager, build_qss, glass_style, palette, token
+from azimut.ui import theme as theme_module
+from azimut.ui.theme import (
+    MIN_POINT_SIZE, TOKEN_NAMES, ThemeManager, build_qss, calibrated_zoom, glass_style, palette,
+    point_size_floor, token,
+)
 
 
 @pytest.fixture(scope="module")
@@ -45,7 +49,7 @@ def manager(qt_app, prefs, monkeypatch):
 @pytest.mark.parametrize("theme", ["dark", "light"])
 def test_all_tokens_exist_in_both_themes(theme):
     pal = palette(theme)
-    assert len(TOKEN_NAMES) == 26
+    assert len(TOKEN_NAMES) == 30
     assert set(pal) == set(TOKEN_NAMES)
     for name in TOKEN_NAMES:
         assert re.fullmatch(r"#[0-9a-f]{6}", pal[name]), (theme, name)
@@ -175,14 +179,40 @@ def test_focus_ring_is_reserved_for_keyboard_navigation():
     assert "\nQPushButton:focus {" not in qss
 
 
-def test_side_panel_title_scales_with_zoom():
-    assert "font-size: 15.6pt" in build_qss("dark", 1.0)
-    assert "font-size: 25pt" in build_qss("dark", 1.6)
-    # À 10 pt système, 100 % reste à l'échelle normale ; les titres suivent.
-    qss = build_qss("dark", 1.0, base_point_size=10.0)
-    assert "font-size: 12pt" in qss
-    assert "font-size: 13pt" in qss
-    assert "font-size: 19.2pt" in build_qss("dark", 1.6, base_point_size=10.0)
+def _font_size(qss: str, selector: str) -> float:
+    """Taille de police déclarée dans le bloc d'un sélecteur de la feuille."""
+    for block in qss.split("}"):
+        if selector in block:
+            found = re.search(r"font-size: ([\d.]+)pt", block)
+            if found:
+                return float(found.group(1))
+    raise AssertionError(f"aucune taille de police pour {selector}")
+
+
+def test_titles_and_captions_share_one_scale():
+    """Nom du module, panneau latéral, boîte de dialogue et libellés : un seul corps."""
+    qss = build_qss("dark", 1.0)
+    body = 13.0
+    assert _font_size(qss, "QLabel#ModuleName") == pytest.approx(body * 1.2)
+    assert _font_size(qss, "QLabel#DialogTitle") == pytest.approx(body * 1.2)
+    assert _font_size(qss, "QLabel#SideDockTitle") == body      # rang du corps, pas au-dessus
+    assert _font_size(qss, "QLabel#StatusChip") == pytest.approx(body * 0.8)
+    # Le zoom multiplie toute l'échelle sans changer les rapports.
+    zoomed = build_qss("dark", 1.6)
+    assert _font_size(zoomed, "QLabel#ModuleName") == pytest.approx(25.0)
+    assert _font_size(zoomed, "QLabel#SideDockTitle") == pytest.approx(20.8)
+
+
+def test_type_hierarchy_is_the_same_for_a_nine_or_a_thirteen_point_system():
+    """Windows (9 pt) et macOS (13 pt) doivent produire la même hiérarchie relative."""
+    for base in (9.0, 13.0):
+        qss = build_qss("dark", 0.85, base_point_size=base)
+        module = _font_size(qss, "QLabel#ModuleName")
+        side = _font_size(qss, "QLabel#SideDockTitle")
+        dialog = _font_size(qss, "QLabel#DialogTitle")
+        caption = _font_size(qss, "QLabel#StatusChip")
+        assert caption <= side < module <= dialog, base
+        assert module == dialog, base
 
 
 def test_reduce_transparency_makes_glass_opaque():
@@ -211,18 +241,23 @@ def test_system_appearance_uses_the_detected_scheme(qt_app, prefs, monkeypatch):
     assert tm.appearance() == "system" and tm.theme() == "light"
 
 
-def test_stored_theme_is_ignored_at_launch(qt_app, prefs, monkeypatch):
-    """Préférence « dark » sur le disque : le lancement repart de « system » et suit le schéma détecté."""
-    prefs.set("theme", "dark")                  # clé héritée : ni relue, ni réécrite
-    assert prefs.get("theme") == "dark" and prefs.contains("theme")
+def test_stored_theme_is_restored_at_launch(qt_app, prefs, monkeypatch):
+    """Préférence « dark » sur le disque : le lancement la reprend, sans suivre le schéma détecté."""
+    prefs.set("theme", "dark")
     monkeypatch.setattr(system_accessibility, "color_scheme", lambda: "light")
 
     manager = ThemeManager(prefs)
 
-    assert manager.appearance() == "system"
-    assert manager.theme() == "light"
-    manager.set_theme("dark")                  # choix de session : la valeur disque n'est pas réécrite
-    assert manager.theme() == "dark" and prefs.get("theme") == "dark"
+    assert manager.appearance() == "dark"
+    assert manager.theme() == "dark"
+
+
+def test_unknown_stored_theme_falls_back_to_system(qt_app, prefs, monkeypatch):
+    """Une valeur illisible ne fige pas l'application sur un thème arbitraire."""
+    prefs.set("theme", "sepia")
+    monkeypatch.setattr(system_accessibility, "color_scheme", lambda: "light")
+
+    assert ThemeManager(prefs).appearance() == "system"
 
 
 def test_linux_color_scheme_reads_gnome_then_kde(monkeypatch):
@@ -249,16 +284,21 @@ def test_token_follows_current_theme(manager):
         token("inexistant")
 
 
-def test_set_theme_is_session_only(manager, prefs, tmp_path):
-    """Sombre/Clair vaut pour la session : rien n'est écrit, le lancement suivant repart du système."""
+def test_set_theme_is_persisted(manager, prefs):
+    """Sombre/Clair est enregistré et repris au lancement suivant, comme la langue."""
     got: list[str] = []
     manager.changed.connect(got.append)
     manager.set_theme("light")
     manager.set_theme("light")                    # sans effet : pas de second signal
     assert got == ["light"]
     assert manager.appearance() == "light" and manager.theme() == "light"
-    assert not prefs.contains("theme")
-    assert ThemeManager(Preferences(tmp_path / "prefs.json")).appearance() == "system"
+    assert prefs.get("theme") == "light"
+    assert ThemeManager(Preferences(prefs.path)).appearance() == "light"
+
+
+def test_toggle_is_persisted(manager, prefs):
+    manager.toggle()
+    assert prefs.get("theme") == "light"
 
 
 def test_toggle(manager):
@@ -282,27 +322,236 @@ def test_set_zoom_is_clamped(manager, prefs):
     assert manager.zoom() == 0.8
 
 
+def test_apply_sets_the_font_before_and_after_the_stylesheet(manager, qt_app, monkeypatch):
+    """La police encadre la feuille de style : avant, puis de nouveau après.
+
+    Avant, parce que la feuille de style re-polit les widgets et fige leur police :
+    appliquée avant la nouvelle police, elle leur laissait le zoom précédent (consigne des
+    outils, boutons « Ouvrir », onglets).
+
+    Après aussi, parce qu'elle fait repartir de la police *par défaut* les widgets créés
+    ensuite : une fenêtre construite après l'application affichait presque tout son texte
+    à 100 % (13 pt sous macOS) alors que le zoom valait 80 % (AZ-C12).
+    """
+    order: list[str] = []
+    real_font, real_sheet = qt_app.setFont, qt_app.setStyleSheet
+    monkeypatch.setattr(qt_app, "setFont", lambda f: (order.append("font"), real_font(f))[1])
+    monkeypatch.setattr(qt_app, "setStyleSheet", lambda s: (order.append("sheet"), real_sheet(s))[1])
+
+    manager.set_zoom(1.25)                            # sans application encore : rien n'est posé
+    manager.apply(qt_app)
+
+    assert order == ["font", "sheet", "font"], order
+    assert qt_app.font().pointSizeF() == pytest.approx(manager.base_point_size() * 1.25, abs=0.01)
+
+
+def test_widget_created_after_apply_follows_the_zoom(manager, qt_app):
+    """Une fenêtre construite après l'application garde le zoom, pas la taille système.
+
+    Mesuré au relancement à 80 % : la consigne des outils, les descriptions des cartes et
+    le sous-titre de l'en-tête restaient à 13 pt (100 %) alors que la police applicative
+    valait 10,4 pt (AZ-C12).
+    """
+    manager.set_zoom(0.8)
+    manager.apply(qt_app)
+    host = QWidget()
+    layout = QVBoxLayout(host)
+    label = QLabel("Ouvrez un module, ou déposez-y des fichiers ou des dossiers.")
+    layout.addWidget(label)
+    host.show()
+    from azimut.ui.theme import point_size_floor
+
+    base = manager.base_point_size()
+    expected = max(point_size_floor(base), base * 0.8)      # même plancher que apply()
+    assert label.font().pointSizeF() == pytest.approx(expected, abs=0.01)
+    host.close()
+
+
+def test_zoom_change_updates_labels_buttons_and_tabs_immediately(manager, qt_app):
+    """Un seul changement de zoom suffit pour tous les textes de la fenêtre.
+
+    Reproduit les éléments défectueux d'Atlas : consigne (« Ouvrez un module… »),
+    boutons de carte (« Ouvrir ») et onglets. Aucun ne doit rester au zoom précédent.
+    """
+    manager.apply(qt_app)
+    host = QWidget()
+    layout = QVBoxLayout(host)
+    label = QLabel("Ouvrez un module, ou déposez-y des fichiers ou des dossiers.")
+    button = QPushButton("Ouvrir")
+    tabs = QTabBar()
+    tabs.addTab("Tous les outils")
+    for widget in (label, button, tabs):
+        layout.addWidget(widget)
+    host.show()
+
+    try:
+        manager.set_zoom(0.8)
+        qt_app.processEvents()
+        base = manager.base_point_size()
+        expected = max(point_size_floor(base), base * 0.8)
+        assert [w.font().pointSizeF() for w in (label, button, tabs)] == pytest.approx(
+            [expected, expected, expected], abs=0.01)
+
+        manager.set_zoom(1.5)
+        qt_app.processEvents()
+        expected = base * 1.5
+        assert [w.font().pointSizeF() for w in (label, button, tabs)] == pytest.approx(
+            [expected, expected, expected], abs=0.01)
+
+        manager.set_zoom(1.0)
+        qt_app.processEvents()
+        expected = base
+        assert [w.font().pointSizeF() for w in (label, button, tabs)] == pytest.approx(
+            [expected, expected, expected], abs=0.01)
+    finally:
+        # Cette fenêtre factice ne doit pas rester au-dessus des tests suivants :
+        # elle intercepterait leurs déplacements de souris.
+        host.close()
+        host.deleteLater()
+        qt_app.processEvents()
+
+
+def test_calibrated_zoom_targets_a_body_of_about_two_millimetres():
+    """Le zoom initial vise 2,3 mm de corps, d'après la densité logique de l'écran."""
+    # 13" en 1440 × 900 : 128 ppi logiques, 13 px = 2,58 mm → demande 0,89 → cran 0,9.
+    assert calibrated_zoom(13.0, 72.0, 127.9) == pytest.approx(0.9)
+    # 27" 4K à 200 % : 82 ppi logiques, 13 px = 4,03 mm → demande 0,57 → borné à 0,85.
+    assert calibrated_zoom(13.0, 72.0, 82.0) == pytest.approx(0.85)
+    # Écran très dense : 13 px = 1,65 mm → demande 1,39 → borné à 1,25.
+    assert calibrated_zoom(13.0, 72.0, 200.0) == pytest.approx(1.25)
+    # Windows 15,6" à 125 % : 9 pt à 120 dpi = 15 px, 113 ppi → 3,36 mm → borné à 0,85.
+    assert calibrated_zoom(9.0, 120.0, 113.5) == pytest.approx(0.85)
+    # Entrées inexploitables : repli neutre.
+    assert calibrated_zoom(0.0, 96.0, 100.0) == pytest.approx(1.0)
+
+
+def test_first_launch_calibrates_once_then_keeps_the_saved_zoom(manager, prefs, monkeypatch):
+    """Le calibrage n'a lieu qu'au premier lancement : la préférence fige le résultat."""
+    monkeypatch.setattr(theme_module, "_screen_density", lambda *_args: 127.9)
+    monkeypatch.setattr(theme_module, "calibrated_zoom", lambda *args, **kwargs: 1.1)
+    first = ThemeManager(prefs)
+    assert first.zoom() == pytest.approx(1.1)
+    assert prefs.get("zoom") == pytest.approx(1.1)      # enregistré une fois pour toutes
+
+    # L'écran change : la préférence enregistrée l'emporte, rien n'est recalculé.
+    monkeypatch.setattr(theme_module, "_screen_density", lambda *_args: 60.0)
+    monkeypatch.setattr(theme_module, "calibrated_zoom", lambda *args, **kwargs: 0.85)
+    second = ThemeManager(prefs)
+    assert second.zoom() == pytest.approx(1.1)
+    assert prefs.get("zoom") == pytest.approx(1.1)
+
+
+def test_no_calibration_when_the_screen_is_not_measurable(manager, prefs, monkeypatch):
+    """Hors écran, ou taille physique inconnue : on ne fige aucun zoom."""
+    monkeypatch.setattr(theme_module, "_screen_density", lambda *_args: None)
+    tm = ThemeManager(prefs)
+    assert tm.zoom() == pytest.approx(1.0)
+    assert not prefs.contains("zoom")        # le prochain lancement sur un vrai écran calibrera
+
+
+class _FakeScreen:
+    """Écran factice : nom, facteur d'échelle et DPI logique suffisent à la mémorisation."""
+
+    def __init__(self, name: str, dpr: float, dpi: float = 96.0) -> None:
+        self._name, self._dpr, self._dpi = name, dpr, dpi
+
+    def name(self) -> str:
+        return self._name
+
+    def devicePixelRatio(self) -> float:  # noqa: N802 - API Qt
+        return self._dpr
+
+    def logicalDotsPerInch(self) -> float:  # noqa: N802 - API Qt
+        return self._dpi
+
+
+def test_screen_key_keeps_the_scale_factor_apart():
+    """Nom + facteur d'échelle : un même écran à 100 % et à 200 % a deux réglages."""
+    assert theme_module.screen_key(_FakeScreen("Écran", 1.0)) == "Écran|1.00"
+    assert (theme_module.screen_key(_FakeScreen("Écran", 2.0))
+            != theme_module.screen_key(_FakeScreen("Écran", 1.0)))
+
+
+def test_zoom_is_remembered_per_screen(manager, prefs, monkeypatch):
+    """Chaque écran garde son zoom : passer de l'un à l'autre le retrouve tel quel."""
+    monkeypatch.setattr(theme_module, "_screen_density", lambda *_args: None)
+    portable, externe = _FakeScreen("Portable", 2.0), _FakeScreen("Externe", 1.0)
+    tm = ThemeManager(prefs)
+
+    tm.activate_screen(portable)
+    tm.set_zoom(1.1)
+    assert tm.zoom() == pytest.approx(1.1)
+
+    tm.activate_screen(externe)              # jamais vu : repli 100 %, rien de mémorisé
+    assert tm.zoom() == pytest.approx(1.0)
+    tm.set_zoom(1.25)                        # réglage propre au second écran
+
+    tm.activate_screen(portable)             # retour au portable : son réglage revient
+    assert tm.zoom() == pytest.approx(1.1)
+    tm.activate_screen(externe)
+    assert tm.zoom() == pytest.approx(1.25)
+
+    saved = prefs.get("zoom_by_screen")
+    assert set(saved) == {"Portable|2.00", "Externe|1.00"}
+    assert saved["Portable|2.00"] == pytest.approx(1.1)
+    assert saved["Externe|1.00"] == pytest.approx(1.25)
+
+
+def test_legacy_global_zoom_becomes_the_current_screen_value(manager, prefs, monkeypatch):
+    """L'ancienne préférence unique est reprise une fois, pour l'écran du lancement."""
+    monkeypatch.setattr(theme_module, "_screen_density", lambda *_args: None)
+    prefs.set("zoom", 0.85)
+    tm = ThemeManager(prefs)
+    assert tm.zoom() == pytest.approx(0.85)
+    assert prefs.get("zoom_by_screen") == {"écran|1.00": 0.85}
+
+
 def test_apply_installs_stylesheet_and_zoom_changes_font(manager, qt_app):
-    base = max(10.0, qt_app.font().pointSizeF())    # taille du système, plancher 10 pt
+    # La taille du système est reprise telle quelle : le plancher ne la relève plus à 10 pt.
+    base = max(MIN_POINT_SIZE, qt_app.font().pointSizeF())
     manager.apply(qt_app)
     assert palette("dark")["bg"] in qt_app.styleSheet()
     assert qt_app.font().pointSizeF() == pytest.approx(base)
     assert manager.base_point_size() == pytest.approx(base)
     manager.set_zoom(1.5)
-    assert qt_app.font().pointSizeF() == pytest.approx(max(10.0, base * 1.5))
+    assert qt_app.font().pointSizeF() == pytest.approx(max(point_size_floor(base), base * 1.5))
     manager.set_theme("light")
     assert palette("light")["bg"] in qt_app.styleSheet()
 
 
+def test_zoom_below_100_really_shrinks_a_nine_point_system_font(manager, qt_app):
+    """Sur un système à 9 pt (Windows), 90 % et 80 % doivent vraiment réduire le texte.
+
+    Le plancher fixe de 10 pt renvoyait 10 pt à 100 %, 90 % et 80 % : le zoom ne changeait
+    plus que les marges, et l'interface restait « grosse » en se tassant.
+    """
+    base = QFont(qt_app.font())
+    base.setPointSizeF(9.0)
+    manager._base_font = base                    # simule une police système de 9 pt
+    manager.apply(qt_app)
+    assert qt_app.font().pointSizeF() == pytest.approx(9.0)
+    manager.set_zoom(0.9)
+    assert qt_app.font().pointSizeF() == pytest.approx(8.1)
+    manager.set_zoom(0.8)
+    assert qt_app.font().pointSizeF() == pytest.approx(MIN_POINT_SIZE)
+
+
 def test_external_zoom_change_is_followed(manager, prefs):
-    """Le zoom reste une préférence suivie ; le thème, lui, n'en est plus une."""
+    """Le zoom est une préférence suivie : l'écrire ailleurs s'applique aussitôt."""
+    got: list[str] = []
+    manager.changed.connect(got.append)
+    prefs.set("zoom", 1.25)
+    assert manager.zoom() == 1.25
+    assert got == ["dark"]
+
+
+def test_external_theme_change_is_followed(manager, prefs):
+    """L'apparence aussi : préférences et fenêtres restent sur le même thème."""
     got: list[str] = []
     manager.changed.connect(got.append)
     prefs.set("theme", "light")
-    prefs.set("zoom", 1.25)
-    assert manager.zoom() == 1.25
-    assert manager.appearance() == "system" and manager.theme() == "dark"
-    assert got == ["dark"]
+    assert manager.appearance() == "light" and manager.theme() == "light"
+    assert got == ["light"]
 
 
 def test_system_accessibility_values_are_used_when_prefs_are_unset(qt_app, prefs, monkeypatch):

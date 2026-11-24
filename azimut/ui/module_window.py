@@ -7,7 +7,9 @@ import sys
 import time
 from typing import Callable, Iterable
 
-from PySide6.QtCore import QCoreApplication, QEasingCurve, QEvent, QMimeData, Qt, QTimer, QVariantAnimation, Signal
+from PySide6.QtCore import (
+    QCoreApplication, QEasingCurve, QEvent, QMimeData, QSize, Qt, QTimer, QVariantAnimation, Signal,
+)
 from PySide6.QtGui import (
     QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QGuiApplication, QKeySequence, QShortcut,
 )
@@ -96,6 +98,25 @@ def _mime_paths(mime: QMimeData | None) -> list[str]:
     return out
 
 
+class _FitWidthBody(QWidget):
+    """Contenu de module qui accepte la largeur réellement disponible.
+
+    Un tableau Qt annonce une largeur minimale fondée sur ses colonnes. Dans la zone
+    défilante du module, cette largeur créait une barre horizontale et rognait la fin
+    des colonnes à 125 % ou 150 %. Le tableau sait déjà resserrer ses colonnes quand
+    il est plus étroit (voir ``DataTable._fit_columns``) : on ne transmet donc que la
+    hauteur minimale, jamais une largeur qui dépasserait le panneau.
+    """
+
+    def sizeHint(self) -> QSize:  # noqa: N802 - API Qt
+        hint = super().sizeHint()
+        return QSize(1, hint.height())
+
+    def minimumSizeHint(self) -> QSize:  # noqa: N802 - API Qt
+        hint = super().minimumSizeHint()
+        return QSize(1, hint.height())
+
+
 class ModuleWindow(AuroraWindowMixin, QMainWindow):
     """Classe mère de la fenêtre de chaque module (mêmes barre d'outils, raccourcis et organisation)."""
 
@@ -127,6 +148,7 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         self._cancel_requested = False
         self._close_pending = False
         self._min_progress_ms = 0
+        self._determinate_start = False
         self._progress_started_at = 0.0
         self._progress_hold_pending = False
         self._progress_hold_timer = QTimer(self)
@@ -191,9 +213,11 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         # L'icône de l'outil reste fixe dans son onglet ouvert : pas d'animation au survol.
         self._refresh_header_icon()
         top.addWidget(self.header_icon)
-        self.title_label = QLabel(
-            f'<span style="font-size:x-large; font-weight:500">{html.escape(self.spec.name)}</span>')
-        self.title_label.setTextFormat(Qt.TextFormat.RichText)
+        # Taille par la feuille de style (QLabel#ModuleName), jamais « x-large » : une
+        # taille CSS absolue ignore le zoom et la taille de police du système.
+        self.title_label = QLabel(self.spec.name)
+        self.title_label.setObjectName("ModuleName")
+        self.title_label.setTextFormat(Qt.TextFormat.PlainText)
         top.addWidget(self.title_label)
         top.addStretch(1)
         self.chips_layout = QHBoxLayout()
@@ -223,20 +247,31 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         hl.addLayout(info_row)
         outer.addWidget(self.header)
 
-        self._content_layout = QVBoxLayout()
+        # L'en-tête (nom, Journal, Aide) reste fixe au-dessus : seule la zone qui le
+        # suit défile. À 125 %, un module réclame près de 1 000 px de haut, plus que
+        # les 793 px utiles d'un MacBook ; sans défilement, Qt agrandissait la fenêtre
+        # (et l'onglet) au-delà du bas de l'écran en rognant la fin du contenu.
+        self._scroll_body = _FitWidthBody()
+        self._content_layout = QVBoxLayout(self._scroll_body)
         self._content_layout.setContentsMargins(0, 0, 0, 0)
-        outer.addLayout(self._content_layout, 1)
+        self.central_scroll = QScrollArea()
+        self.central_scroll.setWidgetResizable(True)
+        self.central_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        self.central_scroll.setWidget(self._scroll_body)
+        outer.addWidget(self.central_scroll, 1)
         self.setCentralWidget(central)
 
     def _refresh_header_icon(self) -> None:
         """Pictogramme Papicons à gauche du nom ; repli texte si l'icône est absente."""
+        self.header_icon.setFixedSize(scaled(24), scaled(24))
         self.header_icon.clear()
         if icons.available(self.spec.icon):
             self.header_icon.setPixmap(icons.pixmap(self.spec.icon, scaled(20), "muted"))
             self.header_icon.setStyleSheet("background: transparent;")
         else:
             self.header_icon.setText(self.spec.icon)
-            self.header_icon.setStyleSheet("font-size: 20px; background: transparent;")
+            self.header_icon.setStyleSheet(
+                f"font-size: {scaled(20)}px; background: transparent;")
 
     def _make_button(self, text: str, callback: Callable[[], None], kind: str = "secondary",
                      shortcut: str | None = None, tooltip: str = "",
@@ -469,7 +504,7 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         self.bottom_tabs = QTabWidget()
         self.bottom_tabs.addTab(self.log_panel, self.tr("Journal"))
         self.bottom_tabs.addTab(self.history_table, self.tr("Historique"))
-        self.bottom_tabs.setMinimumHeight(150)
+        self.bottom_tabs.setMinimumHeight(scaled(150))
         clear_btn = self._make_button(self.tr("Effacer le journal"), self.log_panel.clear_log, "ghost")
         self.bottom_tabs.setCornerWidget(clear_btn, Qt.Corner.TopRightCorner)
         self.bottom_tabs.currentChanged.connect(self._on_tab_changed)
@@ -524,27 +559,78 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
             if inner is not None:
                 inner.setAutoFillBackground(False)
         dock.setWidget(widget)
+        # La largeur type ne suit pas la largeur préférée du contenu : on réévalue donc
+        # quand la mise en page du panneau change (options ajoutées, aperçus Dedup…).
+        for watched in (widget, widget.widget() if isinstance(widget, QScrollArea) else None):
+            if watched is not None:
+                watched.removeEventFilter(self)
+                watched.installEventFilter(self)
         dock.show()
         widget.show()
         self._sync_side_panel_width()
 
     def _sync_side_panel_width(self) -> None:
-        """Le panneau garde la largeur de son contenu, même quand le zoom change.
+        """Le panneau suit sa largeur type, agrandie seulement si son contenu l'exige.
 
-        Sans cela, un panneau de 380 px coupe ses libellés dès 150 % : le contenu
-        reste accessible par défilement horizontal, mais on ne le voit pas d'emblée.
+        Sans cela, il prenait la largeur *préférée* de son contenu (une phrase longue,
+        un libellé de liste) : à 85 %, « Réglages » débordait de sa largeur type. Un
+        contenu qui ne peut pas tenir (les deux aperçus de Dedup) l'étend encore, et
+        la largeur type, elle, suit le zoom comme toutes les autres mesures.
         """
         dock = self.side_dock
         if dock is None:
             return
         widget = dock.widget()
         inner = widget.widget() if isinstance(widget, QScrollArea) else widget
-        width = self.SIDE_PANEL_WIDTH
-        if inner is not None:
-            width = max(width, inner.minimumSizeHint().width())
+        # Un panneau latéral ne doit pas manger le contenu central à fort zoom :
+        # 40 % de la fenêtre au maximum, la largeur type restant la référence.
+        available = self.width()
+        width = scaled(self.SIDE_PANEL_WIDTH)
+        if available >= 1000:
+            width = min(width, max(scaled(260), int(available * 0.40)))
+        chrome = 0
         if isinstance(widget, QScrollArea):
-            width += widget.verticalScrollBar().sizeHint().width() + 2
-        dock.setMinimumWidth(width)
+            chrome = widget.verticalScrollBar().sizeHint().width() + 2
+        if inner is not None:
+            # Mesure à la largeur type : une phrase à retour à la ligne annonce le
+            # minimum de la largeur qu'elle *occupe*, donc mesurée à l'ancienne largeur
+            # (après un changement de zoom) elle empêcherait le panneau de rétrécir.
+            probe = width - chrome
+            if inner.width() != probe:
+                inner.resize(probe, max(inner.height(), 1))
+            layout = inner.layout()
+            if layout is not None:
+                layout.activate()
+            width = max(width, inner.minimumSizeHint().width() + chrome)
+        else:
+            width += chrome
+        # Minimum et maximum : la largeur ne dépend pas du contenu *préféré*.
+        if dock.minimumWidth() != width:
+            dock.setMinimumWidth(width)
+        if dock.maximumWidth() != width:
+            dock.setMaximumWidth(width)
+
+    def _queue_side_panel_sync(self) -> None:
+        """Regroupe les recalculs : une seule passe de largeur par boucle d'événements."""
+        if getattr(self, "_side_width_pending", False):
+            return
+        self._side_width_pending = True
+
+        def run() -> None:
+            self._side_width_pending = False
+            self._sync_side_panel_width()
+
+        QTimer.singleShot(0, run)
+
+    def eventFilter(self, watched: object, event: QEvent) -> bool:  # noqa: N802 - API Qt
+        """Un panneau dont le contenu change (aperçus Dedup, options) se recale en largeur."""
+        if self.side_dock is not None and event.type() in (
+                QEvent.Type.LayoutRequest, QEvent.Type.FontChange):
+            widget = self.side_dock.widget()
+            inner = widget.widget() if isinstance(widget, QScrollArea) else widget
+            if watched is widget or watched is inner:
+                self._queue_side_panel_sync()
+        return super().eventFilter(watched, event)
 
     @staticmethod
     def _side_title_bar(title: str) -> QWidget:
@@ -635,6 +721,7 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
                    import_progress: ImportProgress | Iterable[ImportProgress] | None = None,
                    show_progress: bool = True,
                    min_progress_ms: int = 0,
+                   determinate_start: bool = False,
                    history_action: str = "") -> None:
         """Lance un worker ; ``show_progress=False`` réserve sa progression à l'import.
 
@@ -653,6 +740,7 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         self._outcome, self._result, self._failure = None, None, ""
         self._cancel_requested = False
         self._min_progress_ms = max(0, int(min_progress_ms)) if show_progress else 0
+        self._determinate_start = bool(determinate_start) and show_progress
         self._progress_started_at = time.monotonic()
         self._progress_hold_pending = False
         self._progress_hold_timer.stop()
@@ -713,7 +801,7 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
             return
         if self._min_progress_ms > 0:
             if done <= 0:
-                self.progress_bar.setRange(0, 0)
+                self.progress_bar.setRange(0, 0)         # bande liquide avant le premier point précis
             else:
                 # On garde les 10 derniers pour cent à l'animation de fin : un fichier
                 # unique atteindrait sinon 100 % avant même que la barre soit visible.
@@ -721,11 +809,12 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
                 self.progress_bar.setValue(max(0, min(90, round(done * 100 / total))))
             self.progress_bar.show()
             return
-        if done <= 0:
-            # Même départ que les zones d'import : une bande liquide en mouvement
+        if done <= 0 and not self._determinate_start:
+            # Départ historique des autres modules : une bande liquide en mouvement
             # avant le premier point de progression précis.
             self.progress_bar.setRange(0, 0)
         else:
+            # Convert demande un total connu dès le départ (0 % fixe et segments visibles).
             self.progress_bar.setRange(0, total)
             self.progress_bar.setValue(max(0, min(done, total)))
         self.progress_bar.show()
@@ -928,6 +1017,17 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         super().showEvent(event)
         QTimer.singleShot(0, self._sync_side_panel_width)
 
+    def event(self, event: QEvent) -> bool:  # noqa: N802 - API Qt
+        """Le zoom suit l'écran : Qt prévient à l'affichage et à chaque changement d'écran."""
+        if event.type() in (QEvent.Type.Show, QEvent.Type.ScreenChangeInternal):
+            self._follow_screen(self.screen())
+        return super().event(event)
+
+    def _follow_screen(self, screen) -> None:
+        """Reprend le zoom mémorisé par l'écran où la fenêtre se trouve."""
+        if screen is not None:
+            ThemeManager.instance().activate_screen(screen)
+
     def _on_accessibility_changed(self) -> None:
         """Réapplique les couleurs peintes à la main (icônes, focus, progression)."""
         self.update()
@@ -944,6 +1044,19 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
         zoom = ThemeManager.instance().zoom()
         self.setMinimumSize(*fit_to_screen(
             round(self._min_base[0] * zoom), round(self._min_base[1] * zoom), self._available_screen()))
+
+    def sizeHint(self) -> QSize:  # noqa: N802 - API Qt
+        """Taille souhaitée : celle d'ouverture, plafonnée à l'écran.
+
+        Ouvert dans un onglet, un module imposait sinon la hauteur réclamée par son
+        contenu (près de 1 000 px pour Dedup à 125 %) : la fenêtre grandissait au-delà
+        du bas de l'écran. Elle garde ici la taille demandée à l'ouverture, quitte à
+        faire défiler son contenu interne.
+        """
+        zoom = ThemeManager.instance().zoom()
+        return QSize(*fit_to_screen(round(self._resize_base[0] * zoom),
+                                    round(self._resize_base[1] * zoom),
+                                    self._available_screen()))
 
     def _open_preferences(self) -> None:
         PreferencesDialog(self).exec()
@@ -974,11 +1087,11 @@ class ModuleWindow(AuroraWindowMixin, QMainWindow):
             logo = QLabel()
             logo.setPixmap(icons.pixmap(self.spec.icon, 24, "muted"))
             title_row.addWidget(logo)
-            heading = QLabel(f'<span style="font-size:x-large; font-weight:500">{html.escape(self.spec.name)}</span>')
+            heading = QLabel(self.spec.name)
         else:                                              # texte ou emoji de repli
-            heading = QLabel(f'<span style="font-size:x-large; font-weight:500">'
-                             f'{html.escape(self.spec.icon)}&nbsp;&nbsp;{html.escape(self.spec.name)}</span>')
-        heading.setTextFormat(Qt.TextFormat.RichText)
+            heading = QLabel(f"{self.spec.icon}\u00a0\u00a0{self.spec.name}")
+        heading.setObjectName("ModuleName")
+        heading.setTextFormat(Qt.TextFormat.PlainText)
         title_row.addWidget(heading)
         title_row.addStretch(1)
         tagline = QLabel(QCoreApplication.translate("Modules", self.spec.tagline))

@@ -32,7 +32,7 @@ from azimut.core.binaries import BinaryInfo
 from azimut.core.prefs import Preferences
 from azimut.ui import glass, widgets
 from azimut.ui.glass import GlassFrame
-from azimut.ui.theme import ThemeManager, token
+from azimut.ui.theme import ThemeManager, scaled, token
 from azimut.ui.widgets import (
     Card,
     Column,
@@ -393,6 +393,38 @@ def test_path_drop_zone_tracks_folder_and_clears(tmp_path):
     assert zone.path() == "" and zone._label.text() == "Dossier A\nGlissez un dossier ici…"
 
 
+def test_path_drop_zone_wraps_the_prompt_but_elides_the_path(manager):
+    """À 150 %, l'invite se replie dans deux zones étroites ; un chemin reste sur une ligne."""
+    manager.set_zoom(1.5)
+    zone = PathDropZone("Dossier B (facultatif) :")
+    zone.resize(170, 220)
+    zone.show()
+    try:
+        QTest.qWait(10)
+        assert zone._label.wordWrap()
+        assert zone._label.width() > 100
+        zone.set_path("/un/chemin/very/long/qui/ne/tient/pas")
+        assert not zone._label.wordWrap()
+        assert "…" in zone._label.text()
+    finally:
+        zone.close()
+
+
+def test_liquid_progress_bar_normalises_its_segments(qt_app):
+    """Les largeurs des segments suivent les effectifs, pas des parts arbitraires."""
+    bar = LiquidProgressBar()
+    bar.resize(240, 20)
+    bar.setRange(0, 100)
+    bar.setValue(40)
+    bar.set_segments([(3, "seg_image"), (1, "seg_audio"), (5, "seg_video"), (1, "seg_copy")])
+    assert [round(part, 3) for part, _color in bar._segments] == [0.3, 0.1, 0.5, 0.1]
+    bar.grab()                                   # le rendu segmenté ne doit pas lever
+    bar.set_segments([(2, "seg_image"), (2, "seg_video")])
+    assert [part for part, _color in bar._segments] == [0.5, 0.5]
+    bar.set_segments([])
+    assert bar._segments == []
+
+
 def test_import_progress_tracks_counts_and_is_temporary(qt_app):
     p = ImportProgress()
     assert isinstance(p.bar, LiquidProgressBar)
@@ -519,7 +551,7 @@ def test_log_panel_recolors_on_theme_change(manager):
     log.append_log("ERR", "boom")
     manager.set_theme("light")
     assert _color_at(log, 1) == QColor(token("err_txt")).name()
-    assert token("err_txt") == "#b02a2a"        # assombri pour atteindre 4,5:1 sur err_bg
+    assert token("err_txt") == "#7d1d1d"        # assombri pour atteindre 4,5:1 sur err_bg
     assert "boom" in log.toPlainText()
 
 
@@ -636,17 +668,30 @@ def test_data_table_row_activation_double_click_and_enter():
     assert got == [2, 0]
 
 
-def test_data_table_keeps_headers_readable_at_narrow_width():
-    """Dans un tableau étroit, les colonnes gardent la largeur de leur en-tête."""
+def test_data_table_scrolls_rather_than_eliding_headers_when_too_narrow():
+    """Quand les en-têtes entiers ne tiennent pas, le tableau défile horizontalement.
+
+    Les réduire encore transformait chaque titre en « … » ; la barre horizontale
+    garde les libellés lisibles et le libellé complet reste aussi en infobulle.
+    """
     cols = [Column(f"c{i}", f"En-tête long {i}", width=150) for i in range(6)]
     table = DataTable(cols)
     table.resize(430, 240)
     table.show()
     QTest.qWait(10)
     header = table.horizontalHeader()
-    for i in range(6):
-        text = table.model().headerData(i, Qt.Orientation.Horizontal, Qt.ItemDataRole.DisplayRole)
-        assert table.columnWidth(i) >= header.fontMetrics().horizontalAdvance(str(text))
+    widths = [table.columnWidth(i) for i in range(6)]
+    assert table.horizontalScrollBar().isVisible()
+    assert sum(widths) > table.viewport().width()
+    assert min(widths) >= header.minimumSectionSize()
+    for index in range(6):
+        needed = header.fontMetrics().horizontalAdvance(f"En-tête long {index}") + 2 * scaled(8)
+        assert widths[index] >= needed
+    assert header.textElideMode() == Qt.TextElideMode.ElideRight
+    # Le libellé entier reste accessible, même quand la colonne est resserrée.
+    assert table.model().headerData(0, Qt.Orientation.Horizontal,
+                                    Qt.ItemDataRole.ToolTipRole) == "En-tête long 0"
+    table.close()                              # ne pas masquer les survols des tests suivants
 
 
 def test_path_drop_zone_height_follows_zoom(manager):
@@ -656,6 +701,28 @@ def test_path_drop_zone_height_follows_zoom(manager):
     manager.set_zoom(1.5)
     assert zone.minimumHeight() == widgets.scaled(104)
     assert zone.minimumHeight() > 104
+
+
+def test_data_table_columns_and_rows_follow_zoom(manager):
+    """À chaque palier, les en-têtes gardent leur padding et les lignes leur hauteur."""
+    cols = [Column("date", "Date", width=150),
+            Column("module", "Module", width=140),
+            Column("summary", "Résumé", width=400, stretch=True)]
+    table = DataTable(cols)
+    table.resize(600, 240)
+    table.show()
+    try:
+        for zoom in (0.8, 1.25, 1.5):
+            manager.set_zoom(zoom)
+            QTest.qWait(10)
+            header = table.horizontalHeader()
+            metrics = header.fontMetrics()
+            for index, title in enumerate(("Date", "Module", "Résumé")):
+                padding = 2 * scaled(8)
+                assert table.columnWidth(index) >= metrics.horizontalAdvance(title) + padding
+            assert table.verticalHeader().defaultSectionSize() == scaled(28)
+    finally:
+        table.close()
 
 
 def test_data_table_recolors_on_theme_change(manager):

@@ -16,10 +16,12 @@ from azimut.core.paths import user_config_dir
 _log = get_logger("prefs")
 
 ZOOM_MIN, ZOOM_MAX = 0.8, 1.6
+_APPEARANCES = ("system", "dark", "light")
 _BOOL_KEYS = ("reduce_motion", "reduce_transparency", "high_contrast")
 _STR_KEYS = ("binaries.ffmpeg", "binaries.ffprobe", "binaries.exiftool", "last_dir")
 DEFAULTS: dict[str, Any] = {
-    # Pas de clé « theme » : le thème suit le système à chaque lancement (voir ThemeManager).
+    # Apparence retenue d'un lancement à l'autre ; « system » suit le réglage du bureau.
+    "theme": "system",
     "zoom": 1.0,
     "reduce_motion": False,
     "reduce_transparency": False,
@@ -42,6 +44,9 @@ def _normalize(key: str, value: Any) -> Any:
         return bool(value)
     if key == "language":
         return normalize_language(value) or DEFAULTS["language"]
+    if key == "theme":
+        name = str(value or "system").strip().lower()
+        return name if name in _APPEARANCES else DEFAULTS["theme"]
     if key == "zoom":
         try:
             z = float(value)

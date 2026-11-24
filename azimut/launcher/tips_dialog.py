@@ -248,13 +248,13 @@ class TipsPage(QWidget):
         badge = QLabel(str(number))
         badge.setObjectName("TipsBadge")
         badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        badge.setFixedSize(24, 24)
+        badge.setFixedSize(scaled(24), scaled(24))
         return badge
 
     def _step_row(self, number: int, name: str, description: str, icon: str) -> QHBoxLayout:
         """Une étape : numéro, pictogramme du module, nom et explication courte."""
         row = QHBoxLayout()
-        row.setSpacing(10)
+        row.setSpacing(scaled(10))
         row.addWidget(self._badge(number), 0, Qt.AlignmentFlag.AlignTop)
         # Pas d'animation du pictogramme de l'outil dans Conseils.
         title = (IconLabel(name, icon, "text", animate=False)
@@ -274,13 +274,13 @@ class TipsPage(QWidget):
     def _precaution_row(self, title: str, description: str, icon_name: str) -> QHBoxLayout:
         """Une précaution : pictogramme dans une pastille, titre et explication."""
         row = QHBoxLayout()
-        row.setSpacing(10)
+        row.setSpacing(scaled(10))
         marker = QLabel()
         marker.setObjectName("TipsMarker")
-        marker.setFixedSize(26, 26)
+        marker.setFixedSize(scaled(26), scaled(26))
         marker.setAlignment(Qt.AlignmentFlag.AlignCenter)
         icon = icon_name if icons.available(icon_name) else "info"
-        marker.setPixmap(icons.pixmap(icon, 15, "accent"))
+        marker.setPixmap(icons.pixmap(icon, scaled(15), "accent"))
         row.addWidget(marker, 0, Qt.AlignmentFlag.AlignTop)
 
         text = QVBoxLayout()

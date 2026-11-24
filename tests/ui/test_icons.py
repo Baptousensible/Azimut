@@ -139,6 +139,16 @@ def test_application_and_brand_assets():
     assert icons.brand_pixmap("absent", 64).isNull()
 
 
+def test_brand_pixmap_keeps_its_logical_size_on_a_retina_screen(monkeypatch):
+    """Sur un écran 2×, la hauteur demandée reste une hauteur logique."""
+    monkeypatch.setattr(icons, "_device_pixel_ratio", lambda: 2.0)
+    icons.clear_cache()
+    pixmap = icons.brand_pixmap("azimut_wordmark", 64)
+    assert pixmap.devicePixelRatio() == pytest.approx(2.0)
+    assert round(pixmap.width() / pixmap.devicePixelRatio()) == 64
+    assert round(pixmap.height() / pixmap.devicePixelRatio()) == 64
+
+
 def test_every_module_uses_an_existing_icon():
     specs, errors = discover_with_errors()
     assert specs and not errors
@@ -320,6 +330,211 @@ def test_shrunk_icons_keep_visible_motion(manager):
                 1 for y in range(still.height()) for x in range(still.width())
                 if frame.pixel(x, y) != still.pixel(x, y)))
         assert best >= minimum, (name, best)
+
+
+class _FakeScreen:
+    def __init__(self, dpr: float) -> None:
+        self._dpr = dpr
+
+    def devicePixelRatio(self) -> float:  # noqa: N802 - API Qt
+        return self._dpr
+
+
+def test_icon_density_follows_the_active_screen_not_the_primary(monkeypatch):
+    """AZ-C08 : le facteur HiDPI vient de l'écran de la fenêtre, pas de la primaire seule."""
+    monkeypatch.setattr(icons, "_active_screen", lambda: _FakeScreen(3.0))
+    assert icons._render_scale() == pytest.approx(3.0)
+    pixmap = icons.pixmap("globe", 20, "muted")
+    assert pixmap.devicePixelRatio() == pytest.approx(3.0)
+
+
+def test_active_screen_prefers_the_window_over_the_primary(monkeypatch):
+    """La primaire n'est qu'un repli : la fenêtre active décide de la densité."""
+
+    class _ScreenName(str):
+        """Nom d'écran qui répond aussi à l'API Qt lue par la sélection d'écran."""
+
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            return 2.0
+
+    class _Window:
+        def screen(self):
+            return _ScreenName("écran-secondaire")
+
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            return 1.0
+
+    class _App:
+        @staticmethod
+        def focusWindow():
+            return _Window()
+
+        @staticmethod
+        def topLevelWindows():
+            return []
+
+        @staticmethod
+        def primaryScreen():
+            return _ScreenName("écran-principal")
+
+    monkeypatch.setattr(icons, "QGuiApplication", _App)
+    assert icons._active_screen() == "écran-secondaire"
+
+    class _NoWindow(_App):
+        @staticmethod
+        def focusWindow():
+            return None
+
+    monkeypatch.setattr(icons, "QGuiApplication", _NoWindow)
+    assert icons._active_screen() == "écran-principal"
+
+
+def test_icon_density_ignores_a_dead_qscreen_wrapper(monkeypatch):
+    """AZ-C09 : macOS recrée ses QScreen à l'affichage ; un wrapper mort ne fige pas le DPR.
+
+    Mesuré sur MacBook Air Retina : après le premier changement de zoom, `window.screen()`
+    rendait un objet QScreen détruit, `_device_pixel_ratio()` retombait à 1 et l'emblème
+    était rastérisé à 80 px physiques pour 80 px logiques — flou sur un écran 2×.
+    """
+    from PySide6.QtCore import QRect
+
+    class _DeadScreen:
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            raise RuntimeError("libshiboken: Internal C++ object already deleted.")
+
+    class _LiveScreen:
+        def __init__(self, dpr: float, name: str = "Écran Retina intégré") -> None:
+            self._dpr, self._name = dpr, name
+
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            return self._dpr
+
+        def name(self) -> str:                     # noqa: N802 - API Qt
+            return self._name
+
+    class _Window:
+        def screen(self):
+            return _DeadScreen()
+
+        def geometry(self):                        # noqa: N802 - API Qt
+            return QRect(0, 0, 1200, 800)
+
+        def isVisible(self) -> bool:               # noqa: N802 - API Qt
+            return True
+
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            return 1.0
+
+    class _App:
+        @staticmethod
+        def focusWindow():
+            return _Window()
+
+        @staticmethod
+        def topLevelWindows():
+            return []
+
+        @staticmethod
+        def screenAt(_point):
+            return _LiveScreen(2.0)
+
+        @staticmethod
+        def screens():
+            return [_LiveScreen(2.0)]
+
+        @staticmethod
+        def primaryScreen():
+            return _LiveScreen(2.0)
+
+    monkeypatch.setattr(icons, "QGuiApplication", _App)
+    icons.clear_cache()
+    assert icons._device_pixel_ratio() == pytest.approx(2.0)
+    assert icons._render_scale() == pytest.approx(2.0)
+
+    pixmap = icons.brand_pixmap("azimut_wordmark", 64)
+    assert pixmap.devicePixelRatio() == pytest.approx(2.0)
+    assert round(pixmap.width() / pixmap.devicePixelRatio()) == 64
+    assert round(pixmap.height() / pixmap.devicePixelRatio()) == 64
+
+
+def test_icon_density_prefers_the_window_when_the_screen_announces_1x(monkeypatch):
+    """AZ-C09 : l'écran reste vivant mais annonce 1.0 pendant que la fenêtre peint en 2×.
+
+    Cas exactement reproduit sur le MacBook Air juste après le premier changement de zoom :
+    aucun wrapper n'est mort, l'écran rapporte simplement une densité fausse le temps que le
+    WindowServer se stabilise (mesuré : écran 1.0, fenêtre 2.0). Le repli sur un wrapper mort
+    ne suffit donc pas ; c'est la règle du maximum qui doit rendre l'emblème net.
+    """
+    from PySide6.QtCore import QRect
+
+    class _Screen:
+        def __init__(self, dpr: float) -> None:
+            self._dpr = dpr
+
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            return self._dpr
+
+        def name(self) -> str:                     # noqa: N802 - API Qt
+            return "Écran Retina intégré"
+
+    class _Window:
+        def __init__(self, dpr: float) -> None:
+            self._dpr = dpr
+
+        def screen(self):
+            return _Screen(1.0)                    # l'écran ment, mais reste vivant
+
+        def geometry(self):                        # noqa: N802 - API Qt
+            return QRect(0, 0, 1200, 800)
+
+        def isVisible(self) -> bool:               # noqa: N802 - API Qt
+            return True
+
+        def devicePixelRatio(self) -> float:       # noqa: N802 - API Qt
+            return self._dpr
+
+    def fake_app(window_dpr: float):
+        window = _Window(window_dpr)
+
+        class _App:
+            @staticmethod
+            def focusWindow():
+                return window
+
+            @staticmethod
+            def topLevelWindows():
+                return []
+
+            @staticmethod
+            def screenAt(_point):
+                return _Screen(1.0)
+
+            @staticmethod
+            def screens():
+                return [_Screen(1.0)]
+
+            @staticmethod
+            def primaryScreen():
+                return _Screen(1.0)
+
+        return _App
+
+    # La fenêtre est déjà peinte en 2× : l'écran à 1.0 ne doit pas abaisser la densité.
+    monkeypatch.setattr(icons, "QGuiApplication", fake_app(2.0))
+    icons.clear_cache()
+    assert icons._screen_pixel_ratio(icons._active_screen()) == pytest.approx(1.0)
+    assert icons._window_pixel_ratio() == pytest.approx(2.0)
+    assert icons._device_pixel_ratio() == pytest.approx(2.0)
+    assert icons._render_scale() == pytest.approx(2.0)
+    pixmap = icons.brand_pixmap("azimut_wordmark", 64)
+    assert pixmap.devicePixelRatio() == pytest.approx(2.0)
+    assert round(pixmap.width() / pixmap.devicePixelRatio()) == 64
+
+    # Sur un vrai écran 1×, rien n'est inventé : la densité logique reste 1.
+    monkeypatch.setattr(icons, "QGuiApplication", fake_app(1.0))
+    icons.clear_cache()
+    assert icons._device_pixel_ratio() == pytest.approx(1.0)
+    assert icons._render_scale() == pytest.approx(icons._MIN_RENDER_DPR)
 
 
 def test_hidpi_animation_keeps_the_icon_centred(manager):

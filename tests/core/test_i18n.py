@@ -34,9 +34,9 @@ def _atlas_entries(path: Path) -> dict[tuple[str, str], str]:
 def _messages(path: Path) -> set[tuple[str, str]]:
     """(contexte, source) des entrées actives d'un catalogue.
 
-    Les entrées « vanished » (texte retiré du code) sont propres à chaque catalogue :
-    ``lupdate`` les conserve là où elles existent déjà, sans les ajouter ailleurs. Elles ne
-    partent pas dans le ``.qm`` et ne doivent donc pas entrer dans la comparaison.
+    Les entrées « vanished » (texte retiré du code) sont ignorées par précaution :
+    ``tools/update_translations.py`` les purge (``lupdate -no-obsolete``), donc elles ne
+    devraient plus exister, mais un catalogue édité à la main pourrait en réintroduire.
     """
     root = ET.parse(path).getroot()
     entries = set()

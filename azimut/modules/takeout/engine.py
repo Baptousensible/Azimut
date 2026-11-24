@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import unicodedata
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -354,6 +355,31 @@ def analyze(folder: Path, *, recursive: bool = True, cancel: Callable[[], bool] 
 
 
 # ── Modifications à écrire ───────────────────────────────────────────────────
+_DISK_MARGIN = 16 * 1024 * 1024      # espace libre exigé en plus de la taille du fichier
+
+
+def write_space_problem(path: Path) -> str | None:
+    """Raison courte qui empêche la réécriture de `path`, ou None si elle est possible.
+
+    ExifTool réécrit le fichier via une copie temporaire dans le même dossier : sans cet espace,
+    l'échec tombe au milieu du lot avec un message opaque. Un dossier non inscriptible est refusé
+    d'emblée, avant toute écriture.
+    """
+    try:
+        size = path.stat().st_size
+    except OSError:
+        return "Fichier introuvable."
+    if not os.access(path.parent, os.W_OK):
+        return "Dossier en lecture seule : aucune écriture."
+    try:
+        free = shutil.disk_usage(path.parent).free
+    except OSError:
+        return None                     # non mesurable : ExifTool tranchera
+    if free < size + _DISK_MARGIN:
+        return "Espace disque insuffisant pour réécrire le fichier."
+    return None
+
+
 @dataclass(frozen=True)
 class Options:
     write_dates: bool = True

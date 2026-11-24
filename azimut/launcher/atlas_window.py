@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import math
+import sys
 from functools import partial
 
 from PySide6.QtCore import (
@@ -25,6 +26,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSizePolicy,
+    QStyleFactory,
     QTabBar,
     QTabWidget,
     QToolButton,
@@ -57,7 +59,9 @@ from azimut.ui.glass import (
 from azimut.ui.page_stack import SlidingPageStack
 from azimut.ui.notification import notify_persistent
 from azimut.ui.preferences_dialog import PreferencesPage
-from azimut.ui.theme import ThemeManager, caption_point_size, repolish, scaled, token
+from azimut.ui.theme import (
+    ThemeManager, caption_point_size, repolish, scaled, system_text_scale, token,
+)
 from azimut.ui.widgets import GOLDEN_RATIO, Card, IconLabel, StatusChip, plain_tooltip
 
 log = get_logger(__name__)
@@ -80,9 +84,6 @@ class ModuleCard(Card):
     # 30 images/s suffisent pour ces petits tracés et laissent le curseur fluide ;
     # les images identiques sont en plus sautées dans ``_on_icon_frame``.
     ICON_FRAME_MS = 33
-    # Tolérance avant de considérer une carte trop courte : quelques pixels se
-    # rattrapent sur les gouttières internes, sans faire défiler toute la page.
-    CONTENT_SLACK = 4
 
     openRequested = Signal(str)        # id du module
     backgroundOpenRequested = Signal(str)   # id du module, à ouvrir sans activer l'onglet
@@ -106,7 +107,7 @@ class ModuleCard(Card):
         self._icon_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
         self._icon_anim.valueChanged.connect(self._on_icon_frame)
         self.icon_label = QLabel()
-        self.icon_label.setFixedSize(28, 28)
+        self.icon_label.setFixedSize(scaled(28), scaled(28))
         self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._apply_icon()
         self.name_label = QLabel(spec.name)
@@ -198,7 +199,7 @@ class ModuleCard(Card):
         self._icon_frame = None
         self._icon_clock.invalidate()
         if icons.available(self.spec.icon):
-            self._icon_base = icons.pixmap(self.spec.icon, 20, token("muted"))
+            self._icon_base = icons.pixmap(self.spec.icon, scaled(20), token("muted"))
             self.icon_label.setText("")
             self.icon_label.setPixmap(self._icon_base)
             self.icon_label.setStyleSheet("background: transparent;")
@@ -206,7 +207,7 @@ class ModuleCard(Card):
             self._icon_base = QPixmap()
             self.icon_label.setPixmap(QPixmap())
             self.icon_label.setText(self.spec.icon)
-            self.icon_label.setStyleSheet("font-size: 20px; background: transparent; color: "
+            self.icon_label.setStyleSheet(f"font-size: {scaled(20)}px; background: transparent; color: "
                                          f"{token('muted')};")
 
     def enterEvent(self, event) -> None:  # noqa: N802 - API Qt
@@ -286,7 +287,9 @@ class ModuleCard(Card):
         vaut une rangée plus haute (et une page qui défile) qu'un bouton rogné.
         """
         width = max(1, int(width))
-        roomy = self.content_height(width) - scaled(self.CONTENT_SLACK)
+        # Aucune tolérance retirée : la marge de 4 px se prenait sur la tagline repliée,
+        # qui perdait sa dernière ligne (29 px pour 32 requis à 100 %).
+        roomy = self.content_height(width)
         self._card_size = (width, max(1, int(height), roomy))
         self.setFixedSize(*self._card_size)
 
@@ -296,6 +299,9 @@ class ModuleCard(Card):
         return needed if needed > 0 else 0
 
     def restyle(self, _name: str = "") -> None:
+        side = scaled(28)
+        if self.icon_label.width() != side or self.icon_label.height() != side:
+            self.icon_label.setFixedSize(side, side)
         if self._card_size is None:
             self.setMinimumHeight(scaled(self.CARD_MIN_HEIGHT))
         else:
@@ -383,6 +389,7 @@ class _ToolsTabBar(GlassTabBar):
         # Un onglet d'outil ouvert garde son icône fixe : seule la carte de la page
         # d'accueil anime le pictogramme au survol.
         super().__init__(parent, animate_icons=False)
+        self._apply_native_style_workaround()
         # La barre reçoit le focus au clic : Suppr ferme alors l'onglet actif
         # ou les onglets sélectionnés, sans dépendre de la page affichée.
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -428,6 +435,28 @@ class _ToolsTabBar(GlassTabBar):
         self._collapse_selection_on_release = False
         self._arranging_group = False
         self.tabMoved.connect(self._note_group_drag)
+
+    def _apply_native_style_workaround(self) -> None:
+        """Rend la barre d'onglets indépendante du style natif de macOS.
+
+        Le style natif place les croix de fermeture **à gauche**
+        (``SH_TabBar_CloseButtonPosition`` = ``LeftSide``) et rogne le libellé pour leur
+        faire de la place. Toute la géométrie calculée ici — largeur au contenu, croix
+        réservée à droite au même retrait que le texte, pas de croix sur « Tous les
+        outils » — suppose au contraire la disposition de Fusion, déjà utilisée hors
+        macOS. Sans cela, sur macOS : croix à gauche, noms coupés à droite et croix en
+        trop sur l'onglet d'accueil.
+
+        Seule cette barre passe en Fusion : le reste de l'interface garde le style natif,
+        et la feuille de style Qt continue de dessiner les onglets.
+        """
+        if sys.platform != "darwin":
+            return
+        style = QStyleFactory.create("Fusion")
+        if style is None:                      # style absent de cette installation Qt
+            return
+        self._fusion_style = style             # ``setStyle`` ne prend pas possession de l'objet
+        self.setStyle(style)
 
     # ── sélection multiple ──
     def _tab_id(self, index: int) -> str:
@@ -1139,6 +1168,21 @@ class _HeaderDetailLabel(QLabel):
         hint = super().minimumSizeHint()
         return QSize(0, hint.height())
 
+    def sizeHint(self) -> QSize:  # noqa: N802 - API Qt
+        """Largeur naturelle du texte, sans la sous-estimation du calcul par rectangle.
+
+        ``QLabel.sizeHint`` mesure le rectangle du texte ; pour certaines polices, il
+        rend quelques pixels de moins que l'avance réelle et le libellé finissait rogné
+        (« …vos médi ») alors que la barre avait la place.
+        """
+        hint = super().sizeHint()
+        if self.wordWrap() or not self.text():
+            return hint
+        margins = self.contentsMargins()
+        width = (self.fontMetrics().horizontalAdvance(self.text())
+                 + margins.left() + margins.right() + 2 * self.margin())
+        return QSize(max(hint.width(), width), hint.height())
+
 
 class AtlasWindow(AuroraWindowMixin, QMainWindow):
     """Azimut — le couteau suisse pour convertir, dédoublonner et ranger vos médias."""
@@ -1202,9 +1246,8 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
         self._header_animation.valueChanged.connect(
             lambda value: self._apply_header_progress(float(value)))
         self._title_size = 0
-        self._logo_size = self.HEADER_WORDMARK
-        self._wordmark = QPixmap()
-        self._wordmark_theme = ""
+        # Le logotype fait partie du bloc d'en-tête : il suit le zoom comme le reste.
+        self._logo_size = scaled(self.HEADER_WORDMARK)
         self.cards: dict[str, ModuleCard] = {}
         self.page_buttons: dict[int, QPushButton] = {}
         self._top_layout = self._saved_top_layout()
@@ -1277,6 +1320,17 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
         self._sync_top_layout_action()
         self._update_layout_fallback()
         ThemeManager.instance().zoomChanging.connect(self._on_zoom_changing)
+
+    def event(self, event: QEvent) -> bool:  # noqa: N802 - API Qt
+        """Le zoom suit l'écran : Qt prévient à l'affichage et à chaque changement d'écran."""
+        if event.type() in (QEvent.Type.Show, QEvent.Type.ScreenChangeInternal):
+            self._follow_screen(self.screen())
+        return super().event(event)
+
+    def _follow_screen(self, screen) -> None:
+        """Reprend le zoom mémorisé par l'écran où la fenêtre se trouve."""
+        if screen is not None:
+            ThemeManager.instance().activate_screen(screen)
 
     def _build_pages(self, history_store: HistoryStore | None) -> None:
         """Prépare la page des outils et celle de l'activité."""
@@ -1410,7 +1464,7 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
         self.title_label = QLabel(self.tr("Azimut"))
         self.title_label.setObjectName("AtlasTitle")
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        self._set_title_font(self.HEADER_TITLE)
+        self._set_title_font(scaled(self.HEADER_TITLE))
         self.title_label.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         for label in (self.logo_label, self.title_label):
             label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -1543,31 +1597,42 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
             # En-tête compact : l'emblème linéaire est trop fin, on garde le pictogramme historique.
             self.logo_label.setPixmap(icons.app_icon().pixmap(self._logo_size, self._logo_size))
             return
-        variant = ThemeManager.instance().theme()
-        if self._wordmark.isNull() or self._wordmark_theme != variant:
-            self._wordmark = icons.brand_pixmap("azimut_emblem", self.HEADER_WORDMARK, variant)
-            self._wordmark_theme = variant
-        if self._wordmark.isNull():
+        # Hauteur logique : brand_pixmap applique déjà la densité de l'écran.
+        pixmap = icons.brand_pixmap("azimut_emblem", self._logo_size, ThemeManager.instance().theme())
+        if pixmap.isNull():
             self.logo_label.setPixmap(icons.pixmap("globe", min(34, self._logo_size), "primary"))
         else:
-            self.logo_label.setPixmap(self._wordmark.scaled(
-                self._logo_size, self._logo_size, Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation))
+            self.logo_label.setPixmap(pixmap)
 
     def _set_title_font(self, size: int) -> None:
-        """Applique le lettrage du logotype au titre, à la taille courante."""
+        """Applique le lettrage du logotype au titre, à la taille courante.
+
+        La taille est en pixels : elle suit donc aussi la taille de texte du système,
+        sans quoi « Azimut » restait figé quand le reste de l'interface grandissait.
+        """
+        size = max(1, round(size * system_text_scale()))
         if size == self._title_size:
             return
         self._title_size = size
         self.title_label.setFont(brand_font(size))
+        # Sans ce minimum, la politique « Maximum » du libellé le laisse à son ancienne
+        # largeur et « Azimut » est rogné après une augmentation du zoom.
+        # Le minimum est remis à zéro avant d'être relu : Qt élargit le sizeHint de la
+        # largeur minimale courante, si bien qu'une simple relecture figeait le libellé
+        # au plus grand cran visité — à 80 % après 150 %, le titre gardait 127 px pour
+        # 69 px de texte et l'en-tête réservait la place du cran supérieur (AZ-C10).
+        self.title_label.setMinimumWidth(0)
+        self.title_label.setMinimumWidth(self.title_label.sizeHint().width())
 
     def _apply_header_progress(self, progress: float) -> None:
         """Applique la taille compacte du logo et du titre pour une valeur de 0 à 1."""
         self._header_progress = max(0.0, min(1.0, progress))
         # Le padding vertical diminue avec la barre : la hauteur compacte perd
         # exactement un cinquième de sa hauteur, sans toucher au contenu.
-        pad = round(self.HEADER_VPAD
-                    + (self.HEADER_VPAD_COMPACT - self.HEADER_VPAD) * self._header_progress)
+        # Les métriques du bloc (marges, logo, titre) sont mises à l'échelle du zoom :
+        # sinon l'en-tête gardait exactement la même hauteur à 80 % et à 125 %.
+        pad = round(scaled(self.HEADER_VPAD
+                           + (self.HEADER_VPAD_COMPACT - self.HEADER_VPAD) * self._header_progress))
         if self.header_bar.contentsMargins().top() != pad:
             self.header_bar.setContentsMargins(16, pad, 16, pad)
         # Le nom reste « Azimut » : seule sa taille suit le compactage de l'en-tête.
@@ -1577,14 +1642,14 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
         margins = self._header_host_layout.contentsMargins()
         if margins.left() != inset or margins.right() != inset:
             self._header_host_layout.setContentsMargins(inset, 0, inset, 0)
-        size = round(self.HEADER_WORDMARK
-                     + (self.HEADER_COMPACT - self.HEADER_WORDMARK) * self._header_progress)
+        size = round(scaled(self.HEADER_WORDMARK
+                            + (self.HEADER_COMPACT - self.HEADER_WORDMARK) * self._header_progress))
         if size != self._logo_size:
             self._logo_size = size
             self.logo_label.setFixedSize(size, size)
             self._apply_wordmark()
-        self._set_title_font(round(self.HEADER_TITLE
-                                   + (self.HEADER_TITLE_COMPACT - self.HEADER_TITLE) * self._header_progress))
+        self._set_title_font(round(scaled(self.HEADER_TITLE
+                                         + (self.HEADER_TITLE_COMPACT - self.HEADER_TITLE) * self._header_progress)))
         # En-tête compact : « Azimut » se cale sur l'axe du logo réduit. Le retrait suit
         # la taille du logo, donc le titre glisse au lieu de sauter quand l'animation part.
         gap = max(0.0, (size - self.title_label.sizeHint().height()) / 2.0)
@@ -1918,7 +1983,7 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
     def _on_accessibility_changed(self) -> None:
         """Le verre et les animations changent sans changement de thème : on recale tout."""
         if ThemeManager.instance().reduce_motion():
-            self._tab_icon_timer.stop()
+            self._stop_tab_icon_timer()
             for module_id in list(self._tab_busy):
                 self._set_tab_icon(module_id)          # icône à taille normale, sans respiration
         self._restyle()
@@ -1982,10 +2047,22 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
         space = (viewport_height - margins.top() - margins.bottom()
                  - hint_height - center.layout().spacing())
         geometry = self._golden_grid(len(cards), round(page.width() * _CardsColumn.WIDTH_RATIO), space)
-        if geometry is None or geometry == getattr(self, "_fitted_cards", None):
+        # Le bloc suit le zoom : à 90 %, les cartes perdent 10 % de leur largeur. Le nombre
+        # d'or reste la cible, mais la hauteur ne peut pas descendre sous ce que le contenu
+        # réclame à cette largeur (textes repliés, pastilles, bouton « Ouvrir ») : sous
+        # 100 %, c'est cette borne qui l'emporte et le format s'écarte un peu de l'or.
+        # Au-delà de 100 %, les cartes remplissent déjà la page ; grandir n'ajouterait que
+        # du défilement.
+        scale = min(1.0, ThemeManager.instance().zoom())
+        signature = (geometry, scale)
+        if geometry is None or signature == getattr(self, "_fitted_cards", None):
             return
-        self._fitted_cards = geometry
+        self._fitted_cards = signature
         columns, width, height = geometry
+        if scale < 1.0:
+            width = max(1, round(width * scale))
+            needed = max((card.content_height(width) for card in cards), default=0)
+            height = max(round(height * scale), needed)
         self._place_cards(columns)
         center.set_preferred_width(columns * width + grid.horizontalSpacing() * (columns - 1))
         for card in cards:
@@ -2006,6 +2083,11 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
                                 + rows * height + grid.verticalSpacing() * (rows - 1))
         center.layout().invalidate()
         center.layout().activate()
+        # La largeur préférée du bloc vient de changer : sans relancer aussi le layout de la
+        # page, le centrage n'est appliqué qu'au tour suivant de la boucle d'événements (le
+        # bloc s'affiche un instant décalé d'un pixel, et les mesures de géométrie varient
+        # selon le moment où on les prend).
+        page.layout().activate()
 
     def _golden_grid(self, count: int, cap: int, space: int) -> tuple[int, int, int] | None:
         """Choisit (colonnes, largeur, hauteur) au nombre d'or pour `count` cartes.
@@ -2040,7 +2122,7 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
             # Hauteur réellement réclamée par le contenu à cette largeur (les taglines
             # se replient) : elle grandit avec le zoom, contrairement à un seuil figé.
             needed = max((card.content_height(width) for card in self._card_order), default=0)
-            if width < min_width or height < needed - scaled(ModuleCard.CONTENT_SLACK):
+            if width < min_width or height < needed:
                 continue
             block_height = rows * height + row_gap * (rows - 1)
             candidates.append((columns, width, height, block_height / space))
@@ -2059,8 +2141,7 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
         # Le repli ne comprime pas la carte sous ce que son contenu réclame : c'est la
         # page qui défile, jamais le texte qui se coupe.
         height = max(min_height, min(max_height,
-                                    max(needed - scaled(ModuleCard.CONTENT_SLACK),
-                                        (space - row_gap * (rows - 1)) // rows)))
+                                    max(needed, (space - row_gap * (rows - 1)) // rows)))
         return columns, width, height
 
     # ── binaires ──
@@ -2151,12 +2232,12 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
             self._tab_busy.discard(module_id)
             self._set_tab_icon(module_id)
             if not self._tab_busy:
-                self._tab_icon_timer.stop()
+                self._stop_tab_icon_timer()
 
     def _animate_busy_tabs(self) -> None:
         """Fait respirer la taille des icônes des modules occupés, sans déplacer les onglets."""
         if not self._tab_busy:
-            self._tab_icon_timer.stop()
+            self._stop_tab_icon_timer()
             return
         self._tab_zoom_step = (self._tab_zoom_step + 1) % (self.TAB_ZOOM_STEPS + 1)
         half = self.TAB_ZOOM_STEPS / 2
@@ -2172,7 +2253,19 @@ class AtlasWindow(AuroraWindowMixin, QMainWindow):
             # Pendant la fermeture, le minuteur peut déjà être détruit par Qt.
             return
         if not self._tab_busy:
+            self._stop_tab_icon_timer()
+
+    def _stop_tab_icon_timer(self) -> None:
+        """Arrête l'animation des onglets, même si Qt a déjà détruit le minuteur.
+
+        À la fermeture, ``closeEvent`` laisse Qt détruire les enfants C++ avant
+        certains signaux différés : ``stop()`` levait alors ``RuntimeError``
+        (« Internal C++ object (QTimer) already deleted »).
+        """
+        try:
             self._tab_icon_timer.stop()
+        except RuntimeError as exc:                   # minuteur déjà détruit par Qt
+            log.debug("Arrêt du minuteur d'onglets ignoré : %s", exc)
 
     def _refresh_module_tab_icons(self) -> None:
         """Réapplique l'icône du thème aux onglets ouverts."""

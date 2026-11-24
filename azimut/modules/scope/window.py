@@ -118,7 +118,7 @@ class ScopeWindow(ModuleWindow):
         self.search.setAccessibleName(self.tr("Rechercher un dossier"))
         self.search.setToolTip(self.tr("Filtre les dossiers par nom, sans tenir compte des accents ni de la casse.\n"
                                        "Ctrl+F pour y accéder, Échap pour effacer."))
-        self.search.setMinimumWidth(200)
+        self.search.setMinimumWidth(scaled(200))
         self.search.setMaximumWidth(320)
         self.search.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         self.search.setEnabled(False)
@@ -197,7 +197,7 @@ class ScopeWindow(ModuleWindow):
         self.type_button = QPushButton()
         self.type_button.setProperty("kind", "secondary")
         self.type_button.setMenu(self.type_menu)
-        self.type_button.setMinimumWidth(170)
+        self.type_button.setMinimumWidth(scaled(170))
         self.type_button.setAccessibleName(self.tr("Types de fichiers comparés"))
         self.type_button.setToolTip(self.tr("Choisit les familles de fichiers comptées dans chaque dossier.\n"
                                             "Toutes les cases sont cochées par défaut ; les fichiers cachés et "

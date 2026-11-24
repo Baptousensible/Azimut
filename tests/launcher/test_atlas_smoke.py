@@ -5,6 +5,7 @@ import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import sys
 import time
 import types
 from pathlib import Path
@@ -14,7 +15,7 @@ from PySide6.QtCore import QEvent, QPoint, QPointF, QRect, Qt, Signal
 from PySide6.QtGui import QFont, QKeySequence, QMouseEvent, QPalette, QShortcut
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QMessageBox, QPushButton, QTabBar, QWidget,
+    QApplication, QMainWindow, QMessageBox, QPushButton, QStyle, QStyleFactory, QTabBar, QWidget,
 )
 
 from azimut.core import binaries
@@ -139,6 +140,94 @@ def test_header_uses_the_azimut_emblem_and_brand_font(make_atlas):
     assert pixmap.width() > pixmap.height()
 
 
+def test_header_emblem_and_title_keep_their_scale_on_retina_and_zoom(make_atlas, themed_app, monkeypatch):
+    """Régression macOS : emblème à moitié taille et titre rogné à chaque cran de zoom."""
+    from azimut.ui.theme import ZOOM_STEPS
+
+    monkeypatch.setattr(atlas_window.icons, "_device_pixel_ratio", lambda: 2.0)
+    atlas_window.icons.clear_cache()
+    win = make_atlas([_spec("fa", icon="search")])
+    win.resize(1000, 700)
+    win.show()
+    QApplication.processEvents()
+
+    def check() -> None:
+        # Le sizeHint de l'emblème mesure sa taille logique.
+        assert win.logo_label.sizeHint().width() == pytest.approx(win.logo_label.width(), abs=1)
+        assert win.title_label.width() >= win.title_label.sizeHint().width()
+
+    for zoom in ZOOM_STEPS:
+        themed_app.set_zoom(zoom)
+        QApplication.processEvents()
+        check()
+
+
+def test_preferences_page_shows_the_size_changed_elsewhere(make_atlas, themed_app):
+    """AZ-C11 : la page montre la taille appliquée, pas celle de sa construction.
+
+    Mesuré en 1024 × 640 : après un passage à 150 %, ouvrir les Préférences affichait
+    encore 85 % ; « Enregistrer » réappliquait donc l'ancienne taille.
+    """
+    win = make_atlas([_spec("fa", icon="search")])
+    win.show()
+    win.show_page(win.PAGE_PREFERENCES)
+    QApplication.processEvents()
+    page = win.preferences_page
+    assert float(page.zoom_combo.currentData()) == pytest.approx(themed_app.zoom())
+
+    themed_app.set_zoom(1.25)
+    themed_app.set_theme("light")
+    QApplication.processEvents()
+    win.show_page(win.PAGE_TOOLS)
+    QApplication.processEvents()
+    win.show_page(win.PAGE_PREFERENCES)
+    QApplication.processEvents()
+
+    assert float(page.zoom_combo.currentData()) == pytest.approx(1.25)
+    assert str(page.theme_combo.currentData()) == "light"
+    assert not page.save_button.isEnabled()          # rien à enregistrer
+
+    themed_app.set_zoom(1.5)
+    QApplication.processEvents()
+    win.show_page(win.PAGE_TOOLS)
+    QApplication.processEvents()
+    win.show_page(win.PAGE_PREFERENCES)
+    QApplication.processEvents()
+    assert float(page.zoom_combo.currentData()) == pytest.approx(1.5)
+
+
+def test_header_title_releases_the_width_of_a_bigger_zoom(make_atlas, themed_app):
+    """AZ-C10 : après une descente, le titre ne garde pas la largeur du plus grand cran.
+
+    Mesuré sur Retina : 150 % puis retour à 80 % laissait le libellé à 127 px au lieu de
+    69. Le minimum était relu depuis un ``sizeHint()`` déjà élargi par l'ancien minimum,
+    si bien qu'il ne redescendait jamais et que l'en-tête réservait la place du cran
+    supérieur pour toute la session.
+    """
+    from azimut.ui.theme import ZOOM_STEPS
+
+    win = make_atlas([_spec("fa", icon="search")])
+    win.resize(1000, 700)
+    win.show()
+    QApplication.processEvents()
+
+    themed_app.set_zoom(0.80)
+    QApplication.processEvents()
+    reference = win.title_label.width()
+    assert reference > 0
+
+    for zoom in ZOOM_STEPS:
+        themed_app.set_zoom(zoom)
+        QApplication.processEvents()
+    for zoom in reversed(ZOOM_STEPS):
+        themed_app.set_zoom(zoom)
+        QApplication.processEvents()
+
+    assert win.title_label.width() == reference
+    assert win.title_label.minimumWidth() == reference
+    assert win.title_label.width() >= win.title_label.sizeHint().width()
+
+
 def test_hidden_personal_note_opens_as_a_persistent_notification(make_atlas, monkeypatch):
     opened: list[tuple[object, str, str]] = []
 
@@ -212,12 +301,18 @@ def test_tips_and_preferences_are_pages(make_atlas):
     assert win.page_buttons[win.PAGE_PREFERENCES].isChecked()
 
 
-def test_preferences_save_stays_on_the_page_and_cancel_restores_the_saved_state(make_atlas):
-    """« Enregistrer » applique sans quitter Préférences ; « Annuler » revient au dernier état."""
+def test_preferences_cancel_restores_then_language_save_relaunches(make_atlas, monkeypatch):
+    """« Annuler » revient au dernier état ; seul un changement de langue relance."""
+    from azimut.core import i18n
     from azimut.ui.theme import ThemeManager
 
     manager = ThemeManager.instance()
     original_zoom = manager.zoom()
+    prefs = Preferences.instance()
+    previous_language = prefs.get("language", i18n.AUTO)
+    spawned: list[bool] = []
+    monkeypatch.setattr(atlas_window, "restart_application",
+                        lambda: spawned.append(True) or True)
     win = make_atlas([_spec("fa")])
     page = win.preferences_page
     cancel = next(button for button in page.findChildren(QPushButton)
@@ -229,32 +324,35 @@ def test_preferences_save_stays_on_the_page_and_cancel_restores_the_saved_state(
         assert win.pages.currentIndex() == win.PAGE_PREFERENCES
         assert page.isVisible()
 
+        # Une modification annulée revient au dernier état validé.
         saved_index = (page.zoom_combo.currentIndex() + 1) % page.zoom_combo.count()
         saved_zoom = float(page.zoom_combo.itemData(saved_index))
         page.zoom_combo.setCurrentIndex(saved_index)
+        cancel.click()
+        QApplication.processEvents()
+        assert page.zoom_combo.currentData() != saved_zoom
+        assert manager.zoom() == pytest.approx(original_zoom)
+
+        # Un réglage visuel s'enregistre sans relancer l'application.
+        page.zoom_combo.setCurrentIndex(saved_index)
+        assert page.save_button.text() == "Enregistrer"
         page.save_button.click()
         QApplication.processEvents()
 
-        # L'enregistrement ne navigue pas : la page reste affichée et le réglage est appliqué.
-        assert win.pages.currentIndex() == win.PAGE_PREFERENCES
-        assert win.pages.currentWidget() is page and page.isVisible()
-        assert page.zoom_combo.currentData() == saved_zoom
+        assert spawned == []
+        assert win.isVisible()
         assert manager.zoom() == pytest.approx(saved_zoom)
-        assert page._initial_zoom == pytest.approx(saved_zoom)
 
-        # Une modification non enregistrée revient au dernier état validé.
-        other_index = next(index for index in range(page.zoom_combo.count())
-                           if float(page.zoom_combo.itemData(index)) != saved_zoom)
-        page.zoom_combo.setCurrentIndex(other_index)
-        assert page.zoom_combo.currentData() != saved_zoom
-        cancel.click()
+        # La langue, elle, demande une instance neuve.
+        page.language_combo.setCurrentIndex(page.language_combo.findData("en"))
+        assert page.save_button.text() == "Enregistrer et relancer"
+        page.save_button.click()
         QApplication.processEvents()
 
-        assert win.pages.currentIndex() == win.PAGE_PREFERENCES
-        assert page.zoom_combo.currentData() == saved_zoom
-        assert manager.zoom() == pytest.approx(saved_zoom)
-        assert page._initial_zoom == pytest.approx(saved_zoom)
+        assert spawned == [True]
+        assert not win.isVisible()
     finally:
+        prefs.set("language", previous_language)
         manager.set_zoom(original_zoom)
 
 
@@ -465,7 +563,9 @@ def test_narrow_window_keeps_the_golden_cards_in_one_column(make_atlas):
     win = make_atlas([_spec("fa"), _spec("fb")])
     win.resize(640, 900)
     win.show()
-    QTest.qWait(120)
+    # La grille est posée par un minuteur différé qui relance une mise en page : sous charge
+    # (suite complète), 120 ms ne suffisaient pas et un défilement de 32 px subsistait.
+    QTest.qWait(300)
 
     assert win._card_columns == 1
     card = next(iter(win.cards.values()))
@@ -491,6 +591,46 @@ def test_golden_cards_follow_the_zoom(make_atlas, themed_app, zoom):
     assert card.height() > scaled(atlas_window.ModuleCard.CARD_MIN_HEIGHT)
 
 
+def test_cards_follow_the_zoom_below_100(make_atlas, themed_app):
+    """Le zoom réduit aussi le bloc de cartes, pas seulement le texte.
+
+    Avant, la hauteur venait de l'espace disponible sans le zoom : les cartes gardaient
+    exactement la même taille à 80 % et à 100 %, et l'interface restait « grosse ».
+    """
+    mesures = {}
+    for zoom in (1.0, 0.8):
+        themed_app.set_zoom(zoom)
+        win = make_atlas([_spec(f"m{i}", i) for i in range(6)])
+        win.resize(1200, 900)
+        win.show()
+        QTest.qWait(200)
+        card = next(iter(win.cards.values()))
+        mesures[zoom] = (card.width(), card.height(), win._card_columns,
+                         win.tools_home.verticalScrollBar().maximum(),
+                         max(c.content_height(card.width()) for c in win._card_order))
+
+    largeur_100, hauteur_100, colonnes_100 = mesures[1.0][:3]
+    largeur_80, hauteur_80, colonnes_80, defilement_80, besoin_80 = mesures[0.8]
+    assert colonnes_80 == colonnes_100          # la grille ne se réorganise pas
+    assert largeur_80 < largeur_100
+    assert hauteur_80 < hauteur_100
+    # La hauteur ne descend pas sous ce que le contenu réclame : rien n'est rogné.
+    assert hauteur_80 >= besoin_80
+    assert defilement_80 == 0                   # et la page n'a pas besoin de défiler
+
+
+def test_header_follows_the_zoom_below_100(make_atlas, themed_app):
+    """L'en-tête rétrécit avec le zoom : sa hauteur était constante de 80 % à 100 %."""
+    hauteurs = {}
+    for zoom in (1.0, 0.8):
+        themed_app.set_zoom(zoom)
+        win = make_atlas([_spec("fa", icon="search")])
+        win.show()
+        QTest.qWait(150)
+        hauteurs[zoom] = win.header_bar.height()
+    assert hauteurs[0.8] < hauteurs[1.0]
+
+
 def test_cards_never_clip_their_content(make_atlas):
     """Le bouton « Ouvrir » reste visible : aucune carte n'est plus courte que son contenu."""
     win = make_atlas([_spec(f"m{i}", i) for i in range(6)])
@@ -499,8 +639,8 @@ def test_cards_never_clip_their_content(make_atlas):
         win.resize(width, height)
         QTest.qWait(150)
         for card in win.cards.values():
-            assert (card.height() + atlas_window.ModuleCard.CONTENT_SLACK
-                    >= card.layout().totalHeightForWidth(card.width()))
+            # Aucune tolérance : une marge de 4 px coupait la dernière ligne des taglines.
+            assert card.height() >= card.layout().totalHeightForWidth(card.width())
 
 
 def test_a_card_grows_to_its_content_instead_of_clipping(make_atlas):
@@ -509,7 +649,7 @@ def test_a_card_grows_to_its_content_instead_of_clipping(make_atlas):
     card = next(iter(win.cards.values()))
     needed = card.layout().totalHeightForWidth(360)
     card.set_card_geometry(360, needed - 40)
-    assert card.height() == needed - atlas_window.ModuleCard.CONTENT_SLACK
+    assert card.height() == needed
 
 
 def test_a_stretched_hint_does_not_shrink_the_cards(make_atlas):
@@ -838,6 +978,31 @@ def test_narrow_opening_at_100_percent_falls_back_instead_of_widening(make_atlas
     assert win._layout_preference == win.TOP_LAYOUT_MERGED
     assert win.page_bar_host.isVisible() and win.header_nav_host.isHidden()
     assert win.page_switch.width() <= win.page_bar_host.width()
+
+
+def test_window_takes_the_zoom_remembered_for_the_screen_it_is_on(make_atlas, themed_app, monkeypatch):
+    """Déplacer la fenêtre sur un autre écran reprend le zoom mémorisé pour cet écran."""
+    monkeypatch.setattr("azimut.ui.theme._screen_density", lambda *_args: None)
+    manager = themed_app
+    portable = types.SimpleNamespace(name=lambda: "Portable", devicePixelRatio=lambda: 2.0)
+    externe = types.SimpleNamespace(name=lambda: "Externe", devicePixelRatio=lambda: 1.0)
+    manager.activate_screen(portable)
+    manager.set_zoom(1.1)
+    win = make_atlas([_spec("fa")])
+    win.show()
+    QTest.qWait(60)                          # l'affichage bascule sur l'écran de la fenêtre
+
+    manager.activate_screen(externe)          # écran jamais vu : repli 100 %
+    manager.set_zoom(1.25)                    # réglage propre à cet écran
+    font_before = QApplication.instance().font().pointSizeF()
+
+    win._follow_screen(portable)              # la fenêtre revient sur le portable
+    assert manager.zoom() == pytest.approx(1.1)
+    assert QApplication.instance().font().pointSizeF() < font_before   # elle a bien suivi
+
+    # L'événement Qt de changement d'écran réévalue bien le zoom (écran inconnu : 100 %).
+    QApplication.sendEvent(win, QEvent(QEvent.Type.ScreenChangeInternal))
+    assert manager.zoom() == pytest.approx(1.0)
 
 
 @pytest.mark.parametrize("zoom", [1.25, 1.5])
@@ -1533,6 +1698,55 @@ def test_tab_close_button_keeps_its_place_when_the_tab_is_clicked(make_atlas, mo
                        - bar._tab_rect(index).center().y()) <= 0.5
 
 
+@pytest.mark.skipif(sys.platform != "darwin", reason="le style natif macOS n'existe que sur macOS")
+def test_tool_tabs_keep_close_buttons_on_the_right_with_the_native_macos_style(make_atlas, monkeypatch):
+    """Garde-fou macOS : le style natif place les croix à gauche, la barre doit les remettre à droite.
+
+    Les tests hors écran tournent avec Fusion, dont la disposition est déjà celle que la barre
+    calcule : ils passaient donc sans voir la régression, qui n'apparaît qu'avec le style natif
+    (``SH_TabBar_CloseButtonPosition`` = ``LeftSide``). On force ce style le temps du test pour
+    vérifier ce que voit un utilisateur de Mac.
+    """
+    if "macOS" not in QStyleFactory.keys():
+        pytest.skip("style natif macOS absent de cette installation Qt")
+    monkeypatch.setattr(atlas_window, "load_window_class", lambda spec: FakeWindow)
+    # ``setStyle`` prend une chaîne : Qt crée le style et en garde la propriété, ce qui évite
+    # tout double effacement d'un objet Python. Le nom lu ici est « fusion » hors écran.
+    previous = QApplication.style().name() or "Fusion"
+    QApplication.setStyle("macOS")
+    try:
+        win = make_atlas([_spec("fa", icon="search"), _spec("fb", 20, icon="search")])
+        win.open_module("fa")
+        win.open_module("fb")
+        win.show()
+        QApplication.processEvents()
+
+        bar = win.tools_page.tabBar()
+        # La cause du défaut : la barre ne doit plus dépendre du style natif. PySide renvoie
+        # tantôt un entier, tantôt l'énumération selon le style : on compare les valeurs.
+        hint = bar.style().styleHint(QStyle.StyleHint.SH_TabBar_CloseButtonPosition)
+        assert getattr(hint, "value", hint) == QTabBar.ButtonPosition.RightSide.value
+
+        # « Tous les outils » ne se ferme pas : aucune croix, ni à droite ni à gauche.
+        assert bar.tabButton(0, QTabBar.ButtonPosition.RightSide) is None
+        assert bar.tabButton(0, QTabBar.ButtonPosition.LeftSide) is None
+
+        edge = atlas_window.scaled(atlas_window._ToolsTabBar.EDGE)
+        for index in range(1, bar.count()):
+            close = bar.tabButton(index, QTabBar.ButtonPosition.RightSide)
+            assert isinstance(close, atlas_window._TabCloseButton)
+            assert bar.tabButton(index, QTabBar.ButtonPosition.LeftSide) is None
+            cell = bar.tabRect(index)
+            # Même retrait que le libellé, et franchement dans la moitié droite de l'onglet.
+            assert cell.right() + 1 - (close.x() + close.width()) == edge
+            assert close.x() > cell.center().x()
+            # La largeur réserve la croix : le libellé n'est pas rogné pour lui faire place.
+            assert cell.width() >= (bar.fontMetrics().horizontalAdvance(bar.tabText(index))
+                                    + close.width() + 2 * edge)
+    finally:
+        QApplication.setStyle(previous)
+
+
 def test_compact_header_centres_the_title_on_the_logo(make_atlas, monkeypatch):
     monkeypatch.setattr(atlas_window, "load_window_class", lambda spec: FakeWindow)
     win = make_atlas([_spec("fa", icon="search")])
@@ -1637,11 +1851,11 @@ def test_wordmark_follows_the_theme_and_keeps_the_window_icon(make_atlas):
         win = make_atlas([_spec("a", 10)])
         manager.set_theme("dark")
         win._restyle()
-        assert win._wordmark_theme == "dark"
+        dark = bytes(win.logo_label.pixmap().toImage().constBits())
         manager.set_theme("light")
         win._restyle()
-        assert win._wordmark_theme == "light"
-        assert not win.logo_label.pixmap().isNull()
+        light = bytes(win.logo_label.pixmap().toImage().constBits())
+        assert dark != light
         assert not win.windowIcon().isNull()          # l'icône de fenêtre ne suit pas le logo
     finally:
         manager.set_theme(previous)

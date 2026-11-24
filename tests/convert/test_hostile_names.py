@@ -20,6 +20,14 @@ needs_ffmpeg = pytest.mark.skipif(not (shutil.which("ffmpeg") and shutil.which("
                                   reason="ffmpeg et ffprobe requis")
 
 
+def _has_encoder(name: str) -> bool:
+    """Vrai si le FFmpeg installé expose cet encodeur (libwebp peut manquer selon la distribution)."""
+    if not shutil.which("ffmpeg"):
+        return False
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-encoders"], capture_output=True, text=True).stdout
+    return name in engine.parse_encoders(out)
+
+
 # ── Logique pure ─────────────────────────────────────────────────────────────
 def test_part_path_never_carries_a_sequence_pattern():
     part = engine.part_path(Path("/out/photo%03d.webp"))
@@ -90,7 +98,12 @@ def _convert_images(tmp_path: Path, profile_id: str):
 
 
 @needs_ffmpeg
-@pytest.mark.parametrize("profile_id", ["image_webp", "image_png", "image_jpeg"])
+@pytest.mark.parametrize("profile_id", [
+    pytest.param("image_webp", marks=pytest.mark.skipif(not _has_encoder("libwebp"),
+                                                          reason="libwebp requis")),
+    "image_png",
+    "image_jpeg",
+])
 def test_images_with_sequence_patterns_in_file_and_folder_names(tmp_path, qapp, profile_id):
     folder = tmp_path / "in" / "dir 100%d"
     folder.mkdir(parents=True)

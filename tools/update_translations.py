@@ -58,9 +58,13 @@ def _source_files() -> list[str]:
 
 
 def update() -> None:
-    """Extrait les chaînes du code vers chaque ``.ts`` existant."""
+    """Extrait les chaînes du code vers chaque ``.ts`` existant.
+
+    ``-no-obsolete`` supprime les entrées dont la chaîne a disparu du code : sans cela les
+    catalogues gardent indéfiniment des traductions mortes et divergent les uns des autres.
+    """
     catalogs = _catalogs()
-    cmd = [_tool("pyside6-lupdate"), *_source_files(), "-ts", *map(str, catalogs)]
+    cmd = [_tool("pyside6-lupdate"), *_source_files(), "-no-obsolete", "-ts", *map(str, catalogs)]
     subprocess.run(cmd, cwd=ROOT, check=True)
 
 

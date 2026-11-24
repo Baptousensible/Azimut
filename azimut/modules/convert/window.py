@@ -1,15 +1,17 @@
 """Fenêtre d'Azimut Convert."""
 from __future__ import annotations
 
+import html
 import os
 from pathlib import Path
 
 from dataclasses import replace
 
 from PySide6.QtCore import QCoreApplication, QPoint, QSize, Qt, QTimer
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QCloseEvent
 from PySide6.QtWidgets import (
-    QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QPushButton, QScrollArea, QVBoxLayout, QWidget,
+    QComboBox, QHBoxLayout, QInputDialog, QLabel, QMenu, QMessageBox, QPushButton, QScrollArea, QSizePolicy,
+    QVBoxLayout, QWidget,
 )
 
 from azimut.core import binaries
@@ -17,7 +19,7 @@ from azimut.core.binaries import BinaryNotFoundError
 from azimut.core.fsutil import format_size
 from azimut.core.module_spec import ModuleSpec
 from azimut.core.prefs import Preferences
-from azimut.modules.convert import MODULE, advanced
+from azimut.modules.convert import MODULE, advanced, engine
 from azimut.modules.convert.engine import (
     STATE_CANCELLED, STATE_COPIED, STATE_DONE, STATE_ERROR, STATE_KEPT, STATE_NO_ENCODER, STATE_PENDING,
     STATE_RUNNING, STATE_SKIPPED, STATE_UNSUPPORTED, SourceItem, initial_state, path_key,
@@ -28,12 +30,14 @@ from azimut.modules.convert.profiles import (
     ALL_EXTS, COPY_PROFILE, KIND_LABELS, KINDS, LEGACY_PROFILES, OTHER_KIND, PROFILES, Profile, audio_codecs_for, audio_fits,
     compose_video, default_profile, get_profile,
 )
-from azimut.modules.convert.workers import ConvertOptions, ConvertWorker, ProbeWorker, ScanWorker
+from azimut.modules.convert.workers import (
+    ConvertOptions, ConvertWorker, EncoderProbe, ProbeWorker, ScanWorker, VerifyResult, VerifyWorker,
+)
 from azimut.ui import icons
 from azimut.ui.controls import SwitchRow, set_action_available
 from azimut.ui.file_dialog import choose_directory, choose_files, media_filter
 from azimut.ui.module_window import ModuleWindow
-from azimut.ui.theme import ThemeManager, scaled
+from azimut.ui.theme import ThemeManager, scaled, token
 from azimut.ui.widgets import Card, Column, DataTable, DropZone, plain_tooltip
 
 COLUMNS = [
@@ -54,7 +58,14 @@ FILTERS = (
 )
 FILTER_LARGE = 4
 FILTER_KINDS = {1: "image", 2: "video", 3: "audio"}
+STEP_LEGEND = {
+    "copy": ("seg_copy", QCoreApplication.translate("ConvertWindow", "gris")),
+    "image": ("seg_image", QCoreApplication.translate("ConvertWindow", "bleu")),
+    "audio": ("seg_audio", QCoreApplication.translate("ConvertWindow", "violet")),
+    "video": ("seg_video", QCoreApplication.translate("ConvertWindow", "orange")),
+}
 LARGE_MB_DEFAULT = 50
+HARDWARE_NAMES = {"nvenc": "NVIDIA NVENC", "qsv": "Intel Quick Sync", "vaapi": "VA-API"}
 LARGE_MB_PRESETS = (10, 25, 50, 100, 250, 500, 1024, 5120)
 
 
@@ -91,6 +102,63 @@ def _format_text(profile: Profile) -> str:
     return f"{profile.label} — {detail}" if detail else profile.label
 
 
+class SegmentLegend(QLabel):
+    """Légende visible des segments de la barre : une pastille par famille et son effectif.
+
+    Elle reprend les libellés et les nombres déjà traduits par le worker ; seule la
+    famille en cours est mise en gras et en couleur pleine. Le texte est du HTML
+    reconstruit à chaque changement de thème pour suivre les jetons de couleur.
+    """
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setTextFormat(Qt.TextFormat.RichText)
+        self.setWordWrap(True)
+        # Une longue légende ne doit pas élargir la fenêtre : elle passe à la ligne.
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        self._entries: list[tuple[str, str, int]] = []
+        self._active: int | None = None
+        self.hide()
+        ThemeManager.instance().changed.connect(self._render)
+
+    def set_entries(self, entries: list[tuple[str, str, int]]) -> None:
+        """Affiche ``(libellé, jeton de couleur, effectif)`` dans l'ordre de la barre."""
+        self._entries = [(str(label), str(color), int(count)) for label, color, count in entries]
+        self._active = 0 if self._entries else None
+        self._render()
+        self.setVisible(bool(self._entries))
+
+    def set_active(self, index: int | None) -> None:
+        """Met en avant la famille qui occupe la position courante de la barre."""
+        index = index if index is not None and 0 <= index < len(self._entries) else None
+        if index != self._active:
+            self._active = index
+            self._render()
+
+    def clear_entries(self) -> None:
+        """Revient à l'état de repos : légende vide et masquée."""
+        self._entries = []
+        self._active = None
+        self.clear()
+        self.hide()
+
+    def _render(self, *_args: object) -> None:
+        parts = []
+        for index, (label, color, count) in enumerate(self._entries):
+            active = index == self._active
+            text_color = token("text") if active else token("muted")
+            weight = "bold" if active else "normal"
+            # Espaces insécables dans chaque entrée : la pastille ne se sépare jamais
+            # de son libellé. Entre les entrées, un espace sécable autorise le retour
+            # à la ligne sans couper une famille en deux.
+            parts.append(
+                f'<span style="color:{token(color)};">●</span>&nbsp;'
+                f'<span style="color:{text_color}; font-weight:{weight};">'
+                f'{html.escape(label)}&nbsp;{count}</span>')
+        self.setText("&nbsp;&nbsp;&nbsp; ".join(parts))
+        self.setAccessibleName(" · ".join(f"{label} : {count}" for label, _color, count in self._entries))
+
+
 class ConvertWindow(ModuleWindow):
     """File d'attente de conversion : format de sortie et qualité réglés par famille de fichiers."""
 
@@ -99,18 +167,26 @@ class ConvertWindow(ModuleWindow):
         self._items: list[SourceItem] = []
         self._keys: set[str] = set()
         self._encoders: frozenset[str] | None = None
+        self._hardware_failed: frozenset[str] = frozenset()
         self._encoders_for: Path | None = None
         self._ffmpeg: Path | None = None
         self._ffprobe: Path | None = None
         self._bins_ok = False
         self._pending: list[list[str]] = []
         self._visible: list[int] = []
+        self._segment_bounds: list[float] = []
         self.set_run_label(self.tr("Démarrer la conversion"))
         self._migrate_legacy_prefs()
+        self._migrate_parallel_prefs()
         self._build_ui()
         self._locate_binaries(log=True)
         self.show_binary_status(("ffmpeg", "ffprobe"))
-        QTimer.singleShot(0, self._probe_encoders)
+        # Timer possédé par la fenêtre (et non un singleShot détaché) : une fenêtre fermée
+        # avant le tour de boucle ne lance pas une sonde FFmpeg dans le vide.
+        self._probe_timer = QTimer(self)
+        self._probe_timer.setSingleShot(True)
+        self._probe_timer.timeout.connect(self._probe_encoders)
+        self._probe_timer.start(0)
 
     # ── Interface ───────────────────────────────────────────────────────────
     def _build_ui(self) -> None:
@@ -138,7 +214,7 @@ class ConvertWindow(ModuleWindow):
         self.btn_large = QPushButton()
         self.btn_large.setProperty("kind", "secondary")
         self.btn_large.setProperty("hasMenu", True)
-        self.btn_large.setMinimumWidth(112)
+        self.btn_large.setMinimumWidth(scaled(112))
         self.btn_large.setAccessibleName(self.tr("Taille minimale des fichiers affichés"))
         self._large_menu = QMenu(self.btn_large)
         self._large_actions: list[tuple[int, QAction]] = []
@@ -166,6 +242,20 @@ class ConvertWindow(ModuleWindow):
         self.table.set_empty_text(self.tr("La file est vide : déposez des fichiers ou un dossier ci-dessus."))
         self.table.selectionRowsChanged.connect(lambda _rows: self._refresh_queue_actions())
         lay.addWidget(self.table, 1)
+        # Étape en cours et temps restant : sous le tableau, au-dessus de la barre de progression
+        # globale qui reste unique pour tout le lot.
+        self.stage_label = QLabel()
+        self.stage_label.setProperty("role", "muted")
+        self.stage_label.setWordWrap(True)
+        self.stage_label.hide()
+        lay.addWidget(self.stage_label)
+        # Légende visible pendant la conversion : les couleurs de la barre ne sont plus
+        # réservées à une infobulle, et la famille en cours y est mise en gras.
+        self.progress_legend = SegmentLegend()
+        lay.addWidget(self.progress_legend)
+        self.progress_bar.valueChanged.connect(self._sync_legend_active)
+        self._sync_progress_bar_height()
+        ThemeManager.instance().changed.connect(self._sync_progress_bar_height)
         lay.addWidget(self.action_bar)
         self.set_content(central)
 
@@ -188,6 +278,11 @@ class ConvertWindow(ModuleWindow):
         self.btn_out.customContextMenuRequested.connect(self._show_output_menu)
         self._refresh_out_button()
         self.action_layout.insertWidget(0, self.btn_out)
+        self.btn_verify = self._make_button(
+            self.tr("Vérifier la sortie…"), self._on_verify, "secondary",
+            tooltip=self.tr("Après un arrêt forcé ou un plantage : cherche les fichiers incomplets ou corrompus "
+                            "du dossier de sortie et propose de les supprimer pour les reconvertir."))
+        self.action_layout.insertWidget(1, self.btn_verify)
         ThemeManager.instance().changed.connect(self._refresh_out_button)
         self.chk_name_ext = SwitchRow(self.tr("Garder l'extension d'origine dans le nom"))
         self.chk_name_ext.setToolTip(self.tr("« photo_jpg.avif » au lieu de « photo.avif » : évite les collisions "
@@ -227,7 +322,7 @@ class ConvertWindow(ModuleWindow):
         scroll.setWidget(side)
         # La largeur vient de ModuleWindow : elle est commune à tous les panneaux de réglages.
         self.set_side_panel(scroll, self.tr("Réglages"))
-        self._lockables: list[QWidget] = [self.codec_tree, self.chk_recursive, self.btn_out,
+        self._lockables: list[QWidget] = [self.codec_tree, self.chk_recursive, self.btn_out, self.btn_verify,
                                           self.cmb_filter, self.btn_large, self.btn_remove, self.btn_clear,
                                           self.chk_name_ext, self.chk_takeout, self.chk_copy_others,
                                           self.chk_skip_json]
@@ -236,6 +331,7 @@ class ConvertWindow(ModuleWindow):
         self._annotate_profiles()
         self._load_advanced()
         self._refresh_queue_actions()
+        self._refresh_hardware_status()
 
     # ── Format et qualité ───────────────────────────────────────────────────
     def _build_format_card(self) -> QWidget:
@@ -250,7 +346,8 @@ class ConvertWindow(ModuleWindow):
         tree.set_video_audio(str(self.prefs.get("profile_video_audio", "")))
         tree.set_hdr_mode(str(self.prefs.get("hdr_mode", "T")))
         tree.slider_threads.set_value(advanced.clamp_threads(self.prefs.get("threads", 0)))
-        tree.slider_parallel.set_value(advanced.clamp_parallel(self.prefs.get("parallel", 1)))
+        tree.set_parallel(str(self.prefs.get("parallel_mode", "auto")),
+                          {kind: self.prefs.get(f"parallel_{kind}", 1) for kind in advanced.PARALLEL_KINDS})
         tree.chk_low_priority.setChecked(bool(self.prefs.get("low_priority", True)))
         tree.chk_memory.setChecked(bool(self.prefs.get("memory_guard", True)))
         tree.codecChanged.connect(self._on_codec_changed)
@@ -279,6 +376,21 @@ class ConvertWindow(ModuleWindow):
         self._migrate_video_audio_overrides(new_store)
         self._migrate_video_bitrate(new_store)
         self.prefs.set("advanced", new_store)
+
+    def _migrate_parallel_prefs(self) -> None:
+        """Reprend l'ancien réglage unique « En parallèle » : au-delà de 1, il devient manuel pour les quatre familles."""
+        if self.prefs.get("parallel_mode") is not None:
+            return
+        self.prefs.set("parallel_mode", "auto")
+        legacy = self.prefs.get("parallel", None)
+        if legacy is None:
+            return
+        count = advanced.clamp_parallel(legacy)
+        if count <= 1:
+            return
+        self.prefs.set("parallel_mode", "manual")
+        for kind in advanced.PARALLEL_KINDS:
+            self.prefs.set(f"parallel_{kind}", advanced.clamp_parallel(count, kind))
 
     def _migrate_video_audio_overrides(self, store: dict) -> None:
         """Sépare les réglages historiquement partagés : la vidéo garde une copie de la famille Audio."""
@@ -348,7 +460,7 @@ class ConvertWindow(ModuleWindow):
         for p in PROFILES:
             # L'audio a sa propre liste : ne pas le compter pour la disponibilité du codec vidéo.
             check = replace(p, audio_encoders=()) if p.kind == "video" else p
-            reason = profile_unavailable_reason(check, self._encoders)
+            reason = profile_unavailable_reason(check, self._encoders, self._hardware_failed)
             self.codec_tree.set_codec_available(p.id, reason is None, reason or "encodeur manquant")
 
     def _overrides_store(self) -> dict:
@@ -415,7 +527,9 @@ class ConvertWindow(ModuleWindow):
     def _on_perf_changed(self) -> None:
         tree = self.codec_tree
         self.prefs.set("threads", int(tree.slider_threads.value()))
-        self.prefs.set("parallel", int(tree.slider_parallel.value()))
+        self.prefs.set("parallel_mode", tree.parallel_mode())
+        for kind, value in tree.parallel_values().items():
+            self.prefs.set(f"parallel_{kind}", int(value))
         self.prefs.set("low_priority", bool(tree.chk_low_priority.isChecked()))
         self.prefs.set("memory_guard", bool(tree.chk_memory.isChecked()))
         self._refresh_states()
@@ -434,26 +548,80 @@ class ConvertWindow(ModuleWindow):
         if not self._bins_ok and log:
             self.log_panel.append_log("WARN", "La conversion est désactivée tant que FFmpeg est introuvable "
                                               "(Préférences… pour indiquer son chemin).")
+        if hasattr(self, "codec_tree"):
+            if self._bins_ok:
+                self._refresh_hardware_status()
+            else:
+                self.codec_tree.set_hardware_status(
+                    self.tr("FFmpeg introuvable : matériel GPU indéterminable."))
         self._refresh_run_state()
         return self._bins_ok
+
+    def _available_backends(self) -> list[tuple[str, list[str]]]:
+        if not self._encoders:
+            return []
+        return engine.hardware_backends(self._encoders - self._hardware_failed)
+
+    def _hardware_text(self) -> str:
+        """Matériel détecté et codecs disponibles, affiché au-dessus de la liste des codecs vidéo."""
+        if self._encoders is None:
+            if self._encoders_for is None:
+                return self.tr("Matériel : détection en cours…")
+            return self.tr("Matériel : indéterminé (FFmpeg n'a pas listé ses encodeurs).")
+
+        def describe(backends: list[tuple[str, list[str]]]) -> str:
+            return " · ".join(f"{HARDWARE_NAMES.get(backend, backend)} ({', '.join(codecs)})"
+                             for backend, codecs in backends)
+
+        available = self._available_backends()
+        failed = engine.hardware_backends(self._hardware_failed)
+        if failed:
+            if available:
+                return self.tr("GPU : {backends} · pilote ou GPU ne répond pas : {failed}").format(
+                    backends=describe(available), failed=describe(failed))
+            return self.tr("GPU détecté mais le pilote ou le GPU ne répond pas : {failed} ; les profils "
+                           "marqués GPU resteront indisponibles.").format(failed=describe(failed))
+        if not available:
+            return self.tr("Aucune accélération GPU détectée : les profils marqués GPU resteront "
+                           "indisponibles, la conversion se fait par le processeur.")
+        return self.tr("GPU : {backends}").format(backends=describe(available))
+
+    def _has_gpu_hardware(self) -> bool:
+        return bool(self._available_backends())
+
+    def _refresh_hardware_status(self) -> None:
+        tree = getattr(self, "codec_tree", None)
+        if tree is not None:
+            tree.set_hardware_status(self._hardware_text())
+            tree.set_quality_hint_visible(self._has_gpu_hardware())
 
     def _probe_encoders(self) -> None:
         if not self._bins_ok or self._ffmpeg is None:
             return
         if self.is_busy():
-            QTimer.singleShot(100, self._probe_encoders)
+            self._probe_timer.start(100)
             return
         self.run_worker(ProbeWorker(self._ffmpeg), on_completed=self._on_encoders,
-                        on_failed=lambda _m: self._after_worker(), on_cancelled=self._after_worker)
+                        on_failed=self._on_probe_failed, on_cancelled=self._after_worker)
 
-    def _on_encoders(self, result: object) -> None:
-        self._encoders = result if isinstance(result, frozenset) else None
+    def _on_probe_failed(self, _message: str) -> None:
+        """Détection impossible : le matériel reste indéterminé au lieu d'afficher « en cours » à vie."""
         self._encoders_for = self._ffmpeg
+        self._refresh_hardware_status()
+        self._after_worker()
+
+    def _on_encoders(self, result: EncoderProbe) -> None:
+        self._encoders, self._hardware_failed = result.encoders, result.hardware_failed
+        self._encoders_for = self._ffmpeg
+        self.codec_tree.set_visible_encoders(self._encoders)
         self._annotate_profiles()
         self._load_advanced()
         self._refresh_states()
+        self._refresh_hardware_status()
         if self._encoders is not None:
-            bad = [p.label for p in PROFILES if profile_unavailable_reason(p, self._encoders)]
+            bad = [p.label for p in PROFILES
+                   if self.codec_tree.profile_is_visible(p)
+                   and profile_unavailable_reason(p, self._encoders, self._hardware_failed)]
             if bad:
                 self.log_panel.append_log("WARN", "Formats indisponibles avec ce FFmpeg : " + " ; ".join(bad) + ".")
             else:
@@ -473,7 +641,8 @@ class ConvertWindow(ModuleWindow):
         profiles = self._profiles()
         self.table.data_model.set_rows([
             self._row_for(self._items[i], profiles,
-                          initial_state(self._items[i], profiles[self._items[i].kind], self._encoders))
+                          initial_state(self._items[i], profiles[self._items[i].kind], self._encoders,
+                                        self._hardware_failed))
             for i in self._visible])
         self._refresh_queue_actions()
 
@@ -727,12 +896,18 @@ class ConvertWindow(ModuleWindow):
                                  skip_takeout_json=self.chk_skip_json.isChecked() and self.chk_skip_json.isEnabled(),
                                  low_priority=tree.chk_low_priority.isChecked(),
                                  memory_guard=tree.chk_memory.isChecked())
+        hardware_failed = self._hardware_failed if encoders is not None else frozenset()
         worker = ConvertWorker(self._items, self._profiles(), out_dir, self._ffmpeg, self._ffprobe, encoders,
-                               parallel=int(tree.slider_parallel.value()), options=options, exiftool=exiftool)
+                               parallel_by_kind=tree.parallel_values(), options=options, exiftool=exiftool,
+                               hardware_failed=hardware_failed)
         worker.job_updated.connect(self._on_job_updated)
+        worker.status.connect(self._on_stage)
+        worker.steps_planned.connect(self._on_segments)
+        self.stage_label.setText(self.tr("Préparation de la conversion…"))
+        self.stage_label.show()
         self.run_worker(worker, on_completed=lambda _r: self._after_worker(),
                         on_failed=lambda _m: self._after_worker(), on_cancelled=self._on_cancelled,
-                        lock_widgets=self._lockables, history_action="Conversion")
+                        lock_widgets=self._lockables, determinate_start=True, history_action="Conversion")
 
     def _on_job_updated(self, index: int, values: object) -> None:
         if not isinstance(values, dict) or not 0 <= index < len(self._items):
@@ -746,22 +921,70 @@ class ConvertWindow(ModuleWindow):
             upd["_tag"] = state_tag(values["state"])
         if "progress" in values:
             progress = values["progress"]
+            # Le tableau garde l'avancement du fichier ; la barre de la barre d'actions, elle, suit
+            # la progression globale du lot (0 à 100 % une seule fois) et n'est plus pilotée ici.
             upd["progress"] = "" if progress is None else f"{progress} %"
-            try:
-                pct = int(progress) if progress is not None else None
-            except (TypeError, ValueError):
-                pct = None
-            if pct is not None and 0 <= pct <= 100:
-                # Le tableau donne l'avancement du fichier ; la barre de la barre
-                # d'actions suit la même valeur pour rester vivante pendant l'encodage.
-                if pct == 0:
-                    self.progress_bar.setRange(0, 0)
-                else:
-                    self.progress_bar.setRange(0, 100)
-                    self.progress_bar.setValue(pct)
-                self.progress_bar.show()
         if upd:
             self.table.data_model.update_row(row, **upd)
+
+    def _on_stage(self, text: str) -> None:
+        """Affiche l'étape en cours et le temps restant estimé (fournis par le worker)."""
+        # À fort zoom, « 20 s » ne doit pas se couper entre le nombre et l'unité :
+        # l'espace insécable garde la durée lisible quand le libellé passe à la ligne.
+        for unit in (" s", " min", " h"):
+            text = text.replace(unit, "\u00a0" + unit[1:])
+        self.stage_label.setText(text)
+        self.stage_label.setVisible(bool(text))
+
+    def _on_segments(self, segments: list[tuple[str, str, int]]) -> None:
+        """Découpe la barre selon le nombre de fichiers de chaque famille.
+
+        Les largeurs suivent exactement les effectifs (3 images, 1 audio, 5 vidéos, 1 copie
+        donnent 30 %, 10 %, 50 % et 10 %), et non la taille des fichiers.
+        """
+        if not segments:
+            self.progress_bar.clear_segments()
+            self.progress_bar.setToolTip("")
+            self.progress_legend.clear_entries()
+            self._segment_bounds = []
+            return
+        self.progress_bar.set_segments([(count, STEP_LEGEND[key][0]) for key, _label, count in segments])
+        self.progress_legend.set_entries([(label, STEP_LEGEND[key][0], count) for key, label, count in segments])
+        total = sum(count for _key, _label, count in segments) or 1
+        running = 0.0
+        self._segment_bounds = []
+        for _key, _label, count in segments:
+            running += count
+            self._segment_bounds.append(running / total)
+        lines = "\n".join(f"{label} ({STEP_LEGEND[key][1]}) : {count}" for key, label, count in segments)
+        self.progress_bar.setToolTip(self.tr(
+            "Légende des couleurs :\n{lines}\n\n"
+            "Chaque segment est proportionnel au nombre de fichiers à traiter.").format(lines=lines))
+        self.progress_legend.setToolTip(self.progress_bar.toolTip())
+        self._sync_legend_active(self.progress_bar.value())
+
+    def _sync_legend_active(self, value: int) -> None:
+        """Suit la famille sous le front de la barre pour la mettre en avant dans la légende."""
+        if not self._segment_bounds:
+            return
+        span = self.progress_bar.maximum() - self.progress_bar.minimum()
+        if span <= 0:
+            return
+        ratio = (float(value) - self.progress_bar.minimum()) / span
+        active = next((n for n, end in enumerate(self._segment_bounds) if ratio < end),
+                      len(self._segment_bounds) - 1)
+        self.progress_legend.set_active(active)
+
+    def _sync_progress_bar_height(self, *_args: object) -> None:
+        """Donne à la piste la place du pourcentage, même au zoom maximal.
+
+        La feuille de style globale fige les QProgressBar à 12 px : à 125 % et 150 %,
+        le texte déborderait au-dessus et au-dessous de la piste. Un style local, plus
+        spécifique, suit le zoom et la hauteur de police sans toucher aux autres modules.
+        """
+        height = max(scaled(20), self.progress_bar.fontMetrics().height() + scaled(4))
+        self.progress_bar.setStyleSheet(
+            f"QProgressBar {{ min-height: {height}px; max-height: {height}px; }}")
 
     def _on_cancelled(self) -> None:
         for i, row in enumerate(self.table.data_model.rows()):
@@ -770,8 +993,113 @@ class ConvertWindow(ModuleWindow):
                                                  _tag=state_tag(STATE_CANCELLED))
         self._after_worker()
 
+    # ── Vérification de la sortie (arrêt forcé, plantage) ───────────────────
+    def _output_bases(self) -> list[Path]:
+        """Dossiers de sortie de la file, calculés comme le fait le worker de conversion."""
+        txt = self._out_dir.strip()
+        out_dir = Path(os.path.abspath(os.path.expanduser(txt))) if txt else None
+        multi = len({str(i.root) for i in self._items if i.root is not None}) > 1
+        bases = {engine._output_base(i, out_dir, multi) for i in self._items}
+        bases.discard(None)
+        if not bases and out_dir is not None:
+            bases.add(out_dir)
+        return sorted(bases)
+
+    def _on_verify(self) -> None:
+        """Contrôle la sortie : temporaires interrompus, tailles anormales, médias illisibles."""
+        if self.is_busy():
+            return
+        self._locate_binaries(log=False)
+        bases = self._output_bases()
+        if not bases:
+            folder = choose_directory(self, self.tr("Dossier de sortie à vérifier"),
+                                      str(self.prefs.get("output_dir", "") or ""))
+            if not folder:
+                return
+            bases = [Path(folder)]
+        if self._ffprobe is None:
+            self.log_panel.append_log("WARN", "FFprobe introuvable : seule la recherche des fichiers "
+                                              "incomplets et des tailles anormales sera faite.")
+        self.log_panel.append_log("INFO", self.tr("Vérification de la sortie : {paths}").format(
+            paths=" ; ".join(str(b) for b in bases)))
+        worker = VerifyWorker(bases, self._ffprobe)
+        self.run_worker(worker, on_completed=self._on_verified,
+                        on_failed=lambda _m: self._after_worker(), on_cancelled=self._after_worker,
+                        lock_widgets=self._lockables, history_action="Vérification")
+
+    def _on_verified(self, result: object) -> None:
+        if isinstance(result, VerifyResult):
+            self._report_verification(result)
+        self._after_worker()
+
+    def _report_verification(self, result: VerifyResult) -> None:
+        """Résume le contrôle, puis propose de supprimer les fichiers suspects (jamais les originaux)."""
+        damaged = result.damaged
+        paths = "\n".join(str(b) for b in result.bases)
+        if not damaged:
+            self.log_panel.append_log("OK", self.tr(
+                "Vérification : {count} fichier(s) contrôlé(s), aucun fichier incomplet ou illisible."
+            ).format(count=result.checked))
+            QMessageBox.information(
+                self, self.tr("Vérifier la sortie"),
+                self.tr("Aucun fichier incomplet ou corrompu n'a été trouvé.\n\n"
+                        "{count} fichier(s) contrôlé(s) dans :\n{paths}")
+                .format(count=result.checked, paths=paths))
+            return
+        self.log_panel.append_log("WARN", self.tr(
+            "Vérification : {bad} fichier(s) suspect(s) sur {count} contrôlé(s) ; ne supprimez pas vos originaux."
+        ).format(bad=len(damaged), count=result.checked))
+        reasons = {"partiel": self.tr("conversion interrompue (fichier temporaire)"),
+                   "taille": self.tr("taille inattendue : fichier tronqué ?"),
+                   "illisible": self.tr("illisible pour FFprobe")}
+        for item in damaged[:20]:
+            self.log_panel.append_log("WARN", f"{item.path} — {reasons.get(item.reason, item.reason)}"
+                                              + (f" ({item.detail})" if item.detail else ""))
+        if len(damaged) > 20:
+            self.log_panel.append_log("WARN", self.tr("… et {count} autre(s) fichier(s) suspect(s).")
+                                      .format(count=len(damaged) - 20))
+        answer = QMessageBox.question(
+            self, self.tr("Fichiers à vérifier"),
+            self.tr("{bad} fichier(s) de la sortie peuvent être incomplets ou corrompus.\n\n"
+                    "Les supprimer ? Ils seront recréés à la prochaine conversion ; aucun autre fichier "
+                    "n'est touché et les originaux ne sont jamais concernés.").format(bad=len(damaged)),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No)
+        if answer == QMessageBox.StandardButton.Yes:
+            self._delete_damaged(damaged)
+
+    def _delete_damaged(self, damaged: list[engine.DamagedFile]) -> None:
+        """Supprime les fichiers signalés par la vérification, une seule fois par chemin."""
+        removed = failed = 0
+        seen: set[str] = set()
+        for item in damaged:
+            key = path_key(item.path)
+            if key in seen:
+                continue
+            seen.add(key)
+            try:
+                item.path.unlink(missing_ok=True)
+                removed += 1
+            except OSError as exc:
+                failed += 1
+                self.log_panel.append_log("WARN", self.tr("{path} : suppression impossible ({error}).")
+                                          .format(path=item.path, error=exc))
+        self.log_panel.append_log("OK" if not failed else "WARN", self.tr(
+            "{count} fichier(s) supprimé(s) ; relancez la conversion pour les recréer.").format(count=removed))
+
     # ── Fin de traitement ───────────────────────────────────────────────────
+    def closeEvent(self, event: QCloseEvent) -> None:
+        """Annule la sonde en attente : une fenêtre fermée ne doit plus lancer FFmpeg."""
+        self._probe_timer.stop()
+        super().closeEvent(event)
+
     def _after_worker(self) -> None:
+        self.stage_label.clear()
+        self.stage_label.hide()
+        self.progress_bar.clear_segments()
+        self.progress_bar.setToolTip("")
+        self.progress_legend.clear_entries()
+        self._segment_bounds = []
         QTimer.singleShot(0, self._drain_pending)
 
     def _drain_pending(self) -> None:

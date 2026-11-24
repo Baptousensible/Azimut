@@ -30,8 +30,8 @@ from azimut.ui import module_window as mw
 from azimut.ui.flow_layout import FlowLayout
 from azimut.ui.module_window import ModuleWindow
 from azimut.ui.preferences_dialog import PreferencesDialog, PreferencesPage, describe_binary
-from azimut.ui.theme import ThemeManager
-from azimut.ui.widgets import Card, ImportProgress
+from azimut.ui.theme import ThemeManager, scaled
+from azimut.ui.widgets import Card, Column, DataTable, ImportProgress
 
 SPEC = ModuleSpec(id="fake", name="Azimut Fake", tagline="Module de test.", icon="🧪",
                   entry="x:Y", requires=("ffmpeg",), optional=("exiftool",))
@@ -343,6 +343,55 @@ def test_side_panel_scroll_content_stays_transparent(make_window):
     assert not inner.autoFillBackground()
 
 
+def test_side_panel_keeps_its_type_width_and_grows_only_for_content(make_window):
+    """La largeur du panneau ne suit pas la largeur *préférée* de son contenu.
+
+    Une phrase longue (repliable) préfère une grande largeur mais tient dans la largeur
+    type : le panneau ne doit pas s'élargir pour elle. Un contenu dont le minimum ne
+    tient pas, lui, étend le panneau — et le recontrôle suit.
+    """
+    win = make_window()
+    inner = QWidget()
+    lay = QVBoxLayout(inner)
+    label = QLabel("Une phrase longue qui préfère une grande largeur. " * 6)
+    label.setWordWrap(True)
+    lay.addWidget(label)
+    scroll = QScrollArea()
+    scroll.setWidgetResizable(True)
+    scroll.setWidget(inner)
+    win.set_side_panel(scroll, "Réglages")
+
+    assert win.side_dock.minimumWidth() == scaled(win.SIDE_PANEL_WIDTH)
+    assert win.side_dock.maximumWidth() == scaled(win.SIDE_PANEL_WIDTH)
+
+    wide = QWidget()
+    wide.setMinimumWidth(scaled(500))     # un aperçu Dedup, par exemple
+    lay.addWidget(wide)
+    QTest.qWait(20)
+    chrome = scroll.verticalScrollBar().sizeHint().width() + 2
+    expected = max(scaled(win.SIDE_PANEL_WIDTH), inner.minimumSizeHint().width() + chrome)
+    assert win.side_dock.minimumWidth() == expected
+    assert win.side_dock.minimumWidth() > scaled(win.SIDE_PANEL_WIDTH)   # le contenu a bien étendu
+    assert win.side_dock.maximumWidth() == win.side_dock.minimumWidth()
+
+
+def test_module_content_does_not_force_horizontal_page_scroll(make_window, env, qt_app):
+    """À 150 %, le tableau se resserre dans le panneau au lieu de déborder de la page."""
+    win = make_window()
+    table = DataTable([Column(f"c{i}", f"Colonne {i}", width=320) for i in range(4)])
+    win.set_content(table)
+    win.set_side_panel(QWidget(), "Réglages")
+    win.resize(1200, 800)
+    win.show()
+    try:
+        env.theme.set_zoom(1.5)
+        QTest.qWait(50)
+        assert win.central_scroll.horizontalScrollBar().maximum() == 0
+        assert table.width() <= win.central_scroll.viewport().width()
+    finally:
+        win.close()
+
+
 def test_add_action_button(make_window):
     win = make_window()
     hits: list[int] = []
@@ -500,6 +549,26 @@ def test_run_worker_success_progress_log_history(make_window, qt_app, env):
     win.run_worker(QuickWorker(1))                           # sans history_action : pas de nouvelle entrée
     assert wait_until(qt_app, lambda: not win.is_busy())
     assert len(env.store.recent(module="fake")) == 1
+
+
+def test_progress_with_known_total_starts_with_the_animated_band_by_default(make_window):
+    """Hors Convert, un total connu conserve le départ en bande liquide historique."""
+    win = make_window()
+    win._on_worker_progress(0, 100)
+    assert win.progress_bar.minimum() == win.progress_bar.maximum()
+    assert not win.progress_bar.isHidden()
+
+
+def test_determinate_start_shows_a_fixed_zero_for_convert(make_window, qt_app):
+    """Convert demande explicitement un 0 % fixe pour laisser voir ses segments."""
+    win = make_window()
+    worker = BlockingWorker()
+    win.run_worker(worker, determinate_start=True)
+    assert worker.started.wait(5)
+    win._on_worker_progress(0, 100)
+    assert (win.progress_bar.minimum(), win.progress_bar.maximum(), win.progress_bar.value()) == (0, 100, 0)
+    worker.release.set()
+    assert wait_until(qt_app, lambda: not win.is_busy())
 
 
 def test_run_worker_keeps_the_liquid_bar_visible_for_a_minimum_time(make_window, qt_app):
@@ -702,7 +771,9 @@ def test_preferences_dialog_initial_state(env):
     env.theme.set_zoom(1.2)                                  # valeur hors liste : choix le plus proche (125 %)
     dlg = PreferencesDialog()
     assert dlg.theme_combo.currentData() == "system"
-    assert dlg.zoom_combo.currentIndex() == 3 and dlg.zoom_combo.currentText() == "125 %"
+    assert dlg.zoom_combo.currentData() == 1.25 and dlg.zoom_combo.currentText() == "125 %"
+    # Le sélecteur doit proposer les deux crans sous 90 %, seuls à atteindre le plancher du moteur.
+    assert [dlg.zoom_combo.itemData(i) for i in range(dlg.zoom_combo.count())][:3] == [0.8, 0.85, 0.9]
     assert dlg.icon_combo.currentData() == "papicons"
     assert set(dlg.fields) == {"ffmpeg", "ffprobe", "exiftool"}
     assert dlg.chips["ffmpeg"].text() == "embarqué · 7.1"
@@ -728,7 +799,7 @@ def test_preferences_dialog_saves_on_accept(env, monkeypatch, tmp_path):
     custom = tmp_path / "mon_ffmpeg"
     dlg = PreferencesDialog()
     dlg.theme_combo.setCurrentIndex(dlg.theme_combo.findData("light"))
-    dlg.zoom_combo.setCurrentIndex(3)
+    dlg.zoom_combo.setCurrentIndex(dlg.zoom_combo.findData(1.25))
     dlg.icon_combo.setCurrentIndex(dlg.icon_combo.findData("animated"))
     dlg.fields["ffmpeg"].set_path(str(custom))
     assert env.theme.theme() == "dark"                       # rien n'est écrit avant la validation
@@ -736,7 +807,7 @@ def test_preferences_dialog_saves_on_accept(env, monkeypatch, tmp_path):
     assert env.theme.theme() == "light" and env.theme.zoom() == 1.25
     assert env.theme.icon_theme() == "animated"
     assert env.prefs.get("zoom") == 1.25 and env.prefs.get("icon_theme") == "animated"
-    assert not env.prefs.contains("theme")                   # le thème n'est pas mémorisé
+    assert env.prefs.get("theme") == "light"                 # le thème est mémorisé
     assert env.prefs.get("binaries.ffmpeg") == str(custom)
     assert refreshed == [1]
 
@@ -888,15 +959,18 @@ def test_preferences_dialog_language_is_saved(env):
     assert PreferencesDialog().language_combo.currentData() == "de"  # sélection relue
 
 
-def test_preferences_dialog_save_button_follows_language_change(env):
+def test_preferences_dialog_save_button_announces_restart_for_language_only(env):
+    """La relance n'est annoncée que si la langue change."""
     dlg = PreferencesDialog(allow_restart=True)
     assert dlg.save_button.text() == "Enregistrer"
+
+    dlg.zoom_combo.setCurrentIndex((dlg.zoom_combo.currentIndex() + 1) % dlg.zoom_combo.count())
+    assert dlg.save_button.text() == "Enregistrer"
+
     original = dlg.language_combo.currentIndex()
-
-    dlg.language_combo.setCurrentIndex(dlg.language_combo.findData("de"))
+    dlg.language_combo.setCurrentIndex(dlg.language_combo.findData("en"))
     assert dlg.save_button.text() == "Enregistrer et relancer"
-
-    dlg.language_combo.setCurrentIndex(original)              # retour à la langue enregistrée
+    dlg.language_combo.setCurrentIndex(original)
     assert dlg.save_button.text() == "Enregistrer"
     assert PreferencesDialog().save_button.text() == "Enregistrer"  # relance non permise
 

@@ -67,6 +67,7 @@ class Profile:
     threads: int = 0                            # threads de l'encodeur (0 = laisser l'encodeur décider)
     sub_codec: str = ""                         # sous-titres texte conservés : webvtt (WebM), mov_text (MP4), copy
     hdr_mode: str = "T"                         # vidéos HDR : « T » tone-mapping vers SDR, « H » HDR natif (AV1)
+    only_if_encoder: bool = False               # proposé seulement si FFmpeg expose l'un des encodeurs
 
 
 # Profil des fichiers « autres » : aucune conversion, simple copie (option « Copier aussi les autres fichiers »).
@@ -145,6 +146,13 @@ VIDEO_CODECS: tuple[Profile, ...] = (
             VIDEO_EXTS, video_encoders=("hevc_nvenc",), audio_encoders=("aac",), crf=26, preset="p4",
             audio_bitrate="160k", even_dims=True,
             extra_out=("-movflags", "+faststart", "-tag:v", "hvc1"), guard_growth=True, sub_codec="mov_text"),
+    Profile("video_mp4_av1_nvenc", "AV1 NVIDIA (NVENC)", "video", ".mp4",
+            QT_TRANSLATE_NOOP("Profiles", "AV1 accéléré par NVIDIA NVENC (RTX 40 et plus). Proposé seulement si FFmpeg "
+            "expose av1_nvenc ; nécessite un GPU et le pilote NVIDIA compatibles."),
+            VIDEO_EXTS, video_encoders=("av1_nvenc",), audio_encoders=("aac",), crf=32, preset="p4",
+            audio_bitrate="160k", even_dims=True,
+            extra_out=("-movflags", "+faststart", "-tag:v", "av01"), guard_growth=True, sub_codec="mov_text",
+            only_if_encoder=True),
     Profile("video_mp4_h264_qsv", "H.264 Intel (QSV)", "video", ".mp4",
             QT_TRANSLATE_NOOP("Profiles", "H.264 accéléré par Intel Quick Sync Video. Nécessite un processeur et un pilote compatibles."),
             VIDEO_EXTS, video_encoders=("h264_qsv",), audio_encoders=("aac",), crf=23, preset="medium",
@@ -155,6 +163,13 @@ VIDEO_CODECS: tuple[Profile, ...] = (
             VIDEO_EXTS, video_encoders=("hevc_qsv",), audio_encoders=("aac",), crf=26, preset="medium",
             audio_bitrate="160k", even_dims=True,
             extra_out=("-movflags", "+faststart", "-tag:v", "hvc1"), guard_growth=True, sub_codec="mov_text"),
+    Profile("video_mp4_av1_qsv", "AV1 Intel (QSV)", "video", ".mp4",
+            QT_TRANSLATE_NOOP("Profiles", "AV1 accéléré par Intel Quick Sync Video (GPU Intel Arc et suivants). "
+            "Proposé seulement si FFmpeg expose av1_qsv ; nécessite un pilote compatible."),
+            VIDEO_EXTS, video_encoders=("av1_qsv",), audio_encoders=("aac",), crf=32, preset="medium",
+            audio_bitrate="160k", even_dims=True,
+            extra_out=("-movflags", "+faststart", "-tag:v", "av01"), guard_growth=True, sub_codec="mov_text",
+            only_if_encoder=True),
     Profile("video_mp4_h264_vaapi", "H.264 VA-API", "video", ".mp4",
             QT_TRANSLATE_NOOP("Profiles", "H.264 accéléré par VA-API (Linux). Nécessite un périphérique /dev/dri/renderD* compatible."),
             VIDEO_EXTS, video_encoders=("h264_vaapi",), audio_encoders=("aac",), crf=23,
@@ -165,6 +180,13 @@ VIDEO_CODECS: tuple[Profile, ...] = (
             VIDEO_EXTS, video_encoders=("hevc_vaapi",), audio_encoders=("aac",), crf=26,
             audio_bitrate="160k", even_dims=True,
             extra_out=("-movflags", "+faststart", "-tag:v", "hvc1"), guard_growth=True, sub_codec="mov_text"),
+    Profile("video_mp4_av1_vaapi", "AV1 VA-API", "video", ".mp4",
+            QT_TRANSLATE_NOOP("Profiles", "AV1 accéléré par VA-API (Linux, Mesa récent). Proposé seulement si FFmpeg "
+            "expose av1_vaapi ; nécessite un périphérique /dev/dri/renderD* qui sait encoder l'AV1."),
+            VIDEO_EXTS, video_encoders=("av1_vaapi",), audio_encoders=("aac",), crf=32,
+            audio_bitrate="160k", even_dims=True,
+            extra_out=("-movflags", "+faststart", "-tag:v", "av01"), guard_growth=True, sub_codec="mov_text",
+            only_if_encoder=True),
     Profile("video_webm_vp9", "VP9 (WebM)", "video", ".webm",
             QT_TRANSLATE_NOOP("Profiles", "Vidéo VP9 dans un WebM : bon compromis, bien pris en charge par les navigateurs."),
             VIDEO_EXTS, video_encoders=("libvpx-vp9",), audio_encoders=("libopus",), crf=32, preset="2",
@@ -244,8 +266,12 @@ VIDEO_AUDIO_IDS: dict[str, tuple[str, ...]] = {
 
 # Codecs audio propres à un codec vidéo (premier = défaut), prioritaires sur le conteneur : un MP4 AV1
 # accepte Opus, un MPEG-4 partie 2 se contente d'AAC/MP3, un ProRes privilégie le PCM pour le montage.
+AV1_MP4_AUDIO = ("audio_aac", "audio_opus", "audio_mp3")
 VIDEO_AUDIO_BY_PROFILE: dict[str, tuple[str, ...]] = {
-    "video_mp4_av1": ("audio_aac", "audio_opus", "audio_mp3"),
+    "video_mp4_av1": AV1_MP4_AUDIO,
+    "video_mp4_av1_nvenc": AV1_MP4_AUDIO,
+    "video_mp4_av1_qsv": AV1_MP4_AUDIO,
+    "video_mp4_av1_vaapi": AV1_MP4_AUDIO,
     "video_mp4_mpeg4": ("audio_aac", "audio_mp3"),
     "video_ogv_theora": ("audio_vorbis",),
     "video_mov_prores": ("audio_pcm24", "audio_wav", "audio_aac", "audio_alac"),

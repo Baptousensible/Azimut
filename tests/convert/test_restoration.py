@@ -152,6 +152,27 @@ def test_hdr_tonemap_and_native():
     assert val(h264, "-color_trc") == "bt709"          # H.264 : toujours SDR
 
 
+def test_hdr_native_stays_software_av1_only(monkeypatch):
+    """hdr_mode « H » : AV1 logiciel = 10 bits natif ; AV1 matériel = tone-mapping SDR (aucun GPU requis)."""
+    monkeypatch.setattr(engine, "find_vaapi_device", lambda: "/dev/dri/renderD128")
+    info = probe.parse_media_probe(ffprobe_json(streams=[
+        {"index": 0, "codec_type": "video", "codec_name": "hevc", "color_transfer": "smpte2084"}]))
+    encoders = ALL_ENC | {"av1_nvenc", "av1_qsv", "av1_vaapi"}
+
+    def command(pid: str) -> list[str]:
+        profile = replace(profiles.get_profile(pid), hdr_mode="H")
+        return engine.build_command(profile, Path("/in/a.mkv"), Path("/out/a.mp4"), ffmpeg="ffmpeg",
+                                    encoders=encoders, probe=info, hdr_filter="zscale=X,format=yuv420p")
+
+    native = command("video_mp4_av1")
+    assert val(native, "-pix_fmt") == "yuv420p10le" and val(native, "-color_trc") == "smpte2084"
+    for pid in ("video_mp4_av1_nvenc", "video_mp4_av1_qsv", "video_mp4_av1_vaapi"):
+        tone_mapped = command(pid)
+        assert "-pix_fmt" not in tone_mapped
+        assert val(tone_mapped, "-color_trc") == "bt709" and val(tone_mapped, "-color_primaries") == "bt709"
+        assert "zscale=X" in val(tone_mapped, "-vf")
+
+
 def test_creation_time_attempts_and_lp_fallback():
     info = probe.parse_media_probe(ffprobe_json())
     p = advanced.apply_overrides(profiles.get_profile("video_webm_av1"), None, threads=3)
@@ -293,11 +314,15 @@ needs_ffmpeg = pytest.mark.skipif(not (shutil.which("ffmpeg") and shutil.which("
                                   reason="ffmpeg et ffprobe requis")
 
 
-def has_av1_encoder() -> bool:
+def ffmpeg_encoders() -> frozenset[str]:
     if not shutil.which("ffmpeg"):
-        return False
+        return frozenset()
     out = subprocess.run(["ffmpeg", "-hide_banner", "-encoders"], capture_output=True, text=True).stdout
-    return "libsvtav1" in out or "libaom-av1" in out
+    return frozenset(engine.parse_encoders(out))
+
+
+def has_av1_encoder() -> bool:
+    return bool(ffmpeg_encoders() & {"libsvtav1", "libaom-av1"})
 
 
 def has_avif_muxer() -> bool:
@@ -308,6 +333,7 @@ def has_avif_muxer() -> bool:
 
 
 needs_av1 = pytest.mark.skipif(not has_av1_encoder(), reason="aucun encodeur AV1 dans ce FFmpeg")
+needs_libaom = pytest.mark.skipif("libaom-av1" not in ffmpeg_encoders(), reason="libaom-av1 requis")
 needs_avif = pytest.mark.skipif(not has_avif_muxer(), reason="ce FFmpeg ne sait pas écrire l'AVIF")
 
 
@@ -423,7 +449,7 @@ def test_e2e_av1_mp4(tmp_path, qapp):
 
 
 @needs_ffmpeg
-@needs_av1
+@needs_libaom
 @needs_avif
 def test_e2e_small_avif_uses_libaom(tmp_path, qapp, monkeypatch):
     """LOG-002 : une image AV1 de 48×48 px est confiée à libaom-av1 (SVT-AV1 échoue sur FFmpeg 6.x)."""
@@ -449,7 +475,7 @@ def test_e2e_small_avif_uses_libaom(tmp_path, qapp, monkeypatch):
 
 
 @needs_ffmpeg
-@needs_av1
+@needs_libaom
 def test_e2e_small_av1_video_uses_libaom(tmp_path, qapp, monkeypatch):
     """LOG-002 : une vidéo AV1 de 48×48 px est confiée à libaom-av1 (SVT-AV1 échoue sur FFmpeg 6.x)."""
     src = tmp_path / "in"
@@ -480,7 +506,7 @@ def test_e2e_small_av1_video_uses_libaom(tmp_path, qapp, monkeypatch):
 
 
 @needs_ffmpeg
-@needs_av1
+@needs_libaom
 @needs_avif
 def test_e2e_16px_avif_avoids_svt_hang(tmp_path, qapp, monkeypatch):
     """LOG-002 : à 16×16 px, SVT-AV1 se bloque (même SIGTERM l'ignore) ; le worker doit prendre libaom-av1."""

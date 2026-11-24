@@ -55,7 +55,9 @@ METADATA_EXCLUDED = (
 
 def profile_fingerprint(profile: Profile) -> str:
     """Empreinte stable des réglages qui influencent le fichier produit."""
-    payload = json.dumps(asdict(profile), sort_keys=True, default=str, ensure_ascii=False)
+    data = asdict(profile)
+    data.pop("only_if_encoder", None)          # purement d'affichage : ne doit pas invalider « Déjà converti »
+    payload = json.dumps(data, sort_keys=True, default=str, ensure_ascii=False)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 
@@ -81,6 +83,86 @@ def load_manifest(base: Path) -> dict:
 def save_manifest(base: Path, data: dict) -> None:
     """Écrit le manifeste atomiquement ; une erreur d'écriture ne doit pas invalider le lot."""
     atomic_write_text(Path(base) / MANIFEST_NAME, json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+
+
+# ── Vérification de la sortie (arrêt forcé, plantage) ────────────────────────
+#: Nom d'un temporaire de conversion : « .photo.a1b2c3d4e5f6.part.avif ». Il n'est jamais une
+#: sortie : FFmpeg écrit dedans et il est supprimé dès la publication. Il ne reste donc sur le
+#: disque que si le processus a été tué avant la fin — c'est le fichier corrompu typique.
+_PART_FILE_RE = re.compile(r"^\..+\.[0-9a-f]{12}\.part(?:\..+)?$", re.IGNORECASE)
+
+
+@dataclass(frozen=True)
+class DamagedFile:
+    """Fichier de sortie qu'un arrêt forcé a pu laisser incomplet ou corrompu."""
+    path: Path
+    reason: str                 # « partiel », « taille » ou « illisible »
+    detail: str = ""
+
+
+def is_partial_file(path: Path | str) -> bool:
+    """Vrai pour un temporaire de conversion (`part_path`) resté sur le disque."""
+    return bool(_PART_FILE_RE.match(Path(path).name))
+
+
+def _is_stale_manifest_tmp(path: Path) -> bool:
+    """Temporaire d'écriture du manifeste laissé par un arrêt pendant `save_manifest`."""
+    return path.name.startswith(MANIFEST_NAME + ".") and path.name.endswith(".tmp")
+
+
+def find_incomplete_files(base: Path, cancel: Callable[[], bool] | None = None) -> list[Path]:
+    """Temporaires laissés par une conversion interrompue, sous `base` (récursif).
+
+    Leur nom commence par un point : `iter_files` les ignore et le manifeste n'en parle pas. On les
+    parcourt donc directement. Les liens symboliques ne sont pas suivis (pas de boucle).
+    """
+    found: list[Path] = []
+    stack: list[Path] = [Path(base)]
+    while stack:
+        if cancel is not None and cancel():
+            break
+        folder = stack.pop()
+        try:
+            with os.scandir(folder) as it:
+                entries = list(it)
+        except OSError:
+            continue
+        for entry in entries:
+            try:
+                if entry.is_dir(follow_symlinks=False):
+                    stack.append(Path(entry.path))
+                elif entry.is_file(follow_symlinks=False) and (
+                        is_partial_file(entry.name) or _is_stale_manifest_tmp(Path(entry.name))):
+                    found.append(Path(entry.path))
+            except OSError:
+                continue
+    return sorted(found)
+
+
+def manifest_size_problems(base: Path, manifest: dict | None = None) -> list[DamagedFile]:
+    """Sorties dont la taille ne correspond plus à celle qu'avait enregistrée le manifeste.
+
+    Un fichier tronqué (arrêt brutal, disque plein, copie interrompue) garde son nom mais plus son contenu.
+    Une sortie absente n'est pas signalée ici : le contrôle final de la conversion s'en charge déjà.
+    """
+    data = load_manifest(base) if manifest is None else manifest
+    problems: list[DamagedFile] = []
+    for key, rec in data.items():
+        if not isinstance(rec, dict):
+            continue
+        expected = rec.get("dest_size")
+        if not isinstance(expected, int) or isinstance(expected, bool) or expected < 0:
+            continue
+        path = Path(key)
+        if not path.is_absolute():
+            path = Path(base) / key
+        try:
+            actual = path.stat().st_size
+        except OSError:
+            continue
+        if actual != expected:
+            problems.append(DamagedFile(path, "taille", f"{actual} ≠ {expected} octets"))
+    return sorted(problems, key=lambda p: str(p.path).lower())
 
 
 def metadata_copy_args(source: Path, target: Path) -> list[str]:
@@ -262,12 +344,76 @@ def find_vaapi_device() -> str | None:
     return None
 
 
-def profile_unavailable_reason(profile: Profile, encoders: Collection[str] | None) -> str | None:
-    """Raison courte pour laquelle un profil ne peut pas tourner ici, ou None."""
+#: Encodeurs matériels exposés par les profils, par backend, avec le codec affiché à l'utilisateur.
+HARDWARE_ENCODERS: dict[str, tuple[tuple[str, str], ...]] = {
+    "nvenc": (("h264_nvenc", "H.264"), ("hevc_nvenc", "H.265"), ("av1_nvenc", "AV1")),
+    "qsv": (("h264_qsv", "H.264"), ("hevc_qsv", "H.265"), ("av1_qsv", "AV1")),
+    "vaapi": (("h264_vaapi", "H.264"), ("hevc_vaapi", "H.265"), ("av1_vaapi", "AV1")),
+}
+
+
+#: Encodeurs dont le pilote est réellement testé au démarrage (petit encodage à vide).
+HARDWARE_PROBE_ENCODERS = tuple(
+    encoder for entries in HARDWARE_ENCODERS.values() for encoder, _ in entries
+    if encoder.endswith(("_nvenc", "_qsv"))
+)
+
+
+def build_hardware_probe_command(ffmpeg: str | Path, encoder: str) -> list[str]:
+    """Commande qui encode réellement une image de 64×64 avec un encodeur matériel.
+
+    Aucun fichier n'est lu ni écrit (`lavfi` → `-f null -`) : seuls le pilote et le GPU sont sollicités.
+    Un code retour 0 prouve que l'encodeur s'est ouvert, pas seulement que FFmpeg le liste. QSV reçoit
+    la même initialisation que `build_command` (`qsv=hw` + upload GPU), sinon le test ne représenterait
+    pas la conversion réelle.
+    """
+    setup: list[str] = []
+    filters: list[str] = []
+    if encoder.endswith("_qsv"):
+        setup = ["-init_hw_device", "qsv=hw", "-filter_hw_device", "hw"]
+        filters = ["-vf", "format=nv12,hwupload=extra_hw_frames=64"]
+    return [str(ffmpeg), "-hide_banner", "-loglevel", "error", "-nostdin", *setup,
+            "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1:r=10", *filters,
+            "-frames:v", "1", "-c:v", encoder, "-f", "null", "-"]
+
+
+def hardware_backends(encoders: Collection[str] | None) -> list[tuple[str, list[str]]]:
+    """Backends matériels utilisables et leurs codecs, d'après les encodeurs réellement testés.
+
+    VA-API n'est retenu que si un périphérique de rendu existe : FFmpeg expose ses encodeurs même quand
+    aucun GPU ne peut les exécuter. Pour NVENC et QSV, la liste reçue doit déjà exclure les encodeurs
+    dont le pilote a échoué au test de démarrage (voir `workers.probe_hardware`).
+    """
+    if not encoders:
+        return []
+    found: list[tuple[str, list[str]]] = []
+    for backend, entries in HARDWARE_ENCODERS.items():
+        if backend == "vaapi" and find_vaapi_device() is None:
+            continue
+        codecs = [label for encoder, label in entries if encoder in encoders]
+        if codecs:
+            found.append((backend, codecs))
+    return found
+
+
+def _failed_hardware(profile: Profile, hardware_failed: Collection[str] | None) -> list[str]:
+    """Encodeurs du profil dont le test de pilote a échoué."""
+    return [e for e in profile.video_encoders if e in (hardware_failed or ())]
+
+
+def profile_unavailable_reason(profile: Profile, encoders: Collection[str] | None,
+                               hardware_failed: Collection[str] | None = None) -> str | None:
+    """Raison courte pour laquelle un profil ne peut pas tourner ici, ou None.
+
+    `hardware_failed` contient les encodeurs matériels listés par FFmpeg mais dont le pilote ou le GPU
+    n'a pas répondu au test de démarrage : le profil est marqué indisponible avant même le lancement.
+    """
     if profile.id == "image_heic" and not imaging.heif_available():
         return "pillow-heif manquant"
-    if any(e.endswith("_vaapi") for e in profile.video_encoders) and find_vaapi_device() is None:
+    if hardware_kind(profile) == "vaapi" and find_vaapi_device() is None:
         return "périphérique VA-API absent"
+    if _failed_hardware(profile, hardware_failed):
+        return "pilote ou GPU ne répond pas"
     if encoders is not None:
         for candidates in (profile.video_encoders, profile.audio_encoders):
             if candidates and not any(e in encoders for e in candidates):
@@ -275,9 +421,10 @@ def profile_unavailable_reason(profile: Profile, encoders: Collection[str] | Non
     return None
 
 
-def missing_encoder_message(profile: Profile, encoders: Collection[str] | None) -> str | None:
+def missing_encoder_message(profile: Profile, encoders: Collection[str] | None,
+                            hardware_failed: Collection[str] | None = None) -> str | None:
     """Message explicite si le profil est impossible avec ce ffmpeg, sinon None."""
-    reason = profile_unavailable_reason(profile, encoders)
+    reason = profile_unavailable_reason(profile, encoders, hardware_failed)
     if reason is None:
         return None
     if reason == "pillow-heif manquant":
@@ -286,6 +433,11 @@ def missing_encoder_message(profile: Profile, encoders: Collection[str] | None) 
     if reason == "périphérique VA-API absent":
         return (f"Profil « {profile.label} » impossible : aucun périphérique VA-API "
                 "(/dev/dri/renderD*) détecté.")
+    if reason == "pilote ou GPU ne répond pas":
+        failed = _failed_hardware(profile, hardware_failed)
+        return (f"Profil « {profile.label} » impossible : le pilote graphique ou le GPU ne répond pas "
+                f"({', '.join(failed) or 'test matériel'}). Vérifiez le pilote du GPU, "
+                "ou choisissez un profil processeur.")
     manque = [" ou ".join(c) for c in (profile.video_encoders, profile.audio_encoders)
               if c and not any(e in encoders for e in c)]
     return f"Profil « {profile.label} » impossible avec ce FFmpeg : encodeur manquant ({' ; '.join(manque)})."
@@ -347,13 +499,14 @@ def part_path(dest: Path) -> Path:
     return dest.with_name(f".{stem}.{uuid.uuid4().hex[:12]}.part{dest.suffix}")
 
 
-def initial_state(item: SourceItem, profile: Profile, encoders: Collection[str] | None) -> str:
+def initial_state(item: SourceItem, profile: Profile, encoders: Collection[str] | None,
+                  hardware_failed: Collection[str] | None = None) -> str:
     """État prévisible sans toucher au disque."""
     if is_passthrough(item, profile):
         return STATE_PENDING                              # copie pure : aucun encodeur nécessaire
     if item.path.suffix.lower() in RAW_EXTS and not imaging.raw_available():
         return STATE_UNSUPPORTED
-    if missing_encoder_message(profile, encoders):
+    if missing_encoder_message(profile, encoders, hardware_failed):
         return STATE_NO_ENCODER
     return STATE_PENDING
 
@@ -425,7 +578,8 @@ def output_name(item: SourceItem, profile: Profile, *, name_ext: bool, passthrou
 
 def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Path | None,
               encoders: Collection[str] | None = None, *, check_disk: bool = True,
-              name_ext: bool = False, manifests: dict[Path, dict] | None = None) -> list[Job]:
+              name_ext: bool = False, manifests: dict[Path, dict] | None = None,
+              hardware_failed: Collection[str] | None = None) -> list[Job]:
     """Une liste de Job alignée sur `items` : chemins de sortie, collisions, états initiaux.
 
     Les collisions de noms dans un lot sont résolues de façon déterministe (ordre alphabétique des sources),
@@ -436,11 +590,13 @@ def plan_jobs(items: list[SourceItem], profiles: dict[str, Profile], out_dir: Pa
     jobs: list[Job] = [Job(n, it, profiles.get(it.kind, COPY_PROFILE)) for n, it in enumerate(items)]
     for n in sorted(range(len(items)), key=lambda k: str(items[k].path).lower()):
         job = jobs[n]
-        state = initial_state(job.item, job.profile, encoders)
+        state = initial_state(job.item, job.profile, encoders, hardware_failed)
         if state != STATE_PENDING:
             job.state = state
-            job.message = (missing_encoder_message(job.profile, encoders) or "") if state == STATE_NO_ENCODER \
-                else "RAW : installez rawpy (pip install rawpy) pour le prendre en charge."
+            if state == STATE_NO_ENCODER:
+                job.message = missing_encoder_message(job.profile, encoders, hardware_failed) or ""
+            else:
+                job.message = "RAW : installez rawpy (pip install rawpy) pour le prendre en charge."
             continue
         base = _output_base(job.item, out_dir, multi)
         if base is None:
@@ -628,10 +784,10 @@ def _probed_audio_args(profile: Profile, aenc: str, audio: list[dict], *, plain:
 
 
 def _probed_video_filter_args(profile: Profile, probe: MediaProbe, hdr_filter: str | None) -> list[str]:
-    """Filtre et étiquettes de couleur ; HDR : tone-mapping vers SDR (« T ») ou HDR natif 10 bits (« H », AV1)."""
+    """Filtre et étiquettes de couleur ; HDR : tone-mapping vers SDR (« T ») ou 10 bits natif (« H », AV1 logiciel)."""
     even = EVEN_SCALE if profile.even_dims else None
     if probe.hdr_trc and profile.kind == "video":
-        if profile.hdr_mode == "H" and family(profile) == "av1":
+        if profile.hdr_mode == "H" and family(profile) == "av1" and not hardware_kind(profile):
             vf = even or "null"
             return ["-vf", vf, "-pix_fmt", "yuv420p10le", "-color_primaries", "bt2020",
                     "-color_trc", probe.hdr_trc, "-colorspace", "bt2020nc"]

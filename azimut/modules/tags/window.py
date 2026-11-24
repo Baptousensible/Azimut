@@ -7,7 +7,7 @@ from pathlib import Path
 from PySide6.QtCore import QCoreApplication, QEvent, Qt, QTimer
 from PySide6.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout,
                                QHBoxLayout, QInputDialog, QLabel, QLineEdit, QMessageBox, QPushButton,
-                               QSplitter, QStackedWidget, QVBoxLayout, QWidget)
+                               QSizePolicy, QSplitter, QStackedWidget, QVBoxLayout, QWidget)
 
 from azimut.core import binaries
 from azimut.core.binaries import BinaryNotFoundError
@@ -20,8 +20,9 @@ from azimut.modules.tags import engine as eng
 from azimut.modules.tags.workers import ReadWorker, UndoWorker, WriteWorker
 from azimut.ui.controls import CheckBox, SegmentedControl, set_action_available
 from azimut.ui.file_dialog import choose_directory, choose_files
+from azimut.ui.flow_layout import FlowLayout
 from azimut.ui.module_window import ModuleWindow
-from azimut.ui.theme import token
+from azimut.ui.theme import scaled, token
 from azimut.ui.widgets import Card, Column, DataTable, DropZone, MediaPreview, plain_message
 
 log = get_logger(__name__)
@@ -101,7 +102,7 @@ class TagsWindow(ModuleWindow):
         outer.setSpacing(10)
 
         self._drop = DropZone(self.tr("Glissez des fichiers ou des dossiers ici (ou cliquez pour parcourir)"))
-        self._drop.setMinimumHeight(64)
+        self._drop.setMinimumHeight(scaled(64))
         self._drop.setMaximumHeight(90)
         self._drop.pathsDropped.connect(self.open_paths)
         outer.addWidget(self._drop)
@@ -126,13 +127,17 @@ class TagsWindow(ModuleWindow):
         self._filter = QLineEdit()
         self._filter.setPlaceholderText(self.tr("Filtrer les tags (groupe, nom ou valeur)…"))
         self._filter.setClearButtonEnabled(True)
+        # Le texte d'invite ne doit pas imposer sa largeur au panneau : à 150 %, il
+        # poussait le tableau des métadonnées à 396 px et écrasait la liste des fichiers.
+        self._filter.setMinimumWidth(0)
+        self._filter.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
         self._meta = DataTable([
             Column("group", self.tr("Groupe"), 110), Column("name", self.tr("Tag"), 190),
             Column("value", self.tr("Valeur"), 260, stretch=True), Column("state", self.tr("État"), 100)])
         self._filter.textChanged.connect(self._meta.set_filter_text)
         self._meta.rowActivated.connect(self._edit_tag)
         self._meta.selectionRowsChanged.connect(lambda _rows: self._refresh_meta_actions())
-        meta_btns = QHBoxLayout()
+        meta_btns = FlowLayout(h_spacing=8, v_spacing=6)
         self._edit_btn = QPushButton(self.tr("Modifier la valeur…"))
         self._del_btn = QPushButton(self.tr("Supprimer le tag"))
         self._del_btn.setProperty("kind", "danger")      # action destructive
@@ -140,29 +145,30 @@ class TagsWindow(ModuleWindow):
         self._del_btn.clicked.connect(self._delete_selected_tags)
         meta_btns.addWidget(self._edit_btn)
         meta_btns.addWidget(self._del_btn)
-        meta_btns.addStretch(1)
         for w in (self._meta_title, self._filter, self._meta):
             meta_card.body_layout.addWidget(w, 1 if w is self._meta else 0)
         meta_card.body_layout.addLayout(meta_btns)
         split.addWidget(meta_card)
+        # Les deux tableaux ont besoin de la même largeur : donner plus à Fichiers
+        # réduisait Métadonnées à une bande de 200 px à 150 %.
         split.setStretchFactor(0, 1)
-        split.setStretchFactor(1, 1)          # 50 % / 50 %
+        split.setStretchFactor(1, 1)
         split.setSizes([1000, 1000])
         split.setChildrenCollapsible(False)
+        self._split = split
 
         pend_card = Card(self.tr("Modifications en attente (rien n'est écrit avant « Appliquer les modifications »)"))
         self._pending_table = DataTable([
             Column("op", self.tr("Opération"), 100), Column("tag", self.tr("Tag"), 260),
             Column("value", self.tr("Valeur"), 300, stretch=True)])
         self._pending_table.selectionRowsChanged.connect(lambda _rows: self._refresh_pending_actions())
-        pend_btns = QHBoxLayout()
+        pend_btns = FlowLayout(h_spacing=8, v_spacing=6)
         self._pend_remove = QPushButton(self.tr("Retirer la sélection"))
         self._pend_clear = QPushButton(self.tr("Tout retirer"))
         self._pend_remove.clicked.connect(self._remove_pending)
         self._pend_clear.clicked.connect(self._clear_pending)
         pend_btns.addWidget(self._pend_remove)
         pend_btns.addWidget(self._pend_clear)
-        pend_btns.addStretch(1)
         pend_card.body_layout.addWidget(self._pending_table)
         pend_card.body_layout.addLayout(pend_btns)
 
@@ -234,11 +240,32 @@ class TagsWindow(ModuleWindow):
 
         self._lockables = [self._drop, self._edit_btn, self._del_btn, self._pend_remove, self._pend_clear,
                            self._clear_btn, *self._preset_btns]
+        self._arrange_split()
 
     def resizeEvent(self, event) -> None:  # noqa: N802 - API Qt
         super().resizeEvent(event)
         if hasattr(self, "_nav"):
             self._arrange_nav()
+        self._arrange_split()
+
+    def _arrange_split(self) -> None:
+        """Empile Fichiers et Métadonnées quand côte à côte ils n'ont plus de place.
+
+        À 150 %, le panneau d'aperçu et le zoom laissent ~700 px au contenu : deux
+        tableaux de 5 et 4 colonnes y perdaient tous leurs en-têtes. En vertical, chaque
+        tableau reprend toute la largeur et les cases restent lisibles.
+        """
+        if not hasattr(self, "_split") or not hasattr(self, "_content_widget"):
+            return
+        stacked = self._split.orientation() == Qt.Orientation.Vertical
+        # Le seuil ne se déclenche que si les deux tableaux ne peuvent vraiment plus
+        # tenir côte à côte ; à 150 %, la barre horizontale de chaque tableau est
+        # préférable à un empilement qui masquerait le second tableau.
+        wanted = self._content_widget.width() < scaled(300)
+        if wanted == stacked:
+            return
+        self._split.setOrientation(Qt.Orientation.Vertical if wanted else Qt.Orientation.Horizontal)
+        self._split.setSizes([1000, 1000])
 
     def eventFilter(self, watched, event) -> bool:  # noqa: N802 - API Qt
         if watched is self._nav and event.type() == QEvent.Type.Resize:
@@ -468,7 +495,7 @@ class TagsWindow(ModuleWindow):
         can_delete_metadata = any(eng.has_editable_metadata(ft.entries) for ft in targets)
         for button, available in zip(
                 self._preset_btns,
-                (can_delete_gps, can_delete_metadata, can_edit, can_edit)):
+                (can_delete_gps, can_delete_metadata, can_edit, can_edit), strict=False):
             set_action_available(button, available)
 
     def _on_busy_changed(self, busy: bool) -> None:

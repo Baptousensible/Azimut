@@ -34,7 +34,8 @@ azimut = [
     "resources/icons_animated/*.md",
     "resources/*.png",
     "resources/fonts/*.ttf", "resources/fonts/*.txt",
-    "resources/translations/*.qm", "resources/translations/*.ts",
+    # Seuls les catalogues compilés partent : les sources .ts restent au dépôt.
+    "resources/translations/*.qm",
 ]
 
 # Documentation et mentions de licences également livrées par `pip install`.

@@ -87,7 +87,7 @@ from azimut.modules.dedup.model import (
 )
 from azimut.modules.dedup.workers import ApplyWorker, ScanWorker, UndoWorker
 from azimut.ui import icons
-from azimut.ui.controls import CheckBox, SegmentedControl, set_action_available
+from azimut.ui.controls import CheckBox, SegmentedControl, fit_combo_to_panel, set_action_available
 from azimut.ui.file_dialog import choose_directory, choose_file, choose_save_file
 from azimut.ui.flow_layout import FlowLayout
 from azimut.ui.module_window import ModuleWindow
@@ -570,12 +570,12 @@ class DedupWindow(ModuleWindow):
         for label, value in TOLERANCES:
             self.cmb_tolerance.addItem(label, value)
         self.cmb_tolerance.setCurrentIndex(1)
+        fit_combo_to_panel(self.cmb_tolerance)
         self.cmb_tolerance.setEnabled(False)
         self.chk_similar.toggled.connect(self.cmb_tolerance.setEnabled)
         for w in (self.chk_exact, self.chk_similar):
             detect_row.addWidget(w)
-        detect_row.addWidget(QLabel(self.tr("Tolérance :")))
-        detect_row.addWidget(self.cmb_tolerance)
+        detect_row.addWidget(self._inline_option(self.tr("Tolérance :"), self.cmb_tolerance))
         detect_row.addWidget(self.chk_modified)
 
         live_row = FlowLayout(h_spacing=10, v_spacing=6)
@@ -587,6 +587,7 @@ class DedupWindow(ModuleWindow):
         for label, value in LIVE_DURATIONS:
             self.cmb_live_max.addItem(label, value)
         self.cmb_live_max.setCurrentIndex(1)
+        fit_combo_to_panel(self.cmb_live_max)
         self.cmb_live_max.setEnabled(False)
         self.chk_live_drop = CheckBox(self.tr("Écarter la vidéo"))
         self.chk_live_drop.setEnabled(False)
@@ -596,27 +597,32 @@ class DedupWindow(ModuleWindow):
         for check in (self.chk_exact, self.chk_similar, self.chk_live):
             check.toggled.connect(self._refresh_run_state)
         live_row.addWidget(self.chk_live)
-        live_row.addWidget(QLabel(self.tr("Durée max :")))
-        live_row.addWidget(self.cmb_live_max)
-        live_row.addWidget(self.chk_live_drop)
-        options.body_layout.addWidget(self._option_group(self.tr("Détection"), detect_row, live_row))
+        live_row.addWidget(self._inline_option(self.tr("Durée max :"), self.cmb_live_max))
+        # « Écarter la vidéo » reste sous Live Photos : collé à la durée, il sortait
+        # de la carte à 150 % lorsque la barre de défilement réduisait la largeur utile.
+        live_drop_row = FlowLayout(h_spacing=10, v_spacing=6)
+        live_drop_row.addWidget(self.chk_live_drop)
+        options.body_layout.addWidget(
+            self._option_group(self.tr("Détection"), detect_row, live_row, live_drop_row))
 
         strategy_row = FlowLayout(h_spacing=10, v_spacing=6)
-        strategy_row.addWidget(QLabel(self.tr("Proposition automatique :")))
         self.cmb_strategy = QComboBox()
         for strat in STRATEGY_LABELS:
             self.cmb_strategy.addItem(STRATEGY_TEXT.get(strat, STRATEGY_LABELS[strat]), strat.value)
-        strategy_row.addWidget(self.cmb_strategy)
+        fit_combo_to_panel(self.cmb_strategy)
+        strategy_row.addWidget(self._inline_option(self.tr("Proposition automatique :"), self.cmb_strategy))
 
         mode_row = FlowLayout(h_spacing=10, v_spacing=6)
-        mode_row.addWidget(QLabel(self.tr("Mode de suppression :")))
         self.cmb_mode = QComboBox()
         self.cmb_mode.addItem(MODE_LABELS[MODE_QUARANTINE], MODE_QUARANTINE)
         if trash_available():
             self.cmb_mode.addItem(MODE_LABELS[MODE_TRASH], MODE_TRASH)
         self.cmb_mode.addItem(MODE_LABELS[MODE_DELETE], MODE_DELETE)
         self.cmb_mode.currentIndexChanged.connect(lambda _i: self._update_mode_widgets())
-        mode_row.addWidget(self.cmb_mode)
+        # « Quarantaine (réversible, par défaut) » est long : une largeur de 10
+        # caractères le coupait dès 80 %. Il tient dans la rangée, qui passe à la ligne.
+        fit_combo_to_panel(self.cmb_mode, 30)
+        mode_row.addWidget(self._inline_option(self.tr("Mode de suppression :"), self.cmb_mode))
         self.chk_empty_dirs = CheckBox(self.tr("Dossiers vides"))
         self.chk_empty_dirs.setToolTip(self.tr("Supprimer les dossiers devenus vides après les suppressions."))
         mode_row.addWidget(self.chk_empty_dirs)
@@ -672,7 +678,7 @@ class DedupWindow(ModuleWindow):
         self.tree.doubleClicked.connect(self._on_double_click)
         self.tree.toggleRequested.connect(self._toggle_selection)
         self.tree.deleteRequested.connect(lambda: self._set_action(ACTION_DELETE))
-        self.tree.setMinimumHeight(240)
+        self.tree.setMinimumHeight(scaled(240))
         results_page = QWidget()
         results_layout = QVBoxLayout(results_page)
         results_layout.setContentsMargins(0, 0, 0, 0)
@@ -702,6 +708,21 @@ class DedupWindow(ModuleWindow):
             return
         self.subtabs.setCurrentIndex(index)
         self._subtab_strip.setCurrentIndex(index)
+
+    @staticmethod
+    def _inline_option(label: str, widget: QWidget) -> QWidget:
+        """Libellé et contrôle inséparables dans une rangée qui passe à la ligne.
+
+        Deux widgets ajoutés séparément au FlowLayout pouvaient être coupés entre eux :
+        « Tolérance : » restait en fin de ligne et sa liste descendait seule.
+        """
+        box = QWidget()
+        row = QHBoxLayout(box)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(6)
+        row.addWidget(QLabel(label))
+        row.addWidget(widget)
+        return box
 
     @staticmethod
     def _option_group(title: str, *content: QLayout | QWidget) -> QFrame:
@@ -785,7 +806,14 @@ class DedupWindow(ModuleWindow):
         hint.setWordWrap(True)
         col.addWidget(hint)
         col.addStretch(1)
-        self.set_side_panel(panel, self.tr("Aperçu et corrections"))
+        # Le panneau dépasse la hauteur d'une fenêtre courte (704 px à 110 %) : sans
+        # défilement, « Corrections manuelles » et l'aide clavier sortaient du cadre.
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setWidget(panel)
+        panel.setAutoFillBackground(False)
+        self.set_side_panel(scroll, self.tr("Aperçu et corrections"))
 
     # ── Préférences ───────────────────────────────────────────────────
 

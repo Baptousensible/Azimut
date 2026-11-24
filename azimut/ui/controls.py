@@ -37,6 +37,7 @@ from PySide6.QtGui import (
 from PySide6.QtWidgets import (
     QAbstractButton,
     QCheckBox,
+    QComboBox,
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -59,6 +60,20 @@ from azimut.ui.motion import (
     spring,
 )
 from azimut.ui.theme import ThemeManager, scaled, token
+
+
+
+def fit_combo_to_panel(combo: QComboBox, length: int = 10) -> QComboBox:
+    """Liste déroulante dont la largeur au repos ne suit pas son item le plus long.
+
+    Un libellé long (« AAAA-MM-JJ_HH-MM-SS   (2008-06-15_14-30-00) », « AV1 (WebM) »…)
+    élargissait sinon le panneau latéral au-delà de sa largeur type. Le menu ouvert
+    affiche toujours les textes entiers : seule la largeur au repos est bornée.
+    """
+    combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+    combo.setMinimumContentsLength(length)
+    return combo
+
 
 FRAME_MS = 16
 SETTLE_S = 1.2          # au-delà, le ressort est posé : on arrête l'horloge
@@ -285,10 +300,12 @@ class SwitchRow(QWidget):
         self.switch = Switch()
         self.switch.toggled.connect(self.toggled.emit)
         self.switch.setAccessibleName(text)
-        row.addWidget(self.label, 0)
+        # Le libellé d'un réglage aligné à droite occupe la largeur libre : sinon
+        # QLabel, qui active le retour à la ligne, se rabat sur la largeur de son mot
+        # le plus long et coupe « Réduire les animations » dès 80 %.
+        row.addWidget(self.label, 1 if align_right else 0)
         if align_right:
             # Réglages en colonne : tous les interrupteurs s'alignent sur le bord droit.
-            row.addStretch(1)
             row.addWidget(self.switch, 0, Qt.AlignmentFlag.AlignVCenter)
         else:
             # L'interrupteur suit son libellé au lieu d'être repoussé au bord de la ligne.

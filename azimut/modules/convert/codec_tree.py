@@ -18,22 +18,24 @@ valeurs (``read_overrides``).
 """
 from __future__ import annotations
 
-from typing import Any, Callable, Collection, Sequence
+from typing import Any, Callable, Collection, Mapping, Sequence
 
-from PySide6.QtCore import QCoreApplication, Qt, Signal
+from PySide6.QtCore import QCoreApplication, QEvent, Qt, Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QComboBox, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QSlider, QVBoxLayout, QWidget,
 )
 
 from azimut.modules.convert import advanced
-from azimut.ui.controls import SwitchRow, attach_value_bubble
+from azimut.ui.controls import SwitchRow, attach_value_bubble, fit_combo_to_panel
+from azimut.ui.theme import scaled
 from azimut.modules.convert.profiles import (
     AUDIO_CODECS, PROFILES, Profile, audio_codecs_for, get_profile, profiles_for,
 )
 
 KIND_TITLES = {"image": "Images", "video": "Vidéos", "audio": "Audio"}
 DEFAULT_MISSING_REASON = "encodeur manquant"
+GPU_TAG = "GPU"                                  # repère des profils accélérés par la carte graphique
 
 _TIP_RIGHT = "Vers la droite : meilleure qualité, fichier plus gros."
 _INDENT = 10                                     # un cran de la hiérarchie section → codec → réglage
@@ -48,18 +50,21 @@ class SliderRow(QWidget):
         super().__init__(parent)
         self._values: list[Any] = []
         self._fmt: Callable[[Any], str] = str
+        self._read_only = False                  # valeur calculée : curseur visible mais non modifiable
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 1, 0, 1)
         lay.setSpacing(8)
         self.label = QLabel(label)
-        self.label.setMinimumWidth(74)
+        # Largeurs mises à l'échelle du zoom : à 150 %, « Vidéo » ne tenait plus dans
+        # 74 px figés et se faisait rogner de 2 px.
+        self.label.setMinimumWidth(scaled(74))
         self.slider = QSlider(Qt.Orientation.Horizontal)
         self.slider.setPageStep(1)
-        self.slider.setMinimumWidth(80)
-        self.slider.setMinimumHeight(18)
+        self.slider.setMinimumWidth(scaled(80))
+        self.slider.setMinimumHeight(scaled(18))
         self.slider.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.value_label = QLabel()
-        self.value_label.setMinimumWidth(70)
+        self.value_label.setMinimumWidth(scaled(70))
         self.value_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         lay.addWidget(self.label)
         lay.addWidget(self.slider, 1)
@@ -79,7 +84,7 @@ class SliderRow(QWidget):
         self.slider.blockSignals(True)
         try:
             self.slider.setRange(0, max(0, len(self._values) - 1))
-            self.slider.setEnabled(len(self._values) > 1)
+            self.slider.setEnabled(not self._read_only and len(self._values) > 1)
             self.slider.setValue(self._index_of(current))
         finally:
             self.slider.blockSignals(False)
@@ -96,6 +101,11 @@ class SliderRow(QWidget):
         finally:
             self.slider.blockSignals(False)
         self._show()
+
+    def set_read_only(self, read_only: bool) -> None:
+        """Curseur affiché mais non déplaçable (mode automatique)."""
+        self._read_only = bool(read_only)
+        self.slider.setEnabled(not self._read_only and len(self._values) > 1)
 
     def _index_of(self, value: Any) -> int:
         if not self._values:
@@ -124,19 +134,40 @@ class _HdrRow(QWidget):
         lay.setContentsMargins(2 * _INDENT, 1, 0, 1)
         lay.setSpacing(8)
         self.label = QLabel(self.tr("HDR"))
-        self.label.setMinimumWidth(74)
+        self.label.setMinimumWidth(scaled(74))
         self.combo = QComboBox()
+        fit_combo_to_panel(self.combo)
         self.combo.addItem(self.tr("Tone-mapping vers SDR"), "T")
         self.combo.addItem(self.tr("HDR natif (AV1 10 bits)"), "H")
         tip = self.tr("Vidéos HDR : conversion vers le SDR (compatible partout) ou conservation du HDR "
                       "(codec AV1 uniquement ; les autres codecs passent toujours en SDR).")
         self._tip = tip
-        self._tip_locked = self.tr("Le HDR natif n'est possible qu'avec le codec vidéo AV1 : avec le codec choisi, "
-                                   "les vidéos HDR sont converties en SDR (tone-mapping).")
+        self._tip_locked = self.tr("Le HDR natif n'est possible qu'avec l'AV1 logiciel (SVT-AV1 ou libaom) : "
+                                   "avec le codec choisi, les vidéos HDR sont converties en SDR (tone-mapping).")
         for w in (self, self.label, self.combo):
             w.setToolTip(tip)
         lay.addWidget(self.label)
         lay.addWidget(self.combo, 1)
+        # La police du zoom arrive sur la liste elle-même : c'est là qu'il faut remesurer.
+        self.combo.installEventFilter(self)
+        self._fit_combo()
+
+    def _fit_combo(self) -> None:
+        """La liste affiche entièrement son libellé le plus long, sans le rogner.
+
+        Les deux choix HDR sont longs (21 et 25 caractères) : la largeur de contenu
+        type les couperait. Elle ne s'étend que de ce qu'il faut, et suit la police.
+        """
+        metrics = self.combo.fontMetrics()
+        needed = max((metrics.horizontalAdvance(self.combo.itemText(index))
+                      for index in range(self.combo.count())), default=0)
+        self.combo.setMinimumWidth(needed + scaled(64))     # marges intérieures et flèche
+
+    def eventFilter(self, watched: object, event: QEvent) -> bool:  # noqa: N802 - API Qt
+        """Refait la largeur après un changement de police (zoom, thème)."""
+        if watched is self.combo and event.type() == QEvent.Type.FontChange:
+            self._fit_combo()
+        return super().eventFilter(watched, event)
 
     def set_native_allowed(self, allowed: bool) -> None:
         """Grise « HDR natif » quand le codec vidéo n'est pas AV1 (le choix de l'utilisateur est conservé ailleurs)."""
@@ -172,6 +203,7 @@ class CodecPanel(QWidget):
         self._labels: dict[str, str] = {p.id: p.label for p in PROFILES}
         self._descriptions: dict[str, str] = {p.id: p.description for p in PROFILES}
         self._unavailable: dict[str, str] = {}
+        self._encoders: Collection[str] | None = None
         self._build()
 
     # ── Construction ────────────────────────────────────────────────────────
@@ -191,8 +223,9 @@ class CodecPanel(QWidget):
         lay.setContentsMargins(_INDENT, 0, 0, 0)
         lay.setSpacing(8)
         label = QLabel(text)
-        label.setMinimumWidth(44)
+        label.setMinimumWidth(scaled(44))
         lay.addWidget(label)
+        fit_combo_to_panel(combo)
         combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         lay.addWidget(combo, 1)
         return row
@@ -221,10 +254,23 @@ class CodecPanel(QWidget):
 
         # ── Vidéos : deux listes (image et audio) ──
         lay.addWidget(self._section_label(KIND_TITLES["video"]))
+        # Matériel détecté : on sait tout de suite si NVENC / QSV / VA-API est utilisable, et pour quels codecs.
+        self.hardware_label = QLabel()
+        self.hardware_label.setProperty("role", "muted")
+        self.hardware_label.setWordWrap(True)
+        lay.addWidget(self.hardware_label)
+        # Qualité : le GPU va vite, le CPU compresse mieux ; l'utilisateur doit le savoir avant de choisir.
+        self.quality_hint = QLabel(self.tr(
+            "GPU : plus rapide et libère le processeur, mais à qualité égale le fichier est souvent plus gros. "
+            "CPU : plus lent, fichiers plus compacts."))
+        self.quality_hint.setProperty("role", "muted")
+        self.quality_hint.setWordWrap(True)
+        self.quality_hint.hide()
+        lay.addWidget(self.quality_hint)
         vcombo = self._combos["video"] = QComboBox()
         vcombo.currentIndexChanged.connect(lambda _i: self._on_kind_combo("video"))
         lay.addWidget(self._combo_row("Vidéo", vcombo))
-        self._fill_combo(vcombo, profiles_for("video"))
+        self._fill_combo(vcombo, self._visible_video_profiles())
         self._audio_combo.currentIndexChanged.connect(lambda _i: self._on_audio_combo())
         lay.addWidget(self._combo_row("Audio", self._audio_combo))
         self._fill_audio_combo(get_profile(str(vcombo.currentData())), None)
@@ -343,13 +389,28 @@ class CodecPanel(QWidget):
     def _build_performance(self, lay: QVBoxLayout) -> None:
         lay.addWidget(self._section_label("Performances"))
         self.slider_threads = SliderRow("Threads", "Threads par encodage (images et vidéos). « Auto » : bornés pour "
-                                        "limiter la mémoire (vidéo), ou cœurs partagés si plusieurs fichiers sont "
-                                        "traités en parallèle.")
+                                        "limiter la mémoire (vidéo). En parallélisme automatique, cette valeur "
+                                        "sert aussi à calculer combien de fichiers peuvent avancer ensemble.")
         self.slider_threads.set_choices(range(0, advanced.MAX_THREADS + 1), 0,
                                         lambda v: "Auto" if int(v) == 0 else str(v))
-        self.slider_parallel = SliderRow("En parallèle", "Nombre de fichiers convertis en même temps. "
-                                         "Réduisez-le si la mémoire manque.")
-        self.slider_parallel.set_choices(range(1, advanced.MAX_PARALLEL + 1), 1)
+        self.chk_parallel_auto = SwitchRow(self.tr("Parallélisme automatique (recommandé)"))
+        self.chk_parallel_auto.setToolTip(self.tr(
+            "Répartit les fichiers selon les cœurs disponibles et le réglage Threads : les copies et les "
+            "images avancent ensemble ; deux vidéos peuvent avancer si le codec choisi est accéléré par le "
+            "GPU (NVENC, QSV, VA-API), une seule avec un encodeur processeur, qui utilise déjà tous les "
+            "cœurs et beaucoup de mémoire. Décochez pour régler chaque famille à la main."))
+        self.parallel_rows: dict[str, SliderRow] = {
+            "image": SliderRow("Images", self.tr("Fichiers image convertis en même temps. Chaque encodage "
+                                                 "utilise le nombre de threads choisi ci-dessus.")),
+            "audio": SliderRow("Audios", self.tr("Fichiers audio convertis en même temps : les encodeurs audio "
+                                                 "sont presque mono-thread, un peu de parallélisme aide.")),
+            "video": SliderRow("Vidéos", self.tr("Vidéos encodées en même temps. Au-delà de 1, chaque encodeur "
+                                                 "doit partager les threads et la mémoire : à réserver aux "
+                                                 "machines puissantes.")),
+            "copy": SliderRow("Copies", self.tr("Fichiers copiés en même temps (déjà au bon format, documents, "
+                                                "JSON…). Cette étape est limitée par le disque, pas par le processeur.")),
+        }
+        self._manual_parallel: dict[str, int] = {kind: 1 for kind in advanced.PARALLEL_KINDS}
         self.chk_low_priority = SwitchRow(self.tr("Priorité basse (garde l'ordinateur réactif)"))
         self.chk_low_priority.setToolTip(
             self.tr("Les processus FFmpeg sont alors lancés avec une priorité réduite : la conversion peut être "
@@ -364,24 +425,135 @@ class CodecPanel(QWidget):
         controls_lay = QVBoxLayout(controls)
         controls_lay.setContentsMargins(_INDENT, 0, 0, 0)
         controls_lay.setSpacing(6)
-        for w in (self.slider_threads, self.slider_parallel):
-            w.valueChanged.connect(lambda _v: self.performanceChanged.emit())
-            controls_lay.addWidget(w)
+        self.slider_threads.valueChanged.connect(self._on_threads_changed)
+        controls_lay.addWidget(self.slider_threads)
+        self.chk_parallel_auto.toggled.connect(self._on_parallel_auto_toggled)
+        controls_lay.addWidget(self.chk_parallel_auto)
+        for kind, row in self.parallel_rows.items():
+            row.set_choices(range(1, advanced.max_parallel(kind) + 1), 1)
+            row.valueChanged.connect(lambda value, k=kind: self._on_parallel_value(k, value))
+            controls_lay.addWidget(row)
+        hint = QLabel(self.tr("Chaque fichier utilise le réglage Threads ci-dessus : en manuel, gardez "
+                              "« fichiers simultanés × threads » dans la limite des cœurs de la machine."))
+        hint.setProperty("role", "muted")
+        hint.setWordWrap(True)
+        controls_lay.addWidget(hint)
         for chk in (self.chk_low_priority, self.chk_memory):
             chk.toggled.connect(lambda _c: self.performanceChanged.emit())
             controls_lay.addWidget(chk)
         lay.addWidget(controls)
 
+    # ── Parallélisme ────────────────────────────────────────────────────────
+    def _on_threads_changed(self, _value: object) -> None:
+        self._refresh_parallel_rows()
+        self.performanceChanged.emit()
+
+    def _on_parallel_auto_toggled(self, _checked: bool) -> None:
+        self._refresh_parallel_rows()
+        self.performanceChanged.emit()
+
+    def _on_parallel_value(self, kind: str, value: object) -> None:
+        if not self.chk_parallel_auto.isChecked():
+            self._manual_parallel[kind] = advanced.clamp_parallel(value, kind)
+        self.performanceChanged.emit()
+
+    def _current_video_profile(self) -> Profile | None:
+        """Profil vidéo affiché, ou None tant que la liste n'est pas construite."""
+        pid = str(self._combos["video"].currentData() or "")
+        if not pid:
+            return None
+        try:
+            return get_profile(pid)
+        except KeyError:
+            return None
+
+    def _hardware_video_selected(self) -> bool:
+        """Vrai si le codec vidéo choisi est un encodeur GPU qui répond réellement."""
+        profile = self._current_video_profile()
+        return (profile is not None and profile.id not in self._unavailable
+                and bool(advanced.hardware_kind(profile)))
+
+    def _refresh_parallel_rows(self) -> None:
+        """Auto : valeurs calculées et curseurs bloqués ; manuel : les valeurs choisies reviennent."""
+        auto = self.chk_parallel_auto.isChecked()
+        threads = advanced.clamp_threads(self.slider_threads.value())
+        hardware = self._hardware_video_selected()
+        for kind, row in self.parallel_rows.items():
+            row.set_read_only(auto)
+            row.set_value(advanced.auto_parallel(kind, threads, hardware_video=hardware) if auto
+                          else self._manual_parallel.get(kind, 1))
+
+    def set_parallel(self, mode: str, values: Mapping[str, Any] | None = None) -> None:
+        """Charge le mode et les valeurs manuelles depuis les préférences, sans émettre de signal."""
+        self._manual_parallel = {kind: advanced.clamp_parallel((values or {}).get(kind, 1), kind)
+                                 for kind in advanced.PARALLEL_KINDS}
+        self.chk_parallel_auto.blockSignals(True)
+        try:
+            self.chk_parallel_auto.setChecked(mode != "manual")
+        finally:
+            self.chk_parallel_auto.blockSignals(False)
+        self._refresh_parallel_rows()
+
+    def parallel_mode(self) -> str:
+        return "auto" if self.chk_parallel_auto.isChecked() else "manual"
+
+    def parallel_values(self) -> dict[str, int]:
+        """Parallélisme effectif par famille, prêt pour le worker."""
+        return advanced.parallel_counts(self.parallel_mode(), self._manual_parallel,
+                                        advanced.clamp_threads(self.slider_threads.value()),
+                                        hardware_video=self._hardware_video_selected())
+
     # ── Listes ──────────────────────────────────────────────────────────────
+    def set_hardware_status(self, text: str) -> None:
+        """Ligne « matériel détecté » affichée au-dessus de la liste des codecs vidéo."""
+        self.hardware_label.setText(text)
+
+    def set_quality_hint_visible(self, visible: bool) -> None:
+        """Rappel CPU/GPU affiché seulement quand une accélération matérielle est disponible."""
+        self.quality_hint.setVisible(visible)
+
     def _label(self, pid: str) -> str:
         label = self._labels.get(pid, pid)
+        if advanced.hardware_kind(get_profile(pid)):
+            label = f"{label} · {GPU_TAG}"
         reason = self._unavailable.get(pid)
         return label if reason is None else f"{label} — {reason}"
 
-    @staticmethod
-    def _description(profile: Profile) -> str:
+    def _description(self, profile: Profile) -> str:
         """Description du codec, traduite à l'affichage (le profil reste une donnée pure)."""
-        return QCoreApplication.translate("Profiles", profile.description)
+        text = QCoreApplication.translate("Profiles", profile.description)
+        if profile.kind == "video" and advanced.hardware_kind(profile):
+            text += " " + self.tr("Conversion GPU : plus rapide, mais à qualité visuelle égale le fichier est "
+                                  "souvent plus gros qu'avec un encodeur CPU.")
+        return text
+
+    def profile_is_visible(self, profile: Profile) -> bool:
+        """Un profil `only_if_encoder` n'est proposé que si FFmpeg expose l'un de ses encodeurs."""
+        return (not profile.only_if_encoder
+                or (self._encoders is not None
+                    and any(e in self._encoders for e in profile.video_encoders)))
+
+    def _visible_video_profiles(self) -> list[Profile]:
+        return [p for p in profiles_for("video") if self.profile_is_visible(p)]
+
+    def set_visible_encoders(self, encoders: Collection[str] | None) -> None:
+        """Met à jour la liste vidéo quand la détection FFmpeg arrive (AV1 matériel conditionnel)."""
+        self._encoders = encoders
+        combo = self._combos.get("video")
+        if combo is None:
+            return
+        visible = self._visible_video_profiles()
+        if [combo.itemData(i) for i in range(combo.count())] == [p.id for p in visible]:
+            return                                  # même liste : ne pas perturber la sélection en cours
+        previous = str(combo.currentData() or "")
+        self._fill_combo(combo, visible)
+        index = combo.findData(previous)
+        combo.blockSignals(True)
+        try:
+            combo.setCurrentIndex(index if index >= 0 else 0)
+        finally:
+            combo.blockSignals(False)
+        self._on_kind_combo("video")
 
     def _fill_combo(self, combo: QComboBox, profiles: Sequence[Profile]) -> None:
         combo.blockSignals(True)
@@ -427,13 +599,11 @@ class CodecPanel(QWidget):
         if kind == "video":
             self._sync_audio_choices(pid, str(self._audio_combo.currentData() or ""))
             self._sync_hdr()
+            if hasattr(self, "parallel_rows"):
+                self._refresh_parallel_rows()          # vidéo GPU : deux fichiers en automatique
         self.codecChanged.emit(kind, pid)
 
     # ── HDR ─────────────────────────────────────────────────────────────────
-    def _video_is_av1(self) -> bool:
-        pid = str(self._combos["video"].currentData() or "")
-        return bool(pid) and advanced.family(get_profile(pid)) == "av1"
-
     def _on_hdr_combo(self, _index: int) -> None:
         if self._hdr_syncing:
             return
@@ -450,8 +620,10 @@ class CodecPanel(QWidget):
         self._sync_hdr()
 
     def _sync_hdr(self) -> None:
-        """Autorise « HDR natif » seulement avec AV1 ; sinon la liste affiche le tone-mapping, sans perdre le choix."""
-        allowed = self._video_is_av1()
+        """Autorise « HDR natif » seulement avec AV1 logiciel ; le matériel reste en tone-mapping SDR."""
+        profile = self._current_video_profile()
+        allowed = (profile is not None and advanced.family(profile) == "av1"
+                   and not advanced.hardware_kind(profile))
         self.hdr.set_native_allowed(allowed)
         shown = self._hdr_wanted if allowed else "T"
         self._hdr_syncing = True
@@ -615,6 +787,8 @@ class CodecPanel(QWidget):
                 self._update_combo_tip(combo)
         if self._audio_combo.currentData() == profile_id:
             self._update_audio_tip()
+        if self.selected("video") == profile_id and hasattr(self, "parallel_rows"):
+            self._refresh_parallel_rows()              # profil GPU devenu indisponible : une seule vidéo
 
     def rows(self, profile_id: str) -> dict[str, SliderRow]:
         """Curseurs d'un codec (famille d'origine), par nom (``crf``, ``preset``, ``quality``, ``bitrate``)."""

@@ -367,6 +367,32 @@ def test_tags_navigation_wraps_its_actions_when_the_window_is_narrow(qapp, monke
         w.close()
 
 
+def test_tags_keeps_its_two_tables_side_by_side_at_150(qapp, monkeypatch):
+    """À 150 %, les tableaux restent côte à côte et défilent dans leur propre carte."""
+    from PySide6.QtCore import Qt
+
+    from azimut.ui.theme import ThemeManager
+
+    theme = ThemeManager.instance()
+    old_zoom = theme.zoom()
+    w = _tags_window_with_exiftool(monkeypatch)
+    try:
+        w.resize(1200, 760)
+        w.show()
+        theme.set_zoom(1.5)
+        qapp.processEvents()
+        w._arrange_split()
+        assert w._split.orientation() == Qt.Orientation.Horizontal
+
+        theme.set_zoom(1.0)
+        qapp.processEvents()
+        w._arrange_split()
+        assert w._split.orientation() == Qt.Orientation.Horizontal
+    finally:
+        theme.set_zoom(old_zoom)
+        w.close()
+
+
 def _tags_window_with_exiftool(monkeypatch):
     """Fenêtre Tags avec un faux ExifTool disponible pour tester les états d'action."""
     from azimut.core import binaries
