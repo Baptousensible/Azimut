@@ -169,6 +169,9 @@ class ConvertWindow(ModuleWindow):
         self._encoders: frozenset[str] | None = None
         self._hardware_failed: frozenset[str] = frozenset()
         self._encoders_for: Path | None = None
+        # La détection est terminée (réussie ou non). Distinct de `_encoders_for` : celui-ci
+        # reste None quand FFmpeg est introuvable, ce qui laisserait « détection en cours » à vie.
+        self._probe_done = False
         self._ffmpeg: Path | None = None
         self._ffprobe: Path | None = None
         self._bins_ok = False
@@ -565,7 +568,7 @@ class ConvertWindow(ModuleWindow):
     def _hardware_text(self) -> str:
         """Matériel détecté et codecs disponibles, affiché au-dessus de la liste des codecs vidéo."""
         if self._encoders is None:
-            if self._encoders_for is None:
+            if not self._probe_done:
                 return self.tr("Matériel : détection en cours…")
             return self.tr("Matériel : indéterminé (FFmpeg n'a pas listé ses encodeurs).")
 
@@ -601,18 +604,21 @@ class ConvertWindow(ModuleWindow):
         if self.is_busy():
             self._probe_timer.start(100)
             return
+        self._probe_done = False
         self.run_worker(ProbeWorker(self._ffmpeg), on_completed=self._on_encoders,
                         on_failed=self._on_probe_failed, on_cancelled=self._after_worker)
 
     def _on_probe_failed(self, _message: str) -> None:
         """Détection impossible : le matériel reste indéterminé au lieu d'afficher « en cours » à vie."""
         self._encoders_for = self._ffmpeg
+        self._probe_done = True
         self._refresh_hardware_status()
         self._after_worker()
 
     def _on_encoders(self, result: EncoderProbe) -> None:
         self._encoders, self._hardware_failed = result.encoders, result.hardware_failed
         self._encoders_for = self._ffmpeg
+        self._probe_done = True
         self.codec_tree.set_visible_encoders(self._encoders)
         self._annotate_profiles()
         self._load_advanced()
